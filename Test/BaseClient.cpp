@@ -2440,9 +2440,13 @@ void CUpDownClient::AssertValid() const
 //==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_SIVKA
 	(void)m_dwLastAskedTime;
-	CHECK_BOOL(m_bValidSource);
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
+	CHECK_BOOL(m_bValidSource);
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
 #undef CHECK_PTR
 #undef CHECK_BOOL
 }

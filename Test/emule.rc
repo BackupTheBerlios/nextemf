@@ -2385,6 +2385,8 @@ COPYVISIBLE             ICON                    "res\\CopyVisible.ico"
 EXPORTSELECTED          ICON                    "res\\ExportSelected.ico"
 EXPORTALL               ICON                    "res\\ExportAll.ico"
 CLIENT_NEXTEMF          ICON                    "res\\client_nextemf.ico"
+HARDLIMIT	        ICON                    "res\\HL.ico"
+DROP		        ICON                    "res\\DROP.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -4448,6 +4450,14 @@ BEGIN
     IDS_ANTI_LEECHER        "Enable anti-leechers control"
     IDS_ANTI_CREDITHACK     "Enable anti-credit hack control"
     IDS_DOWNLOAD_IN_BOLD    "Show active downloads in bold"
+    IDS_DROPS               "Drops"
+    IDS_DROPHQSLIMIT        "Drop sources with queues higher to:"
+    IDS_DROP_LOWIPTOLOWIP   "Drop LowIP to LowIP Sources"
+    IDS_DROP_UNKNOW_ERROR_BANNED   "Drop Unknown, Error and Banned Sources"
+    IDS_DROP_NNS	    "Drop Not Needed Sources"
+    IDS_DROP_FQS	    "Drop Full Queue Sources"
+    IDS_DROP_HQS	    "Drop High Queue Rating Sources"
+    IDS_DROP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP	    "Drop NNS, FQS, HQRS, ERR, BAN & L2L"
 END
 //#endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]

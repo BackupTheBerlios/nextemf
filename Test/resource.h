@@ -2396,6 +2396,14 @@
 //#endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 #define IDS_DOWNLOAD_IN_BOLD            61029
+#define IDS_DROPS						61030
+#define IDS_DROPHQSLIMIT				61031
+#define IDS_DROP_LOWIPTOLOWIP			61032
+#define IDS_DROP_UNKNOW_ERROR_BANNED	61033
+#define IDS_DROP_NNS					61034
+#define IDS_DROP_FQS					61035
+#define IDS_DROP_HQS					61036
+#define IDS_DROP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP		61037
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

@@ -1973,6 +1973,9 @@
 				RelativePath="res\CopyVisible.ico">
 			</File>
 			<File
+				RelativePath="res\DROP.ico">
+			</File>
+			<File
 				RelativePath="res\Delete.ico">
 			</File>
 			<File
@@ -2061,6 +2064,9 @@
 			</File>
 			<File
 				RelativePath="res\Global.ico">
+			</File>
+			<File
+				RelativePath="res\HL.ico">
 			</File>
 			<File
 				RelativePath="res\HardDisk.ico">

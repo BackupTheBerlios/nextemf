@@ -16,7 +16,7 @@ static char THIS_FILE[]=__FILE__;
 
 #endif
 //==>Reask sourcen after ip chnage or Quickstart or Sivka-Ban [cyrex2001]
-#if defined (QUICKSTART)|| defined (SIVKA_BAN) || defined (RSAIC_MAELLA) //Reask sourcen after ip chnage or Quickstart or Sivka-Ban
+#if defined (QUICKSTART)|| defined (SIVKA_BAN) || defined (RSAIC_SIVKA) //Reask sourcen after ip chnage or Quickstart or Sivka-Ban
 
 IMPLEMENT_DYNAMIC(CPPgNextEMF, CPropertyPage)
 BEGIN_MESSAGE_MAP(CPPgNextEMF, CPropertyPage)
@@ -61,6 +61,12 @@ CPPgNextEMF::CPPgNextEMF()
 //==>defeat 0-filled partsenders [shadow2004]
 	m_htiEnableZeroFilledTest = NULL;
 //<==defeat 0-filled partsenders [shadow2004]
+//==>Drop maunal [cyrex2001]
+#ifdef DROP_MANUAL
+    m_htiDropSources = NULL;
+    m_htiHqrBox = NULL;
+#endif //Drop maunal
+//<==Drop maunal [cyrex2001]
 }
 
 CPPgNextEMF::~CPPgNextEMF()
@@ -75,11 +81,21 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 	{
 		int iImgOpt = 8;
 		int iImgSecurity = 8;
+//==>Drop maunal [cyrex2001]
+#ifdef DROP_MANUAL
+		int iImgDrop = 8;
+#endif //Drop maunal
+//<==Drop maunal [cyrex2001]
 		CImageList* piml = m_ctrlTreeOptions.GetImageList(TVSIL_NORMAL);
 		if (piml)
 		{
 			iImgOpt = piml->Add(CTempIconLoader(_T("CONNECTION")));
 			iImgSecurity = piml->Add(CTempIconLoader(_T("SECURITY")));
+//==>Drop maunal [cyrex2001]
+#ifdef DROP_MANUAL
+			iImgDrop = piml->Add(CTempIconLoader(_T("DROP")));
+#endif //Drop maunal
+//<==Drop maunal [cyrex2001]
 		}
 //==> Bold Download-Status [shadow2004]
 #ifdef BOLDDL
@@ -117,6 +133,15 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 //==>defeat 0-filled partsenders [shadow2004]
 		m_htiEnableZeroFilledTest = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ZERO_FILLED_TEST), m_htiSecurity, m_bEnableZeroFilledTest);
 //<==defeat 0-filled partsenders [shadow2004]
+
+//==>Drop maunal [cyrex2001]
+#ifdef DROP_MANUAL
+		m_htiDropSources = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_DROPS), iImgDrop, TVI_ROOT);
+		m_htiHqrBox = m_ctrlTreeOptions.InsertItem(GetResString(IDS_DROPHQSLIMIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiDropSources);
+		m_ctrlTreeOptions.AddEditBox(m_htiHqrBox , RUNTIME_CLASS(CNumTreeOptionsEdit));
+        m_ctrlTreeOptions.Expand(m_htiDropSources, TVE_EXPAND);
+#endif //Drop maunal
+//<==Drop maunal [cyrex2001]
 
         m_ctrlTreeOptions.Expand(m_htiSecurity, TVE_EXPAND);
 
@@ -157,11 +182,21 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 //==>defeat 0-filled partsenders [shadow2004]
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableZeroFilledTest, m_bEnableZeroFilledTest);
 //<==defeat 0-filled partsenders [shadow2004]
+//==>Drop maunal [cyrex2001]
+#ifdef DROP_MANUAL
+    DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiHqrBox, iMaxRemoveQRS);
+	DDV_MinMaxInt(pDX, iMaxRemoveQRS, 2500, 100000);
+#endif //Drop maunal
+//<==Drop maunal [cyrex2001]
 }
 
 BOOL CPPgNextEMF::OnInitDialog()
 {
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_SIVKA
 	m_bIsreaskSourceAfterIPChange = thePrefs.isreaskSourceAfterIPChange;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 	m_bQuickStart = thePrefs.isQuickStart;
 	m_iQuickStartMaxTime = (int)(thePrefs.QuickStartMaxTime);
 	m_iQuickStartMaxConnPerFive = (int)(thePrefs.QuickStartMaxConnPerFive);
@@ -190,6 +225,11 @@ BOOL CPPgNextEMF::OnInitDialog()
 //==>defeat 0-filled partsenders [shadow2004]
 	m_bEnableZeroFilledTest = thePrefs.enableZeroFilledTest;
 //<==defeat 0-filled partsenders [shadow2004]
+//==>Drop maunal [cyrex2001]
+#ifdef DROP_MANUAL
+    iMaxRemoveQRS = thePrefs.GetMaxRemoveQRS();
+#endif //Drop maunal
+//<==Drop maunal [cyrex2001]
 	CPropertyPage::OnInitDialog();
 	Localize();
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -212,8 +252,11 @@ BOOL CPPgNextEMF::OnApply()
 	
 	if (!UpdateData())
 		return FALSE;
-
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_SIVKA
 	thePrefs.isreaskSourceAfterIPChange = m_bIsreaskSourceAfterIPChange;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 	thePrefs.isQuickStart = m_bQuickStart;
 	thePrefs.QuickStartMaxTime = m_iQuickStartMaxTime;
 	thePrefs.QuickStartMaxConnPerFive = m_iQuickStartMaxConnPerFive;
@@ -242,6 +285,11 @@ BOOL CPPgNextEMF::OnApply()
 //==>defeat 0-filled partsenders [shadow2004]
 	thePrefs.enableZeroFilledTest = m_bEnableZeroFilledTest;
 //<==defeat 0-filled partsenders [shadow2004]
+//==>Drop maunal [cyrex2001]
+#ifdef DROP_MANUAL
+	thePrefs.SetMaxRemoveQRS(iMaxRemoveQRS ? iMaxRemoveQRS : 5000);
+#endif //Drop maunal
+//<==Drop maunal [cyrex2001]
 	SetModified(FALSE);
 	return CPropertyPage::OnApply();
 }
@@ -257,7 +305,7 @@ void CPPgNextEMF::Localize(void)
 {	
 	if(m_hWnd)
 	{
-		SetWindowText(_T("NextEMF"));
+		SetWindowText(MOD_VERSION);
 		GetDlgItem(IDC_WARNING)->SetWindowText(GetResString(IDS_TWEAKS_WARNING));
 
 		if (m_htiIsreaskSourceAfterIPChange) m_ctrlTreeOptions.SetItemText(m_htiIsreaskSourceAfterIPChange, GetResString(IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK ));
@@ -284,6 +332,12 @@ void CPPgNextEMF::Localize(void)
 //==>defeat 0-filled partsenders [shadow2004]
 	    if (m_htiEnableZeroFilledTest) m_ctrlTreeOptions.SetItemText(m_htiEnableZeroFilledTest, GetResString(IDS_ZERO_FILLED_TEST));
 //<==defeat 0-filled partsenders [shadow2004]
+//==>Drop maunal [cyrex2001]
+#ifdef DROP_MANUAL
+		if (m_htiHqrBox) m_ctrlTreeOptions.SetEditLabel(m_htiHqrBox, GetResString(IDS_DROPHQSLIMIT));
+		if (m_htiDropSources) m_ctrlTreeOptions.SetItemText(m_htiDropSources, GetResString(IDS_DROPS)); 
+#endif //Drop maunal
+//<==Drop maunal [cyrex2001]
 	}
 }
 
@@ -317,6 +371,12 @@ void CPPgNextEMF::OnDestroy()
 //==>defeat 0-filled partsenders [shadow2004]
 	m_htiEnableZeroFilledTest = NULL;
 //<==defeat 0-filled partsenders [shadow2004]
+//==>Drop maunal [cyrex2001]
+#ifdef DROP_MANUAL
+    m_htiDropSources = NULL;
+    m_htiHqrBox = NULL;
+#endif //Drop maunal
+//<==Drop maunal [cyrex2001]
 
 	CPropertyPage::OnDestroy();
 }

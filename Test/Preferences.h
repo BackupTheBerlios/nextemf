@@ -630,6 +630,11 @@ public:
 //==>defeat 0-filled partsenders [shadow2004]
 	static bool	enableZeroFilledTest;
 //<==defeat 0-filled partsenders [shadow2004]
+//==>Drop maunal [cyrex2001]
+#ifdef DROP_MANUAL
+	static    uint16  MaxRemoveQRS;
+#endif //Drop maunal
+//<==Drop maunal [cyrex2001]
 
 
 	enum Table
@@ -1422,6 +1427,12 @@ public:
 	static	bool GetEnableAntiGplBreaker()					{ return enableAntiGplBreaker; }
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
+//==>Drop maunal [cyrex2001]
+#ifdef DROP_MANUAL
+ 	static   uint16 CPreferences::GetMaxRemoveQRS()      { return MaxRemoveQRS; }
+ 	static   void	SetMaxRemoveQRS(int in)             {MaxRemoveQRS=in;}
+#endif //Drop maunal
+//<==Drop maunal [cyrex2001]
 
 protected:
 	static	CString appdir;

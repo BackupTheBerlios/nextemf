@@ -208,6 +208,7 @@ private:
     DWORD       m_dwLastA4AFtime; // ZZ:DownloadManager
 //==>Quickstart [cyrex2001]
 #ifdef QUICKSTART //Quickstart
+private:
 	int quickflag;
 	int quickflags;
 #endif //Quickstart
@@ -215,6 +216,7 @@ private:
 
 //==>List Of Dont Ask This IPs [cyrex2001]
 #ifdef LODATI
+private:
 	uint32 ValidSourcesCounterTemp;
 	uint32 DownloadSourcesCounterTemp;
 #endif //List Of Dont Ask This IPs

@@ -2797,19 +2797,7 @@ void CDownloadListCtrl::CreateMenues() {
 	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIOHIGH, GetResString(IDS_PRIOHIGH));
 	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIOAUTO, GetResString(IDS_PRIOAUTO));
 
-//==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
-//START adding by sivka
-	m_DropMenu.CreateMenu();
-	m_DropMenu.AppendMenu(MF_STRING,MP_DROPLOWTOLOWIPSRCS, _T("Drop LowIP to LowIP Sources"));
-	m_DropMenu.AppendMenu(MF_STRING,MP_DROPUNKNOWNERRORBANNEDSRCS, _T("Drop Unknown, Error and Banned Sources"));
-	m_DropMenu.AppendMenu(MF_STRING,MP_DROPNONEEDEDSRCS, _T("Drop Not Needed Sources"));
-	m_DropMenu.AppendMenu(MF_STRING,MP_DROPFULLQSRCS, _T("Drop Full Queue Sources"));
-	m_DropMenu.AppendMenu(MF_STRING,MP_DROPHIGHQRSRCS, _T("Drop High Queue Rating Sources"));
-	m_DropMenu.AppendMenu(MF_STRING,MP_CLEANUP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP, _T("CleanUp => NNS, FQS, HQRS, UNK, ERR, BAN & L2L"));
-//END adding by sivka
-#endif //Drop maunal
-//<==Drop maunal [cyrex2001]
+
 
 	m_A4AFMenu.CreateMenu();
 // ZZ:DownloadManager -->
@@ -2822,16 +2810,29 @@ void CDownloadListCtrl::CreateMenues() {
 	m_FileMenu.AddMenuTitle(GetResString(IDS_DOWNLOADMENUTITLE), true);
 	m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_PrioMenu.m_hMenu, GetResString(IDS_PRIORITY) + _T(" (") + GetResString(IDS_DOWNLOAD) + _T(")"), _T("FILEPRIORITY"));
 
+//==>Drop maunal [cyrex2001]
+#ifdef DROP_MANUAL
+//START adding by sivka
+	m_DropMenu.CreateMenu();
+	m_DropMenu.AppendMenu(MF_STRING,MP_DROPLOWTOLOWIPSRCS, GetResString(IDS_DROP_LOWIPTOLOWIP));
+	m_DropMenu.AppendMenu(MF_STRING,MP_DROPUNKNOWNERRORBANNEDSRCS, GetResString(IDS_DROP_UNKNOW_ERROR_BANNED));
+	m_DropMenu.AppendMenu(MF_STRING,MP_DROPNONEEDEDSRCS, GetResString(IDS_DROP_NNS));
+	m_DropMenu.AppendMenu(MF_STRING,MP_DROPFULLQSRCS, GetResString(IDS_DROP_FQS));
+	m_DropMenu.AppendMenu(MF_STRING,MP_DROPHIGHQRSRCS, GetResString(IDS_DROP_HQS));
+	m_DropMenu.AppendMenu(MF_STRING,MP_CLEANUP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP, GetResString(IDS_DROP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP));
+//END adding by sivka
+#endif //Drop maunal
+//<==Drop maunal [cyrex2001]
 //==>Hardlimit [cyrex2001]
 #ifdef HARDLIMIT
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
-	m_FileMenu.AppendMenu(MF_STRING,MP_HARD_LIMIT, GetResString(IDS_HARDLIMIT)); //cyrex2001 =>hardlimit
+	m_FileMenu.AppendMenu(MF_STRING,MP_HARD_LIMIT, GetResString(IDS_HARDLIMIT), _T("HARDLIMIT")); //cyrex2001 =>hardlimit
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001]
 //==>Drop maunal [cyrex2001]
 #ifdef DROP_MANUAL
-	m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_DropMenu.m_hMenu, _T("Sources Handling (DROP)") );
+	m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_DropMenu.m_hMenu, _T("Sources Handling (DROP)"), _T("DROP") );
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]

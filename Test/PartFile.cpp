@@ -5384,7 +5384,7 @@ void CPartFile::RemoveHighQRSourcesManual()
 {
 	for(POSITION pos2, pos1 = srclist.GetHeadPosition(); (pos2=pos1)!=NULL; ){
 		CUpDownClient* cur_src = srclist.GetNext(pos1);
-		if(cur_src->GetRemoteQueueRank() > 2500 /*thePrefs.GetMaxRemoveQRS()*/
+		if(cur_src->GetRemoteQueueRank() > thePrefs.GetMaxRemoveQRS()
 		&& cur_src->GetDownloadState() == DS_ONQUEUE){
 			theApp.downloadqueue->RemoveSourceAndDontAsk(cur_src, true, pos2);
 		}
@@ -5406,7 +5406,7 @@ void CPartFile::CleanUp_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP_Sources()
 				if(cur_src->IsRemoteQueueFull()){
 					theApp.downloadqueue->RemoveSourceAndDontAsk(cur_src, true, pos2);
 				}
-				else if(cur_src->GetRemoteQueueRank() >  2500 /*thePrefs.GetMaxRemoveQRS()*/){
+				else if(cur_src->GetRemoteQueueRank() >  thePrefs.GetMaxRemoveQRS()){
 					theApp.downloadqueue->RemoveSourceAndDontAsk(cur_src, true, pos2);
 				}
 				break;

@@ -1946,13 +1946,14 @@ uint32 CUpDownClient::GetTimeUntilReask(const CPartFile* file) const {
 uint32 CUpDownClient::GetTimeUntilReask() const {
     return GetTimeUntilReask(reqfile);
 }
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA //Reask sourcen after ip change
+
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
 bool CUpDownClient::IsValidSource2() const
-#else //Reask sourcen after ip change
+#else
 bool CUpDownClient::IsValidSource() const
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
 {
 	bool valid = false;
 	switch(GetDownloadState())

@@ -113,6 +113,7 @@ protected:
 
 //==>Hardlimit [cyrex2001]
 #ifdef HARDLIMIT
+protected:
 	CHardLimit m_SettingsSaver;
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001]
