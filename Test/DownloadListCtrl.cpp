@@ -42,6 +42,12 @@
 #include "StringConversion.h"
 #include "AddSourceDlg.h"
 
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+#include ".\NextEMF\HardLimitDlg.h"
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -151,23 +157,28 @@ void CDownloadListCtrl::SetAllIcons()
 	m_ImageList.DeleteImageList();
 	m_ImageList.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
 	m_ImageList.SetBkColor(CLR_NONE);
-	m_ImageList.Add(CTempIconLoader(_T("SrcDownloading")));
-	m_ImageList.Add(CTempIconLoader(_T("SrcOnQueue")));
-	m_ImageList.Add(CTempIconLoader(_T("SrcConnecting")));
-	m_ImageList.Add(CTempIconLoader(_T("SrcNNPQF")));
-	m_ImageList.Add(CTempIconLoader(_T("SrcUnknown")));
-	m_ImageList.Add(CTempIconLoader(_T("ClientCompatible")));
-	m_ImageList.Add(CTempIconLoader(_T("Friend")));
-	m_ImageList.Add(CTempIconLoader(_T("ClientEDonkey")));
-	m_ImageList.Add(CTempIconLoader(_T("ClientMLDonkey")));
-	m_ImageList.Add(CTempIconLoader(_T("RatingReceived")));
-	m_ImageList.Add(CTempIconLoader(_T("BadRatingReceived")));
-	m_ImageList.Add(CTempIconLoader(_T("ClientEDonkeyHybrid")));
-	m_ImageList.Add(CTempIconLoader(_T("ClientShareaza")));
-	m_ImageList.Add(CTempIconLoader(_T("Server")));
-	m_ImageList.Add(CTempIconLoader(_T("ClientAMule")));
-	m_ImageList.Add(CTempIconLoader(_T("ClientLPhant")));
-	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
+	m_ImageList.Add(CTempIconLoader(_T("SrcDownloading")));//0
+	m_ImageList.Add(CTempIconLoader(_T("SrcOnQueue")));//1
+	m_ImageList.Add(CTempIconLoader(_T("SrcConnecting")));//2
+	m_ImageList.Add(CTempIconLoader(_T("SrcNNPQF")));//3
+	m_ImageList.Add(CTempIconLoader(_T("SrcUnknown")));//4
+	m_ImageList.Add(CTempIconLoader(_T("ClientCompatible")));//5
+	m_ImageList.Add(CTempIconLoader(_T("Friend")));//6
+	m_ImageList.Add(CTempIconLoader(_T("ClientEDonkey")));//7
+	m_ImageList.Add(CTempIconLoader(_T("ClientMLDonkey")));//8
+	m_ImageList.Add(CTempIconLoader(_T("RatingReceived")));//9
+	m_ImageList.Add(CTempIconLoader(_T("BadRatingReceived")));//10
+	m_ImageList.Add(CTempIconLoader(_T("ClientEDonkeyHybrid")));//11
+	m_ImageList.Add(CTempIconLoader(_T("ClientShareaza")));//12
+	m_ImageList.Add(CTempIconLoader(_T("Server")));//13
+	m_ImageList.Add(CTempIconLoader(_T("ClientAMule")));//14
+	m_ImageList.Add(CTempIconLoader(_T("ClientLPhant")));//15
+	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);//16
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+	m_ImageList.Add(CTempIconLoader(_T("CLIENT_NEXTEMF")));//17
+#endif //Modversion
+//<==Modversion [cyrex2001]
 }
 
 void CDownloadListCtrl::Localize()
@@ -684,7 +695,16 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				else if (lpUpDownClient->GetClientSoft() == SO_LPHANT)
 					m_ImageList.Draw(dc, 15, point2, ILD_NORMAL | uOvlImg);
 				else if (lpUpDownClient->ExtProtocolAvailable())
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+					if ( lpUpDownClient->IsNextEMF() )
+						m_ImageList.Draw(dc, 17, point2, ILD_NORMAL | uOvlImg);
+					else
+						m_ImageList.Draw(dc, 5, point2, ILD_NORMAL | uOvlImg);
+#else //Modversion
 					m_ImageList.Draw(dc, 5, point2, ILD_NORMAL | uOvlImg);
+#endif //Modversion
+//<==Modversion [cyrex2001]
 				else
 					m_ImageList.Draw(dc, 7, point2, ILD_NORMAL | uOvlImg);
 				cur_rec.left += 20;
@@ -1541,6 +1561,40 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					}
 					SetRedraw(true);
 					break;
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+				case MP_HARD_LIMIT:
+					if(selectedCount == 1)
+					{
+						theApp.downloadqueue->InitTempVariables(file);
+						CHardLimitDlg dialog;
+						dialog.DoModal();
+						if(thePrefs.GetTakeOverFileSettings())
+					{
+							theApp.downloadqueue->UpdateFileSettings(file);
+							m_SettingsSaver.SaveSettings(file);
+							UpdateItem(file);
+						}
+					}
+					else if(selectedCount > 1)
+					{
+						theApp.downloadqueue->InitTempVariables(selectedList.GetHead());
+						CHardLimitDlg dialog;
+						dialog.DoModal();
+
+						while(!selectedList.IsEmpty()) {
+							if(thePrefs.GetTakeOverFileSettings())
+					{
+								theApp.downloadqueue->UpdateFileSettings(selectedList.GetHead());
+								m_SettingsSaver.SaveSettings(selectedList.GetHead());
+								UpdateItem(selectedList.GetHead());
+						}
+							selectedList.RemoveHead();
+						}
+					}
+					break;
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 				case MP_PAUSE:
 					SetRedraw(false);
 					while (!selectedList.IsEmpty()){
@@ -1968,10 +2022,25 @@ int CDownloadListCtrl::Compare(const CUpDownClient *client1, const CUpDownClient
 		return CompareUnsigned(client1->GetDownloadDatarate(), client2->GetDownloadDatarate());
 	case 5: //progress asc
 		return client1->GetAvailablePartCount() - client2->GetAvailablePartCount();
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+	case 6:
+		if( client1->GetClientSoft() == client2->GetClientSoft() )
+			if(client2->GetVersion() == client1->GetVersion() && client1->GetClientSoft() == SO_EMULE){
+				return CompareOptLocaleStringNoCase(client2->GetClientSoftVer(), client1->GetClientSoftVer());
+			}
+			else {
+			return client2->GetVersion() - client1->GetVersion();
+			}
+		else
+		return client1->GetClientSoft() - client2->GetClientSoft();
+#else //Modversion
 	case 6:
 		if( client1->GetClientSoft() == client2->GetClientSoft() )
 			return client2->GetVersion() - client1->GetVersion();
 		return client1->GetClientSoft() - client2->GetClientSoft();
+#endif //Modversion
+//<==Modversion [cyrex2001]
 	case 7: //qr asc
 		if(client1->GetDownloadState() == DS_DOWNLOADING)
 			if(client2->GetDownloadState() == DS_DOWNLOADING)
@@ -2063,6 +2132,14 @@ void CDownloadListCtrl::CreateMenues() {
 	m_FileMenu.CreatePopupMenu();
 	m_FileMenu.AddMenuTitle(GetResString(IDS_DOWNLOADMENUTITLE), true);
 	m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_PrioMenu.m_hMenu, GetResString(IDS_PRIORITY) + _T(" (") + GetResString(IDS_DOWNLOAD) + _T(")"), _T("FILEPRIORITY"));
+
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	m_FileMenu.AppendMenu(MF_SEPARATOR);
+	m_FileMenu.AppendMenu(MF_STRING,MP_HARD_LIMIT, GetResString(IDS_HARDLIMIT)); //cyrex2001 =>hardlimit
+	m_FileMenu.AppendMenu(MF_SEPARATOR);
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 
 	m_FileMenu.AppendMenu(MF_STRING,MP_PAUSE, GetResString(IDS_DL_PAUSE), _T("PAUSE"));
 	m_FileMenu.AppendMenu(MF_STRING,MP_STOP, GetResString(IDS_DL_STOP), _T("STOP"));

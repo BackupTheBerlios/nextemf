@@ -287,6 +287,12 @@ void CPartFile::Init(){
     m_random_update_wait = (uint32)(rand()/(RAND_MAX/1000));
     lastSwapForSourceExchangeTick = ::GetTickCount();
 	m_DeadSourceList.Init(false);
+
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	m_MaxSourcesPerFile = thePrefs.GetMaxSourcePerFile();
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 }
 
 CPartFile::~CPartFile()
@@ -478,6 +484,11 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 	m_partmetfilename = in_filename;
 	SetPath(in_directory);
 	m_fullname.Format(_T("%s\\%s"), GetPath(), m_partmetfilename);
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	m_SettingsSaver.LoadSettings(this);
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 	
 	// readfile data form part.met file
 	CSafeBufferedFile metFile;
@@ -984,6 +995,12 @@ bool CPartFile::SavePartFile()
 		case PS_HASHING:
 			return false;
 	}
+
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	m_SettingsSaver.SaveSettings(this);
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 
 	// search part file
 	CFileFind ff;
@@ -2006,7 +2023,14 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 						if( !theApp.DoCallback( cur_src ) )
 						{
 							//If we are almost maxed on sources, slowly remove these client to see if we can find a better source.
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+							if( ((dwCurTick - lastpurgetime) > SEC2MS(30)) && (this->GetSourceCount() >= (this->m_MaxSourcesPerFile*.8 )) )
+
+#else //Hardlimit
 							if( ((dwCurTick - lastpurgetime) > SEC2MS(30)) && (this->GetSourceCount() >= (thePrefs.GetMaxSourcePerFile()*.8 )) )
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 							{
 								theApp.downloadqueue->RemoveSource( cur_src );
 								lastpurgetime = dwCurTick;
@@ -2025,11 +2049,22 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 					if( (dwCurTick - lastpurgetime) > SEC2MS(40) ){
 						lastpurgetime = dwCurTick;
 						// we only delete them if reaching the limit
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+						if (GetSourceCount() >= (this->m_MaxSourcesPerFile *.8 )){
+#else //Hardlimit
 						if (GetSourceCount() >= (thePrefs.GetMaxSourcePerFile()*.8 )){
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 							theApp.downloadqueue->RemoveSource( cur_src );
 							break;
 						}			
 					}
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+				if (!((!cur_src->GetLastAskedTime()) /*|| (dwLastCheck > 2 * cur_src->GetJitteredFileReaskTime()))*/))
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 					// doubled reasktime for no needed parts - save connections and traffic
                     if (cur_src->GetTimeUntilReask() > 0)
 						break; 
@@ -2045,7 +2080,13 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 					// This causes sources to pop in and out creating extra overhead!
 					if( cur_src->IsRemoteQueueFull() ) 
 					{
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+						if( ((dwCurTick - lastpurgetime) > MIN2MS(1)) && (this->GetSourceCount() >= (this->m_MaxSourcesPerFile *.8 )) )
+#else //Hardlimit
 						if( ((dwCurTick - lastpurgetime) > MIN2MS(1)) && (GetSourceCount() >= (thePrefs.GetMaxSourcePerFile()*.8 )) )
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 						{
 							theApp.downloadqueue->RemoveSource( cur_src );
 							lastpurgetime = dwCurTick;
@@ -2055,6 +2096,25 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 					//Give up to 1 min for UDP to respond.. If we are within one min of TCP reask, do not try..
 					if (theApp.IsConnected() && cur_src->GetTimeUntilReask() < MIN2MS(2) && cur_src->GetTimeUntilReask() > SEC2MS(1) && ::GetTickCount()-cur_src->getLastTriedToConnectTime() > 20*60*1000) // ZZ:DownloadManager (one resk timestamp for each file)
 						cur_src->UDPReaskForDownload();
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+					if(theApp.IsConnected() == true)
+						{
+						// Check if a refresh is required for the download session with a cheap UDP
+						if((cur_src->GetLastAskedTime() != 0) &&
+							(cur_src->GetNextTCPAskedTime() > dwCurTick + (10*60000)) /*&&
+																					  // 55 seconds for two attempts to refresh the download session with UDP
+																					  (dwLastCheck < cur_src->GetJitteredFileReaskTime() &&
+																					  (dwLastCheck > cur_src->GetJitteredFileReaskTime() - 55000))*/)
+							{
+							// Send a OP_REASKFILEPING (UDP) to refresh the download session
+							// The refresh of the download session is necessary to stay in the remote queue
+							// => see CUpDownClient::SetLastUpRequest() and MAX_PURGEQUEUETIME
+							cur_src->UDPReaskForDownload();								
+							}
+						}
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 				}
 				case DS_CONNECTING:
 				case DS_TOOMANYCONNS:
@@ -2065,8 +2125,29 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 				{
 					if (theApp.IsConnected() && cur_src->GetTimeUntilReask() == 0 && ::GetTickCount()-cur_src->getLastTriedToConnectTime() > 20*60*1000) // ZZ:DownloadManager (one resk timestamp for each file)
 					{
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+						// Check if a refresh is required for the download session with TCP
+						if((cur_src->GetLastAskedTime() == 0) || // Never asked before
+							(cur_src->GetNextTCPAskedTime() <= dwCurTick) || // Full refresh with TCP is required
+							(cur_src->socket != NULL && // Take advantage of the current connection
+							cur_src->socket->IsConnected() == true && 
+							cur_src->GetNextTCPAskedTime() - (10*60000) < dwCurTick && 
+							MIN_REQUESTTIME + 60000 < dwCurTick) /*|| 
+																 (dwLastCheck > cur_src->GetJitteredFileReaskTime())*/){ // Time since last refresh (UDP or TCP elapsed)
+
+																 // Initialize or refresh the download session with an expensive TCP session
+																 // The refresh of the download session is necessary to stay in the remote queue
+																 // => see CUpDownClient::SetLastUpRequest() and MAX_PURGEQUEUETIME
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 						if(!cur_src->AskForDownload()) // NOTE: This may *delete* the client!!
 							break; //I left this break here just as a reminder just in case re rearange things..
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+					}
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 					}
 					break;
 				}
@@ -2237,7 +2318,13 @@ void CPartFile::AddSources(CSafeMemFile* sources, uint32 serverip, uint16 server
 			continue;
 		}
 
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+		if( this->m_MaxSourcesPerFile > this->GetSourceCount() )
+#else //Hardlimit
 		if( thePrefs.GetMaxSourcePerFile() > this->GetSourceCount() )
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 		{
 			debug_possiblesources++;
 			CUpDownClient* newsource = new CUpDownClient(this,port,userid,serverip,serverport,true);
@@ -2464,6 +2551,11 @@ void CPartFile::CompleteFile(bool bIsHashingDone)
 	if (!bIsHashingDone){
 		SetStatus(PS_COMPLETING);
 		datarate = 0;
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+		m_MaxSourcesPerFile = 0;
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 		CAddFileThread* addfilethread = (CAddFileThread*) AfxBeginThread(RUNTIME_CLASS(CAddFileThread), THREAD_PRIORITY_BELOW_NORMAL,0, CREATE_SUSPENDED);
 		if (addfilethread){
 			SetFileOp(PFOP_HASHING);
@@ -2681,6 +2773,12 @@ BOOL CPartFile::PerformFileComplete()
 	}
 	free(newfilename);
 
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	m_SettingsSaver.DeleteFile(this);
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
+
 	DWORD dwMoveResult;
 	if ((dwMoveResult = MoveCompletedPartFile(strPartfilename, strNewname, this)) != ERROR_SUCCESS)
 	{
@@ -2736,6 +2834,11 @@ BOOL CPartFile::PerformFileComplete()
 	SetStatus(PS_COMPLETE);
 	paused = false;
 	SetFileOp(PFOP_NONE);
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	m_MaxSourcesPerFile = 0;
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 
 	// clear the blackbox to free up memory
 	m_CorruptionBlackBox.Free();
@@ -2872,7 +2975,11 @@ void CPartFile::DeleteFile(){
 	BAKName.Append(PARTMET_TMP_EXT);
 	if (_taccess(BAKName, 0) == 0 && !::DeleteFile(BAKName))
 		LogError(LOG_STATUSBAR, GetResString(IDS_ERR_DELETE) + _T(" - ") + GetErrorMessage(GetLastError()), BAKName);
-
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	m_SettingsSaver.DeleteFile(this);
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 	delete this;
 }
 
@@ -2996,6 +3103,13 @@ void CPartFile::StopFile(bool bCancel, bool resort)
 	    theApp.downloadqueue->CheckDiskspace();	// SLUGFILLER: checkDiskspace
     }
 	UpdateDisplayedInfo(true);
+
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	m_MaxSourcesPerFile = thePrefs.GetMaxSourcePerFile();
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
+
 }
 
 void CPartFile::StopPausedFile()
@@ -3634,7 +3748,13 @@ void CPartFile::AddClientSources(CSafeMemFile* sources, uint8 sourceexchangevers
 			}
 		}
 
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+		if( this->m_MaxSourcesPerFile  > this->GetSourceCount() )
+#else //Hardlimit
 		if (thePrefs.GetMaxSourcePerFile() > GetSourceCount())
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 		{
 			CUpDownClient* newsource;
 			if (sourceexchangeversion == 3)

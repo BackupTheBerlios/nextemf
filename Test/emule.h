@@ -20,6 +20,13 @@
 #endif
 #include "resource.h"
 
+
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+#include "ModName.h"
+#endif //Modversion
+//<==Modversion [cyrex2001]
+
 #define	DEFAULT_NICK		thePrefs.GetHomepageBaseURL()
 #define	DEFAULT_TCP_PORT	4662
 #define	DEFAULT_UDP_PORT	(DEFAULT_TCP_PORT+10)
@@ -208,6 +215,13 @@ public:
 #endif //WINSOCK2
 //<== WINSOCK2 [cyrex2001]
 
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+public:
+	CString		m_strModVersion;
+	CString		m_strModLongVersion;
+#endif //Modversion
+//<==Modversion [cyrex2001]
 };
 
 extern CemuleApp theApp;

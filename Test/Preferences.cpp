@@ -187,12 +187,23 @@ uint8	CPreferences::confirmExit;
 uint16	CPreferences::downloadColumnWidths[13];
 BOOL	CPreferences::downloadColumnHidden[13];
 INT		CPreferences::downloadColumnOrder[13];
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+uint16	CPreferences::uploadColumnWidths[9]; //+1 Modversion
+BOOL	CPreferences::uploadColumnHidden[9]; //+1 Modversion
+INT		CPreferences::uploadColumnOrder[9]; //+1 Modversion
+uint16	CPreferences::queueColumnWidths[11]; //+1 Modversion
+BOOL	CPreferences::queueColumnHidden[11]; //+1 Modversion
+INT		CPreferences::queueColumnOrder[11]; //+1 Modversion
+#else //Modversion
 uint16	CPreferences::uploadColumnWidths[8];
 BOOL	CPreferences::uploadColumnHidden[8];
 INT		CPreferences::uploadColumnOrder[8];
 uint16	CPreferences::queueColumnWidths[10];
 BOOL	CPreferences::queueColumnHidden[10];
 INT		CPreferences::queueColumnOrder[10];
+#endif //Modversion
+//<==Modversion [cyrex2001]
 uint16	CPreferences::searchColumnWidths[14];
 BOOL	CPreferences::searchColumnHidden[14];
 INT		CPreferences::searchColumnOrder[14];
@@ -564,6 +575,33 @@ uint16	CPreferences::m_nPeerCachePort;
 bool	CPreferences::m_bOpenPortsOnStartUp;
 uint8	CPreferences::m_byLogLevel;
 bool	CPreferences::m_bTrustEveryHash;
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+bool	CPreferences::isreaskSourceAfterIPChange;
+bool	CPreferences::m_breaskSourceAfterIPChange;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
+//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+bool	CPreferences::m_bQuickStart;
+bool	CPreferences::isQuickStart;
+uint16  CPreferences::m_iQuickStartMaxTime;
+uint16  CPreferences::QuickStartMaxTime;
+uint16  CPreferences::m_iQuickStartMaxConn;
+uint16  CPreferences::QuickStartMaxConn;
+uint16  CPreferences::m_iQuickStartMaxConnPerFive;
+uint16  CPreferences::QuickStartMaxConnPerFive;
+bool	CPreferences::m_bQuickStartAfterIPChange;
+bool	CPreferences::isQuickStartAfterIPChange;
+#endif //Quickstart
+//<==Quickstart [cyrex2001]
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+bool	CPreferences::m_MaxSourcesPerFileTakeOver;
+uint16	CPreferences::m_MaxSourcesPerFileTemp;
+bool	CPreferences::m_TakeOverFileSettings;
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 
 CPreferences::CPreferences()
 {
@@ -778,7 +816,16 @@ void CPreferences::Init()
 			AfxMessageBox(strError, MB_ICONERROR);
 		}
 	}
-
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	CString sSivkaAutoHLPath = CString(GetTempDir()) + _T("\\") + EMFFOLDER;
+	if (!PathFileExists(sSivkaAutoHLPath.GetBuffer()) && !::CreateDirectory(sSivkaAutoHLPath.GetBuffer(), 0)) {
+		CString strError;
+		strError.Format(_T("Failed to create sivka extra lists directory \"%s\" - %s"), sSivkaAutoHLPath, GetErrorMessage(GetLastError()));
+		AfxMessageBox(strError, MB_ICONERROR);
+	}
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 	if (((int*)userhash[0]) == 0 && ((int*)userhash[1]) == 0 && ((int*)userhash[2]) == 0 && ((int*)userhash[3]) == 0)
 		CreateUserHash();
 }
@@ -2195,6 +2242,20 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("Enabled"), m_bPeerCacheEnabled);
 	ini.WriteInt(_T("PCPort"), m_nPeerCachePort);
 
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+	ini.WriteBool(_T("ReaskSourceAfterIPChange"),isreaskSourceAfterIPChange,_T("NextEMF"));
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
+//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+	ini.WriteBool(_T("QuickStart"), isQuickStart,_T("NextEMF"));
+	ini.WriteInt(_T("QuickStartMaxTime"), QuickStartMaxTime,_T("NextEMF"));
+	ini.WriteInt(_T("QuickStartMaxConn"), QuickStartMaxConn,_T("NextEMF"));
+	ini.WriteInt(_T("QuickStartMaxConnPerFive"), QuickStartMaxConnPerFive,_T("NextEMF"));
+	ini.WriteBool(_T("QuickStartAfterIPChange"), isQuickStartAfterIPChange,_T("NextEMF"));
+#endif //Quickstart
+//<==Quickstart [cyrex2001]
 
 }
 
@@ -2778,6 +2839,22 @@ void CPreferences::LoadPreferences()
 	m_bPeerCacheEnabled = ini.GetBool(_T("Enabled"), true);
 	m_nPeerCachePort = ini.GetInt(_T("PCPort"), 0);
 
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+	isreaskSourceAfterIPChange = ini.GetBool(_T("ReaskSourceAfterIPChange"),false, _T("NextEMF"));
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
+//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+	if (MaxConperFive == m_iQuickStartMaxConnPerFive) { MaxConperFive = 40; }
+	QuickStartMaxTime=ini.GetInt(_T("QuickStartMaxTime"), 10, _T("NextEMF"));
+	QuickStartMaxConn=ini.GetInt(_T("QuickStartMaxConn"), 1001, _T("NextEMF"));
+	QuickStartMaxConnPerFive=ini.GetInt(_T("QuickStartMaxConnPerFive"), 151, _T("NextEMF"));
+	if(maxconnections == m_iQuickStartMaxConn) { maxconnections = 270; }
+	isQuickStart=ini.GetBool(_T("QuickStart"),false, _T("NextEMF"));
+	isQuickStartAfterIPChange=ini.GetBool(_T("QuickStartAfterIPChange"),false, _T("NextEMF"));
+#endif //Quickstart
+//<==Quickstart [cyrex2001]
 
 	LoadCats();
 	if (GetCatCount()==1)

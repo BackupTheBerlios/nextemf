@@ -61,6 +61,12 @@ public:
 						  CMap<uint32, uint32, uint32, uint32>& clientVersionEMule,
 						  CMap<uint32, uint32, uint32, uint32>& clientVersionAMule);
 	uint32	GetClientCount()	{ return list.GetCount();}
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+	void	GetModStatistics(CRBMap<uint16, CRBMap<CString, uint32>* > *clientMods);
+	void	ReleaseModStatistics(CRBMap<uint16, CRBMap<CString, uint32>* > *clientMods);
+#endif //Modversion
+//<==Modversion [cyrex2001]
 	void	DeleteAll();
 	bool	AttachToAlreadyKnown(CUpDownClient** client, CClientReqSocket* sender);
 	CUpDownClient* FindClientByIP(uint32 clientip, UINT port) const;
@@ -120,4 +126,10 @@ private:
 	CUpDownClientPtrList KadList;
 	CCriticalSection m_RequestTCPLock;
 	CUpDownClient* m_pBuddy;
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+public:
+	void TrigReaskForDownload(bool immediate);
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 };

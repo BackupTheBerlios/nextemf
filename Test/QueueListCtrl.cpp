@@ -37,6 +37,12 @@
 #include "kademlia/net/KademliaUDPListener.h"
 #include "Log.h"
 
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+#include "DownloadQueue.h"
+#endif //Modversion
+//<==Modversion [cyrex2001]
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -74,6 +80,11 @@ void CQueueListCtrl::Init()
 	InsertColumn(7,GetResString(IDS_ENTERQUEUE),LVCFMT_LEFT,110,7);
 	InsertColumn(8,GetResString(IDS_BANNED),LVCFMT_LEFT,60,8);
 	InsertColumn(9,GetResString(IDS_UPSTATUS),LVCFMT_LEFT,100,9);
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+	InsertColumn(10,GetResString(IDS_CLIENTSOFTWARE),LVCFMT_LEFT,100,10);
+#endif //Modversion
+//<==Modversion [cyrex2001]
 
 	SetAllIcons();
 	Localize();
@@ -109,22 +120,27 @@ void CQueueListCtrl::SetAllIcons()
 	imagelist.DeleteImageList();
 	imagelist.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
 	imagelist.SetBkColor(CLR_NONE);
-	imagelist.Add(CTempIconLoader(_T("ClientEDonkey")));
-	imagelist.Add(CTempIconLoader(_T("ClientCompatible")));
-	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyPlus")));
-	imagelist.Add(CTempIconLoader(_T("ClientCompatiblePlus")));
-	imagelist.Add(CTempIconLoader(_T("Friend")));
-	imagelist.Add(CTempIconLoader(_T("ClientMLDonkey")));
-	imagelist.Add(CTempIconLoader(_T("ClientMLDonkeyPlus")));
-	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyHybrid")));
-	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyHybridPlus")));
-	imagelist.Add(CTempIconLoader(_T("ClientShareaza")));
-	imagelist.Add(CTempIconLoader(_T("ClientShareazaPlus")));
-	imagelist.Add(CTempIconLoader(_T("ClientAMule")));
-	imagelist.Add(CTempIconLoader(_T("ClientAMulePlus")));
-	imagelist.Add(CTempIconLoader(_T("ClientLPhant")));
-	imagelist.Add(CTempIconLoader(_T("ClientLPhantPlus")));
-	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
+	imagelist.Add(CTempIconLoader(_T("ClientEDonkey")));//0
+	imagelist.Add(CTempIconLoader(_T("ClientCompatible")));//1
+	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyPlus")));//2
+	imagelist.Add(CTempIconLoader(_T("ClientCompatiblePlus")));//3
+	imagelist.Add(CTempIconLoader(_T("Friend")));//4
+	imagelist.Add(CTempIconLoader(_T("ClientMLDonkey")));//5
+	imagelist.Add(CTempIconLoader(_T("ClientMLDonkeyPlus")));//6
+	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyHybrid")));//7
+	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyHybridPlus")));//8
+	imagelist.Add(CTempIconLoader(_T("ClientShareaza")));//9
+	imagelist.Add(CTempIconLoader(_T("ClientShareazaPlus")));//10
+	imagelist.Add(CTempIconLoader(_T("ClientAMule")));//11
+	imagelist.Add(CTempIconLoader(_T("ClientAMulePlus")));//12
+	imagelist.Add(CTempIconLoader(_T("ClientLPhant")));//13
+	imagelist.Add(CTempIconLoader(_T("ClientLPhantPlus")));//14
+	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);//15
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+	imagelist.Add(CTempIconLoader(_T("CLIENT_NEXTEMF")));//16
+#endif //Modversion
+//<==Modversion [cyrex2001]
 }
 
 void CQueueListCtrl::Localize()
@@ -185,6 +201,14 @@ void CQueueListCtrl::Localize()
 		hdi.pszText = strRes.GetBuffer();
 		pHeaderCtrl->SetItem(9, &hdi);
 		strRes.ReleaseBuffer();
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+		strRes = GetResString(IDS_CLIENTSOFTWARE);
+		hdi.pszText = strRes.GetBuffer();
+		pHeaderCtrl->SetItem(10, &hdi);
+		strRes.ReleaseBuffer();
+#endif //Modversion
+//<==Modversion [cyrex2001]
 	}
 }
 
@@ -319,9 +343,15 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					}
 					else if (client->ExtProtocolAvailable()){
 						if(client->credits->GetScoreRatio(client->GetIP()) > 1)
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+							image = (client->IsNextEMF())?16:1;
+#else //Modversion
 							image = 3;
 						else
 							image = 1;
+#endif //Modversion
+//<==Modversion [cyrex2001]
 					}
 					else{
 						if (client->credits->GetScoreRatio(client->GetIP()) > 1)
@@ -415,6 +445,13 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						cur_rec.top--;
 					}
 					break;
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+					case 10:
+						Sbuffer = client->GetClientSoftVer();
+						break;
+#endif //Modversion
+//<==Modversion [cyrex2001]
 					   }
 				if( iColumn != 9 && iColumn != 0)
 				dc->DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
@@ -629,6 +666,14 @@ int CQueueListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			return item1->GetUpPartCount() - item2->GetUpPartCount();
 		case 109: 
 			return item2->GetUpPartCount() - item1->GetUpPartCount();
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+		case 10:
+			return item2->GetClientSoftVer().CompareNoCase(item1->GetClientSoftVer());
+		case 110:
+			return item1->GetClientSoftVer().CompareNoCase(item2->GetClientSoftVer());
+#endif //Modversion
+//<==Modversion [cyrex2001]
 
 		default:
 			return 0;

@@ -81,6 +81,11 @@
 // MOD Note: end
 
 #define CONFIGFOLDER			_T("config\\")
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+#define EMFFOLDER			_T("Extra Lists\\")
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 #define MAXCONPER5SEC			20	
 #define MAXCON5WIN9X			10
 #define	UPLOAD_CHECK_CLIENT_DR	2048

@@ -230,6 +230,21 @@ void CUpDownClient::Init()
 	m_pReqFileAICHHash = NULL;
 	m_fSupportsAICH = 0;
 	m_fAICHRequested = 0;
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+	m_bValidSource = false;
+	m_dwLastAskedTime = 0;
+	m_dwLastUDPReaskTime = 0;
+	m_dwNextTCPAskedTime = 0;
+	uint32 jitter = rand() * MIN2S(4) / RAND_MAX; // 0..4 minutes, keep in mind integer overflow
+	m_jitteredFileReaskTime = FILEREASKTIME + SEC2MS(jitter) - MIN2MS(2); // -2..+2 minutes, keep the same average overload
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+	m_strModVersion.Empty();
+#endif //Modversion
+//<==Modversion [cyrex2001]
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -314,6 +329,12 @@ void CUpDownClient::ClearHelloProperties()
 	m_fPeerCache = 0;
 	m_uPeerCacheDownloadPushId = 0;
 	m_uPeerCacheUploadPushId = 0;
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+	m_strModVersion.Empty();
+	m_bIsNextEMF = false;
+#endif //Modversion
+//<==Modversion [cyrex2001]
 }
 
 bool CUpDownClient::ProcessHelloPacket(char* pachPacket, uint32 nSize){
@@ -388,8 +409,18 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 				nUserPort = temptag.GetInt();
 				break;
 			case CT_MOD_VERSION:
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+				if (temptag.IsStr())
+					{
+					m_strModVersion = temptag.GetStr();
+					m_bIsNextEMF = StrStrI(m_strModVersion,_T("NextEMF"));
+					}
+#else //Modversion
 				if (temptag.IsStr())
 					m_strModVersion = temptag.GetStr();
+#endif //Modversion
+//<==Modversion [cyrex2001]
 				else if (temptag.IsInt())
 					m_strModVersion.Format(_T("ModID=%u"), temptag.GetInt());
 				else
@@ -613,7 +644,13 @@ void CUpDownClient::SendMuleInfoPacket(bool bAnswer){
 	CSafeMemFile data(128);
 	data.WriteUInt8(theApp.m_uCurVersionShort);
 	data.WriteUInt8(EMULE_PROTOCOL);
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+	data.WriteUInt32(7+1); // nr. of tags +1 ET_MOD_VERSION
+#else //Modversion
 	data.WriteUInt32(7); // nr. of tags
+#endif //Modversion
+//<==Modversion [cyrex2001]
 	CTag tag(ET_COMPRESSION,1);
 	tag.WriteTagToFile(&data);
 	CTag tag2(ET_UDPVER,4);
@@ -632,6 +669,13 @@ void CUpDownClient::SendMuleInfoPacket(bool bAnswer){
 		dwTagValue |= 128;
 	CTag tag7(ET_FEATURES, dwTagValue);
 	tag7.WriteTagToFile(&data);
+
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+	CTag tag8(ET_MOD_VERSION, theApp.m_strModVersion);
+	tag8.WriteTagToFile(&data);
+#endif //Modversion
+//<==Modversion [cyrex2001]
 
 	Packet* packet = new Packet(&data,OP_EMULEPROT);
 	if (!bAnswer)
@@ -749,8 +793,17 @@ void CUpDownClient::ProcessMuleInfoPacket(char* pachPacket, uint32 nSize)
 					m_strMuleInfo.AppendFormat(_T("\n  SecIdent=%u  Preview=%u"), m_bySupportSecIdent, m_fSupportsPreview);
 				break;
 			case ET_MOD_VERSION:
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+				if (temptag.IsStr())
+					{
+					m_strModVersion = temptag.GetStr();
+					m_bIsNextEMF = StrStrI(m_strModVersion,_T("NextEMF"));
+					}
+#else //Modversion
 				if (temptag.IsStr())
 					m_strModVersion = temptag.GetStr();
+#endif //Modversion
 				else if (temptag.IsInt())
 					m_strModVersion.Format(_T("ModID=%u"), temptag.GetInt());
 				else
@@ -810,6 +863,12 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 
 	if( m_nBuddyIP && m_nBuddyPort )
 		tagcount += 2;
+
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+	tagcount += 1; //MOD_VERSION
+#endif //Modversion
+//<==Modversion [cyrex2001]
 
 	data->WriteUInt32(tagcount);
 
@@ -885,6 +944,13 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 //				(RESERVED			     ) 
 				);
 	tagMuleVersion.WriteTagToFile(data);
+
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+	CTag tagMODVersion(ET_MOD_VERSION, theApp.m_strModVersion);
+	tagMODVersion.WriteTagToFile(data);
+#endif //Modversion
+//<==Modversion [cyrex2001]
 
 	uint32 dwIP;
 	uint16 nPort;
@@ -986,7 +1052,7 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket){
 			theApp.m_pPeerCache->DownloadAttemptFailed();
 	
 		if (thePrefs.GetLogUlDlEvents())
-        	AddDebugLogLine(DLP_VERYLOW, false, _T("Download session ended. User: %s Reason: %s"), GetUserName(), pszReason);
+        	AddDebugLogLine(DLP_VERYLOW, false,_T("Download session ended. User: %s Reason: %s"), GetUserName(), pszReason);
 		SetDownloadState(DS_ONQUEUE);
 	}
 	else{
@@ -1482,6 +1548,12 @@ void CUpDownClient::ReGetClientSoft()
 		if (iLen > 0){
 			memcpy(m_strClientSoftware.GetBuffer(iLen), szSoftware, iLen*sizeof(TCHAR));
 			m_strClientSoftware.ReleaseBuffer(iLen);
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+			if(!m_strModVersion.IsEmpty())
+				m_strClientSoftware.Append(_T(" [") + m_strModVersion + _T("]"));
+#endif //Modversion
+//<==Modversion [cyrex2001]
 		}
 		return;
 	}
@@ -1545,6 +1617,12 @@ void CUpDownClient::ReGetClientSoft()
 		if (iLen > 0){
 			memcpy(m_strClientSoftware.GetBuffer(iLen), szSoftware, iLen*sizeof(TCHAR));
 			m_strClientSoftware.ReleaseBuffer(iLen);
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+			if(!m_strModVersion.IsEmpty())
+				m_strClientSoftware.Append(_T(" [") + m_strModVersion + _T("]"));
+#endif //Modversion
+//<==Modversion [cyrex2001]
 		}
 		return;
 	}
@@ -1558,6 +1636,12 @@ void CUpDownClient::ReGetClientSoft()
 		if (iLen > 0){
 			memcpy(m_strClientSoftware.GetBuffer(iLen), szSoftware, iLen*sizeof(TCHAR));
 			m_strClientSoftware.ReleaseBuffer(iLen);
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+			if(!m_strModVersion.IsEmpty())
+				m_strClientSoftware.Append(_T(" [") + m_strModVersion + _T("]"));
+#endif //Modversion
+//<==Modversion [cyrex2001]
 		}
 		return;
 	}
@@ -1571,6 +1655,12 @@ void CUpDownClient::ReGetClientSoft()
 		if (iLen > 0){
 			memcpy(m_strClientSoftware.GetBuffer(iLen), szSoftware, iLen*sizeof(TCHAR));
 			m_strClientSoftware.ReleaseBuffer(iLen);
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+			if(!m_strModVersion.IsEmpty())
+				m_strClientSoftware.Append(_T(" [") + m_strModVersion + _T("]"));
+#endif //Modversion
+//<==Modversion [cyrex2001]
 		}
 		return;
 	}
@@ -1583,6 +1673,12 @@ void CUpDownClient::ReGetClientSoft()
 	if (iLen > 0){
 		memcpy(m_strClientSoftware.GetBuffer(iLen), szSoftware, iLen*sizeof(TCHAR));
 		m_strClientSoftware.ReleaseBuffer(iLen);
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+			if(!m_strModVersion.IsEmpty())
+				m_strClientSoftware.Append(_T(" [") + m_strModVersion + _T("]"));
+#endif //Modversion
+//<==Modversion [cyrex2001]
 	}
 }
 
@@ -1611,7 +1707,7 @@ void CUpDownClient::SetUserName(LPCTSTR pszNewName)
 void CUpDownClient::RequestSharedFileList()
 {
 	if (m_iFileListRequested == 0){
-		AddLogLine(true, GetResString(IDS_SHAREDFILES_REQUEST), GetUserName());
+		AddLogLine(true,GetResString(IDS_SHAREDFILES_REQUEST),GetUserName());
     	m_iFileListRequested = 1;
 		TryToConnect(true);
 	}
@@ -1879,6 +1975,13 @@ void CUpDownClient::ResetFileStatusInfo()
 		delete[] m_abyPartStatus;
 		m_abyPartStatus = NULL;
 	}
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+	m_dwLastAskedTime = 0;
+	m_dwLastUDPReaskTime = 0;
+	m_dwNextTCPAskedTime = 0;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 	m_nRemoteQueueRank = 0;
 	m_nPartCount = 0;
 	m_strClientFilename.Empty();
@@ -2127,6 +2230,12 @@ void CUpDownClient::AssertValid() const
 	ASSERT( m_nChatstate >= MS_NONE && m_nChatstate <= MS_UNABLETOCONNECT );
 	(void)m_strFileComment;
 	(void)m_uFileRating;
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+	CHECK_BOOL(m_bValidSource);
+	(void)m_dwLastAskedTime;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 #undef CHECK_PTR
 #undef CHECK_BOOL
 }

@@ -18,6 +18,12 @@
 #include "DeadSourceList.h"
 #include "CorruptionBlackBox.h"
 
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+#include ".\NextEMF\HardLimit.h"
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
+
 enum EPartFileStatus{
 	PS_READY			= 0,
 	PS_EMPTY			= 1,
@@ -318,6 +324,19 @@ public:
 	virtual void AssertValid() const;
 	virtual void Dump(CDumpContext& dc) const;
 #endif
+
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	void	SetMaxSourcesPerFile(uint16 in){m_MaxSourcesPerFile=in;}
+	uint16	GetMaxSourcesPerFile(){return m_MaxSourcesPerFile;}
+	uint16	GetMaxSourcesLimitSoft(){int tmp = m_MaxSourcesPerFile*0.9 ; return ((tmp>1000) ? 1000 : tmp);}
+	uint16	GetMaxSourcesUDPLimit() {int tmp = m_MaxSourcesPerFile*0.75; return ((tmp>100) ? 100 : tmp);}
+protected:
+	CHardLimit m_SettingsSaver;
+private:
+	uint16	m_MaxSourcesPerFile;
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 
 protected:
 	bool	GetNextEmptyBlockInPart(uint16 partnumber,Requested_Block_Struct* result) const;

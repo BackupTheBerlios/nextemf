@@ -146,6 +146,13 @@ public:
 
 	void	AddToResolved( CPartFile* pFile, SUnresolvedHostname* pUH );
 
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	void InitTempVariables(CPartFile* file);
+	void UpdateFileSettings(CPartFile* file);
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
+
 	CServer* cur_udpserver;
 
 protected:
@@ -191,4 +198,10 @@ private:
 	CSourceHostnameResolveWnd m_srcwnd;
 
     DWORD       m_dwLastA4AFtime; // ZZ:DownloadManager
+//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+	int quickflag;
+	int quickflags;
+#endif //Quickstart
+//<==Quickstart [cyrex2001]
 };

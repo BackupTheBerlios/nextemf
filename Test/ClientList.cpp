@@ -177,6 +177,61 @@ void CClientList::GetStatistics(uint32 &totalclient, int stats[],
 	}
 }
 
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+void CClientList::GetModStatistics(CRBMap<uint16, CRBMap<CString, uint32>* > *clientMods){
+	if (!clientMods)
+		return;
+	clientMods->RemoveAll();
+	
+	// [TPT] Code improvement
+	for (POSITION pos = list.GetHeadPosition(); pos != NULL;) {		
+		CUpDownClient* cur_client =	list.GetNext(pos);
+
+		switch (cur_client->GetClientSoft()) {
+		case SO_EMULE   :
+		case SO_OLDEMULE:
+			break;
+		default:
+			continue;
+		}
+
+		CRBMap<CString, uint32> *versionMods;
+
+		if (!clientMods->Lookup(cur_client->GetVersion(), versionMods)){
+			versionMods = new CRBMap<CString, uint32>;
+			versionMods->RemoveAll();
+			clientMods->SetAt(cur_client->GetVersion(), versionMods);
+		}
+
+		uint32 count;
+
+		if (!versionMods->Lookup(cur_client->GetClientModVer(), count))
+			count = 1;
+		else
+			count++;
+
+		versionMods->SetAt(cur_client->GetClientModVer(), count);
+	}
+	// [TPT] end
+}
+
+void CClientList::ReleaseModStatistics(CRBMap<uint16, CRBMap<CString, uint32>* > *clientMods){
+	if (!clientMods)
+		return;
+	POSITION pos = clientMods->GetHeadPosition();
+	while(pos != NULL)
+	{
+		uint16 version;
+		CRBMap<CString, uint32> *versionMods;
+		clientMods->GetNextAssoc(pos, version, versionMods);
+		delete versionMods;
+	}
+	clientMods->RemoveAll();
+}
+#endif //Modversion
+//<==Modversion [cyrex2001]
+
 void CClientList::AddClient(CUpDownClient* toadd, bool bSkipDupTest)
 {
 	// skipping the check for duplicate list entries is only to be done for optimization purposes, if the calling
@@ -585,20 +640,20 @@ void CClientList::Process(){
 	if ( Kademlia::CKademlia::isConnected() )
 	{
 		if( Kademlia::CKademlia::isFirewalled() )
-		{
-			ASSERT( Kademlia::CKademlia::getPrefs() != NULL );
+	{
+		ASSERT( Kademlia::CKademlia::getPrefs() != NULL );
 			if( !m_bHaveBuddy && Kademlia::CKademlia::getPrefs()->getFindBuddy() )
-			{
+		{
 				//We are a firewalled client with no buddy. We have also waited a set time 
 				//to try to avoid a false firewalled status.. So lets look for a buddy..
-				Kademlia::CSearch *findBuddy = new Kademlia::CSearch;
-				findBuddy->setSearchTypes(Kademlia::CSearch::FINDBUDDY);
-				Kademlia::CUInt128 ID(true);
-				ID.xor(Kademlia::CKademlia::getPrefs()->getKadID());
-				findBuddy->setTargetID(ID);
-				Kademlia::CSearchManager::startSearch(findBuddy);
-			}
+			Kademlia::CSearch *findBuddy = new Kademlia::CSearch;
+			findBuddy->setSearchTypes(Kademlia::CSearch::FINDBUDDY);
+			Kademlia::CUInt128 ID(true);
+			ID.xor(Kademlia::CKademlia::getPrefs()->getKadID());
+			findBuddy->setTargetID(ID);
+			Kademlia::CSearchManager::startSearch(findBuddy);
 		}
+	}
 		else
 		{
 			if( m_bHaveBuddy )
@@ -798,3 +853,23 @@ void CClientList::ProcessA4AFClients() {
     //if(thePrefs.GetLogA4AF()) AddDebugLogLine(false, _T(">>> Done with A4AF check"));
 }
 // <-- ZZ:DownloadManager
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+void CClientList::TrigReaskForDownload(bool immediate)
+{
+for(POSITION pos = list.GetHeadPosition(); pos != NULL;)
+	{ 
+    CUpDownClient* cur_client = list.GetNext(pos); 
+	if(immediate == true)
+		{
+		// Compute the next time that the file might be saftly reasked (=> no Ban())
+		cur_client->SetNextTCPAskedTime(0);
+		}
+	else
+		{
+		// Compute the next time that the file might be saftly reasked (=> no Ban())
+		}
+	}	
+}
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]

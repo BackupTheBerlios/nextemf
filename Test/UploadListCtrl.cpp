@@ -33,6 +33,11 @@
 #include "kademlia/kademlia/Kademlia.h"
 #include "kademlia/net/KademliaUDPListener.h"
 #include "UploadQueue.h"
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+#include "DownloadQueue.h"
+#endif //Modversion
+//<==Modversion [cyrex2001]
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -72,6 +77,12 @@ void CUploadListCtrl::Init()
 	InsertColumn(5,GetResString(IDS_UPLOADTIME),LVCFMT_LEFT,60,5);
 	InsertColumn(6,GetResString(IDS_STATUS),LVCFMT_LEFT,110,6);
 	InsertColumn(7,GetResString(IDS_UPSTATUS),LVCFMT_LEFT,100,7);
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+	InsertColumn(8,GetResString(IDS_CLIENTSOFTWARE),LVCFMT_LEFT,100,8);
+#endif //Modversion
+//<==Modversion [cyrex2001]
+
 
 	SetAllIcons();
 	Localize();
@@ -114,6 +125,13 @@ void CUploadListCtrl::SetAllIcons()
 	imagelist.Add(CTempIconLoader(_T("ClientLPhant")));
 	imagelist.Add(CTempIconLoader(_T("ClientLPhantPlus")));
 	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+	imagelist.Add(CTempIconLoader(_T("CLIENT_NEXTEMF")));//16
+#endif //Modversion
+//<==Modversion [cyrex2001]
+
+
 }
 
 void CUploadListCtrl::Localize()
@@ -162,6 +180,14 @@ void CUploadListCtrl::Localize()
 	hdi.pszText = strRes.GetBuffer();
 	pHeaderCtrl->SetItem(7, &hdi);
 	strRes.ReleaseBuffer();
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+	strRes = GetResString(IDS_CLIENTSOFTWARE);
+	hdi.pszText = strRes.GetBuffer();
+	pHeaderCtrl->SetItem(8, &hdi);
+	strRes.ReleaseBuffer();
+#endif //Modversion
+//<==Modversion [cyrex2001]
 }
 
 void CUploadListCtrl::AddClient(const CUpDownClient* client)
@@ -291,9 +317,15 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					}
 					else if (client->ExtProtocolAvailable()){
 						if(client->credits->GetScoreRatio(client->GetIP()) > 1)
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+						image = (client->IsNextEMF())?16:1;
+#else //Modversion
 							image = 3;
 						else
 							image = 1;
+#endif //Modversion
+//<==Modversion [cyrex2001
 					}
 					else{
 						if (client->credits->GetScoreRatio(client->GetIP()) > 1)
@@ -343,6 +375,14 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						cur_rec.top--;
 					//}
 					break;
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+				case 8:			
+					Sbuffer = client->GetClientSoftVer();
+					break;
+
+#endif //Modversion
+//<==Modversion [cyrex2001]
 			}
 			if( iColumn != 7 && iColumn != 0 )
 				dc->DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
@@ -522,7 +562,14 @@ int CUploadListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			return item1->GetUpPartCount() - item2->GetUpPartCount();
 		case 107: 
 			return item2->GetUpPartCount() - item1->GetUpPartCount();
-
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+		case 8:
+			return item2->GetClientSoftVer().CompareNoCase(item1->GetClientSoftVer());
+		case 108:
+			return item1->GetClientSoftVer().CompareNoCase(item2->GetClientSoftVer());
+#endif //Modversion
+//<==Modversion [cyrex2001]
 		default:
 			return 0;
 	}

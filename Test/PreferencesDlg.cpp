@@ -56,6 +56,11 @@ CPreferencesDlg::CPreferencesDlg()
 	m_wndProxy.m_psp.dwFlags &= ~PSH_HASHELP;
 #endif //PROXY
 //<== remove PROXY [shadow2004]
+//==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+	m_wndNextEMF.m_psp.dwFlags &= ~PSH_HASHELP;
+#endif //Reask sourcen after ip chnage or Quickstart
+//<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	m_wndDebug.m_psp.dwFlags &= ~PSH_HASHELP;
 #endif
@@ -86,7 +91,11 @@ CPreferencesDlg::CPreferencesDlg()
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	CTreePropSheet::SetPageIcon(&m_wndDebug, _T("Preferences"));
 #endif
-
+//==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#if defined (RSAIC) || defined (QUICKSTART)
+	CTreePropSheet::SetPageIcon(&m_wndNextEMF, _T("CLIENT_NEXTEMF"));
+#endif //Reask sourcen after ip chnage or Quickstart
+//<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
 	AddPage(&m_wndGeneral);
 	AddPage(&m_wndDisplay);
 	AddPage(&m_wndConnection);
@@ -109,6 +118,11 @@ CPreferencesDlg::CPreferencesDlg()
 	AddPage(&m_wndScheduler);
 	AddPage(&m_wndWebServer);
 	AddPage(&m_wndTweaks);
+//==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+	AddPage(&m_wndNextEMF);
+#endif //Reask sourcen after ip chnage or Quickstart
+//<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	AddPage(&m_wndDebug);
 #endif
@@ -168,6 +182,11 @@ void CPreferencesDlg::Localize()
 	m_wndProxy.Localize();
 #endif //PROXY
 //<== remove PROXY [shadow2004]
+//==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+	m_wndNextEMF.Localize();
+#endif //Reask sourcen after ip chnage or Quickstart
+//<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
 
 	CTreeCtrl* pTree = GetPageTreeControl();
 	if (pTree)
@@ -197,6 +216,11 @@ void CPreferencesDlg::Localize()
 	#if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 		pTree->SetItemText(GetPageTreeItem(12), _T("Debug"));//14
 	#endif
+//==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+		pTree->SetItemText(GetPageTreeItem(13), RemoveAmbersand(GetResString(IDS_PW_TWEAK)/*_T(NextEMF)*/));//15
+#endif //Reask sourcen after ip chnage or Quickstart
+//<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
 	}
 
 	UpdateCaption();

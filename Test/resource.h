@@ -2295,6 +2295,37 @@
 #define IDC_SOURCE_TYPE                 2909
 #define IDC_UIP                         2910
 
+//==>Window for nextemf-option [cyrex2001]
+//#if defined (RSAIC) || defined (QUICKSTART)
+#define IDD_PPG_NEXTEMF					60000
+#define IDC_PPG_NEXTEMF_OPTS			60001
+//#endif
+//<==Window for nextemf-option [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
+//#if defined (RSAIC)
+#define IDC_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK 60002
+#define IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK 60002
+//#endif
+//<==Reask sourcen after ip change [cyrex2001]
+//==>Quickstart [cyrex2001]
+//#if defined (QUICKSTART)
+#define IDS_QUICK_START						60003
+#define IDS_QUICK_START_MAX_CONN			60004
+#define IDS_QUICK_START_MAX_CONN_PER_FIVE	60005
+#define IDS_QUICK_START_AFTER_IP_CHANGE		60006
+#define IDS_QUICK_START_MAX_TIME			60008
+//#endif
+//<==Quickstart [cyrex2001]
+//==>Hardlimit [cyrex2001]
+//#if defined (HARDLIMIT)
+#define IDC_DEFAULT_BUTTON					61000
+#define IDD_HARDLIMITDLG					61001
+#define IDC_HARDLIMIT_TAKEOVER				61002
+#define IDC_HARDLIMIT						61003
+#define IDC_HARDLIMIT_LABEL					61004
+//#endif
+//<==Hardlimit [cyrex2001]
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

@@ -1513,7 +1513,40 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,276,71,50,14
 END
 
+//==>Reask sourcen after ip change or Quickstart [cyrex2001]
+//#if defined (RSAIC) || defined (QUICKSTART)
+IDD_PPG_NEXTEMF DIALOGEX 0, 0, 227, 246
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "NextEMF"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    LTEXT           "Static",IDC_WARNING,7,7,213,39
+    CONTROL         "",IDC_PPG_NEXTEMF_OPTS,"SysTreeView32",TVS_DISABLEDRAGDROP | 
+                    WS_BORDER | WS_TABSTOP,7,46,213,145
+END
+//#endif
+//<==Reask sourcen after ip change or Quickstart [cyrex2001]
 
+//==>Hardlimit [cyrex2001]
+//#if defined (HARDLIMIT)
+61001 DIALOGEX 0, 0, 225, 58
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "AutoHardLimit"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    LTEXT           "Hard Limit 50...1000",IDC_HARDLIMIT_LABEL,7,9,125,8
+    EDITTEXT        IDC_HARDLIMIT,142,7,30,12,ES_RIGHT | ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    CONTROL         "",IDC_HARDLIMIT_TAKEOVER,"Button",BS_AUTOCHECKBOX | 
+                    BS_FLAT | WS_TABSTOP,209,9,9,8
+    PUSHBUTTON      "Take over",IDC_TAKEOVER,7,39,56,12,BS_FLAT
+    PUSHBUTTON      "Default",IDC_DEFAULT_BUTTON,80,39,66,12,BS_FLAT
+    DEFPUSHBUTTON   "Close",IDOK,162,39,56,12,BS_FLAT
+END
+//#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 /////////////////////////////////////////////////////////////////////////////
 //
 // DESIGNINFO
@@ -2130,7 +2163,24 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 85
     END
+
+//==>Reask sourcen after ip change or Quickstart [cyrex2001]
+//#if defined (RSAIC) || defined (QUICKSTART)
+    IDD_PPG_NEXTEMF, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 220
+        VERTGUIDE, 14
+        VERTGUIDE, 24
+        VERTGUIDE, 73
+        VERTGUIDE, 106
+        VERTGUIDE, 122
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 231
+    END
 END
+//#endif
+//<==Reask sourcen after ip change or Quickstart [cyrex2001]
 #endif    // APSTUDIO_INVOKED
 
 
@@ -2316,6 +2366,8 @@ COPYSELECTED            ICON                    "res\\CopySelected.ico"
 COPYVISIBLE             ICON                    "res\\CopyVisible.ico"
 EXPORTSELECTED          ICON                    "res\\ExportSelected.ico"
 EXPORTALL               ICON                    "res\\ExportAll.ico"
+
+CLIENT_NEXTEMF          ICON                    "res\\client_nextemf.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -4191,8 +4243,8 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_ACTUL_ZZ      "Active Uploads/Needed to fill Bandwidth: %i"
-    IDS_STATS_TOTALUL       "Total Uploads: %i"
+    IDS_STATS_ACTUL_ZZ      "Active uploads/needed to fill bandwidth: %i"
+    IDS_STATS_TOTALUL       "Total number of uploads: %i"
     IDS_CHAT_DOWNLOADED     "Downloaded:"
     IDS_CHAT_UPLOADED       "Uploaded:"
     IDS_CHAT_IDENT          "Identification:"
@@ -4285,6 +4337,19 @@ BEGIN
     IDS_DEADSOURCES         "Dead Sources"
 END
 
+//==>Reask sourcen after ip change or Quickstart [cyrex2001]
+//#if defined (RSAIC) || defined (QUICKSTART)
+STRINGTABLE 
+BEGIN
+    IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK	"Reask sources after reconnection of modem (IP change)"
+    IDS_QUICK_START         "Quick Start"
+    IDS_QUICK_START_MAX_CONN "max. con.:"
+    IDS_QUICK_START_MAX_CONN_PER_FIVE "max. con./5sec:"
+    IDS_QUICK_START_AFTER_IP_CHANGE "Quick Start after IP Change"
+    IDS_QUICK_START_MAX_TIME "Time for Quick Start [8-18 min.]"
+END
+//#endif
+//<==Reask sourcen after ip change or Quickstart [cyrex2001]
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
 

@@ -20,7 +20,8 @@
 #include "PartFile.h"
 #include "emule.h"
 #include "preferences.h"
-#include "emuleDlg.h"
+//#include "emuleDlg.h"
+#include "Log.h"
 
 //==>Hardlimit [cyrex2001]
 #ifdef HARDLIMIT
@@ -38,7 +39,7 @@ void CHardLimit::DeleteFile(CPartFile* file)
 	CString datafilepath;
 	datafilepath.Format(_T("%s\\%s\\%s.ahl"), thePrefs.GetTempDir(),_T("Extra Lists"),file->GetPartMetFileName());
 	if (_tremove(datafilepath)) if (errno != ENOENT)
-		theApp.emuledlg->AddLogLine(true, _T("Failed to delete %s, you will need to do this by hand"), datafilepath);
+		/*theApp.emuledlg->*/AddLogLine(true, _T("Failed to delete %s, you will need to do this by hand"), datafilepath);
 }
 
 void CHardLimit::LoadSettings(CPartFile* file)

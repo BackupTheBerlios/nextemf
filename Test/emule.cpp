@@ -242,6 +242,16 @@ CemuleApp::CemuleApp(LPCTSTR lpszAppName)
 	m_bGuardClipboardPrompt = false;
 
 	EnableHtmlHelp();
+
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+	m_strModVersion = MOD_VERSION;
+	m_strModVersion.AppendFormat(_T(" %u.%u"), MOD_VERSION_MJR, MOD_VERSION_MIN);
+	m_strModLongVersion = MOD_LONG_VERSION;
+	m_strModLongVersion.AppendFormat(_T("%u.%u"), MOD_VERSION_MJR, MOD_VERSION_MIN);
+#endif //Modversion
+//<==Modversion [cyrex2001]
+
 }
 
 
@@ -976,13 +986,13 @@ bool CemuleApp::GetLangHelpFilePath(CString& strResult)
 		if (!ff.FindFile(strHelpFile, 0)){
 			strHelpFile = m_pszHelpFilePath;
 			bFound = false;
-		}
+	}
 		else
 			bFound = true;
 		strHelpFile.Replace(_T(".HLP"), _T(".chm"));
 	}
 	else{
-		strHelpFile.Replace(_T(".HLP"), _T(".chm"));
+	strHelpFile.Replace(_T(".HLP"), _T(".chm"));
 		if (!ff.FindFile(strHelpFile, 0))
 			bFound = false;
 		else

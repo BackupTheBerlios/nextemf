@@ -29,6 +29,12 @@
 #include "otherfunctions.h"
 #include "TreePropSheet.h"
 
+//==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+#include ".\NextEMF\PPgNextEMF.h"
+#endif //Reask sourcen after ip chnage or Quickstart
+//<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
+
 class CPreferencesDlg : public CTreePropSheet
 {
 	DECLARE_DYNAMIC(CPreferencesDlg)
@@ -62,6 +68,12 @@ public:
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	CPPgDebug		m_wndDebug;
 #endif
+
+//==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+	CPPgNextEMF		m_wndNextEMF;
+#endif //Reask sourcen after ip chnage or Quickstart
+//<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
 
 	void Localize();
 

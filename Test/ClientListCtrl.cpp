@@ -90,16 +90,21 @@ void CClientListCtrl::SetAllIcons()
 	imagelist.DeleteImageList();
 	imagelist.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
 	imagelist.SetBkColor(CLR_NONE);
-	imagelist.Add(CTempIconLoader(_T("ClientEDonkey")));
-	imagelist.Add(CTempIconLoader(_T("ClientCompatible")));
-	imagelist.Add(CTempIconLoader(_T("Friend")));
-	imagelist.Add(CTempIconLoader(_T("ClientMLDonkey")));
-	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyHybrid")));
-	imagelist.Add(CTempIconLoader(_T("ClientShareaza")));
-	imagelist.Add(CTempIconLoader(_T("Server")));
-	imagelist.Add(CTempIconLoader(_T("ClientAMule")));
-	imagelist.Add(CTempIconLoader(_T("ClientLPhant")));
-	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
+	imagelist.Add(CTempIconLoader(_T("ClientEDonkey")));//0
+	imagelist.Add(CTempIconLoader(_T("ClientCompatible")));//1
+	imagelist.Add(CTempIconLoader(_T("Friend")));//2
+	imagelist.Add(CTempIconLoader(_T("ClientMLDonkey")));//3
+	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyHybrid")));//4
+	imagelist.Add(CTempIconLoader(_T("ClientShareaza")));//5
+	imagelist.Add(CTempIconLoader(_T("Server")));//7
+	imagelist.Add(CTempIconLoader(_T("ClientAMule")));//8
+	imagelist.Add(CTempIconLoader(_T("ClientLPhant")));//9
+	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);//10
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+	imagelist.Add(CTempIconLoader(_T("CLIENT_NEXTEMF")));//11
+#endif //Modversion
+//<==Modversion [cyrex2001]
 }
 
 void CClientListCtrl::Localize()
@@ -273,7 +278,13 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					else if (client->GetClientSoft() == SO_LPHANT)
 						image = 8;
 					else if (client->ExtProtocolAvailable())
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+						image = (client->IsNextEMF())?11:1;
+#else //Modversion
 						image = 1;
+#endif //Modversion
+//<==Modversion [cyrex2001]
 					else
 						image = 0;
 
@@ -521,14 +532,44 @@ int CClientListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 				return 1;
 			else
 				return -1;
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+		case 5:
+			if(item1->GetClientSoft() == item2->GetClientSoft())
+				if(item2->GetVersion() == item1->GetVersion() && item1->GetClientSoft() == SO_EMULE){
+					return CompareOptLocaleStringNoCase(item2->GetClientSoftVer(), item1->GetClientSoftVer());
+				}
+				else {
+					return item2->GetVersion() - item1->GetVersion();
+				}
+			else
+				return item1->GetClientSoft() - item2->GetClientSoft();
+#else //Modversion
 		case 5:
 			if( item1->GetClientSoft() == item2->GetClientSoft() )
 				return item2->GetVersion() - item1->GetVersion();
 			return item1->GetClientSoft() - item2->GetClientSoft();
+#endif //Modversion
+//<==Modversion [cyrex2001]
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+		case 105:
+			if(item1->GetClientSoft() == item2->GetClientSoft())
+				if(item2->GetVersion() == item1->GetVersion() && item1->GetClientSoft() == SO_EMULE){
+					return CompareOptLocaleStringNoCase(item1->GetClientSoftVer(), item2->GetClientSoftVer());
+				}
+				else {
+					return item1->GetVersion() - item2->GetVersion();
+				}
+			else
+				return item2->GetClientSoft() - item1->GetClientSoft();
+#else //Modversion
 		case 105:
 			if( item1->GetClientSoft() == item2->GetClientSoft() )
 				return item1->GetVersion() - item2->GetVersion();
 			return item2->GetClientSoft() - item1->GetClientSoft();
+#endif //Modversion
+//<==Modversion [cyrex2001]
 		case 6:
 			if( item1->socket && item2->socket )
 				return item1->socket->IsConnected()-item2->socket->IsConnected();

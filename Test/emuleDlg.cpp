@@ -326,6 +326,13 @@ BOOL CemuleDlg::OnInitDialog()
 	//set title
 	CString buffer = _T("eMule v"); 
 	buffer += theApp.m_strCurVersionLong;
+
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+	buffer += _T(" [") + theApp.m_strModLongVersion + _T("]");
+#endif //Modversion
+//<==Modversion [cyrex2001]
+
 	SetWindowText(buffer);
 
 	//START - enkeyDEV(kei-kun) -TaskbarNotifier-
@@ -977,11 +984,19 @@ void CemuleDlg::ShowTransferRate(bool forceAll){
 		if (DownRateProcent>100)
 			DownRateProcent=100;
 		UpdateTrayIcon(DownRateProcent);
-
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+		if (theApp.IsConnected())
+			_sntprintf(buffer2,ARRSIZE(buffer2),_T("[%s] (%s)\r\n%s"),theApp.m_strModLongVersion,GetResString(IDS_CONNECTED),buffer);
+		else 
+			_sntprintf(buffer2,ARRSIZE(buffer2),_T("[%s] (%s)\r\n%s"),theApp.m_strModLongVersion,GetResString(IDS_DISCONNECTED),buffer);
+#else //Modversion
 		if (theApp.IsConnected()) 
 			_sntprintf(buffer2,ARRSIZE(buffer2),_T("eMule v%s (%s)\r\n%s"),theApp.m_strCurVersionLong,GetResString(IDS_CONNECTED),buffer);
 		else
 			_sntprintf(buffer2,ARRSIZE(buffer2),_T("eMule v%s (%s)\r\n%s"),theApp.m_strCurVersionLong,GetResString(IDS_DISCONNECTED),buffer);
+#endif //Modversion
+//<==Modversion [cyrex2001]
 
 		buffer2[63]=0;
 		TraySetToolTip(buffer2);
@@ -992,7 +1007,13 @@ void CemuleDlg::ShowTransferRate(bool forceAll){
 		ShowTransferStateIcon();
 	}
 	if (IsWindowVisible() && thePrefs.ShowRatesOnTitle()) {
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+		_sntprintf(buffer,ARRSIZE(buffer),_T("(U:%.1f D:%.1f) eMule v%s [%s]"),(float)lastuprate/1024, (float)lastdownrate/1024,theApp.m_strCurVersionLong,theApp.m_strModLongVersion);
+#else //Modversion
 		_sntprintf(buffer,ARRSIZE(buffer),_T("(U:%.1f D:%.1f) eMule v%s"),(float)lastuprate/1024, (float)lastdownrate/1024,theApp.m_strCurVersionLong);
+#endif //Modversion
+//<==Modversion [cyrex2001]
 		SetWindowText(buffer);
 	}
 }

@@ -114,12 +114,23 @@ public:
 	static	uint16	downloadColumnWidths[13];
 	static	BOOL	downloadColumnHidden[13];
 	static	INT		downloadColumnOrder[13];
+//==>Modversion [cyrex2001]
+#ifdef MODVERSION
+	static	uint16	uploadColumnWidths[9]; //+1 Modversion
+	static	BOOL	uploadColumnHidden[9]; //+1 Modversion
+	static	INT		uploadColumnOrder[9]; //+1 Modversion
+	static	uint16	queueColumnWidths[11]; //+1 Modversion
+	static	BOOL	queueColumnHidden[11]; //+1 Modversion
+	static	INT		queueColumnOrder[11]; //+1 Modversion
+#else //Modversion
 	static	uint16	uploadColumnWidths[8];
 	static	BOOL	uploadColumnHidden[8];
 	static	INT		uploadColumnOrder[8];
 	static	uint16	queueColumnWidths[10];
 	static	BOOL	queueColumnHidden[10];
 	static	INT		queueColumnOrder[10];
+#endif //Modversion
+//<==Modversion [cyrex2001]
 	static	uint16	searchColumnWidths[14];
 	static	BOOL	searchColumnHidden[14];
 	static	INT		searchColumnOrder[14];
@@ -555,7 +566,33 @@ public:
 	static bool		m_bTrustEveryHash;
 
 	static uint8	m_byLogLevel;
-
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+	static bool	isreaskSourceAfterIPChange;
+	static bool	m_breaskSourceAfterIPChange;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
+//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+	static bool	m_bQuickStart;
+	static bool	isQuickStart;
+	static uint16  m_iQuickStartMaxTime;
+	static uint16  QuickStartMaxTime;
+	static uint16  m_iQuickStartMaxConn;
+	static uint16  QuickStartMaxConn;
+	static uint16  m_iQuickStartMaxConnPerFive;
+	static uint16  QuickStartMaxConnPerFive;
+	static bool	m_bQuickStartAfterIPChange;
+	static bool	isQuickStartAfterIPChange;
+#endif //Quickstart
+//<==Quickstart [cyrex2001]
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	static	bool	m_MaxSourcesPerFileTakeOver;
+	static	uint16	m_MaxSourcesPerFileTemp;
+	static	bool	m_TakeOverFileSettings;
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 	enum Table
 	{
 		tableDownload, 
@@ -586,7 +623,16 @@ public:
 	friend class CPPgSecurity;
 	friend class CPPgScheduler;
 	friend class CPPgDebug;
-
+//==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+	friend class CPPgNextEMF;
+#endif //Reask sourcen after ip chnage or Quickstart
+//<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	friend class CHardLimit;
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 	CPreferences();
 	~CPreferences();
 
@@ -1267,6 +1313,36 @@ public:
 	static  bool	IsOpenPortsOnStartupEnabled()		{return m_bOpenPortsOnStartUp; }
 	//AICH Hash
 	static	bool	IsTrustingEveryHash()				{return m_bTrustEveryHash;} // this is a debug option
+
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+	static bool	IsreaskSourceAfterIPChange()   { return isreaskSourceAfterIPChange; } 
+	static void 	SetReaskSourceAfterIPChange(bool flag) { isreaskSourceAfterIPChange = flag; } 
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
+//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+	static bool	GetQuickStart()					{return isQuickStart;}
+	static void	SetMaxCon(int in)				{maxconnections=in;} 
+	static uint16	GetMaxCon()					{return maxconnections;}
+	static void	SetQuickStartMaxTime(int in)	{ m_iQuickStartMaxTime = in; }
+	static uint16  GetQuickStartMaxTime()		{ return m_iQuickStartMaxTime; }
+	static void	SetQuickStartMaxConn(int in)	{ QuickStartMaxConn = in; }
+	static uint16  GetQuickStartMaxConn()		{ return QuickStartMaxConn; }
+	static void    SetQuickStartMaxConnPerFive	(int in) { QuickStartMaxConnPerFive = in; }
+	static uint16  GetQuickStartMaxConnPerFive(){ return QuickStartMaxConnPerFive; }
+	static bool	GetQuickStartAfterIPChange()	{return isQuickStartAfterIPChange;}
+#endif //Quickstart
+//<==Quickstart [cyrex2001]
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	static	bool	GetMaxSourcesPerFileTakeOver(){return m_MaxSourcesPerFileTakeOver;}
+	static	uint16	GetMaxSourcesPerFileTemp(){return m_MaxSourcesPerFileTemp;}
+	static	void	SetMaxSourcesPerFileTemp(uint16 in){m_MaxSourcesPerFileTemp=in;}
+	static	bool	GetTakeOverFileSettings() {return m_TakeOverFileSettings;}
+	static	void	SetTakeOverFileSettings(bool in) {m_TakeOverFileSettings=in;}
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 
 protected:
 	static	CString appdir;
