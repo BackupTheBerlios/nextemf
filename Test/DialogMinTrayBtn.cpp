@@ -18,7 +18,13 @@
 #define	TEMPLATE	template <class BASE>
 #else
 // define this to instantiate functions for class 'BASE' right in this CPP module
+//==> vs7.0 or vs7.1 [cyrex2001]
+#if _MFC_VER==0x0700 //vs7.0 [cyrex2001]
+	#define	TEMPLATE
+#else // vs7.1 [cyrex2001]
 #define	TEMPLATE    template<> //VS2003-Fix [shadow]
+#endif //vs7.0 or vs7.1 
+//<== vs7.0 or vs7.1 [cyrex2001]
 #define BASE		CResizableDialog
 #endif
 
