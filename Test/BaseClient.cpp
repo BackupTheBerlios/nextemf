@@ -264,17 +264,14 @@ void CUpDownClient::Init()
 	m_bGPLEvildoer = false;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
-//==>Reask sourcen after ip change [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001][shadow1004]
 #ifdef RSAIC_MAELLA
+	uint32 jitter = rand() * MIN2S(4) / RAND_MAX;  
+    m_jitteredFileReaskTime = FILEREASKTIME + SEC2MS(jitter) - MIN2MS(2);  
 	m_dwLastUDPReaskTime = 0;
 	m_dwNextTCPAskedTime = 0;
 #endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-	m_bValidSource = false;
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
+//<==Reask sourcen after ip change [cyrex2001][shadow2004]
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -2438,11 +2435,6 @@ void CUpDownClient::AssertValid() const
 	(void)dwThisClientIsKnownSince;
 #endif //Sivka-Ban
 //<==Sivka-Ban [cyrex2001]
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-	CHECK_BOOL(m_bValidSource);
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
 #undef CHECK_PTR
 #undef CHECK_BOOL
 }

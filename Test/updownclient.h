@@ -427,13 +427,7 @@ public:
 	void			UDPReaskForDownload();
 	bool			IsSourceRequestAllowed() const;
     bool            IsSourceRequestAllowed(CPartFile* partfile, bool sourceExchangeCheck = false) const; // ZZ:DownloadManager
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-	bool			IsValidSource2() const;
-#else
 	bool			IsValidSource() const;
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
 	ESourceFrom		GetSourceFrom() const							{ return (ESourceFrom)m_nSourceFrom; }
 	void			SetSourceFrom(ESourceFrom val)					{ m_nSourceFrom = val; }
 
@@ -742,16 +736,7 @@ protected:
 	//////////////////////////////////////////////////////////
 	// Download
 	//
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-public:
 	CPartFile*	reqfile;
-protected:
-#else
-	CPartFile*	reqfile;
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
-
 	CAICHHash*  m_pReqFileAICHHash; 
 	uint32		m_cDownAsked;
 	uint8*		m_abyPartStatus;
@@ -867,15 +852,6 @@ private:
 	bool        m_bNickThief; 
 	CString     m_sAntiNickThiefTag;
 //<==AntiNickThief [shadow2004]
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-public:
-	bool	IsValidSource() const {return m_bValidSource;};
-	void	SetValidSource(bool in){m_bValidSource = in;};
-private:
-	bool	m_bValidSource;
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
 };
 //#pragma pack()
 //==>Anti-Leecher [cyrex2001]

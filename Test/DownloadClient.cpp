@@ -1972,13 +1972,7 @@ uint32 CUpDownClient::GetTimeUntilReask() const {
     return GetTimeUntilReask(reqfile);
 }
 
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-bool CUpDownClient::IsValidSource2() const
-#else
 bool CUpDownClient::IsValidSource() const
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
 {
 	bool valid = false;
 	switch(GetDownloadState())

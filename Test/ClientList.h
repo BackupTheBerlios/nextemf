@@ -132,17 +132,4 @@ public:
 	void TrigReaskForDownload(bool immediate);
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-public:
-	void AddToDontAskThisIP(uint32 dwIP) {m_DontAskThisIPList.SetAt(dwIP,::GetTickCount());}
-	void RemoveDontAskThisIP(uint32 dwIP) {m_DontAskThisIPList.RemoveKey(dwIP);}
-	bool DontAskThisIP(uint32 dwIP);
-	uint32 GetCountDontAskThisIP() const {return m_DontAskThisIPList.GetCount();}
-
-private:
-	CMap<uint32, uint32, uint32, uint32> m_DontAskThisIPList;
-	DWORD m_dwLastCleanUpDontAskThisIP;
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
 };

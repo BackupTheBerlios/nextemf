@@ -2392,7 +2392,10 @@ void CPreferences::SaveCats(){
 
 void CPreferences::ResetStatsColor(int index){
 	switch(index) {
-		case 0 : statcolors[0]=RGB(0,0,64);break;
+//==>Speedbar-Fix [shadow2004]
+//              case 0 : statcolors[0]=RGB(0,0,64);break;
+		case 0 : statcolors[0]=RGB(0,0,0);break;
+//<==Speedbar-Fix [shadow2004]
 		case 1 : statcolors[1]=RGB(192,192,255);break;
 		case 2 : statcolors[2]=RGB(128, 255, 128);break;
 		case 3 : statcolors[3]=RGB(0, 210, 0);break;

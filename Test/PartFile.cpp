@@ -306,14 +306,6 @@ void CPartFile::Init(){
 	m_MaxSourcesPerFile = thePrefs.GetMaxSourcePerFile();
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001]
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-	m_ValidState_SRC_Count = 0;
-	m_ValidState_SRC_Count_Temp = 0;
-	m_InValidState_SRC_Count = 0;
-	m_InValidState_SRC_Count_Temp = 0;
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
 }
 
 CPartFile::~CPartFile()
@@ -412,14 +404,6 @@ void CPartFile::AssertValid() const
 	(void)m_category;
 	CHECK_BOOL(m_is_A4AF_auto);
 	(void)m_dwFileAttributes;
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-	(void)m_ValidState_SRC_Count;
-	(void)m_ValidState_SRC_Count_Temp;
-	(void)m_InValidState_SRC_Count;
-	(void)m_InValidState_SRC_Count_Temp;
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
 }
 
 void CPartFile::Dump(CDumpContext& dc) const
@@ -1959,13 +1943,6 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 //<==optimizer added [shadow2004]
 		uint16 nCountForState;
 
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-		m_ValidState_SRC_Count_Temp = 0;
-		m_InValidState_SRC_Count_Temp = 0;
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
-
 		for (POSITION pos = srclist.GetHeadPosition(); pos != NULL;)
 		{
 			CUpDownClient* cur_src = srclist.GetNext(pos);
@@ -2056,12 +2033,6 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 								cur_src->m_pPCDownSocket->DisableDownloadLimit();
 						}
 					}
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-					m_ValidState_SRC_Count_Temp++;
-					cur_src->SetValidSource(true);
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
 					break;
 				}
 				// Do nothing with this client..
@@ -2100,11 +2071,6 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 				}
 				case DS_NONEEDEDPARTS:
 				{ 
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-					cur_src->SetValidSource(false);
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
 					// To Mods, please stop instantly removing these sources..
 					// This causes sources to pop in and out creating extra overhead!
 					if( (dwCurTick - lastpurgetime) > SEC2MS(40) ){
@@ -2138,22 +2104,10 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 				}
 				case DS_ONQUEUE:
 				{
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-					m_ValidState_SRC_Count_Temp++;
-					cur_src->SetValidSource(true);
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
 					// To Mods, please stop instantly removing these sources..
 					// This causes sources to pop in and out creating extra overhead!
 					if( cur_src->IsRemoteQueueFull() ) 
 					{
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-						m_ValidState_SRC_Count_Temp--;
-						cur_src->SetValidSource(false);
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
 //==>Hardlimit [cyrex2001]
 #ifdef HARDLIMIT
 						if( ((dwCurTick - lastpurgetime) > MIN2MS(1)) && (this->GetSourceCount() >= (this->m_MaxSourcesPerFile *.8 )) )
@@ -2167,14 +2121,12 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 							break;
 						}
 					}
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_MAELLA
-				
-					//if ((cur_src->GetLastAskedTime()) && (dwLastCheck < (FILEREASKTIME*2)))
-					//	break;
 					//Give up to 1 min for UDP to respond.. If we are within one min of TCP reask, do not try..
 					if (theApp.IsConnected() && cur_src->GetTimeUntilReask() < MIN2MS(2) && cur_src->GetTimeUntilReask() > SEC2MS(1) && ::GetTickCount()-cur_src->getLastTriedToConnectTime() > 20*60*1000) // ZZ:DownloadManager (one resk timestamp for each file)
 						cur_src->UDPReaskForDownload();
+
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
 					if(theApp.IsConnected() == true)
 					{
 						if((cur_src->GetLastAskedTime() != 0) && (cur_src->GetNextTCPAskedTime() > dwCurTick + MIN2MS(10)))
@@ -2182,10 +2134,6 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 							cur_src->UDPReaskForDownload();
 						}
 					}
-#else
-					//Give up to 1 min for UDP to respond.. If we are within one min of TCP reask, do not try..
-					if (theApp.IsConnected() && cur_src->GetTimeUntilReask() < MIN2MS(2) && cur_src->GetTimeUntilReask() > SEC2MS(1) && ::GetTickCount()-cur_src->getLastTriedToConnectTime() > 20*60*1000) // ZZ:DownloadManager (one resk timestamp for each file)
-						cur_src->UDPReaskForDownload();
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
 				}
@@ -2219,13 +2167,6 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 				}
 			}
 		}
-
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-		m_ValidState_SRC_Count = m_ValidState_SRC_Count_Temp;
-		m_InValidState_SRC_Count = m_InValidState_SRC_Count_Temp;
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
 
 		if( thePrefs.GetMaxSourcePerFileUDP() > GetSourceCount()){
 			if (theApp.downloadqueue->DoKademliaFileRequest() && (Kademlia::CKademlia::getTotalFile() < KADEMLIATOTALFILE) && (!lastsearchtimeKad || (dwCurTick - lastsearchtimeKad) > KADEMLIAREASKTIME) &&  Kademlia::CKademlia::isConnected() && theApp.IsConnected() && !stopped){ //Once we can handle lowID users in Kad, we remove the second IsConnected
@@ -2295,14 +2236,6 @@ bool CPartFile::CanAddSource(uint32 userid, uint16 port, uint32 serverip, uint16
 		userid = ntohl(userid);
 	}
 
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-	//added by sivka [-List of Dont Ask This IPs-]
-	if(theApp.clientlist->DontAskThisIP(userid)){
-		return false;
-	}
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
 	// MOD Note: Do not change this part - Merkur
 	if (theApp.serverconnect->IsConnected())
 	{
@@ -2873,12 +2806,6 @@ BOOL CPartFile::PerformFileComplete()
 		SetStatus(PS_ERROR);
 		m_bCompletionError = true;
 		SetFileOp(PFOP_NONE);
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-		m_ValidState_SRC_Count = 0;
-		m_InValidState_SRC_Count = 0;
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
 		if (theApp.emuledlg && theApp.emuledlg->IsRunning())
 			VERIFY( PostMessage(theApp.emuledlg->m_hWnd, TM_FILECOMPLETED, FILE_COMPLETION_THREAD_FAILED, (LPARAM)this) );
 		return FALSE;
@@ -2926,13 +2853,6 @@ BOOL CPartFile::PerformFileComplete()
 	m_MaxSourcesPerFile = 0;
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001]
-
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-	m_ValidState_SRC_Count = 0;
-	m_InValidState_SRC_Count = 0;
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
 
 	// clear the blackbox to free up memory
 	m_CorruptionBlackBox.Free();
@@ -4463,25 +4383,6 @@ void CPartFile::UpdateDisplayedInfo(bool force)
 		}
 	}
 }
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-void CPartFile::UpdateAutoDownPriority(){
-	if( !IsAutoDownPriority() )
-		return;
-	if ( m_ValidState_SRC_Count > 160 ){
-		if( GetDownPriority() != PR_LOW )
-			SetDownPriority( PR_LOW );
-		return;
-	}
-	if ( m_ValidState_SRC_Count > 40 ){
-		if( GetDownPriority() != PR_NORMAL )
-			SetDownPriority( PR_NORMAL );
-		return;
-	}
-	if( GetDownPriority() != PR_HIGH )
-		SetDownPriority( PR_HIGH );
-}
-#else
 void CPartFile::UpdateAutoDownPriority(){
 	if( !IsAutoDownPriority() )
 		return;
@@ -4495,8 +4396,6 @@ void CPartFile::UpdateAutoDownPriority(){
 	}
 	SetDownPriority( PR_HIGH );
 }
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
 
 uint8 CPartFile::GetCategory() /*const*/
 {
@@ -5375,93 +5274,3 @@ void CPartFile::AICHRecoveryDataAvailable(uint16 nPart){
 	//AICH successfully recovered %s of %s from part %u for %s
 
 }
-//==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
-void CPartFile::RemoveLow2LowIPSourcesManual()
-{
-	for(POSITION pos2, pos1 = srclist.GetHeadPosition(); (pos2=pos1)!=NULL; ){
-		CUpDownClient* cur_src = srclist.GetNext(pos1);
-		if(cur_src->GetDownloadState() == DS_LOWTOLOWIP)
-			theApp.downloadqueue->RemoveSourceAndDontAsk(cur_src, true, pos2);
-	}
-}
-
-void CPartFile::RemoveUnknownErrorBannedSourcesManual()
-{
-	for(POSITION pos2, pos1 = srclist.GetHeadPosition(); (pos2=pos1)!=NULL; ){
-		CUpDownClient* cur_src = srclist.GetNext(pos1);
-		switch(cur_src->GetDownloadState()){
-			case DS_NONE:
-			case DS_ERROR:
-			case DS_BANNED:	
-				theApp.downloadqueue->RemoveSourceAndDontAsk(cur_src, true, pos2);
-			default: break;
-		}
-	}
-}
-
-void CPartFile::RemoveNoNeededSourcesManual()
-{
-	for(POSITION pos2, pos1 = srclist.GetHeadPosition(); (pos2=pos1)!=NULL; ){
-		CUpDownClient* cur_src = srclist.GetNext(pos1);
-		if(cur_src->GetDownloadState() == DS_NONEEDEDPARTS){
-			if(!cur_src->SwapToAnotherFile( false , false, false , NULL ))
-			{
-				theApp.downloadqueue->RemoveSourceAndDontAsk(cur_src, true, pos2);
-			}
-		}
-	}
-}
-
-void CPartFile::RemoveFullQueueSourcesManual()
-{
-	for(POSITION pos2, pos1 = srclist.GetHeadPosition(); (pos2=pos1)!=NULL; ){
-		CUpDownClient* cur_src = srclist.GetNext(pos1);
-		if(cur_src->IsRemoteQueueFull()
-		&& cur_src->GetDownloadState() == DS_ONQUEUE){
-			theApp.downloadqueue->RemoveSourceAndDontAsk(cur_src, true, pos2);
-		}
-	}
-}
-
-void CPartFile::RemoveHighQRSourcesManual()
-{
-	for(POSITION pos2, pos1 = srclist.GetHeadPosition(); (pos2=pos1)!=NULL; ){
-		CUpDownClient* cur_src = srclist.GetNext(pos1);
-		if(cur_src->GetRemoteQueueRank() > 2500 /*thePrefs.GetMaxRemoveQRS()*/
-		&& cur_src->GetDownloadState() == DS_ONQUEUE){
-			theApp.downloadqueue->RemoveSourceAndDontAsk(cur_src, true, pos2);
-		}
-	}
-}
-
-void CPartFile::CleanUp_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP_Sources()
-{
-	for(POSITION pos2, pos1 = srclist.GetHeadPosition(); (pos2=pos1)!=NULL; ){
-		CUpDownClient* cur_src = srclist.GetNext(pos1);
-		switch(cur_src->GetDownloadState()){
-			case DS_NONEEDEDPARTS:
-			if(!cur_src->SwapToAnotherFile( false , false, false , NULL ))
-				{
-					theApp.downloadqueue->RemoveSourceAndDontAsk(cur_src, true, pos2);
-				}
-				break;
-			case DS_ONQUEUE:
-				if(cur_src->IsRemoteQueueFull()){
-					theApp.downloadqueue->RemoveSourceAndDontAsk(cur_src, true, pos2);
-				}
-				else if(cur_src->GetRemoteQueueRank() >  2500 /*thePrefs.GetMaxRemoveQRS()*/){
-					theApp.downloadqueue->RemoveSourceAndDontAsk(cur_src, true, pos2);
-				}
-				break;
-			case DS_NONE:
-			case DS_ERROR:
-			case DS_BANNED:
-			case DS_LOWTOLOWIP: 
-				theApp.downloadqueue->RemoveSourceAndDontAsk(cur_src, true, pos2);
-			default: break;
-		}
-	}
-}
-#endif //Drop maunal
-//<==Drop maunal [cyrex2001]

@@ -50,13 +50,6 @@
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001]
 
-
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-#include "Clientlist.h"
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
-
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -81,11 +74,6 @@ CDownloadListCtrl::~CDownloadListCtrl(){
 	if (m_PrioMenu) VERIFY( m_PrioMenu.DestroyMenu() );
     if (m_A4AFMenu) VERIFY( m_A4AFMenu.DestroyMenu() );
 	if (m_FileMenu) VERIFY( m_FileMenu.DestroyMenu() );
-//==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
-	if (m_DropMenu) VERIFY( m_DropMenu.DestroyMenu() );
-#endif //Drop maunal
-//<==Drop maunal [cyrex2001]
 	while(m_ListItems.empty() == false){
 		delete m_ListItems.begin()->second; // second = CtrlItem_Struct*
 		m_ListItems.erase(m_ListItems.begin());
@@ -94,11 +82,6 @@ CDownloadListCtrl::~CDownloadListCtrl(){
 
 void CDownloadListCtrl::Init()
 {
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-	DownloadSourcesCounter = 0;
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
 	CImageList ilDummyImageList; //dummy list for getting the proper height of listview entries
 	ilDummyImageList.Create(1, theApp.GetSmallSytemIconSize().cy, theApp.m_iDfltImageListColorFlags|ILC_MASK, 1, 1); 
 	SetImageList(&ilDummyImageList, LVSIL_SMALL);
@@ -256,14 +239,7 @@ void CDownloadListCtrl::Localize()
 	hdi.pszText = strRes.GetBuffer();
 	pHeaderCtrl->SetItem(4, &hdi);
 	strRes.ReleaseBuffer();
-
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-	strRes.Format(_T("SRC (%u/%u)"), theApp.clientlist->GetCountDontAskThisIP(), DownloadSourcesCounter);
-#else
 	strRes = GetResString(IDS_DL_SOURCES);
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
 	hdi.pszText = strRes.GetBuffer();
 	pHeaderCtrl->SetItem(5, &hdi);
 	strRes.ReleaseBuffer();
@@ -304,13 +280,7 @@ void CDownloadListCtrl::Localize()
 	pHeaderCtrl->SetItem(5, &hdi);
 	strRes.ReleaseBuffer();
 
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-	strRes.Format(_T("SRC (%u/%u)"), theApp.clientlist->GetCountDontAskThisIP(), DownloadSourcesCounter);
-#else
 	strRes = GetResString(IDS_DL_SOURCES);
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
 	hdi.pszText = strRes.GetBuffer();
 	pHeaderCtrl->SetItem(6, &hdi);
 	strRes.ReleaseBuffer();
@@ -1609,23 +1579,6 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct){
 		dc.SetBkMode(iOldBkMode);
 	dc->SelectObject(pOldFont);
 	dc->SetTextColor(crOldTextColor);
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-	HDITEM hdi;
-	hdi.mask = HDI_TEXT;
-	CString strRes;
-	strRes.Format(_T("SRC (%u/%u)"), theApp.clientlist->GetCountDontAskThisIP(), DownloadSourcesCounter);
-	hdi.pszText = strRes.GetBuffer();
-//==> Downloadload-Windows minimize [cyrex2001]
-#ifdef DLWND1
-	pHeaderCtrl->SetItem(5, &hdi);
-#else
-	pHeaderCtrl->SetItem(6, &hdi);
-#endif //Downloadload-Windows minimize
-//<== Downloadload-Windows minimize [cyrex2001]
-	strRes.ReleaseBuffer();
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
 }
 
 // modifier-keys -view filtering [Ese Juani+xrmb]
@@ -1806,11 +1759,11 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 
 			m_FileMenu.EnableMenuItem((UINT_PTR)m_PrioMenu.m_hMenu, iFilesNotDone > 0 ? MF_ENABLED : MF_GRAYED);
 			m_PrioMenu.CheckMenuRadioItem(MP_PRIOLOW, MP_PRIOAUTO, uPrioMenuItem, 0);
-//==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
-			m_FileMenu.EnableMenuItem((UINT_PTR)m_DropMenu.m_hMenu, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
-#endif //Drop maunal
-//<==Drop maunal [cyrex2001]
+//==>Hardlimit [cyrex2001][shadow2004]
+#ifdef HARDLIMIT
+			m_FileMenu.EnableMenuItem(MP_HARD_LIMIT, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001][shadow2004]
 			// enable commands if there is at least one item which can be used for the action
 			m_FileMenu.EnableMenuItem(MP_CANCEL, iFilesNotDone > 0 ? MF_ENABLED : MF_GRAYED);
 			m_FileMenu.EnableMenuItem(MP_STOP, iFilesToStop > 0 ? MF_ENABLED : MF_GRAYED);
@@ -1922,11 +1875,11 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	}
 	else{
 		int total;
-//==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
-		m_FileMenu.EnableMenuItem((UINT_PTR)m_DropMenu.m_hMenu, MF_GRAYED);
-#endif //Drop maunal
-//<==Drop maunal [cyrex2001]
+//==>Hardlimit [cyrex2001][shadow2004]
+#ifdef HARDLIMIT
+		m_FileMenu.EnableMenuItem(MP_HARD_LIMIT, MF_GRAYED);
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001][shadow2004]
 		m_FileMenu.EnableMenuItem((UINT_PTR)m_PrioMenu.m_hMenu, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_CANCEL,MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_PAUSE,MF_GRAYED);
@@ -2134,64 +2087,6 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					break;
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001]
-//==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
-				case MP_DROPLOWTOLOWIPSRCS: // Added by sivka
-					SetRedraw(false);
-					while(!selectedList.IsEmpty())
-					{ 
-						selectedList.GetHead()->RemoveLow2LowIPSourcesManual();
-						selectedList.RemoveHead();
-					}
-					SetRedraw(true);
-					break;
-				case MP_DROPUNKNOWNERRORBANNEDSRCS: // Added by sivka
-					SetRedraw(false);
-					while(!selectedList.IsEmpty())
-					{ 
-						selectedList.GetHead()->RemoveUnknownErrorBannedSourcesManual();
-						selectedList.RemoveHead();
-					}
-					SetRedraw(true);
-					break;
-				case MP_DROPNONEEDEDSRCS: // Added by sivka
-					SetRedraw(false);
-					while(!selectedList.IsEmpty())
-					{ 
-						selectedList.GetHead()->RemoveNoNeededSourcesManual();
-						selectedList.RemoveHead();
-					}
-					SetRedraw(true);
-					break;
-				case MP_DROPFULLQSRCS: // Added by sivka
-					SetRedraw(false);
-					while(!selectedList.IsEmpty())
-					{ 
-						selectedList.GetHead()->RemoveFullQueueSourcesManual();
-						selectedList.RemoveHead();
-					}
-					SetRedraw(true);
-					break;
-				case MP_DROPHIGHQRSRCS: // Added by sivka
-					SetRedraw(false);
-					while(!selectedList.IsEmpty())
-					{ 
-						selectedList.GetHead()->RemoveHighQRSourcesManual();
-						selectedList.RemoveHead();
-					}
-					SetRedraw(true);
-					break;
-				case MP_CLEANUP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP: // Added by sivka
-					SetRedraw(false);
-					while(!selectedList.IsEmpty())
-					{ 
-						selectedList.GetHead()->CleanUp_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP_Sources();
-						selectedList.RemoveHead();
-					}
-					SetRedraw(true);
-					break;
-#endif //Drop maunal
-//<==Drop maunal [cyrex2001]
 				case MP_PAUSE:
 					SetRedraw(false);
 					while (!selectedList.IsEmpty()){
@@ -2774,11 +2669,6 @@ void CDownloadListCtrl::CreateMenues() {
 	if (m_PrioMenu) VERIFY( m_PrioMenu.DestroyMenu() );
 	if (m_A4AFMenu) VERIFY( m_A4AFMenu.DestroyMenu() );
 	if (m_FileMenu) VERIFY( m_FileMenu.DestroyMenu() );
-//==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
-	if (m_DropMenu) VERIFY( m_DropMenu.DestroyMenu() );
-#endif //Drop maunal
-//<==Drop maunal [cyrex2001]
 
 	m_PrioMenu.CreateMenu();
 	m_PrioMenu.AddMenuTitle(NULL, true);
@@ -2786,20 +2676,6 @@ void CDownloadListCtrl::CreateMenues() {
 	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIONORMAL,GetResString(IDS_PRIONORMAL));
 	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIOHIGH, GetResString(IDS_PRIOHIGH));
 	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIOAUTO, GetResString(IDS_PRIOAUTO));
-
-//==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
-//START adding by sivka
-	m_DropMenu.CreateMenu();
-	m_DropMenu.AppendMenu(MF_STRING,MP_DROPLOWTOLOWIPSRCS, _T("Drop LowIP to LowIP Sources"));
-	m_DropMenu.AppendMenu(MF_STRING,MP_DROPUNKNOWNERRORBANNEDSRCS, _T("Drop Unknown, Error and Banned Sources"));
-	m_DropMenu.AppendMenu(MF_STRING,MP_DROPNONEEDEDSRCS, _T("Drop Not Needed Sources"));
-	m_DropMenu.AppendMenu(MF_STRING,MP_DROPFULLQSRCS, _T("Drop Full Queue Sources"));
-	m_DropMenu.AppendMenu(MF_STRING,MP_DROPHIGHQRSRCS, _T("Drop High Queue Rating Sources"));
-	m_DropMenu.AppendMenu(MF_STRING,MP_CLEANUP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP, _T("CleanUp => NNS, FQS, HQRS, UNK, ERR, BAN & L2L"));
-//END adding by sivka
-#endif //Drop maunal
-//<==Drop maunal [cyrex2001]
 
 	m_A4AFMenu.CreateMenu();
 // ZZ:DownloadManager -->
@@ -2819,12 +2695,6 @@ void CDownloadListCtrl::CreateMenues() {
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001]
-//==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
-	m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_DropMenu.m_hMenu, _T("Sources Handling (DROP)") );
-	m_FileMenu.AppendMenu(MF_SEPARATOR);
-#endif //Drop maunal
-//<==Drop maunal [cyrex2001]
 
 	m_FileMenu.AppendMenu(MF_STRING,MP_PAUSE, GetResString(IDS_DL_PAUSE), _T("PAUSE"));
 	m_FileMenu.AppendMenu(MF_STRING,MP_STOP, GetResString(IDS_DL_STOP), _T("STOP"));

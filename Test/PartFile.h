@@ -409,29 +409,4 @@ private:
 	volatile UINT m_uFileOpProgress;
 
     DWORD   lastSwapForSourceExchangeTick; // ZZ:DownloadManaager
-//==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
-private:
-	uint16	m_ValidState_SRC_Count;
-	uint16	m_ValidState_SRC_Count_Temp;
-	uint16	m_InValidState_SRC_Count;
-	uint16	m_InValidState_SRC_Count_Temp;
-public:
-	uint16	GetValidState_SRC_Count() const {return m_ValidState_SRC_Count;}
-	uint16	GetInValidState_SRC_Count() const {return m_InValidState_SRC_Count;}
-#endif //List Of Dont Ask This IPs
-//<==List Of Dont Ask This IPs [cyrex2001]
-//==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
-private:
-	uint16	m_MaxRemoveQRS;
-public:
-	void	RemoveLow2LowIPSourcesManual();
-	void	RemoveUnknownErrorBannedSourcesManual();
-	void	RemoveNoNeededSourcesManual();
-	void	RemoveFullQueueSourcesManual();
-	void	RemoveHighQRSourcesManual();
-	void	CleanUp_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP_Sources();
-#endif //Drop maunal
-//<==Drop maunal [cyrex2001]
 };
