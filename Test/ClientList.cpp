@@ -969,29 +969,28 @@ bool CClientList::DontAskThisIP(uint32 dwIP){
 #ifdef RSAIC_SIVKA
 void CClientList::TrigReaskForDownload()
 	{
-	const DWORD dwCurTick = ::GetTickCount();
 	for(POSITION pos = list.GetHeadPosition(); pos;)
 		{
     CUpDownClient* cur_client = list.GetNext(pos); 
+		m_dwLastAskedTime = cur_client->GetTimeUntilReask(cur_client->GetRequestFile());
 		if( cur_client->GetDownloadState() == DS_NONEEDEDPARTS )
 			{
-			m_dwLastAskedTime = MIN2MS(29);
+			m_dwLastAskedTime = FILEREASKTIME;
 			cur_client->SetLastAskedTime(m_dwLastAskedTime);
-				//AddLogLine(false,_T("Letzte Nachfrage: %s "),CastSecondsToHM(cur_client->GetTimeUntilReask(cur_client->GetRequestFile())/1000));
-				//AddLogLine(false,_T("Client-Info: %s m_dwLastAskedTime: %i"), cur_client->DbgGetClientInfo(),m_dwLastAskedTime);
 			}
 		else
 			{
-			if (cur_client->GetTimeUntilReask(cur_client->GetRequestFile()) >= MIN2MS(20))
-				m_dwLastAskedTime = cur_client->GetTimeUntilReask(cur_client->GetRequestFile())- (FILEREASKTIME-MIN2MS(10));
-			else if (cur_client->GetTimeUntilReask(cur_client->GetRequestFile()) >= MIN2MS(10))
-					m_dwLastAskedTime = cur_client->GetTimeUntilReask(cur_client->GetRequestFile()) - (FILEREASKTIME - MIN2MS(20));
-			m_dwLastAskedTime = cur_client->GetTimeUntilReask(cur_client->GetRequestFile());
-				cur_client->SetLastAskedTime(m_dwLastAskedTime);
-				//AddLogLine(false,_T("Letzte Nachfrage: %s"),CastSecondsToHM(cur_client->GetTimeUntilReask(cur_client->GetRequestFile())/1000));
-				//AddLogLine(false,_T("Client-Info: %s m_dwLastAskedTime: %i"), cur_client->DbgGetClientInfo(),m_dwLastAskedTime);
+			if (m_dwLastAskedTime >= MIN_REQUESTTIME * 2)
+				{
+                m_dwLastAskedTime -= (FILEREASKTIME - MIN_REQUESTTIME);
+				}
+			else if (cur_client->GetTimeUntilReask(cur_client->GetRequestFile()) >= MIN_REQUESTTIME)
+				{
+					m_dwLastAskedTime -= (FILEREASKTIME - MIN_REQUESTTIME * 2);
 				}
 			}
-}
+				cur_client->SetLastAskedTime(m_dwLastAskedTime);
+				}
+			}
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]

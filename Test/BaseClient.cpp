@@ -259,7 +259,6 @@ void CUpDownClient::Init()
 //<==AntiFakeRank [cyrex2001]
 //==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_SIVKA
-	m_dwLastAskedTime = 0;
  m_bValidSource = false;
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
@@ -2213,7 +2212,6 @@ void CUpDownClient::ResetFileStatusInfo()
 	m_bCompleteSource = false;
 //==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_SIVKA
-	m_dwLastAskedTime = 0;
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
 	m_uFileRating = 0;
@@ -2468,11 +2466,6 @@ void CUpDownClient::AssertValid() const
 	(void)dwThisClientIsKnownSince;
 #endif //Sivka-Ban
 //<==Sivka-Ban [cyrex2001]
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA
-	(void)m_dwLastAskedTime;
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 //==>List Of Dont Ask This IPs [cyrex2001]
 #ifdef DROP
 	CHECK_BOOL(m_bValidSource);
