@@ -1193,11 +1193,11 @@
 #define IDS_SEARCH_EXPRERROR            1165
 #define IDS_SEARCH_TOOCOMPLEX           1166
 #define IDS_SEARCH_INVALIDMINMAX        1167
-//==> simplify Serverwindow [shadow2004]
-#if defined(SRVWND1)
+//==> simplify Serverwindow or Userhash in status window [shadow2004][cyrex2001]
+#if defined(SRVWND1) || defined (USERHASH)
 #define IDS_VERSION                     1168
-#endif //SRVWND1
-//<== simplify Serverwindow [shadow2004]
+#endif //SRVWND1 or USERHASH
+//<== simplify Serverwindow or Userhash in status window [shadow2004][cyrex2001]
 #define IDS_ALL_A4AF_TO_THIS            1169
 #define IDD_META_DATA                   1170
 #define IDS_PASTE                       1170
@@ -2324,13 +2324,13 @@
 #define IDC_UIP                         2910
 
 //==>Window for nextemf-option [cyrex2001]
-//#if defined (RSAIC) || defined (QUICKSTART)
+//#if defined (RSAIC_SIVKA) || defined (QUICKSTART)
 #define IDD_PPG_NEXTEMF					60000
 #define IDC_PPG_NEXTEMF_OPTS			60001
 //#endif
 //<==Window for nextemf-option [cyrex2001]
 //==>Reask sourcen after ip change [cyrex2001]
-//#if defined (RSAIC)
+//#if defined (RSAIC_SIVKA)
 #define IDC_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK 60002
 #define IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK 60002
 //#endif
@@ -2354,7 +2354,7 @@
 //#endif
 //<==Hardlimit [cyrex2001]
 //==>Sivka-Ban [cyrex2001]
-//#ifdef SIVKA_BAN
+//#if defined (SIVKA_BAN)
 #define IDS_SIVKA_ASK_TIME					61005
 #define IDS_SIVKA_ASK_COUNTER				61006
 #define IDS_SIVKA_ASK_LOG					61007
@@ -2362,8 +2362,13 @@
 //<==Sivka-Ban [cyrex2001]
 
 #define IDS_PW_NEXTEMF                  61008
+//==>Anti-Fake-Rank [cyrex2001]
+//#if defined (ANTI_FAKE_RANK)
 #define IDS_ANTI_FAKE_RANK              61009
-//cyrex ALF
+//#endif //Anti-Fake-Rank
+//<==Anti-Fake-Rank [cyrex2001]
+//==>Anti-Leecher [cyrex2001]
+//#if defined (ANTI_LEECHER)
 #define IDS_ANTI_BADCOMUNITY			61010
 #define IDS_ANTI_GPLBREAKER				61011
 #define IDS_STATS_BADCOMUNITYCLIENTS	61012
@@ -2383,9 +2388,9 @@
 #define IDS_STATS_LEECHERCLIENTS		61026
 #define IDS_ANTI_LEECHER				61027
 #define IDS_ANTI_CREDITHACK                     61028
-//cyrex ALF
-// Next default values for new objects
-// 
+//#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
+
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        1411

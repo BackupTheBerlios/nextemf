@@ -405,7 +405,7 @@ LPCTSTR CUpDownClient::TestLeecher()
 			if (StrStrI(m_strModVersion,_T("NextEMF")) && (m_strModVersion.GetLength()>13))
 			{
 				old_m_strClientSoftware = m_strClientSoftware;
-				return _T("MODFAKER with lenght>12 detected");
+				return _T("MODFAKER with length>13 detected");
 			}
 		}
 	else if (old_m_pszUsername != m_pszUsername)
@@ -455,8 +455,6 @@ LPCTSTR CUpDownClient::TestLeecher()
 			StrStrI(m_pszUsername,_T("etocs.de"))|| //pcsl999 Anti-leecher
 			StrStrI(m_pszUsername,_T("eVortex"))||
 			StrStrI(m_pszUsername,_T("G@m3r"))||
-			StrStrI(m_pszUsername,_T("G@m3rs Edit"))|| //pcsl999 Anti-leecher
-			StrStrI(m_pszUsername,_T("G@m3r´s Edit"))|| //pcsl999 Anti-leecher
 			StrStrI(m_pszUsername,_T("Gate-eMule"))||
 			StrStrI(m_pszUsername,_T("happyfree.ch.vu"))|| //pcsl999 Anti-leecher
 			StrStrI(m_pszUsername,_T("haspepapa-welt.de"))|| //pcsl999 Anti-leecher

@@ -270,4 +270,12 @@ void CreateNetworkInfo(CRichEditCtrlX& rCtrl, CHARFORMAT& rcfDef, CHARFORMAT& rc
 		uint32 nLocalIP = theApp.serverconnect->GetLocalIP();
 		rCtrl << _T("URL:\t") << _T("http://") << ipstr(nLocalIP) << _T(":") << thePrefs.GetWSPort() << _T("/\r\n");
 	}
+//==>Userhash in status window  [cyrex2001]
+#ifdef USERHASH
+	rCtrl << _T("\r\n");
+	buffer.Format(_T("%s"),(LPCTSTR)(md4str((uchar*)thePrefs.GetUserHash())));
+	rCtrl << GetResString(IDS_CD_UHASH) << _T("\t") << buffer.Left (16) << _T("-");
+	rCtrl << _T("\r\n\t") << buffer.Mid (16,255);
+#endif //Userhash in status window
+//<==Userhash in status window [cyrex2001]
 }
