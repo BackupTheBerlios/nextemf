@@ -340,7 +340,13 @@ BOOL CMuleSystrayDlg::OnInitDialog()
 
 	m_ctrlSidebar.SetHorizontal(false);
 	m_ctrlSidebar.SetFont(&Font);
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+	m_ctrlSidebar.SetWindowText(_T("eMule ") + theApp.m_strCurVersionLong + _T(" [") + theApp.m_strModVersion +_T("]"));
+#else //Modversion
 	m_ctrlSidebar.SetWindowText(_T("eMule ") + theApp.m_strCurVersionLong);
+#endif //Modversion
+//<==Modversion [shadow2004]
 	
 	CRect rDesktop;
 	CWnd *pDesktopWnd = GetDesktopWindow();
