@@ -1912,6 +1912,32 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 
 			switch (cur_src->GetDownloadState())
 			{
+//==> asking BUG [shadow2004]
+#ifdef ASKING
+				//20040921:_ani_:newcode:start:[1/1]:for some reason we still have hanging passive clients
+				// the guess is that one shouldn't ask the client for a file at the same time the client
+				// is asking us to upload a file because somehow the socket could disconnect after the
+				// client is done using it on its end
+				case DS_CONNECTED:
+					{
+						// reask for file to download if we have no connected socket
+						if (!(cur_src->socket && cur_src->socket->IsConnected ()))
+							{
+								cur_src->SetDownloadState (DS_NONE);
+
+							     if (thePrefs.GetLogUlDlEvents ())
+										theApp.AddDebugLogLine (
+											DLP_VERYLOW,
+											false,
+											_T("#### %s disconnected socket while we're asking for a file"),
+											cur_src->GetUserName ()
+										);
+							}
+							break;
+					}
+				//20040921:_ani_:newcode:end
+#endif ASKING
+//<== asking BUG [shadow2004]
 				case DS_DOWNLOADING:{
 					ASSERT( cur_src->socket );
 					if (cur_src->socket)
