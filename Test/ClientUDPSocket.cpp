@@ -264,12 +264,49 @@ bool CClientUDPSocket::ProcessPacket(BYTE* packet, uint16 size, uint8 opcode, ui
 			{
 				if (thePrefs.GetDebugClientUDPLevel() > 0)
 					DebugRecv("OP_ReaskFilePing", sender, (char*)reqfilehash, ip);
-
+//==>Sivka-Ban [cyrex2001]
+#ifdef SIVKA_BAN
+					sender->AddAskedCount();
+					sender->SetLastUpRequest();
+				sender->uiULAskingCounter++;
+				// IP banned, no answer for this request
+				if( sender->IsBanned() )
+					break;
+				if( sender->uiULAskingCounter > uint16 (thePrefs.SivkaAskCounter)/*5*/ && ((::GetTickCount()-sender->dwThisClientIsKnownSince)/sender->uiULAskingCounter) < uint32 (MIN2MS(thePrefs.SivkaAskTime))/*MIN_REQUESTTIME*/ ){
+					if (thePrefs.SivkaAskLog)
+						{
+						AddLogLine(false, _T("OP_REASKFILEPING: (%s/%u)=%s ==> %s(%s) ASK TO FAST, BANNED!!!"), 
+						CastSecondsToHM((::GetTickCount()-sender->dwThisClientIsKnownSince)/1000), 
+						sender->uiULAskingCounter, 
+						CastSecondsToHM(((::GetTickCount()-sender->dwThisClientIsKnownSince)/sender->uiULAskingCounter)/1000), 
+						sender->GetUserName(),
+						sender->DbgGetFullClientSoftVer() );
+						}
+					if( sender->Ban() )
+						theApp.uploadqueue->RemoveFromUploadQueue(sender,_T("sivka-test"), true, false);//cyrex2001 =>sivka:
+					Packet* response = new Packet(OP_QUEUEFULL,0,OP_EMULEPROT);
+					theStats.AddUpDataOverheadFileRequest(response->size);
+					SendPacket(response, ip, port);
+					break;
+				}
+			}
+			if (sender)
+			{
+				//modified by sivka
+				//if (thePrefs.GetDebugClientUDPLevel() > 0)
+				//	DebugRecv("OP_ReaskFilePing", sender, (char*)reqfilehash, ip);
+//cyrex2001 <==sivka: END adding by sivka [safe CPU time and check for aggressivity - improved]
+				//Make sure we are still thinking about the same file.
+				if (md4cmp(reqfilehash, sender->GetUploadFileID()) == 0)
+				{
+#else //Sivka-Ban
 				//Make sure we are still thinking about the same file
 				if (md4cmp(reqfilehash, sender->GetUploadFileID()) == 0)
 				{
 					sender->AddAskedCount();
 					sender->SetLastUpRequest();
+#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
 					//I messed up when I first added extended info to UDP
 					//I should have originally used the entire ProcessExtenedInfo the first time.
 					//So now I am forced to check UDPVersion to see if we are sending all the extended info.

@@ -245,6 +245,13 @@ void CUpDownClient::Init()
 	m_strModVersion.Empty();
 #endif //Modversion
 //<==Modversion [cyrex2001]
+//==>Sivka-Ban [cyrex2001]
+#ifdef SIVKA_BAN
+	dwLastTimeAskedForWPRank = 0;
+	uiULAskingCounter = 0;
+	dwThisClientIsKnownSince = ::GetTickCount();
+#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -2236,6 +2243,15 @@ void CUpDownClient::AssertValid() const
 	(void)m_dwLastAskedTime;
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
+//==>Sivka-Ban [cyrex2001]
+#ifdef SIVKA_BAN
+	(void)uiULAskingCounter;
+	(void)dwLastTimeAskedForWPRank;
+	(void)uiWaitingPositionRank;
+	(void)dwThisClientIsKnownSince;
+#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
+
 #undef CHECK_PTR
 #undef CHECK_BOOL
 }

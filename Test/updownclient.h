@@ -320,7 +320,13 @@ public:
 	void			SendCommentInfo(/*const*/ CKnownFile *file);
 	void			AddRequestCount(const uchar* fileid);
 	void			UnBan();
+//==>Sivka-Ban [cyrex2001]
+#ifdef SIVKA_BAN
+	bool			Ban(LPCTSTR pszReason = NULL);
+#else //Sivka-Ban
 	void			Ban(LPCTSTR pszReason = NULL);
+#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
 	uint32			GetAskedCount() const							{ return m_cAsked; }
 	void			AddAskedCount()									{ m_cAsked++; }
 	void			SetAskedCount(uint32 m_cInAsked)				{ m_cAsked = m_cInAsked; }
@@ -761,5 +767,15 @@ public:
 	void   SetNextTCPAskedTime(uint32 time) {m_dwNextTCPAskedTime = time;}
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
+//==>Sivka-Ban [cyrex2001]
+#ifdef SIVKA_BAN
+public:
+	uint16	uiULAskingCounter;
+	uint16	uiWaitingPositionRank;
+	DWORD	dwThisClientIsKnownSince;
+	DWORD	dwLastTimeAskedForWPRank;
+#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
+
 };
 //#pragma pack()

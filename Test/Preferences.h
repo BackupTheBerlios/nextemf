@@ -593,6 +593,17 @@ public:
 	static	bool	m_TakeOverFileSettings;
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001]
+//==>Sivka-Ban [cyrex2001]
+#ifdef SIVKA_BAN
+	static uint16  m_iSivkaAskTime;
+	static uint16  SivkaAskTime;
+	static uint16  m_iSivkaAskCounter;
+	static uint16  SivkaAskCounter;
+	static bool	m_bSivkaAskLog;
+	static bool	SivkaAskLog;
+#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
+
 	enum Table
 	{
 		tableDownload, 
@@ -1343,6 +1354,15 @@ public:
 	static	void	SetTakeOverFileSettings(bool in) {m_TakeOverFileSettings=in;}
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001]
+//==>Sivka-Ban [cyrex2001]
+#ifdef SIVKA_BAN
+	static void	SetSivkaAskTime(int in) { m_iSivkaAskTime = in; }
+	static uint16  GetSivkaAskTime()		{ return m_iSivkaAskTime; }
+	static void    SetSivkaAskCounter (int in) { m_iSivkaAskCounter = in; }
+	static uint16  GetSivkaAskCounter(){ return m_iSivkaAskCounter; }
+	static bool	GetSivkaAskLog()				        {return m_bSivkaAskLog;}
+#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
 
 protected:
 	static	CString appdir;

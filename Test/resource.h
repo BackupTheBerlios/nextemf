@@ -2325,6 +2325,13 @@
 #define IDC_HARDLIMIT_LABEL					61004
 //#endif
 //<==Hardlimit [cyrex2001]
+//==>Sivka-Ban [cyrex2001]
+//#ifdef SIVKA_BAN
+#define IDS_SIVKA_ASK_TIME					61005
+#define IDS_SIVKA_ASK_COUNTER				61006
+#define IDS_SIVKA_ASK_LOG					61007
+//#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
 
 // Next default values for new objects
 // 

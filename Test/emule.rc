@@ -4350,6 +4350,14 @@ BEGIN
 END
 //#endif
 //<==Reask sourcen after ip change or Quickstart [cyrex2001]
+//==>Sivka-Ban [cyrex2001]
+STRINGTABLE 
+BEGIN
+    IDS_SIVKA_ASK_TIME      "Time for ask, before banned [5-12 min.]"
+    IDS_SIVKA_ASK_COUNTER   "Counter for ask, before banned [5-15]"
+    IDS_SIVKA_ASK_LOG       "Log banned clients"
+END
+//<==Sivka-Ban [cyrex2001]
 #endif    // English (U.S.) resources
 /////////////////////////////////////////////////////////////////////////////
 

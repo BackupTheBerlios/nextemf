@@ -506,10 +506,40 @@ bool CClientReqSocket::ProcessPacket(char* packet, uint32 size, UINT opcode)
 					if (thePrefs.GetDebugClientTCPLevel() > 0)
 						DebugRecv("OP_StartUpLoadReq", client);
 					theStats.AddDownDataOverheadFileRequest(size);
+//==>Sivka-Ban [cyrex2001]
+#ifdef SIVKA_BAN
+					client->AddAskedCount();
+					client->SetLastUpRequest();
+					client->uiULAskingCounter++;
+					if( client->IsBanned() )
+						break;
+#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
 					if (!client->CheckHandshakeFinished(OP_EDONKEYPROT, opcode))
 						break;
 					if (size == 16)
 					{
+//==>Sivka-Ban [cyrex2001]
+#ifdef SIVKA_BAN
+						if( client->uiULAskingCounter > uint16 (thePrefs.SivkaAskCounter) && ((::GetTickCount()-client->dwThisClientIsKnownSince)/client->uiULAskingCounter) < uint32 (MIN2MS(thePrefs.SivkaAskTime))){
+							if (thePrefs.SivkaAskLog)
+								{
+								AddLogLine(false, _T("OP_STARTUPLOADREQ: (%s/%u)=%s ==> %s(%s) ASK TO FAST, BANNED!!!"), 
+								CastSecondsToHM((::GetTickCount()-client->dwThisClientIsKnownSince)/1000), 
+								client->uiULAskingCounter, 
+								CastSecondsToHM(((::GetTickCount()-client->dwThisClientIsKnownSince)/client->uiULAskingCounter)/1000), 
+								client->GetUserName(),
+								client->DbgGetFullClientSoftVer() );
+								}
+							if( client->Ban() )
+								theApp.uploadqueue->RemoveFromUploadQueue(client,_T("Ask to fast"),true,false);
+							Packet* response = new Packet(OP_QUEUEFULL,0,OP_EMULEPROT);
+							theStats.AddUpDataOverheadFileRequest(response->size);
+							SendPacket(response,true);
+							break;
+						}
+#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
 						CKnownFile* reqfile = theApp.sharedfiles->GetFileByID((uchar*)packet);
 						if (reqfile)
 						{

@@ -515,14 +515,34 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 		&& client->GetDownloadState() == DS_NONE && !client->IsFriend()
 		&& GetWaitingUserCount() > 50)
 		return;
+//==>Sivka-Ban [cyrex2001]
+#ifdef SIVKA_BAN
+ //nope
+#else //Sivka-Ban
 	client->AddAskedCount();
 	client->SetLastUpRequest();
+#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
 	if (!bIgnoreTimelimit)
 	{
 		client->AddRequestCount(client->GetUploadFileID());
+//==>Sivka-Ban [cyrex2001]
+#ifdef SIVKA_BAN
+			client->AddAskedCount();
+			client->SetLastUpRequest();
+			client->uiULAskingCounter++;
+#else //Sivka-Ban
 	}
+#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
 	if (client->IsBanned())
 		return;
+//==>Sivka-Ban [cyrex2001]
+#ifdef SIVKA_BAN
+		}
+#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
+
 	uint16 cSameIP = 0;
 	// check for double
 	POSITION pos1, pos2;
@@ -769,6 +789,12 @@ void CUploadQueue::RemoveFromWaitingQueue(POSITION pos, bool updatewindow){
 	if (updatewindow)
 		theApp.emuledlg->transferwnd->queuelistctrl.RemoveClient(todelete);
 	todelete->SetUploadState(US_NONE);
+//<==Modversion [cyrex2001]
+#ifdef SIVKA_BAN
+	todelete->dwLastTimeAskedForWPRank = 0;
+	todelete->uiWaitingPositionRank = 0;
+#endif //Modversion
+//==>Sivka-Ban [cyrex2001]
 }
 
 void CUploadQueue::UpdateMaxClientScore()
@@ -828,13 +854,37 @@ uint16 CUploadQueue::GetWaitingPosition(CUpDownClient* client)
 {
 	if (!IsOnUploadQueue(client))
 		return 0;
+//==>Sivka-Ban [cyrex2001]
+#ifdef SIVKA_BAN
+	if( ::GetTickCount() < client->dwLastTimeAskedForWPRank && client->uiWaitingPositionRank )
+		return client->uiWaitingPositionRank;
+	client->dwLastTimeAskedForWPRank = ::GetTickCount()+1200000; //+20mins
+
+	//modified by sivka [safe CPU time - improved]
+	if( waitinglist.Find(client) ){
+		client->uiWaitingPositionRank = 1;
+#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
 	UINT rank = 1;
 	uint32 myscore = client->GetScore(false);
 	for (POSITION pos = waitinglist.GetHeadPosition(); pos != 0; ){
 		if (waitinglist.GetNext(pos)->GetScore(false) > myscore)
+//==>Sivka-Ban [cyrex2001]
+#ifdef SIVKA_BAN
+				client->uiWaitingPositionRank++;
+		}
+		return client->uiWaitingPositionRank;
+		}
+	else {
+		client->uiWaitingPositionRank = 0;
+		return 0;
+		}
+#else //Sivka-Ban
 			rank++;
-	}
+		}
 	return rank;
+#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
 }
 
 VOID CALLBACK CUploadQueue::UploadTimer(HWND hwnd, UINT uMsg,UINT_PTR idEvent,DWORD dwTime)

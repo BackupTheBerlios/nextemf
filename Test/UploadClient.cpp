@@ -829,6 +829,12 @@ void CUpDownClient::AddRequestCount(const uchar* fileid)
 
 void  CUpDownClient::UnBan()
 {
+//==>Sivka-Ban [cyrex2001]
+#ifdef SIVKA_BAN
+	uiULAskingCounter = 0;
+	dwThisClientIsKnownSince = ::GetTickCount();
+#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
 	theApp.clientlist->AddTrackClient(this);
 	theApp.clientlist->RemoveBannedClient(GetIP());
 	SetUploadState(US_NONE);
@@ -842,7 +848,13 @@ void  CUpDownClient::UnBan()
 	}
 }
 
+//==>Sivka-Ban [cyrex2001]
+#ifdef SIVKA_BAN
+bool CUpDownClient::Ban(LPCTSTR pszReason)
+#else //Sivka-Ban
 void CUpDownClient::Ban(LPCTSTR pszReason)
+#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
 {
 	theApp.clientlist->AddTrackClient(this);
 	if (!IsBanned()){
@@ -861,6 +873,11 @@ void CUpDownClient::Ban(LPCTSTR pszReason)
 	theApp.emuledlg->transferwnd->queuelistctrl.RefreshClient(this);
 	if (socket != NULL && socket->IsConnected())
 		socket->ShutDown(SD_RECEIVE); // let the socket timeout, since we dont want to risk to delete the client right now. This isnt acutally perfect, could be changed later
+//==>Sivka-Ban [cyrex2001]
+#ifdef SIVKA_BAN
+	return true;
+#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
 }
 
 uint32 CUpDownClient::GetWaitStartTime() const

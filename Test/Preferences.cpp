@@ -602,6 +602,16 @@ uint16	CPreferences::m_MaxSourcesPerFileTemp;
 bool	CPreferences::m_TakeOverFileSettings;
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001]
+//==>Sivka-Ban [cyrex2001]
+#ifdef SIVKA_BAN
+uint16  CPreferences::m_iSivkaAskTime;
+uint16  CPreferences::SivkaAskTime;
+uint16  CPreferences::m_iSivkaAskCounter;
+uint16  CPreferences::SivkaAskCounter;
+bool	CPreferences::m_bSivkaAskLog;
+bool	CPreferences::SivkaAskLog;
+#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
 
 CPreferences::CPreferences()
 {
@@ -2256,6 +2266,13 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("QuickStartAfterIPChange"), isQuickStartAfterIPChange,_T("NextEMF"));
 #endif //Quickstart
 //<==Quickstart [cyrex2001]
+//==>Sivka-Ban [cyrex2001]
+#ifdef SIVKA_BAN
+	ini.WriteInt(_T("SivkaAskTime"), SivkaAskTime,_T("NextEMF"));
+	ini.WriteInt(_T("SivkaAskCounter"), SivkaAskCounter,_T("NextEMF"));
+	ini.WriteBool(_T("SivkaAskLog"), SivkaAskLog,_T("NextEMF"));
+#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
 
 }
 
@@ -2855,6 +2872,13 @@ void CPreferences::LoadPreferences()
 	isQuickStartAfterIPChange=ini.GetBool(_T("QuickStartAfterIPChange"),false, _T("NextEMF"));
 #endif //Quickstart
 //<==Quickstart [cyrex2001]
+//==>Sivka-Ban [cyrex2001]
+#ifdef SIVKA_BAN
+	SivkaAskTime = ini.GetInt(_T("SivkaAskTime"), 10, _T("NextEMF"));
+	SivkaAskCounter = ini.GetInt(_T("SivkaAskCounter"), 5, _T("NextEMF"));
+	SivkaAskLog = ini.GetBool(_T("SivkaAskLog"),false, _T("NextEMF"));
+#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
 
 	LoadCats();
 	if (GetCatCount()==1)
