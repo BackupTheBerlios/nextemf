@@ -1,0 +1,27 @@
+Please read the COPYING file first.
+
+Few additional notes about WinCvs :
+
+In order to use WinCvs you need the application WinCvs.exe,
+plus :
+
+1) Python 2.1 or better (http://www.python.org).
+
+2) "cvs.exe" and "cvs95.exe" are based upon cvs 1.11 code and
+are part of the cvsnt project (http://www.cvsnt.org)
+
+3) You need to set-up some environment variables in
+order to use cvs.exe in a dos command (unused by WinCvs) :
+
+HOME : the location for cvs to find global settings files
+(.cvspass, .cvsignore, .cvsrc)...
+PATH : needs to point out the WinCvs folder.
+CVSROOT : your CVSROOT.
+CVS_RSH : for use with ssh.
+
+4) WinCvs supports only cvs 1.10 server and higher.
+
+Enjoy !
+
+2001-10-6
+Alexandre Parenteau  <aubonbeurre@hotmail.com>
