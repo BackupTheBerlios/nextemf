@@ -658,7 +658,15 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 				uint16 ncsc = lpPartFile->GetNotCurrentSourcesCount();				
 // ZZ:DownloadManager -->
                 if(!(lpPartFile->GetStatus() == PS_PAUSED && sc == 0) && lpPartFile->GetStatus() != PS_COMPLETE) {
+//==>Show Hardlimit [cyrex2001]
+#ifdef SHOW_HARDLIMIT
+					buffer.Format(_T("[HL:%i] "), lpPartFile->GetMaxSourcesPerFile());
+					buffer.AppendFormat(_T("%i"), sc-ncsc); 
+#else
                     buffer.Format(_T("%i"), sc-ncsc);
+#endif //Show Hardlimit
+//<==Show Hardlimit [cyrex2001]
+
 				    if(ncsc>0) buffer.AppendFormat(_T("/%i"), sc);
                     if(thePrefs.IsExtControlsEnabled() && lpPartFile->GetSrcA4AFCount() > 0) buffer.AppendFormat(_T("+%i"), lpPartFile->GetSrcA4AFCount());
 				    if(lpPartFile->GetTransferingSrcCount() > 0) buffer.AppendFormat(_T(" (%i)"), lpPartFile->GetTransferingSrcCount());
