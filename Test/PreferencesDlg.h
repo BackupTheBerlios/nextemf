@@ -6,7 +6,11 @@
 #include "PPgFiles.h"
 #include "PPgStats.h"
 #include "PPgNotify.h"
-#include "PPgIRC.h"
+//==> remove IRC [shadow2004]
+#if defined(IRC)
+  #include "PPgIRC.h"
+#endif //IRC
+//<== remove IRC [shadow2004]
 #include "PPgTweaks.h"
 #include "PPgDisplay.h"
 #include "PPgSecurity.h"
@@ -18,6 +22,11 @@
 #endif
 #include "otherfunctions.h"
 #include "ListBoxST.h"
+//==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+#include ".\NextEMF\PPgNextEMF.h"
+#endif //Reask sourcen after ip chnage or Quickstart
+//<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
 
 class CPreferencesDlg : public CPropertySheet
 {
@@ -34,7 +43,11 @@ public:
 	CPPgFiles		m_wndFiles;
 	CPPgStats		m_wndStats;
 	CPPgNotify		m_wndNotify;
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	CPPgIRC			m_wndIRC;
+#endif // IRC
+//<== remove IRC [shadow2004]
 	CPPgTweaks		m_wndTweaks;
 	CPPgDisplay		m_wndDisplay;
 	CPPgSecurity	m_wndSecurity;
@@ -44,6 +57,12 @@ public:
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	CPPgDebug		m_wndDebug;
 #endif
+
+//==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+	CPPgNextEMF		m_wndNextEMF;
+#endif //Reask sourcen after ip chnage or Quickstart
+//<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
 
 	CListBoxST		m_listbox;
 	CButton			m_groupbox;

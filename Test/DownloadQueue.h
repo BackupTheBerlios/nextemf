@@ -192,4 +192,10 @@ private:
 	CSourceHostnameResolveWnd m_srcwnd;
 
     DWORD       m_dwLastA4AFtime; // ZZ:DownloadManager
+//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+	int quickflag;
+	int quickflags;
+#endif //Quickstart
+//<==Quickstart [cyrex2001]
 };

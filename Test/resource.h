@@ -2028,7 +2028,7 @@
 #define IDC_CORRUPTED                   2786
 #define IDD_IPFILTER                    2786
 #define IDC_COMPRESSION                 2787
-#define IDD_ED2KLINK                    2787
+#define IDD_ED2KLINK                    2788
 #define IDC_TIMELEFTTEXT                2789
 #define IDC_TRANSFER_RATE_LABEL         2790
 #define IDC_RADIP                       2791
@@ -2135,6 +2135,22 @@
 #define IDC_LD_HOSTNAMECHE              2909
 #define IDC_SOURCE_TYPE                 2909
 #define IDC_UIP                         2910
+
+//==>Window for nextemf-option [cyrex2001]
+#define IDD_PPG_NEXTEMF					60000
+#define IDC_PPG_NEXTEMF_OPTS			60001
+//<==Window for nextemf-option [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
+#define IDC_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK 60002
+#define IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK 60002
+//<==Reask sourcen after ip change [cyrex2001]
+//==>Quickstart [cyrex2001]
+#define IDS_QUICK_START						60003
+#define IDS_QUICK_START_MAX_CONN			60004
+#define IDS_QUICK_START_MAX_CONN_PER_FIVE	60005
+#define IDS_QUICK_START_AFTER_IP_CHANGE		60006
+#define IDS_QUICK_START_MAX_TIME			60008
+//<==Quickstart [cyrex2001]
 
 // Next default values for new objects
 // 

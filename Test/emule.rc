@@ -1511,6 +1511,17 @@ BEGIN
     PUSHBUTTON      "Cancel",IDCANCEL,276,71,50,14
 END
 
+IDD_PPG_NEXTEMF DIALOGEX 0, 0, 227, 246
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "NextEMF"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    LTEXT           "Static",IDC_WARNING,7,7,213,39
+    CONTROL         "",IDC_PPG_NEXTEMF_OPTS,"SysTreeView32",TVS_DISABLEDRAGDROP | 
+                    WS_BORDER | WS_TABSTOP,7,46,213,145
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2123,6 +2134,19 @@ BEGIN
         RIGHTMARGIN, 326
         TOPMARGIN, 7
         BOTTOMMARGIN, 85
+    END
+
+    IDD_PPG_NEXTEMF, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 220
+        VERTGUIDE, 14
+        VERTGUIDE, 24
+        VERTGUIDE, 73
+        VERTGUIDE, 106
+        VERTGUIDE, 122
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 231
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -4171,6 +4195,16 @@ BEGIN
     IDS_IRC_NEWNICKDESC     "Should be one word less than 20 characters containing (A-Z, 0-9). It can be changed again in Preferences->Irc."
 #endif //IRC
 //<== remove IRC [shadow2004]
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK	"Reask sources after reconnection of modem (IP change)"
+    IDS_QUICK_START         "Quick Start"
+    IDS_QUICK_START_MAX_CONN "max. con.:"
+    IDS_QUICK_START_MAX_CONN_PER_FIVE "max. con./5sec:"
+    IDS_QUICK_START_AFTER_IP_CHANGE "Quick Start after IP Change"
+    IDS_QUICK_START_MAX_TIME "Time for Quick Start [8-18 min.]"
 END
 
 #endif    // Englisch (USA) resources

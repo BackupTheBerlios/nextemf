@@ -275,13 +275,22 @@ bool CServerSocket::ProcessPacket(char* packet, uint32 size, uint8 opcode){
 #ifdef RSAIC //Reask sourcen after ip change
 				static uint32 s_lastValidId;
 				static uint32 s_lastChangeId;
-				if(s_lastValidId != 0 && serverconnect->GetClientID() != 0 && s_lastValidId != serverconnect->GetClientID())
+				if(thePrefs.IsreaskSourceAfterIPChange()&& s_lastValidId != 0 && serverconnect->GetClientID() != 0 && s_lastValidId != serverconnect->GetClientID())
 				{
 					// Public IP has been changed, it's necessary to inform all sources about it
 					// All sources would be informed during their next session refresh (with TCP)
 					// about the new IP.
 					if(s_lastChangeId == 0 || (GetTickCount() - s_lastChangeId) > (FILEREASKTIME + MIN2MS(10)))
 						{
+//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+							if(thePrefs.GetQuickStart() && thePrefs.GetQuickStartAfterIPChange())
+								{
+								theApp.downloadqueue->quickflag = 0;
+								theApp.downloadqueue->quickflags = 0;
+								}
+#endif //Quickstart
+//<==Quickstart [cyrex2001]
 							theApp.clientlist->TrigReaskForDownload(true);
 							AddLogLine(false, _T("Change from %u (%s ID) to %u (%s ID) detected%s"), 
 							s_lastValidId,
@@ -293,6 +302,15 @@ bool CServerSocket::ProcessPacket(char* packet, uint32 size, uint8 opcode){
 						}
 					else 
 						{
+//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+							if(thePrefs.GetQuickStart() && thePrefs.GetQuickStartAfterIPChange())
+								{
+								theApp.downloadqueue->quickflag = 0;
+								theApp.downloadqueue->quickflags = 0;
+								}
+#endif //Quickstart
+//<==Quickstart [cyrex2001]
 							theApp.clientlist->TrigReaskForDownload(true);
 							AddLogLine(false, _T("Change from %u (%s ID) to %u (%s ID) detected%s"), 
 							s_lastValidId,

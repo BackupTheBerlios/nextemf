@@ -44,7 +44,11 @@ CPreferencesDlg::CPreferencesDlg()
 	m_wndDirectories.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndFiles.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndStats.m_psp.dwFlags &= ~PSH_HASHELP;
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	m_wndIRC.m_psp.dwFlags &= ~PSH_HASHELP;
+#endif //IRC
+//<== remove IRC [shadow2004]
 	m_wndWebServer.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndTweaks.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndSecurity.m_psp.dwFlags &= ~PSH_HASHELP;
@@ -53,6 +57,11 @@ CPreferencesDlg::CPreferencesDlg()
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	m_wndDebug.m_psp.dwFlags &= ~PSH_HASHELP;
 #endif
+//==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+	m_wndNextEMF.m_psp.dwFlags &= ~PSH_HASHELP;
+#endif //Reask sourcen after ip chnage or Quickstart
+//<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
 
 	AddPage(&m_wndGeneral);
 	AddPage(&m_wndDisplay);
@@ -63,7 +72,11 @@ CPreferencesDlg::CPreferencesDlg()
 	AddPage(&m_wndFiles);
 	AddPage(&m_wndNotify);
 	AddPage(&m_wndStats);
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	AddPage(&m_wndIRC);
+#endif //IRC
+//<== remove IRC [shadow2004]
 	AddPage(&m_wndSecurity);
 	AddPage(&m_wndScheduler);
 	AddPage(&m_wndWebServer);
@@ -71,6 +84,12 @@ CPreferencesDlg::CPreferencesDlg()
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	AddPage(&m_wndDebug);
 #endif
+
+//==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+	AddPage(&m_wndNextEMF);
+#endif //Reask sourcen after ip chnage or Quickstart
+//<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
 
 	m_nActiveWnd = 0;
 	m_iPrevPage = -1;
@@ -138,11 +157,20 @@ void CPreferencesDlg::Localize()
 	ImageList.Add(CTempIconLoader(_T("PREF_FILES")));
 	ImageList.Add(CTempIconLoader(_T("PREF_NOTIFICATIONS")));
 	ImageList.Add(CTempIconLoader(_T("PREF_STATISTICS")));
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	ImageList.Add(CTempIconLoader(_T("PREF_IRC")));
+#endif //IRC
+//<== remove IRC [shadow2004]
 	ImageList.Add(CTempIconLoader(_T("PREF_SECURITY")));
 	ImageList.Add(CTempIconLoader(_T("PREF_SCHEDULER")));
 	ImageList.Add(CTempIconLoader(_T("PREF_WEBSERVER")));
 	ImageList.Add(CTempIconLoader(_T("PREF_TWEAK")));
+//==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+	ImageList.Add(CTempIconLoader(_T("AAAEMULEAPP")));
+#endif //Reask sourcen after ip chnage or Quickstart
+//<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
 	m_listbox.SetImageList(&ImageList);
 
 	CString title = GetResString(IDS_EM_PREFS); 
@@ -157,12 +185,21 @@ void CPreferencesDlg::Localize()
 	m_wndFiles.Localize();
 	m_wndStats.Localize();
 	m_wndNotify.Localize();
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	m_wndIRC.Localize();
+#endif //IRC
+//<== remove IRC [shadow2004]
 	m_wndSecurity.Localize();
 	m_wndTweaks.Localize();
 	m_wndWebServer.Localize();
 	m_wndScheduler.Localize();
 	m_wndProxy.Localize();
+//==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+	m_wndNextEMF.Localize();
+#endif //Reask sourcen after ip chnage or Quickstart
+//<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
 
 	TC_ITEM item; 
 	item.mask = TCIF_TEXT; 
@@ -177,7 +214,11 @@ void CPreferencesDlg::Localize()
 	buffer.Add(GetResString(IDS_PW_FILES)); 
 	buffer.Add(GetResString(IDS_PW_EKDEV_OPTIONS)); 
 	buffer.Add(GetResString(IDS_STATSSETUPINFO)); 
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	buffer.Add(GetResString(IDS_IRC));
+#endif //IRC
+//<== remove IRC [shadow2004]
 	buffer.Add(GetResString(IDS_SECURITY)); 
 	buffer.Add(GetResString(IDS_SCHEDULER));
 	buffer.Add(GetResString(IDS_PW_WS));
@@ -185,7 +226,11 @@ void CPreferencesDlg::Localize()
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	buffer.Add(_T("Debug"));
 #endif
-
+//==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+	buffer.Add(_T("NextEMF"));
+#endif //Reask sourcen after ip chnage or Quickstart
+//<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
 	for (int i = 0; i < buffer.GetCount(); i++)
 		buffer[i].Remove(_T('&'));
 

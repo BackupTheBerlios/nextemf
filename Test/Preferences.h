@@ -19,7 +19,7 @@
 
 #define	DFLT_TRANSFER_WND2	1
 
-const CString strDefaultToolbar = _T("0099010203040506070899091011");
+const CString strDefaultToolbar = _T("00990102030405060708990910");//(...11) remove IRC [shadow2004]
 
 enum EViewSharedFilesAccess{
 	vsfaEverybody = 0,
@@ -294,7 +294,11 @@ public:
 	static	uint8	splitterbarPositionStat_HL;
 	static	uint8	splitterbarPositionStat_HR;
 	static	uint16	splitterbarPositionFriend;
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	static	uint16	splitterbarPositionIRC;
+#endif //IRC
+//<== remove IRC [shadow2004]
 	//MORPH END - Added by SiRoB, Splitting Bar [O²]
 	static	uint16	deadserverretries;
 	static	DWORD	m_dwServerKeepAliveTimeout;
@@ -313,6 +317,8 @@ public:
 	static	uint8	notifierNewVersion;
 	static	TCHAR	notifierSoundFilePath[510];
 
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	static	TCHAR	m_sircserver[50];
 	static	TCHAR	m_sircnick[30];
 	static	TCHAR	m_sircchannamefilter[50];
@@ -333,6 +339,8 @@ public:
 	static	bool	m_bircallowemuleprotoaddfriend;
 	static	bool	m_bircignoreemuleprotosendlink;
 	static	bool	m_birchelpchannel;
+#endif //IRC
+//<== remove IRC [shadow2004]
 
 	static	bool	m_bRemove2bin;
 
@@ -522,7 +530,26 @@ public:
 	static bool		m_bTrustEveryHash;
 
 	static uint8	m_byLogLevel;
-
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+	static bool	isreaskSourceAfterIPChange;
+	static bool	m_breaskSourceAfterIPChange;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
+//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+	static bool	m_bQuickStart;
+	static bool	isQuickStart;
+	static uint16  m_iQuickStartMaxTime;
+	static uint16  QuickStartMaxTime;
+	static uint16  m_iQuickStartMaxConn;
+	static uint16  QuickStartMaxConn;
+	static uint16  m_iQuickStartMaxConnPerFive;
+	static uint16  QuickStartMaxConnPerFive;
+	static bool	m_bQuickStartAfterIPChange;
+	static bool	isQuickStartAfterIPChange;
+#endif //Quickstart
+//<==Quickstart [cyrex2001]
 	enum Table
 	{
 		tableDownload, 
@@ -542,14 +569,22 @@ public:
 	friend class CPPgDirectories;
 	friend class CPPgFiles;
 	friend class CPPgNotify;
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	friend class CPPgIRC;
+#endif //IRC
+//<== remove IRC [shadow2004]
 	friend class Wizard;
 	friend class CPPgTweaks;
 	friend class CPPgDisplay;
 	friend class CPPgSecurity;
 	friend class CPPgScheduler;
 	friend class CPPgDebug;
-
+//==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+	friend class CPPgNextEMF;
+#endif //Reask sourcen after ip chnage or Quickstart
+//<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
 	CPreferences();
 	~CPreferences();
 
@@ -888,8 +923,13 @@ public:
 	static	void	SetSplitterbarPositionStat_HR(uint8 pos) {splitterbarPositionStat_HR=pos;}
 	static	uint16   GetSplitterbarPositionFriend()	{return splitterbarPositionFriend;}
 	static	void	SetSplitterbarPositionFriend(uint16 pos) {splitterbarPositionFriend=pos;}
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	static	uint16  GetSplitterbarPositionIRC()	{return splitterbarPositionIRC;}
 	static	void	SetSplitterbarPositionIRC(uint16 pos) {splitterbarPositionIRC=pos;}
+#endif //IRC
+//<== remove IRC [shadow2004]
+
 	//MORPH END   - Added by SiRoB, Splitting Bar [O²]
 	// -khaos--+++> Changed datatype to avoid overflows
 	static	uint16	GetStatsMax()						{return statsMax;}
@@ -913,6 +953,8 @@ public:
 	static	bool	GetNotifierPopOnNewVersion()		{return notifierNewVersion;}
 	static	TCHAR*	GetNotifierWavSoundPath()			{return notifierSoundFilePath;}
 
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	static	CString GetIRCNick()						{return m_sircnick;}
 	static	void	SetIRCNick( TCHAR in_nick[] )		{ _tcscpy(m_sircnick,in_nick);}
 	static	CString GetIRCServer()						{return m_sircserver;}
@@ -934,6 +976,8 @@ public:
 	static	bool	GetIrcAllowEmuleProtoAddFriend()	{return m_bircallowemuleprotoaddfriend;}
 	static	bool	GetIrcIgnoreEmuleProtoSendLink()	{return m_bircignoreemuleprotosendlink;}
 	static	bool	GetIrcHelpChannel()					{return m_birchelpchannel;}
+#endif //IRC
+//<== remove IRC [shadow2004]
 	static	WORD	GetWindowsVersion();
 	static	bool	GetStartMinimized()					{return startMinimized;}
 	static	void	SetStartMinimized( bool instartMinimized) {startMinimized = instartMinimized;}
@@ -1202,6 +1246,27 @@ public:
 	static  bool	IsOpenPortsOnStartupEnabled()		{return m_bOpenPortsOnStartUp; }
 	//AICH Hash
 	static	bool	IsTrustingEveryHash()				{return m_bTrustEveryHash;} // this is a debug option
+
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+	static bool	IsreaskSourceAfterIPChange()   { return isreaskSourceAfterIPChange; } 
+	static void 	SetReaskSourceAfterIPChange(bool flag) { isreaskSourceAfterIPChange = flag; } 
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
+//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+	static bool	GetQuickStart()					{return isQuickStart;}
+	static void	SetMaxCon(int in)				{maxconnections=in;} 
+	static uint16	GetMaxCon()					{return maxconnections;}
+	static void	SetQuickStartMaxTime(int in)	{ m_iQuickStartMaxTime = in; }
+	static uint16  GetQuickStartMaxTime()		{ return m_iQuickStartMaxTime; }
+	static void	SetQuickStartMaxConn(int in)	{ QuickStartMaxConn = in; }
+	static uint16  GetQuickStartMaxConn()		{ return QuickStartMaxConn; }
+	static void    SetQuickStartMaxConnPerFive	(int in) { QuickStartMaxConnPerFive = in; }
+	static uint16  GetQuickStartMaxConnPerFive(){ return QuickStartMaxConnPerFive; }
+	static bool	GetQuickStartAfterIPChange()	{return isQuickStartAfterIPChange;}
+#endif //Quickstart
+//<==Quickstart [cyrex2001]
 
 protected:
 	static	CString appdir;

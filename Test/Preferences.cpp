@@ -330,7 +330,11 @@ uint8	CPreferences::splitterbarPositionStat;
 uint8	CPreferences::splitterbarPositionStat_HL;
 uint8	CPreferences::splitterbarPositionStat_HR;
 uint16	CPreferences::splitterbarPositionFriend;
-uint16	CPreferences::splitterbarPositionIRC;
+//==> remove IRC [shadow2004]
+#if defined(IRC)
+  uint16	CPreferences::splitterbarPositionIRC;
+#endif //IRC
+//<== remove IRC [shadow2004]
 uint8	CPreferences::m_uTransferWnd2;
 uint16	CPreferences::deadserverretries;
 DWORD	CPreferences::m_dwServerKeepAliveTimeout;
@@ -345,6 +349,8 @@ uint8	CPreferences::notifierPopsEveryChatMsg;
 uint8	CPreferences::notifierImportantError;
 uint8	CPreferences::notifierNewVersion;
 TCHAR	CPreferences::notifierSoundFilePath[510];
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 TCHAR	CPreferences::m_sircserver[50];
 TCHAR	CPreferences::m_sircnick[30];
 TCHAR	CPreferences::m_sircchannamefilter[50];
@@ -365,6 +371,8 @@ bool	CPreferences::m_bircignoreemuleprotoaddfriend;
 bool	CPreferences::m_bircallowemuleprotoaddfriend;
 bool	CPreferences::m_bircignoreemuleprotosendlink;
 bool	CPreferences::m_birchelpchannel;
+#endif //IRC
+//<== remove IRC [shadow2004]
 bool	CPreferences::m_bRemove2bin;
 bool	CPreferences::m_bpreviewprio;
 bool	CPreferences::smartidcheck;
@@ -537,6 +545,26 @@ uint16	CPreferences::m_nPeerCachePort;
 bool	CPreferences::m_bOpenPortsOnStartUp;
 uint8	CPreferences::m_byLogLevel;
 bool	CPreferences::m_bTrustEveryHash;
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+bool	CPreferences::isreaskSourceAfterIPChange;
+bool	CPreferences::m_breaskSourceAfterIPChange;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
+//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+bool	CPreferences::m_bQuickStart;
+bool	CPreferences::isQuickStart;
+uint16  CPreferences::m_iQuickStartMaxTime;
+uint16  CPreferences::QuickStartMaxTime;
+uint16  CPreferences::m_iQuickStartMaxConn;
+uint16  CPreferences::QuickStartMaxConn;
+uint16  CPreferences::m_iQuickStartMaxConnPerFive;
+uint16  CPreferences::QuickStartMaxConnPerFive;
+bool	CPreferences::m_bQuickStartAfterIPChange;
+bool	CPreferences::isQuickStartAfterIPChange;
+#endif //Quickstart
+//<==Quickstart [cyrex2001]
 
 CPreferences::CPreferences()
 {
@@ -1827,7 +1855,11 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("SplitterbarPositionStat_HL"),splitterbarPositionStat_HL+1,_T("eMule"));
 	ini.WriteInt(_T("SplitterbarPositionStat_HR"),splitterbarPositionStat_HR+1,_T("eMule"));
 	ini.WriteInt(_T("SplitterbarPositionFriend"),splitterbarPositionFriend,_T("eMule"));
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	ini.WriteInt(_T("SplitterbarPositionIRC"),splitterbarPositionIRC+2,_T("eMule"));
+#endif //IRC
+//<== remove IRC [shadow2004]
 	ini.WriteInt(_T("TransferWnd2"),m_uTransferWnd2);
 	ini.WriteInt(_T("VariousStatisticsMaxValue"),statsMax);
 	ini.WriteInt(_T("StatsAverageMinutes"),statsAverageMinutes);
@@ -1892,6 +1924,8 @@ void CPreferences::SavePreferences()
 	ini.WriteString(_T("FilenameCleanups"),filenameCleanups);
 	ini.WriteInt(_T("ExtractMetaData"),m_iExtractMetaData);
 
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	ini.WriteString(_T("DefaultIRCServerNew"),m_sircserver);
 	ini.WriteString(_T("IRCNick"),m_sircnick);
 	ini.WriteBool(_T("IRCAddTimestamp"), m_bircaddtimestamp);
@@ -1912,6 +1946,8 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("IRCAllowEmuleProtoAddFriend"), m_bircallowemuleprotoaddfriend);
 	ini.WriteBool(_T("IRCIgnoreEmuleProtoSendLink"), m_bircignoreemuleprotosendlink);
 	ini.WriteBool(_T("IRCHelpChannel"), m_birchelpchannel);
+#endif //IRC
+//<== remove IRC [shadow2004]
 	ini.WriteBool(_T("SmartIdCheck"), smartidcheck);
 	ini.WriteBool(_T("Verbose"), m_bVerbose);
 	ini.WriteBool(_T("DebugSourceExchange"), m_bDebugSourceExchange);	// do *not* use the according 'Get...' function here!
@@ -2129,6 +2165,20 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("Enabled"), m_bPeerCacheEnabled);
 	ini.WriteInt(_T("PCPort"), m_nPeerCachePort);
 
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+	ini.WriteBool(_T("ReaskSourceAfterIPChange"),isreaskSourceAfterIPChange,_T("NextEMF"));
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
+//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+	ini.WriteBool(_T("QuickStart"), isQuickStart,_T("NextEMF"));
+	ini.WriteInt(_T("QuickStartMaxTime"), QuickStartMaxTime,_T("NextEMF"));
+	ini.WriteInt(_T("QuickStartMaxConn"), QuickStartMaxConn,_T("NextEMF"));
+	ini.WriteInt(_T("QuickStartMaxConnPerFive"), QuickStartMaxConnPerFive,_T("NextEMF"));
+	ini.WriteBool(_T("QuickStartAfterIPChange"), isQuickStartAfterIPChange,_T("NextEMF"));
+#endif //Quickstart
+//<==Quickstart [cyrex2001]
 
 }
 
@@ -2281,9 +2331,12 @@ void CPreferences::LoadPreferences()
 		splitterbarPositionStat_HL = 66;
 		splitterbarPositionStat_HR = 33;
 	}
-	splitterbarPositionFriend=ini.GetInt(_T("SplitterbarPositionFriend"),300);
+	splitterbarPositionFriend=ini.GetInt(_T("SplitterbarPositionFriend"),252);//(300) remove IRC [shadow]
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	splitterbarPositionIRC=ini.GetInt(_T("SplitterbarPositionIRC"),200);
-
+#endif //IRC
+//<== remove IRC [shadow2004]
 	m_uTransferWnd2 = ini.GetInt(_T("TransferWnd2"),DFLT_TRANSFER_WND2);
 
 	statsMax=ini.GetInt(_T("VariousStatisticsMaxValue"),100);
@@ -2353,6 +2406,8 @@ void CPreferences::LoadPreferences()
 	_stprintf(datetimeformat4log,_T("%s"),ini.GetString(_T("DateTimeFormat4Log"),_T("%c")));
 	if (_tcslen(datetimeformat4log)==0) _tcscpy(datetimeformat4log,_T("%c"));
 
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	_stprintf(m_sircserver,_T("%s"),ini.GetString(_T("DefaultIRCServerNew"),_T("ircchat.emule-project.net")));
 	_stprintf(m_sircnick,_T("%s"),ini.GetString(_T("IRCNick"),_T("eMule")));
 	m_bircaddtimestamp=ini.GetBool(_T("IRCAddTimestamp"),true);
@@ -2373,6 +2428,8 @@ void CPreferences::LoadPreferences()
 	m_bircallowemuleprotoaddfriend=ini.GetBool(_T("IRCAllowEmuleProtoAddFriend"), true);
 	m_bircignoreemuleprotosendlink=ini.GetBool(_T("IRCIgnoreEmuleProtoSendLink"), false);
 	m_birchelpchannel=ini.GetBool(_T("IRCHelpChannel"),true);
+#endif //IRC
+//<== remove IRC [shadow2004]
 	smartidcheck=ini.GetBool(_T("SmartIdCheck"),true);
 
 	log2disk=ini.GetBool(_T("SaveLogToDisk"),false);
@@ -2680,6 +2737,22 @@ void CPreferences::LoadPreferences()
 	m_bPeerCacheEnabled = ini.GetBool(_T("Enabled"), true);
 	m_nPeerCachePort = ini.GetInt(_T("PCPort"), 0);
 
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+	isreaskSourceAfterIPChange = ini.GetBool(_T("ReaskSourceAfterIPChange"),false, _T("NextEMF"));
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
+//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+	if (MaxConperFive == m_iQuickStartMaxConnPerFive) { MaxConperFive = 40; }
+	QuickStartMaxTime=ini.GetInt(_T("QuickStartMaxTime"), 10, _T("NextEMF"));
+	QuickStartMaxConn=ini.GetInt(_T("QuickStartMaxConn"), 1001, _T("NextEMF"));
+	QuickStartMaxConnPerFive=ini.GetInt(_T("QuickStartMaxConnPerFive"), 151, _T("NextEMF"));
+	if(maxconnections == m_iQuickStartMaxConn) { maxconnections = 270; }
+	isQuickStart=ini.GetBool(_T("QuickStart"),false, _T("NextEMF"));
+	isQuickStartAfterIPChange=ini.GetBool(_T("QuickStartAfterIPChange"),false, _T("NextEMF"));
+#endif //Quickstart
+//<==Quickstart [cyrex2001]
 
 	LoadCats();
 	if (GetCatCount()==1)
