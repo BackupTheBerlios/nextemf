@@ -46,6 +46,7 @@ CPPgNextEMF::CPPgNextEMF()
 	m_htiEnableAntiLeecher = NULL;
 	m_htiEnableAntiBadComunity = NULL;
 	m_htiEnableAntiGplBreaker = NULL;
+        m_htiEnableAntiCreditHack = NULL;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 }
@@ -90,6 +91,7 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		m_htiEnableAntiLeecher = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTI_LEECHER), m_htiSecurity, m_bEnableAntiLeecher);
 		m_htiEnableAntiBadComunity = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTI_BADCOMUNITY), m_htiSecurity, m_bEnableAntiBadComunity);
 		m_htiEnableAntiGplBreaker = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTI_GPLBREAKER), m_htiSecurity, m_bEnableAntiGplBreaker);
+                m_htiEnableAntiCreditHack = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTI_CREDITHACK), m_htiSecurity, m_bEnableAntiCreditHack);
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
         m_ctrlTreeOptions.Expand(m_htiSecurity, TVE_EXPAND);
@@ -117,6 +119,7 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableAntiLeecher, m_bEnableAntiLeecher);
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableAntiBadComunity, m_bEnableAntiBadComunity);
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableAntiGplBreaker, m_bEnableAntiGplBreaker);
+    DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableAntiCreditHack, m_bEnableAntiCreditHack);
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 }
@@ -138,6 +141,7 @@ BOOL CPPgNextEMF::OnInitDialog()
 	m_bEnableAntiLeecher = thePrefs.enableAntiLeecher;
 	m_bEnableAntiBadComunity = thePrefs.enableAntiBadComunity;
 	m_bEnableAntiGplBreaker = thePrefs.enableAntiGplBreaker;
+	m_bEnableAntiCreditHack = thePrefs.enableAntiCreditHack;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 
@@ -179,6 +183,7 @@ BOOL CPPgNextEMF::OnApply()
 	thePrefs.enableAntiLeecher = m_bEnableAntiLeecher;
 	thePrefs.enableAntiBadComunity = m_bEnableAntiBadComunity;
 	thePrefs.enableAntiGplBreaker = m_bEnableAntiGplBreaker;
+	thePrefs.enableAntiCreditHack = m_bEnableAntiCreditHack;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 	SetModified(FALSE);
@@ -214,6 +219,7 @@ void CPPgNextEMF::Localize(void)
 		if (m_htiEnableAntiLeecher) m_ctrlTreeOptions.SetItemText(m_htiEnableAntiLeecher, GetResString(IDS_ANTI_LEECHER));
 		if (m_htiEnableAntiBadComunity) m_ctrlTreeOptions.SetItemText(m_htiEnableAntiBadComunity, GetResString(IDS_ANTI_BADCOMUNITY));
 		if (m_htiEnableAntiGplBreaker) m_ctrlTreeOptions.SetItemText(m_htiEnableAntiGplBreaker, GetResString(IDS_ANTI_GPLBREAKER));
+		if (m_htiEnableAntiCreditHack) m_ctrlTreeOptions.SetItemText(m_htiEnableAntiCreditHack, GetResString(IDS_ANTI_CREDITHACK));
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 	}
@@ -240,6 +246,7 @@ void CPPgNextEMF::OnDestroy()
 	m_htiEnableAntiLeecher = NULL;
 	m_htiEnableAntiBadComunity = NULL;
 	m_htiEnableAntiGplBreaker = NULL;
+	m_htiEnableAntiCreditHack = NULL;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 

@@ -29,6 +29,14 @@ protected:
 	int m_iSivkaAskCounter;
 	int m_bSivkaAskLog;
 	int m_bAntiFakeRank;
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	int m_bEnableAntiLeecher;
+	int m_bEnableAntiBadComunity;
+	int m_bEnableAntiGplBreaker;
+	int m_bEnableAntiCreditHack;
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 
 	HTREEITEM m_htiSecurity;
 	HTREEITEM m_htiIsreaskSourceAfterIPChange;
@@ -41,6 +49,14 @@ protected:
 	HTREEITEM m_htiSivkaAskCounter;
 	HTREEITEM m_htiSivkaAskLog;
 	HTREEITEM m_htiAntiFakeRank;
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	HTREEITEM m_htiEnableAntiLeecher;
+	HTREEITEM m_htiEnableAntiBadComunity;
+	HTREEITEM m_htiEnableAntiGplBreaker;
+	HTREEITEM m_htiEnableAntiCreditHack;
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 
 	CTreeOptionsCtrlEx m_ctrlTreeOptions;
 	bool m_bInitializedTreeOpts;
