@@ -2333,6 +2333,10 @@
 //#endif //Sivka-Ban
 //<==Sivka-Ban [cyrex2001]
 
+//==>EMFSettings [shadow2004]
+#define IDS_PW_NEXTEMF						60100
+//<==EMFSettings [shadow2004]
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

@@ -986,13 +986,13 @@ bool CemuleApp::GetLangHelpFilePath(CString& strResult)
 		if (!ff.FindFile(strHelpFile, 0)){
 			strHelpFile = m_pszHelpFilePath;
 			bFound = false;
-	}
+		}
 		else
 			bFound = true;
 		strHelpFile.Replace(_T(".HLP"), _T(".chm"));
 	}
 	else{
-	strHelpFile.Replace(_T(".HLP"), _T(".chm"));
+		strHelpFile.Replace(_T(".HLP"), _T(".chm"));
 		if (!ff.FindFile(strHelpFile, 0))
 			bFound = false;
 		else

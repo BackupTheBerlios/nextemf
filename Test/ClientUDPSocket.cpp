@@ -189,23 +189,23 @@ void CClientUDPSocket::OnReceive(int nErrorCode)
     }
 	else if (length == SOCKET_ERROR)
 	{
-			DWORD dwError = WSAGetLastError();
-			if (dwError == WSAECONNRESET)
-			{
-				// Depending on local and remote OS and depending on used local (remote?) router we may receive
-				// WSAECONNRESET errors. According some KB articels, this is a special way of winsock to report 
-				// that a sent UDP packet was not received by the remote host because it was not listening on 
-				// the specified port -> no eMule running there.
-				//
-				// TODO: So, actually we should to something with this information and drop the related Kad node 
-				// or eMule client...
-				;
-			}
+		DWORD dwError = WSAGetLastError();
+		if (dwError == WSAECONNRESET)
+		{
+			// Depending on local and remote OS and depending on used local (remote?) router we may receive
+			// WSAECONNRESET errors. According some KB articels, this is a special way of winsock to report 
+			// that a sent UDP packet was not received by the remote host because it was not listening on 
+			// the specified port -> no eMule running there.
+			//
+			// TODO: So, actually we should to something with this information and drop the related Kad node 
+			// or eMule client...
+			;
+		}
 		if (thePrefs.GetVerbose() && dwError != WSAECONNRESET)
-			{
-				CString strClientInfo;
-				if (iSockAddrLen > 0 && sockAddr.sin_addr.S_un.S_addr != 0 && sockAddr.sin_addr.S_un.S_addr != INADDR_NONE)
-					strClientInfo.Format(_T(" from %s:%u"), ipstr(sockAddr.sin_addr), ntohs(sockAddr.sin_port));
+		{
+			CString strClientInfo;
+			if (iSockAddrLen > 0 && sockAddr.sin_addr.S_un.S_addr != 0 && sockAddr.sin_addr.S_un.S_addr != INADDR_NONE)
+				strClientInfo.Format(_T(" from %s:%u"), ipstr(sockAddr.sin_addr), ntohs(sockAddr.sin_port));
 			DebugLogError(_T("Error: Client UDP socket, failed to receive data%s: %s"), strClientInfo, GetErrorMessage(dwError, 1));
 		}
 	}
@@ -414,11 +414,11 @@ bool CClientUDPSocket::ProcessPacket(BYTE* packet, uint16 size, uint8 opcode, ui
 		{
 			theStats.AddDownDataOverheadOther(size);
 			if (size == 1){
-				if (packet[0]==0x12) {
-					bool ret=theApp.listensocket->SendPortTestReply('1',true);
+				if (packet[0] == 0x12){
+					bool ret = theApp.listensocket->SendPortTestReply('1', true);
 					AddDebugLogLine(true, _T("UDP Portcheck packet arrived - ACK sent back (status=%i)"), ret);
 				}
-				}
+			}
 			break;
 		}
 		default:

@@ -2367,7 +2367,7 @@ COPYVISIBLE             ICON                    "res\\CopyVisible.ico"
 EXPORTSELECTED          ICON                    "res\\ExportSelected.ico"
 EXPORTALL               ICON                    "res\\ExportAll.ico"
 
-CLIENT_NEXTEMF          ICON                    "res\\client_nextemf.ico"
+//CLIENT_NEXTEMF          ICON                    "res\\client_nextemf.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -3547,6 +3547,7 @@ BEGIN
     IDS_ADDAFRIEND          "Add Friend..."
     IDS_PAF_REQINFO         "Required Information"
     IDS_PAF_MOREINFO        "Additional Information"
+    IDS_PW_NEXTEMF          "NextEMF Settings"
 END
 
 STRINGTABLE 
@@ -4243,8 +4244,8 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_STATS_ACTUL_ZZ      "Active uploads/needed to fill bandwidth: %i"
-    IDS_STATS_TOTALUL       "Total number of uploads: %i"
+    IDS_STATS_ACTUL_ZZ      "Active Uploads/Needed to fill Bandwidth: %i"
+    IDS_STATS_TOTALUL       "Total Uploads: %i"
     IDS_CHAT_DOWNLOADED     "Downloaded:"
     IDS_CHAT_UPLOADED       "Uploaded:"
     IDS_CHAT_IDENT          "Identification:"

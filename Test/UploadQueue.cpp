@@ -881,7 +881,7 @@ uint16 CUploadQueue::GetWaitingPosition(CUpDownClient* client)
 		}
 #else //Sivka-Ban
 			rank++;
-		}
+	}
 	return rank;
 #endif //Sivka-Ban
 //<==Sivka-Ban [cyrex2001]

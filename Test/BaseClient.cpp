@@ -1059,7 +1059,7 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket){
 			theApp.m_pPeerCache->DownloadAttemptFailed();
 	
 		if (thePrefs.GetLogUlDlEvents())
-        	AddDebugLogLine(DLP_VERYLOW, false,_T("Download session ended. User: %s Reason: %s"), GetUserName(), pszReason);
+        	AddDebugLogLine(DLP_VERYLOW, false, _T("Download session ended. User: %s Reason: %s"), GetUserName(), pszReason);
 		SetDownloadState(DS_ONQUEUE);
 	}
 	else{
@@ -1714,7 +1714,7 @@ void CUpDownClient::SetUserName(LPCTSTR pszNewName)
 void CUpDownClient::RequestSharedFileList()
 {
 	if (m_iFileListRequested == 0){
-		AddLogLine(true,GetResString(IDS_SHAREDFILES_REQUEST),GetUserName());
+		AddLogLine(true, GetResString(IDS_SHAREDFILES_REQUEST), GetUserName());
     	m_iFileListRequested = 1;
 		TryToConnect(true);
 	}

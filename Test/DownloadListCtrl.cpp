@@ -176,7 +176,7 @@ void CDownloadListCtrl::SetAllIcons()
 	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);//16
 //==>Modversion [cyrex2001]
 #ifdef MODVERSION
-	m_ImageList.Add(CTempIconLoader(_T("CLIENT_NEXTEMF")));//17
+	m_ImageList.Add(CTempIconLoader(_T("AAAEMULEAPP")/*CLIENT_NEXTEMF*/));//17
 #endif //Modversion
 //<==Modversion [cyrex2001]
 }
@@ -700,7 +700,7 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 					if ( lpUpDownClient->IsNextEMF() )
 						m_ImageList.Draw(dc, 17, point2, ILD_NORMAL | uOvlImg);
 					else
-						m_ImageList.Draw(dc, 5, point2, ILD_NORMAL | uOvlImg);
+					m_ImageList.Draw(dc, 5, point2, ILD_NORMAL | uOvlImg);
 #else //Modversion
 					m_ImageList.Draw(dc, 5, point2, ILD_NORMAL | uOvlImg);
 #endif //Modversion

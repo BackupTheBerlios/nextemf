@@ -640,20 +640,20 @@ void CClientList::Process(){
 	if ( Kademlia::CKademlia::isConnected() )
 	{
 		if( Kademlia::CKademlia::isFirewalled() )
-	{
-		ASSERT( Kademlia::CKademlia::getPrefs() != NULL );
-			if( !m_bHaveBuddy && Kademlia::CKademlia::getPrefs()->getFindBuddy() )
 		{
+			ASSERT( Kademlia::CKademlia::getPrefs() != NULL );
+			if( !m_bHaveBuddy && Kademlia::CKademlia::getPrefs()->getFindBuddy() )
+			{
 				//We are a firewalled client with no buddy. We have also waited a set time 
 				//to try to avoid a false firewalled status.. So lets look for a buddy..
-			Kademlia::CSearch *findBuddy = new Kademlia::CSearch;
-			findBuddy->setSearchTypes(Kademlia::CSearch::FINDBUDDY);
-			Kademlia::CUInt128 ID(true);
-			ID.xor(Kademlia::CKademlia::getPrefs()->getKadID());
-			findBuddy->setTargetID(ID);
-			Kademlia::CSearchManager::startSearch(findBuddy);
+				Kademlia::CSearch *findBuddy = new Kademlia::CSearch;
+				findBuddy->setSearchTypes(Kademlia::CSearch::FINDBUDDY);
+				Kademlia::CUInt128 ID(true);
+				ID.xor(Kademlia::CKademlia::getPrefs()->getKadID());
+				findBuddy->setTargetID(ID);
+				Kademlia::CSearchManager::startSearch(findBuddy);
+			}
 		}
-	}
 		else
 		{
 			if( m_bHaveBuddy )
