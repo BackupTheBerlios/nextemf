@@ -4404,6 +4404,8 @@ BEGIN
     IDS_QUICK_START_AFTER_IP_CHANGE "Quick Start after IP Change"
     IDS_QUICK_START_MAX_TIME "Time for Quick Start [8-18 min.]"
     IDS_ANTINICKTHIEF       "enable AntiNickThief"
+    IDS_ZERO_FILLED_TEST    "Defeat 0-filled part senders"
+    IDS_CORRUPTDATASENT     "User '%s' (IP %s:%i), hash %s, client=%s added temporarily to the filtered list because corrupt data send"
 END
 //#endif
 //<==Reask sourcen after ip change or Quickstart [cyrex2001]

@@ -1848,6 +1848,19 @@ bool CKnownFile::IsMovie() const
 	return (ED2KFT_VIDEO == GetED2KFileTypeID(GetFileName()) );
 }
 
+//==>defeat 0-filled partsenders [shadow2004]
+bool CKnownFile::IsCDImage() const
+{
+	return (ED2KFT_CDIMAGE == GetED2KFileTypeID(GetFileName()) );
+}
+
+bool CKnownFile::IsDocument() const
+{
+	return (ED2KFT_DOCUMENT == GetED2KFileTypeID(GetFileName()) );
+}
+//<==defeat 0-filled partsenders [shadow2004]
+
+
 // function assumes that this file is shared and that any needed permission to preview exists. checks have to be done before calling! 
 bool CKnownFile::GrabImage(uint8 nFramesToGrab, double dStartTime, bool bReduceColor, uint16 nMaxWidth, void* pSender)
 {

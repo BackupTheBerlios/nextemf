@@ -627,6 +627,10 @@ public:
 //==>AntiNickThief [shadow2004]
 	static bool		m_bAntiNickThief;
 //<==AntiNickThief [shadow2004]
+//==>defeat 0-filled partsenders [shadow2004]
+	static bool	enableZeroFilledTest;
+//<==defeat 0-filled partsenders [shadow2004]
+
 
 	enum Table
 	{
@@ -672,6 +676,14 @@ public:
 	friend class CHardLimit;
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001]
+//==>AntiNickThief [shadow2004]
+	static bool GetAntiNickThief()		{return m_bAntiNickThief;} 
+//<==AntiNickThief [shadow2004]
+//==>defeat 0-filled partsenders [shadow2004]
+	static	bool	GetEnableZeroFilledTest() { return enableZeroFilledTest; }
+//<==defeat 0-filled partsenders [shadow2004]
+
+
 	CPreferences();
 	~CPreferences();
 

@@ -57,6 +57,9 @@ CPPgNextEMF::CPPgNextEMF()
 //==>AntiNickThief [shadow2004]
 	m_htiEnableAntiNickThief = NULL;
 //<==AntiNickThief [shadow2004]
+//==>defeat 0-filled partsenders [shadow2004]
+	m_htiEnableZeroFilledTest = NULL;
+//<==defeat 0-filled partsenders [shadow2004]
 }
 
 CPPgNextEMF::~CPPgNextEMF()
@@ -108,8 +111,12 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 //==>AntiNickThief [shadow2004]
-		m_htiEnableAntiNickThief = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTINICKTHIEF), m_htiSecurity, m_bAntiNickThief);
+		m_htiEnableAntiNickThief = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTINICKTHIEF), m_htiSecurity, m_bEnableAntiNickThief);
 //<==AntiNickThief [shadow2004]
+//==>defeat 0-filled partsenders [shadow2004]
+		m_htiEnableZeroFilledTest = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ZERO_FILLED_TEST), m_htiSecurity, m_bEnableZeroFilledTest);
+//<==defeat 0-filled partsenders [shadow2004]
+
         m_ctrlTreeOptions.Expand(m_htiSecurity, TVE_EXPAND);
 
 		m_ctrlTreeOptions.SendMessage(WM_VSCROLL, SB_TOP);
@@ -144,8 +151,11 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 //==>AntiNickThief [shadow2004]
-	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableAntiNickThief, m_bAntiNickThief);
+	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableAntiNickThief, m_bEnableAntiNickThief);
 //<==AntiNickThief [shadow2004]
+//==>defeat 0-filled partsenders [shadow2004]
+	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableZeroFilledTest, m_bEnableZeroFilledTest);
+//<==defeat 0-filled partsenders [shadow2004]
 }
 
 BOOL CPPgNextEMF::OnInitDialog()
@@ -174,8 +184,11 @@ BOOL CPPgNextEMF::OnInitDialog()
 #endif //BOLDDL
 //<== Bold Download-Status [shadow2004]
 //==>AntiNickThief [shadow2004]
-	m_bAntiNickThief = thePrefs.m_bAntiNickThief;
+	m_bEnableAntiNickThief = thePrefs.m_bAntiNickThief;
 //<==AntiNickThief [shadow2004]
+//==>defeat 0-filled partsenders [shadow2004]
+	m_bEnableZeroFilledTest = thePrefs.enableZeroFilledTest;
+//<==defeat 0-filled partsenders [shadow2004]
 	CPropertyPage::OnInitDialog();
 	Localize();
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -223,8 +236,11 @@ BOOL CPPgNextEMF::OnApply()
 #endif //BOLDDL
 //<== Bold Download-Status [shadow2004]
 //==>AntiNickThief [shadow2004]
-	thePrefs.m_bAntiNickThief = m_bAntiNickThief;
+	thePrefs.m_bAntiNickThief = m_bEnableAntiNickThief;
 //<==AntiNickThief [shadow2004]
+//==>defeat 0-filled partsenders [shadow2004]
+	thePrefs.enableZeroFilledTest = m_bEnableZeroFilledTest;
+//<==defeat 0-filled partsenders [shadow2004]
 	SetModified(FALSE);
 	return CPropertyPage::OnApply();
 }
@@ -264,6 +280,9 @@ void CPPgNextEMF::Localize(void)
 //==>AntiNickThief [shadow2004]
 	    if (m_htiEnableAntiNickThief) m_ctrlTreeOptions.SetItemText(m_htiEnableAntiNickThief, GetResString(IDS_ANTINICKTHIEF));
 //<==AntiNickThief [shadow2004]
+//==>defeat 0-filled partsenders [shadow2004]
+	    if (m_htiEnableZeroFilledTest) m_ctrlTreeOptions.SetItemText(m_htiEnableZeroFilledTest, GetResString(IDS_ZERO_FILLED_TEST));
+//<==defeat 0-filled partsenders [shadow2004]
 	}
 }
 
@@ -291,6 +310,12 @@ void CPPgNextEMF::OnDestroy()
 	m_htiEnableAntiCreditHack = NULL;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
+//==>AntiNickThief [shadow2004]
+	m_htiEnableAntiNickThief = NULL;
+//<==AntiNickThief [shadow2004]
+//==>defeat 0-filled partsenders [shadow2004]
+	m_htiEnableZeroFilledTest = NULL;
+//<==defeat 0-filled partsenders [shadow2004]
 
 	CPropertyPage::OnDestroy();
 }

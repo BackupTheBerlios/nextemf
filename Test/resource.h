@@ -2345,6 +2345,8 @@
 //#endif
 //<==Quickstart [cyrex2001]
 #define IDS_ANTINICKTHIEF               60009
+#define IDS_ZERO_FILLED_TEST            60010
+#define IDS_CORRUPTDATASENT             60011
 #define IDS_FPU_ACTIVE                  60100
 #define IDS_MMX_ACTIVE                  60101
 #define IDS_AMD_ACTIVE                  60102

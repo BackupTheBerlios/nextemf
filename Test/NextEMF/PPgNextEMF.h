@@ -30,8 +30,11 @@ protected:
 	int m_bSivkaAskLog;
 	int m_bAntiFakeRank;
 //==>AntiNickThief [shadow2004]
-	int m_bAntiNickThief;
+	int m_bEnableAntiNickThief;
 //<==AntiNickThief [shadow2004]
+//==>defeat 0-filled partsenders [shadow2004]
+	int m_bEnableZeroFilledTest;
+//<==defeat 0-filled partsenders [shadow2004]
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
 	int m_bEnableAntiLeecher;
@@ -73,7 +76,9 @@ protected:
 //==>AntiNickThief [shadow2004]
 	HTREEITEM m_htiEnableAntiNickThief;
 //<==AntiNickThief [shadow2004]
-
+//==>defeat 0-filled partsenders [shadow2004]
+	HTREEITEM m_htiEnableZeroFilledTest;
+//<==defeat 0-filled partsenders [shadow2004]
 
 
 	CTreeOptionsCtrlEx m_ctrlTreeOptions;

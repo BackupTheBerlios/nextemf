@@ -637,6 +637,9 @@ bool	CPreferences::enableAntiGplBreaker;
 //==>AntiNickThief [shadow2004]
 bool	CPreferences::m_bAntiNickThief;
 //<==AntiNickThief [shadow2004]
+//==>defeat 0-filled partsenders [shadow2004]
+bool	CPreferences::enableZeroFilledTest;
+//<==defeat 0-filled partsenders [shadow2004]
 
 
 CPreferences::CPreferences()
@@ -2078,8 +2081,11 @@ void CPreferences::SavePreferences()
 #endif //IRC
 //<== remove IRC [shadow2004]
 //==>AntiNickThief [shadow2004]
-	ini.WriteBool(_T("AntiNickThief"),m_bAntiNickThief ,_T("eMule"));
+	ini.WriteBool(_T("AntiNickThief"),m_bAntiNickThief ,_T("NextEMF"));
 //<==AntiNickThief [shadow2004]
+//==>defeat 0-filled partsenders [shadow2004]
+	ini.WriteBool(_T("EnableZeroFilledTest"), enableZeroFilledTest,_T("NextEMF"));
+//<==defeat 0-filled partsenders [shadow2004]
 	ini.WriteBool(_T("SmartIdCheck"), smartidcheck);
 	ini.WriteBool(_T("Verbose"), m_bVerbose);
 	ini.WriteBool(_T("DebugSourceExchange"), m_bDebugSourceExchange);	// do *not* use the according 'Get...' function here!
@@ -2995,8 +3001,11 @@ void CPreferences::LoadPreferences()
 #endif //BOLDDL
 //<== Bold Download-Status [shadow2004]
 //==>AntiNickThief [shadow2004]
-	m_bAntiNickThief=ini.GetBool(_T("AntiNickThief"), true);  
+	m_bAntiNickThief=ini.GetBool(_T("AntiNickThief"), true, _T("NextEMF"));  
 //<==AntiNickThief [shadow2004]
+//==>defeat 0-filled partsenders [shadow2004]
+	enableZeroFilledTest = ini.GetBool(_T("EnableZeroFilledTest"), true, _T("NextEMF"));
+//<==defeat 0-filled partsenders [shadow2004]
 
 	LoadCats();
 	if (GetCatCount()==1)
