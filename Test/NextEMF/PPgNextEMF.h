@@ -29,6 +29,9 @@ protected:
 	int m_iSivkaAskCounter;
 	int m_bSivkaAskLog;
 	int m_bAntiFakeRank;
+//==>AntiNickThief [shadow2004]
+	int m_bAntiNickThief;
+//<==AntiNickThief [shadow2004]
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
 	int m_bEnableAntiLeecher;
@@ -67,6 +70,10 @@ protected:
     HTREEITEM m_htiEnableDownloadInBold;
 #endif //BOLDDL
 //<== Bold Download-Status [shadow2004]
+//==>AntiNickThief [shadow2004]
+	HTREEITEM m_htiEnableAntiNickThief;
+//<==AntiNickThief [shadow2004]
+
 
 
 	CTreeOptionsCtrlEx m_ctrlTreeOptions;
