@@ -1,12 +1,9 @@
 eMule 0.44d [NextEMF v0.x]
 ===========================
 
-ADDED  : Filter 0 Uploaders: after a client caused 3 following
-         failed downloadsessions, it's IP get's filtered.
-         No more upload/download/connection by Xman [cyrex2001]
-ADDED  : Chunk Selection Patch by Xman [cyrex2001] 
+ADDED  : Chunk Selection Patch by Xman [cyrex2001]
 ADDED  : Timestamp is now available for Chatwindow [shadow2004]
-ADDED  : show hardlimit to sourcelist [cyrex2001] 
+ADDED  : show hardlimit to sourcelist [cyrex2001]
 ADDED  : Extended Clean-Up by Maella [shadow2004]
 FIXED  : Drop menue for debug version [cyrex2001]
 FIXED  : Modstring wasn't shown in Title, if "show Transfer" is off [shadow2004]
@@ -17,11 +14,14 @@ FIXED  : Some small Bugs in Webserver by CML [shadow2004]
 FIXED  : Small optimizations by WiZaRd [shadow2004]
 FIXED  : Some Bug will crash while adding a friend by Libbnor & WiZaRd [shadow2004]
 FIXED  : An empty Client-Name could Crash Emule. Now will banned by WiZaRd [shadow2004]
+FIXED  : Bug in Kad-Buddy could crash eMule by WiZaRd [shadow2004]
+MODIFY : Some small optimizations in AntiLeecher-Filter [cyrex2001][shadow2004]
+MODIFY : Show preferences only if needed by WiZaRd [shadow2004]
 CHANGED: Summary of Secure Identication is now ever 100% by WiZaRd [shadow2004]
 CHANGED: A better way to show Complete Sources in Shared-Dialog by WiZaRd [shadow2004]
-MODIFY : Some small optimizations in AntiLeecher-Filter [cyrex2001][shadow2004]
-MODIFY : Removed some parts of Proxy which were left [shadow2004]
+REMOVED: Some parts of Proxy which were left [shadow2004]
 UPDATE : Cleaned Up the own Source-Code [shadow2004]
+UPDATE : German-dll [shadow2004]
 
 
 

@@ -2133,13 +2133,13 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 #ifdef FIX01
 					percentSessions = statBadSessions?(100 - percentSessions):0;
 #else
-							// Set Failed Upload Sessions
-							if (percentSessions != 0 && statBadSessions > 0) 
-								percentSessions = 100 - percentSessions; // There were some good sessions and bad ones...
-							else if (percentSessions == 0 && statBadSessions > 0) 
-								percentSessions = 100; // There were bad sessions and no good ones, must be 100%
-							else 
-								percentSessions = 0; // No sessions at all, or no bad ones.
+					// Set Failed Upload Sessions
+					if (percentSessions != 0 && statBadSessions > 0) 
+						percentSessions = 100 - percentSessions; // There were some good sessions and bad ones...
+					else if (percentSessions == 0 && statBadSessions > 0) 
+						percentSessions = 100; // There were bad sessions and no good ones, must be 100%
+					else 
+						percentSessions = 0; // No sessions at all, or no bad ones.
 #endif
 //<==some optimizations by WiZaRd [shadow2004]
 							cbuffer.Format(GetResString(IDS_STATS_FAILUPCOUNT),statBadSessions,percentSessions);
@@ -2328,13 +2328,13 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 #ifdef FIX01
 					percentSessions = statBadSessions?(100 - percentSessions):0;
 #else
-							// Set Cum Failed Download Sessions
-							if (percentSessions != 0 && statBadSessions > 0) 
-								percentSessions = 100 - percentSessions; // There were some good sessions and bad ones...
-							else if (percentSessions == 0 && statBadSessions > 0) 
-								percentSessions = 100; // There were bad sessions and no good ones, must be 100%
-							else 
-								percentSessions = 0; // No sessions at all, or no bad ones.
+					// Set Cum Failed Download Sessions
+					if (percentSessions != 0 && statBadSessions > 0) 
+						percentSessions = 100 - percentSessions; // There were some good sessions and bad ones...
+					else if (percentSessions == 0 && statBadSessions > 0) 
+						percentSessions = 100; // There were bad sessions and no good ones, must be 100%
+					else 
+						percentSessions = 0; // No sessions at all, or no bad ones.
 #endif
 //<==some optimizations by WiZaRd [shadow2004]
 							cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_FDLSES) , statBadSessions , percentSessions);
@@ -2866,9 +2866,7 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		cbuffer.Format(GetResString(IDS_STATS_FILTEREDCLIENTS)+_T(" (%1.1f%%)"),theStats.filteredclients, (double)100*theStats.filteredclients/totalclient);stattree.SetItemText(cligen[2], cbuffer);
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-		cbuffer.Format(GetResString(IDS_STATS_LEECHERCLIENTS) +_T(" (%1.1f%%)"),theStats.leecherclients, (double)100*theStats.leecherclients/totalclient);stattree.SetItemText(cligen[6], cbuffer);
-		cbuffer.Format(GetResString(IDS_STATS_BADCOMUNITYCLIENTS) +_T(" (%1.1f%%)"),theStats.badcomunityclients, (double)100*theStats.badcomunityclients/totalclient);stattree.SetItemText(cligen[7], cbuffer);
-		cbuffer.Format(GetResString(IDS_STATS_GPLBREAKERCLIENTS) +_T(" (%1.1f%%)"),theStats.gplbreakerclients, (double)100*theStats.gplbreakerclients/totalclient);stattree.SetItemText(cligen[8], cbuffer);
+		cbuffer.Format(GetResString(IDS_STATS_ALFCLIENTS),theStats.alfclients);stattree.SetItemText(cligen[6], cbuffer);
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 	} // - END CLIENTS SECTION
@@ -3328,8 +3326,6 @@ void CStatisticsDlg::CreateMyTree()
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
 	cligen[6] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), h_clients);
-	cligen[7] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), h_clients);
-	cligen[8] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), h_clients);
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 	h_servers = stattree.InsertItem(GetResString(IDS_FSTAT_SERVERS),4,4);					// Servers section

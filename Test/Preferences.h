@@ -623,10 +623,8 @@ public:
 //<==AntiFakeRank [cyrex2001]
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-	static bool	enableAntiLeecher;
+	static bool	enableALF;
 	static bool	enableAntiCreditHack;
-	static bool	enableAntiBadComunity;
-	static bool	enableAntiGplBreaker;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 //==>AntiNickThief [shadow2004]
@@ -1428,9 +1426,7 @@ public:
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
 	static	bool	GetEnableAntiCreditHack()				{ return enableAntiCreditHack; }
-	static	bool GetEnableAntiLeecher()						{ return enableAntiLeecher; }
-	static	bool GetEnableAntiBadComunity()					{ return enableAntiBadComunity; }
-	static	bool GetEnableAntiGplBreaker()					{ return enableAntiGplBreaker; }
+	static	bool GetEnableALF()						{ return enableALF; }
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 //==>Drop maunal [cyrex2001]

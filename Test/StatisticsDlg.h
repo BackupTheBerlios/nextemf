@@ -74,9 +74,9 @@ private:
 	HTREEITEM	hconn_tg, conn_tg[4], hconn_tu, conn_tu[3], hconn_td, conn_td[3]; // Connection Total Section Headers and Items
 //==>Anti-Leecher [cyrex2001]  
 #ifdef ANTI_LEECHER  
-     HTREEITEM     h_clients, cligen[9], hclisoft, clisoft[8];  
+     HTREEITEM     h_clients, cligen[7], hclisoft, clisoft[8];  
 #else //Anti-Leecher 
-	HTREEITEM	h_clients, cligen[6], hclisoft, clisoft[8];
+     HTREEITEM     h_clients, cligen[6], hclisoft, clisoft[8]; 
 #endif //Anti-Leecher 
 //<==Anti-Leecher [cyrex2001]
 	HTREEITEM	cli_versions[MAX_CLIENTS_WITH_SUB_VERSION*MAX_SUB_CLIENT_VERSIONS];

@@ -572,17 +572,8 @@ void CClientList::Process(){
 		uint32 dwBantime;
 		while (pos != NULL){
 			m_bannedList.GetNextAssoc( pos, nKey, dwBantime );
-			if (dwBantime + CLIENTBANTIME < cur_tick ){
+			if (dwBantime + CLIENTBANTIME < cur_tick )
 				RemoveBannedClient(nKey);
-//==>Anti-Leecher [cyrex2001][shadow2004]
-#ifdef ANTI_LEECHER
-//				CUpDownClient* cur_client;
-//                if (cur_client->m_bLeecher == true) { theStats.leecherclients--; cur_client->m_bLeecher = false; }
-//				if (cur_client->m_bBadComunity == true) { theStats.badcomunityclients--; cur_client->m_bBadComunity = false; }
-//				if (cur_client->m_bGplBreaker == true) { theStats.gplbreakerclients--; cur_client->m_bGplBreaker = false; }
-#endif //Anti-Leecher
-//<==Anti-Leecher [cyrex2001][shadow2004]
-			}
 		}
 	}
 
@@ -825,6 +816,11 @@ void CClientList::RemoveFromKadList(CUpDownClient* torem){
 		if(torem == m_pBuddy)
 		{
 			m_pBuddy = NULL;
+//==> Bugfix to prevent a crash by WiZaRd [shadow2004]
+#ifdef FIX05
+			m_bHaveBuddy = false;
+#endif
+//<== Bugfix to prevent a crash by WiZaRd [shadow2004]
 			theApp.emuledlg->serverwnd->UpdateMyInfo();
 		}
 		KadList.RemoveAt(pos);

@@ -94,9 +94,7 @@ uint32	CStatistics::filteredclients;
 DWORD	CStatistics::starttime;
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-uint32	CStatistics::leecherclients;
-uint32	CStatistics::badcomunityclients;
-uint32	CStatistics::gplbreakerclients;
+uint32	CStatistics::alfclients;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 
@@ -166,9 +164,7 @@ CStatistics::CStatistics()
 
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-	leecherclients=0;
-	badcomunityclients=0;
-	gplbreakerclients=0;
+	alfclients=0;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 }

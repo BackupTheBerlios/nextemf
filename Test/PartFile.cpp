@@ -2126,25 +2126,6 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 				}
 				case DS_ONQUEUE:
 				{
-//==>Xman filter clients with failed downloads [cyrex2001]
-#ifdef FILTER_FAILED_DOWNLOADS
-					if(cur_src->m_faileddownloads>=3 )
-					{
-							theApp.downloadqueue->RemoveSource(cur_src);
-							theApp.ipfilter->AddIP(cur_src->GetIP(), 1, _T("Temporary"));
-							//theApp.ipfilter->AddBannedIPRange(ntohl(cur_src->GetIP()), ntohl(cur_src->GetIP()), 1, _T("Temporary"));
-							AddDebugLogLine(false, _T("[Anti-Leecher] Failed-Download-Ban: Client %s with IP: %s has been added temporary to the filered list"), cur_src->GetUserName(), cur_src->GetIP());	
-							//AddDebugLogLine(false, _T("[Anti-Leecher] Failed-Download-Ban: Client %s with IP: %s has been added temporary to the filered list"), cur_src->GetUserName(), cur_src->GetFullIP());
-							theApp.clientlist->AddBannedClient(cur_src->GetIP());
-							cur_src->SetUploadState(US_BANNED);
-							//theApp.uploadqueue->RemoveFromWaitingQueue(cur_src);
-							cur_src->Disconnected(_T("Filtered"));
-							//cur_src->Disconnected();
-							break;
-					}
-					else
-#endif //Filter failed downloads
-//<==Xman filter clients with failed downloads [cyrex2001]
 //==>List Of Dont Ask This IPs [cyrex2001]
 #ifdef DROP
 					m_ValidState_SRC_Count_Temp++;

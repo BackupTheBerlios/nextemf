@@ -287,8 +287,7 @@ public:
 	void			SendPublicIPRequest();
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-	bool			IsLeecher()	const				{return m_bLeecher;}
-	bool			IsBadComunity()	const				{return m_bBadComunity;}
+	bool			IsALF()	const				{return m_bALFprotect;}
 	bool			IsGplBreaker()	const				{return m_bGplBreaker;}
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
@@ -631,8 +630,7 @@ protected:
 	CString	old_m_strClientSoftware;
 	CString	old_m_strClientSoftware1;
 public:
-	bool		m_bLeecher;
-	bool		m_bBadComunity;
+	bool		m_bALFprotect;
 	bool		m_bGplBreaker;
 protected:
 	CString		comm_m_strClientSoftware;
@@ -848,8 +846,6 @@ protected:
 
 //==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_SIVKA
-protected:
-
 public:
 	uint32		m_dwLastAskedTime;
 	void			SetLastAskedTime(uint32 in)			{m_fileReaskTimes.SetAt(reqfile, in);}
@@ -885,13 +881,6 @@ public:
 	DWORD	dwLastTimeAskedForWPRank;
 #endif //Sivka-Ban
 //<==Sivka-Ban [cyrex2001]
-//==>Xman filter clients with failed downloads [cyrex2001]
-#ifdef FILTER_FAILED_DOWNLOADS
-public:
-	uint16 m_faileddownloads;
-	uint32 m_transferedthissession;
-#endif //Filter failed downloads
-//<==Xman filter clients with failed downloads [cyrex2001]
 //==>Xman askfordownload priority [cyrex2001]
 #ifdef ASK_FOR_PRIO
 	//Xman askfordownload priority

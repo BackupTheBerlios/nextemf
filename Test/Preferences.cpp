@@ -630,10 +630,8 @@ bool	CPreferences::AntiFakeRank;
 //<==AntiFakeRank [cyrex2001]
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-bool	CPreferences::enableAntiLeecher;
+bool	CPreferences::enableALF;
 bool	CPreferences::enableAntiCreditHack;
-bool	CPreferences::enableAntiBadComunity;
-bool	CPreferences::enableAntiGplBreaker;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 //==>AntiNickThief [shadow2004]
@@ -2358,9 +2356,7 @@ void CPreferences::SavePreferences()
 //<==AntiFakeRank [cyrex2001]
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-	ini.WriteBool(_T("EnableAntiLeecher"), enableAntiLeecher,_T("NextEMF"));
-	ini.WriteBool(_T("EnableAntiBadComunity"), enableAntiBadComunity,_T("NextEMF"));
-	ini.WriteBool(_T("EnableAntiGplBreaker"), enableAntiGplBreaker,_T("NextEMF"));
+	ini.WriteBool(_T("EnableALF"), enableALF,_T("NextEMF"));
 	ini.WriteBool(_T("EnableAntiCreditHack"), enableAntiCreditHack,_T("NextEMF"));
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
@@ -3008,9 +3004,7 @@ void CPreferences::LoadPreferences()
 //<==AntiFakeRank [cyrex2001]
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-	enableAntiLeecher = ini.GetBool(_T("EnableAntiLeecher"), true, _T("NextEMF"));
-	enableAntiBadComunity = ini.GetBool(_T("EnableAntiBadComunity"), true, _T("NextEMF"));
-	enableAntiGplBreaker = ini.GetBool(_T("EnableAntiGplBreaker"), true, _T("NextEMF"));
+	enableALF = ini.GetBool(_T("EnableALF"), true, _T("NextEMF"));
 	enableAntiCreditHack = ini.GetBool(_T("EnableAntiCreditHack"), true, _T("NextEMF"));
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]

@@ -207,9 +207,7 @@ uint32 CUpDownClient::GetScore(bool sysvalue, bool isdownloading, bool onlybasev
 		return 0x0FFFFFFF;
 
 //==>Anti-Leecher [cyrex2001]
-#ifdef ANTI_LEECHER
-	//nope
-#else //Anti-Leecher
+#ifndef ANTI_LEECHER
 	if (IsBanned() || m_bGPLEvildoer)
 		return 0;
 #endif //Anti-Leecher
@@ -903,26 +901,14 @@ void CUpDownClient::Ban(LPCTSTR pszReason)
 #ifdef ANTI_LEECHER
 void CUpDownClient::BanALF(WORD alfType, LPCTSTR pszReason ){
 	theApp.clientlist->AddTrackClient(this);
-	switch (alfType){
-		case 1 : if (!m_bLeecher) {
-					m_bLeecher = true; 
-		theStats.leecherclients++;
-		AddDebugLogLine(false,GetResString(IDS_ANTILEECHERLOG) + _T(" (%s)"),DbgGetClientInfo(),pszReason==NULL ? _T("No Reason") : pszReason);
+	if (!m_bALFprotect)
+	{
+		m_bALFprotect = true; 
+		theStats.alfclients++;
 	}
-				break;
-		case 2 : if (!m_bBadComunity){
-					m_bBadComunity = true;
-		theStats.badcomunityclients++;
-		AddDebugLogLine(false,GetResString(IDS_ANTIBADCOMUNITYLOG) + _T(" (%s)"),DbgGetClientInfo(),pszReason==NULL ? _T("No Reason") : pszReason);
-	}
-				break;
-		case 3 : if (!m_bGplBreaker){
-					m_bGplBreaker = true;
-		theStats.gplbreakerclients++;
-		AddDebugLogLine(false,GetResString(IDS_ANTIGPLBREAKERLOG) + _T(" (%s)"),DbgGetClientInfo(),pszReason==NULL ? _T("No Reason") : pszReason);
-					}
-				break;
-	}
+	if (alfType==3) m_bGplBreaker = true;
+	AddDebugLogLine(false,GetResString(IDS_ALFLOG) + _T(" (%s)"),DbgGetClientInfo(),pszReason==NULL ? _T("No Reason") : pszReason);
+
 	theApp.clientlist->AddBannedClient( GetIP() );
 	SetUploadState(US_BANNED);
 	theApp.emuledlg->transferwnd->ShowQueueCount(theApp.uploadqueue->GetWaitingUserCount());

@@ -602,43 +602,17 @@ bool CClientReqSocket::ProcessPacket(char* packet, uint32 size, UINT opcode)
 					}
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-					if(client->IsLeecher()) {
+					if(client->IsALF()) {
 						// Flag blocks to delete
                         auStartOffsets[0] = 0; auEndOffsets[0] = 0; 
                         auStartOffsets[1] = 0; auEndOffsets[1] = 0; 
                         auStartOffsets[2] = 0; auEndOffsets[2] = 0; 
 						// Remove client from the upload queue
-						theApp.uploadqueue->RemoveFromUploadQueue(client,GetResString(IDS_UPSTOPPEDLEECHER), true, true);
-						AddDebugLogLine(false, GetResString(IDS_LEECHERDETREM));
+						theApp.uploadqueue->RemoveFromUploadQueue(client,GetResString(IDS_UPSTOPPEDALF), true, true);
+						AddDebugLogLine(false, GetResString(IDS_ALFDETREM));
 
 						theApp.uploadqueue->AddClientToQueue(client);
-						AddDebugLogLine(false, GetResString(IDS_LEECHERPUTBACK));
-						client->SetUploadFileID(theApp.sharedfiles->GetFileByID(reqfilehash));
-					}
-					if(client->IsBadComunity()) {
-						// Flag blocks to delete
-                        auStartOffsets[0] = 0; auEndOffsets[0] = 0; 
-                        auStartOffsets[1] = 0; auEndOffsets[1] = 0; 
-                        auStartOffsets[2] = 0; auEndOffsets[2] = 0; 
-						// Remove client from the upload queue
-						theApp.uploadqueue->RemoveFromUploadQueue(client,GetResString(IDS_UPSTOPPEDBADCOMUNITY), true, true);
-						AddDebugLogLine(false, GetResString(IDS_BADCOMUNITYDETREM));
-						
-						theApp.uploadqueue->AddClientToQueue(client);
-						AddDebugLogLine(false, GetResString(IDS_BADCOMUNITYPUTBACK));
-						client->SetUploadFileID(theApp.sharedfiles->GetFileByID(reqfilehash));
-					}
-					if(client->IsGplBreaker()) {
-						// Flag blocks to delete
-                        auStartOffsets[0] = 0; auEndOffsets[0] = 0; 
-                        auStartOffsets[1] = 0; auEndOffsets[1] = 0; 
-                        auStartOffsets[2] = 0; auEndOffsets[2] = 0; 
-						// Remove client from the upload queue
-						theApp.uploadqueue->RemoveFromUploadQueue(client,GetResString(IDS_UPSTOPPEDGPLBREAKER), true, true);
-						AddDebugLogLine(false, GetResString(IDS_GPLBREAKERDETREM));
-						
-						theApp.uploadqueue->AddClientToQueue(client);
-						AddDebugLogLine(false, GetResString(IDS_GPLBREAKERPUTBACK));
+						AddDebugLogLine(false, GetResString(IDS_ALFPUTBACK));
 						client->SetUploadFileID(theApp.sharedfiles->GetFileByID(reqfilehash));
 					}
 #endif //Anti-Leecher
@@ -805,7 +779,7 @@ bool CClientReqSocket::ProcessPacket(char* packet, uint32 size, UINT opcode)
 					//filter me?
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-					if ( (thePrefs.MsgOnlyFriends() && !client->IsFriend()) || (thePrefs.MsgOnlySecure() && client->GetUserName()==NULL) || (thePrefs.GetEnableAntiLeecher() && (client->IsLeecher() || client->TestLeecher())))
+					if ( (thePrefs.MsgOnlyFriends() && !client->IsFriend()) || (thePrefs.MsgOnlySecure() && client->GetUserName()==NULL) || (thePrefs.GetEnableALF() && (client->IsALF())))
 					{
 						if (!client->GetMessageFiltered()){
 							if (thePrefs.GetVerbose())

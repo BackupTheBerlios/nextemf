@@ -2385,8 +2385,8 @@ COPYVISIBLE             ICON                    "res\\CopyVisible.ico"
 EXPORTSELECTED          ICON                    "res\\ExportSelected.ico"
 EXPORTALL               ICON                    "res\\ExportAll.ico"
 CLIENT_NEXTEMF          ICON                    "res\\client_nextemf.ico"
-HARDLIMIT	        ICON                    "res\\HL.ico"
-DROP		        ICON                    "res\\DROP.ico"
+HARDLIMIT               ICON                    "res\\HL.ico"
+DROP                    ICON                    "res\\DROP.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2420,7 +2420,7 @@ IDR_HTTPDOWNLOAD_ANI    AVI                     "res\\inetdownload.avi"
 // JPG
 //
 
-ABOUT                   JPG                     "res\\xmas-logo.jpg"
+ABOUT                   JPG                     "res\\logo.jpg"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -3578,7 +3578,13 @@ BEGIN
     IDS_ADDAFRIEND          "Add Friend..."
     IDS_PAF_REQINFO         "Required Information"
     IDS_PAF_MOREINFO        "Additional Information"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_PW_NEXTEMF          "NextEMF Settings"
+    IDS_UPSTOPPEDALF        "[ALF - Anti-Leecher-Filter] Upload session not allowed to start. Client seems to be a leecher."
+    IDS_ALFLOG              "[ALF - Anti-Leecher-Filter] CLIENT :  %s | REASON :"
 END
 
 STRINGTABLE 
@@ -4427,36 +4433,21 @@ END
 //<==Anti-Fake-Rank [cyrex2001]
 //==>Anti-Leecher [cyrex2001]
 //#if defined (ANTI_LEECHER)
-STRINGTABLE
+STRINGTABLE 
 BEGIN
-    IDS_ANTI_BADCOMUNITY    "Enable anti-bad community control"
-    IDS_ANTI_GPLBREAKER     "Enable anti-GPL breaker control"
-    IDS_STATS_BADCOMUNITYCLIENTS "Bad communitys: %u"
-    IDS_STATS_GPLBREAKERCLIENTS "GPL breakers: %u"
-    IDS_BADCOMUNITYDETREM   "Bad community user detected and removed from the uploadqueue."
-    IDS_GPLBREAKERDETREM    "GPL breaker detected and removed from the uploadqueue."
-    IDS_BADCOMUNITYPUTBACK  "Bad community user put back in the waiting queue."
-    IDS_GPLBREAKERPUTBACK   "GPL breaker put back in the waiting queue."
-    IDS_UPSTOPPEDBADCOMUNITY 
-                            "Upload session not allowed to start. Client seems to be a bad community user."
-    IDS_UPSTOPPEDGPLBREAKER "Upload session not allowed to start. Client seems to be a GPL breaker."
-    IDS_ANTIBADCOMUNITYLOG  "[Anti-Community] Client %s has been temporary banned because of suspicious community-leech action, reason"
-    IDS_ANTIGPLBREAKERLOG   "[Anti-GPL-Breaker] Client %s has been temporary banned because of suspicious GPL-Breaker action, reason"
-    IDS_UPSTOPPEDLEECHER    "Upload session not allowed to start. Client seems to be a leecher."
-    IDS_ANTILEECHERLOG      "[Anti-Leechermods] Client %s has been temporary banned because of suspicious leech action, reason"
-    IDS_LEECHERDETREM       "Leecher detected and removed from the uploadqueue."
-    IDS_LEECHERPUTBACK      "Leecher put back in the waiting queue."
-    IDS_STATS_LEECHERCLIENTS "Leechers: %u"
-    IDS_ANTI_LEECHER        "Enable anti-leechers control"
+    IDS_ALFDETREM           "[ALF - Anti-Leecher-Filter] Client detected and removed from the uploadqueue."
+    IDS_ALFPUTBACK          "[ALF - Anti-Leecher-Filter] Client put back in the waiting queue."
+    IDS_STATS_ALFCLIENTS    "ALF-detection: %u"
+    IDS_ALF                 "Enable anti-leecher-filter (ALF)"
     IDS_ANTI_CREDITHACK     "Enable anti-credit hack control"
     IDS_DOWNLOAD_IN_BOLD    "Show active downloads in bold"
     IDS_DROPS               "Drops"
     IDS_DROPHQSLIMIT        "Drop sources with queues higher to"
     IDS_DROP_LOWIPTOLOWIP   "Drop LowIP to LowIP Sources"
-    IDS_DROP_UNKNOW_ERROR_BANNED   "Drop Unknown, Error and Banned Sources"
-    IDS_DROP_NNS	    "Drop Not Needed Sources"
-    IDS_DROP_FQS	    "Drop Full Queue Sources"
-    IDS_DROP_HQS	    "Drop High Queue Rating Sources"
+    IDS_DROP_UNKNOW_ERROR_BANNED "Drop Unknown, Error and Banned Sources"
+    IDS_DROP_NNS            "Drop Not Needed Sources"
+    IDS_DROP_FQS            "Drop Full Queue Sources"
+    IDS_DROP_HQS            "Drop High Queue Rating Sources"
     IDS_DROP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP 
                             "Drop NNS, FQS, HQRS, ERR, BAN & L2L"
     IDS_DROP_MENUE          "Sources Handling (DROP)"

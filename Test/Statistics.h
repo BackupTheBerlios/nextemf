@@ -144,9 +144,7 @@ public:
 
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-	static uint32	leecherclients;
-	static uint32	badcomunityclients;
-	static uint32	gplbreakerclients;
+	static uint32	alfclients;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 

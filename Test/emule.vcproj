@@ -22,7 +22,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;WINSOCK2;RSAIC_SIVKA;MODVERSION;SIVKA_BAN;ANTI_LEECHER;DROP;OPTIM;HARDLIMIT;ANTI_FAKE_RANK"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;WINSOCK2;RSAIC_SIVKA;MODVERSION;SIVKA_BAN;ANTI_LEECHER;DROP;OPTIM;HARDLIMIT;ANTI_FAKE_RANK;ASK_FOR_PRIO"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
@@ -93,7 +93,7 @@
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;WINSOCK2;RSAIC_SIVKA;MODVERSION;SIVKA_BAN;ANTI_LEECHER;DROP;OPTIM;HARDLIMIT;ANTI_FAKE_RANK"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;WINSOCK2;RSAIC_SIVKA;MODVERSION;SIVKA_BAN;ANTI_LEECHER;DROP;OPTIM;HARDLIMIT;ANTI_FAKE_RANK;ASK_FOR_PRIO"
 				StringPooling="TRUE"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
@@ -162,7 +162,7 @@
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_DUMP;ID3LIB_LINKOPTION=1;WINSOCK2;RSAIC_SIVKA;MODVERSION;SIVKA_BAN;ANTI_LEECHER;DROP;OPTIM;HARDLIMIT;ANTI_FAKE_RANK"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_DUMP;ID3LIB_LINKOPTION=1;WINSOCK2;RSAIC_SIVKA;MODVERSION;SIVKA_BAN;ANTI_LEECHER;DROP;OPTIM;HARDLIMIT;ANTI_FAKE_RANK;ASK_FOR_PRIO"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="0"
@@ -222,7 +222,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;WINSOCK2;RSAIC_SIVKA;MODVERSION;SIVKA_BAN;ANTI_LEECHER;DROP;OPTIM;HARDLIMIT;ANTI_FAKE_RANK"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;WINSOCK2;RSAIC_SIVKA;MODVERSION;SIVKA_BAN;ANTI_LEECHER;DROP;OPTIM;HARDLIMIT;ANTI_FAKE_RANK;ASK_FOR_PRIO"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
@@ -294,7 +294,7 @@
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;WINSOCK2;RSAIC_SIVKA;MODVERSION;SIVKA_BAN;DROP;OPTIM;ANTI_LEECHER;HARDLIMIT;ANTI_FAKE_RANK"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;WINSOCK2;RSAIC_SIVKA;MODVERSION;SIVKA_BAN;DROP;OPTIM;ANTI_LEECHER;HARDLIMIT;ANTI_FAKE_RANK;ASK_FOR_PRIO"
 				StringPooling="TRUE"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
@@ -2379,9 +2379,6 @@
 			</File>
 			<File
 				RelativePath="res\Wizzard.ico">
-			</File>
-			<File
-				RelativePath=".\res\xmas-logo.jpg">
 			</File>
 		</Filter>
 		<Filter
