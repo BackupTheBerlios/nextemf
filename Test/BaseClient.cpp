@@ -679,26 +679,33 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 		LPCTSTR pszLeecherReason = NULL;
 		LPCTSTR pszBadComunityReason = NULL;
 		LPCTSTR pszGplBreakerReason = NULL;
+		m_bLeecher = false; 
+                m_bBadComunity = false; 
+                m_bGplBreaker = false; 
 		if(thePrefs.GetEnableAntiCreditHack())
 			if (theApp.GetID()!=m_nUserIDHybrid && memcmp(m_achUserHash, thePrefs.GetUserHash(), 16)==0)
 				pszLeecherReason = _T("Anti Credit Hack");
 		if(thePrefs.GetEnableAntiLeecher() && pszLeecherReason == NULL)
 			pszLeecherReason = TestLeecher(); 
-		if(pszLeecherReason != NULL)
+		if(pszLeecherReason != NULL){
 			BanLeecher(pszLeecherReason);
-		if(thePrefs.GetEnableAntiBadComunity() && pszBadComunityReason == NULL)
-			pszBadComunityReason = BadComunity();
-		if(pszBadComunityReason != NULL)
-			BanBadComunity(pszBadComunityReason);
-		if(thePrefs.GetEnableAntiGplBreaker() && pszGplBreakerReason == NULL)
-			pszGplBreakerReason = BadComunity();
-		if(pszGplBreakerReason != NULL)
-			BanGplBreaker(pszGplBreakerReason);
+				m_bLeecher = true; }
 		else
-		{
-			m_bLeecher = false;
-			m_bBadComunity = false;
-			m_bGplBreaker = false;
+				{ 
+					if(thePrefs.GetEnableAntiBadComunity()) 
+                    { 
+			pszBadComunityReason = BadComunity();
+						if(pszBadComunityReason != NULL) {
+			BanBadComunity(pszBadComunityReason);
+							m_bBadComunity = true; }
+                    } 
+					else if (thePrefs.GetEnableAntiGplBreaker() && pszBadComunityReason == NULL) 
+					{
+			pszGplBreakerReason = BadComunity();
+						if(pszGplBreakerReason != NULL) {
+			BanGplBreaker(pszGplBreakerReason);
+							m_bGplBreaker = true; }
+                    } 
 		}
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
@@ -963,26 +970,17 @@ void CUpDownClient::ProcessMuleInfoPacket(char* pachPacket, uint32 nSize)
 	if(thePrefs.GetEnableAntiLeecher())
 	{
 		LPCTSTR pszLeecherReason = TestLeecher();
-		if (pszLeecherReason != NULL)
-			BanLeecher(pszLeecherReason);
-		else
-			m_bLeecher = false;
+		(pszLeecherReason != NULL)?BanLeecher(pszLeecherReason):m_bLeecher = false;
 	}
-	if(thePrefs.GetEnableAntiBadComunity())
+	if(thePrefs.GetEnableAntiBadComunity() && m_bLeecher == false)
 	{
 		LPCTSTR pszBadComunityReason = BadComunity();
-		if (pszBadComunityReason != NULL)
-			BanBadComunity(pszBadComunityReason);
-		else
-			m_bBadComunity = false;
+		(pszBadComunityReason != NULL)?BanBadComunity(pszBadComunityReason):m_bBadComunity = false;
 	}
-	if(thePrefs.GetEnableAntiGplBreaker())
+	if(thePrefs.GetEnableAntiGplBreaker() && m_bLeecher == false && m_bBadComunity == false)
 	{
 		LPCTSTR pszGplBreakerReason = GplBreaker();
-		if (pszGplBreakerReason != NULL)
-			BanGplBreaker(pszGplBreakerReason);
-		else
-			m_bGplBreaker = false;
+		(pszGplBreakerReason != NULL)?BanGplBreaker(pszGplBreakerReason):m_bGplBreaker = false;
 	}
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
@@ -1891,26 +1889,17 @@ void CUpDownClient::SetUserName(LPCTSTR pszNewName)
 	if(thePrefs.GetEnableAntiLeecher())
 	{
 		LPCTSTR pszLeecherReason = TestLeecher();
-		if (pszLeecherReason != NULL)
-			BanLeecher(pszLeecherReason);
-		else
-			m_bLeecher = false;
+		(pszLeecherReason != NULL)?BanLeecher(pszLeecherReason):m_bLeecher = false;
 	}
-	if(thePrefs.GetEnableAntiBadComunity())
+	if(thePrefs.GetEnableAntiBadComunity() && m_bLeecher == false)
 	{
 		LPCTSTR pszBadComunityReason = BadComunity();
-		if (pszBadComunityReason != NULL)
-			BanBadComunity(pszBadComunityReason);
-		else
-			m_bBadComunity = false;
+		(pszBadComunityReason != NULL)?BanBadComunity(pszBadComunityReason):m_bBadComunity = false;
 	}
-	if(thePrefs.GetEnableAntiGplBreaker())
+	if(thePrefs.GetEnableAntiGplBreaker() && m_bLeecher == false && m_bBadComunity == false)
 	{
 		LPCTSTR pszGplBreakerReason = GplBreaker();
-		if (pszGplBreakerReason != NULL)
-			BanGplBreaker(pszGplBreakerReason);
-		else
-			m_bGplBreaker = false;
+		(pszGplBreakerReason != NULL)?BanGplBreaker(pszGplBreakerReason):m_bGplBreaker = false;
 	}
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]

@@ -1000,6 +1000,10 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 					stattree.SetItemText( down_ssessions[2] , cbuffer ); // Set Avg DL/Session
 					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_SDLSES) , statGoodSessions , percentSessions );
 					stattree.SetItemText( down_ssessions[0] , cbuffer ); // Set Succ Sessions
+//==>some optimizations by WiZaRd [shadow2004]
+#ifdef FIX01
+					percentSessions = statBadSessions?(100 - percentSessions):0;
+#else
 					// Set Failed Download Sessions (Avoid Division)
 					if (percentSessions != 0 && statBadSessions > 0) 
 						percentSessions = 100 - percentSessions; // There were some good sessions and bad ones...
@@ -1007,6 +1011,8 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 						percentSessions = 100; // There were bad sessions and no good ones, must be 100%
 					else 
 						percentSessions = 0; // No sessions at all, or no bad ones.
+#endif
+//<==some optimizations by WiZaRd [shadow2004]
 					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_FDLSES) , statBadSessions , percentSessions );
 					stattree.SetItemText( down_ssessions[1] , cbuffer );
 					// Set Average Download Time
@@ -1197,6 +1203,10 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 					stattree.SetItemText( down_tsessions[2] , cbuffer ); // Set Avg DL/Session
 					cbuffer.Format( _T("%s: %u (%1.1f%%)"), GetResString(IDS_STATS_SDLSES) , statGoodSessions , percentSessions );
 					stattree.SetItemText( down_tsessions[0] , cbuffer ); // Set Successful Sessions
+//==>some optimizations by WiZaRd [shadow2004]
+#ifdef FIX01
+					percentSessions = statBadSessions?(100 - percentSessions):0;
+#else
 					// Set Cum Failed Download Sessions
 					if (percentSessions != 0 && statBadSessions > 0) 
 						percentSessions = 100 - percentSessions; // There were some good sessions and bad ones...
@@ -1204,6 +1214,8 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 						percentSessions = 100; // There were bad sessions and no good ones, must be 100%
 					else 
 						percentSessions = 0; // No sessions at all, or no bad ones.
+#endif
+//<==some optimizations by WiZaRd [shadow2004]
 					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_FDLSES) , statBadSessions , percentSessions);
 					stattree.SetItemText( down_tsessions[1] , cbuffer );
 					// Set Cumulative Average Download Time
@@ -1438,6 +1450,10 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 					stattree.SetItemText(up_ssessions[2], cbuffer);
 					cbuffer.Format(GetResString(IDS_STATS_SUCCUPCOUNT),statGoodSessions,percentSessions);
 					stattree.SetItemText(up_ssessions[0], cbuffer);
+//==>some optimizations by WiZaRd [shadow2004]
+#ifdef FIX01
+					percentSessions = statBadSessions?(100 - percentSessions):0;
+#else
 					// Set Failed Upload Sessions
 					if (percentSessions != 0 && statBadSessions > 0) 
 						percentSessions = 100 - percentSessions; // There were some good sessions and bad ones...
@@ -1445,6 +1461,8 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 						percentSessions = 100; // There were bad sessions and no good ones, must be 100%
 					else 
 						percentSessions = 0; // No sessions at all, or no bad ones.
+#endif
+//<==some optimizations by WiZaRd [shadow2004]
 					cbuffer.Format(GetResString(IDS_STATS_FAILUPCOUNT),statBadSessions,percentSessions);
 					stattree.SetItemText(up_ssessions[1], cbuffer);
 					// Set Avg Upload time
@@ -1634,6 +1652,10 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 					stattree.SetItemText(up_tsessions[2], cbuffer);
 					cbuffer.Format(GetResString(IDS_STATS_SUCCUPCOUNT),statGoodSessions,percentSessions);
 					stattree.SetItemText(up_tsessions[0], cbuffer);
+//==>some optimizations by WiZaRd [shadow2004]
+#ifdef FIX01
+					percentSessions = statBadSessions?(100 - percentSessions):0;
+#else
 					// Set Failed Upload Sessions
 					if (percentSessions != 0 && statBadSessions > 0) 
 						percentSessions = 100 - percentSessions; // There were some good sessions and bad ones...
@@ -1641,6 +1663,8 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 						percentSessions = 100; // There were bad sessions and no good ones, must be 100%
 					else 
 						percentSessions = 0; // No sessions at all, or no bad ones.
+#endif
+//<==some optimizations by WiZaRd [shadow2004]
 					cbuffer.Format(GetResString(IDS_STATS_FAILUPCOUNT),statBadSessions,percentSessions);
 					stattree.SetItemText(up_tsessions[1], cbuffer);
 					// Set Avg Upload time
@@ -2102,6 +2126,10 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 								percentSessions = 0;
 							cbuffer.Format(GetResString(IDS_STATS_SUCCUPCOUNT),statGoodSessions,percentSessions);
 							stattree.SetItemText(time_aap_up_s[mx][0], cbuffer);
+//==>some optimizations by WiZaRd [shadow2004]
+#ifdef FIX01
+					percentSessions = statBadSessions?(100 - percentSessions):0;
+#else
 							// Set Failed Upload Sessions
 							if (percentSessions != 0 && statBadSessions > 0) 
 								percentSessions = 100 - percentSessions; // There were some good sessions and bad ones...
@@ -2109,6 +2137,8 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 								percentSessions = 100; // There were bad sessions and no good ones, must be 100%
 							else 
 								percentSessions = 0; // No sessions at all, or no bad ones.
+#endif
+//<==some optimizations by WiZaRd [shadow2004]
 							cbuffer.Format(GetResString(IDS_STATS_FAILUPCOUNT),statBadSessions,percentSessions);
 							stattree.SetItemText(time_aap_up_s[mx][1], cbuffer);
 						}
@@ -2291,6 +2321,10 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 								percentSessions = 0;
 							cbuffer.Format( _T("%s: %u (%1.1f%%)"), GetResString(IDS_STATS_SDLSES) , statGoodSessions , percentSessions );
 							stattree.SetItemText( time_aap_down_s[mx][0] , cbuffer ); // Set Successful Sessions
+//==>some optimizations by WiZaRd [shadow2004]
+#ifdef FIX01
+					percentSessions = statBadSessions?(100 - percentSessions):0;
+#else
 							// Set Cum Failed Download Sessions
 							if (percentSessions != 0 && statBadSessions > 0) 
 								percentSessions = 100 - percentSessions; // There were some good sessions and bad ones...
@@ -2298,6 +2332,8 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 								percentSessions = 100; // There were bad sessions and no good ones, must be 100%
 							else 
 								percentSessions = 0; // No sessions at all, or no bad ones.
+#endif
+//<==some optimizations by WiZaRd [shadow2004]
 							cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_FDLSES) , statBadSessions , percentSessions);
 							stattree.SetItemText( time_aap_down_s[mx][1] , cbuffer );
 						}

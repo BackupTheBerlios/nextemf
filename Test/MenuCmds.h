@@ -17,6 +17,7 @@
 #define CLEANUP							//	Maella's Extended CleanUp
 #define GRAPHIX							//  Graphs In 'statistics' Window Fixed
 #define WEBFIX1							//	Some Fixes in Webserver by CML
+#define FIX01							//	some optimizations by WiZaRd (StatisticDlg.cpp)
 //<== Präprozessoren [shadow2004]
 
 ///////////////////////////////////////////////////////////////////////////////
