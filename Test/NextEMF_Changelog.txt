@@ -1,6 +1,9 @@
 eMule 0.44d [NextEMF v0.x]
 ===========================
 
+ADDED  : Filter 0 Uploaders: after a client caused 3 following
+         failed downloadsessions, it's IP get's filtered.
+         No more upload/download/connection by Xman [cyrex2001]
 ADDED  : Chunk Selection Patch by Xman [cyrex2001] 
 ADDED  : Timestamp is now available for Chatwindow [shadow2004]
 ADDED  : show hardlimit to sourcelist [cyrex2001] 

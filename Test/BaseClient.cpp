@@ -280,6 +280,12 @@ void CUpDownClient::Init()
 	m_bValidSource = false;
 #endif //List Of Dont Ask This IPs
 //<==List Of Dont Ask This IPs [cyrex2001]
+//==>Xman filter clients with failed downloads [cyrex2001]
+#ifdef FILTER_FAILED_DOWNLOADS
+	m_faileddownloads=0;
+	m_transferedthissession=0;
+#endif //Filter failed downloads
+//<==Xman filter clients with failed downloads [cyrex2001]
 }
 
 CUpDownClient::~CUpDownClient(){

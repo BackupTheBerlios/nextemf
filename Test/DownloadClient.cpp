@@ -681,9 +681,31 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState){
 
 			// -khaos--+++> Extended Statistics (Successful/Failed Download Sessions)
 			if ( m_bTransferredDownMini && nNewState != DS_ERROR )
+				{
 				thePrefs.Add2DownSuccessfulSessions(); // Increment our counters for successful sessions (Cumulative AND Session)
+//==>Xman filter clients with failed downloads [cyrex2001]
+#ifdef FILTER_FAILED_DOWNLOADS
+				if(m_transferedthissession< (12*1024)) //12 kb
+					m_faileddownloads++;
 			else
+					m_faileddownloads=0; 
+#endif //Filter failed downloads
+//<==Xman filter clients with failed downloads [cyrex2001]
+				}
+			else
+				{
 				thePrefs.Add2DownFailedSessions(); // Increment our counters failed sessions (Cumulative AND Session)
+//==>Xman filter clients with failed downloads [cyrex2001]
+#ifdef FILTER_FAILED_DOWNLOADS
+				m_faileddownloads++;
+#endif //Filter failed downloads
+//<==Xman filter clients with failed downloads [cyrex2001]
+				}
+//==>Xman filter clients with failed downloads [cyrex2001]
+#ifdef FILTER_FAILED_DOWNLOADS
+			m_transferedthissession=0;
+#endif //Filter failed downloads
+//<==Xman filter clients with failed downloads [cyrex2001]
 			thePrefs.Add2DownSAvgTime(GetDownTimeDifference()/1000);
 			// <-----khaos-
 
@@ -1049,6 +1071,12 @@ void CUpDownClient::ProcessBlockPacket(char *packet, uint32 size, bool packed)
 			if (lenWritten > 0)
 			{
 				m_nTransferedDown += lenWritten;
+				
+//==>Xman filter clients with failed downloads [cyrex2001]
+#ifdef FILTER_FAILED_DOWNLOADS
+				m_transferedthissession += lenWritten;
+#endif //Filter failed downloads
+//<==Xman filter clients with failed downloads [cyrex2001]
 				
 				SetTransferredDownMini(); // Sets boolean m_bTransferredDownMini to true // -khaos--+++> For determining whether the current download session was a success or not.
 

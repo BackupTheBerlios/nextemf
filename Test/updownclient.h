@@ -876,6 +876,13 @@ public:
 	DWORD	dwLastTimeAskedForWPRank;
 #endif //Sivka-Ban
 //<==Sivka-Ban [cyrex2001]
+//==>Xman filter clients with failed downloads [cyrex2001]
+#ifdef FILTER_FAILED_DOWNLOADS
+public:
+	uint16 m_faileddownloads;
+	uint32 m_transferedthissession;
+#endif //Filter failed downloads
+//<==Xman filter clients with failed downloads [cyrex2001]
 };
 //#pragma pack()
 //==>Anti-Leecher [cyrex2001]
