@@ -447,6 +447,8 @@ UINT UploadBandwidthThrottler::RunInternal() {
 		    uint64 spentBytes = 0;
 		    uint64 spentOverhead = 0;
     
+		    sendLocker.Lock();
+    
 		    tempQueueLocker.Lock();
     
 		    // are there any sockets in m_TempControlQueue_list? Move them to normal m_ControlQueue_list;
@@ -460,8 +462,6 @@ UINT UploadBandwidthThrottler::RunInternal() {
 		    }
     
 		    tempQueueLocker.Unlock();
-    
-		    sendLocker.Lock();
     
 		    // Send any queued up control packets first
 		    while(bytesToSpend > 0 && spentBytes < (uint64)bytesToSpend && (!m_ControlQueueFirst_list.IsEmpty() || !m_ControlQueue_list.IsEmpty())) {

@@ -324,7 +324,7 @@ void CDownloadQueue::AddDownload(CPartFile* newfile,bool paused) {
 	SortByPriority();
 	CheckDiskspace();	// SLUGFILLER: checkDiskspace
 	theApp.emuledlg->transferwnd->downloadlistctrl.AddFile(newfile);
-	AddLogLine(true,GetResString(IDS_NEWDOWNLOAD),newfile->GetFileName());
+	AddLogLine(true, GetResString(IDS_NEWDOWNLOAD), newfile->GetFileName());
 	CString msgTemp;
 	msgTemp.Format(GetResString(IDS_NEWDOWNLOAD) + _T("\n"), newfile->GetFileName());
 	theApp.emuledlg->ShowNotifier(msgTemp, TBN_DLOADADDED);

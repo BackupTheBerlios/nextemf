@@ -154,6 +154,11 @@ void CUpDownClient::Init()
 	m_nSourceFrom = SF_SERVER;
 	m_bIsHybrid = false;
 	m_bIsML=false;
+//==> IsNextEMF
+#ifdef ISEMF
+	m_bIsNextEMF = false;
+#endif //ISEMF
+//<== IsNextEMF
 	m_Friend = NULL;
 	m_uFileRating=0;
 	(void)m_strFileComment;

@@ -375,7 +375,13 @@ BOOL CPPgTweaks::OnInitDialog()
 	InitWindowStyles(this);
 
 	m_iFileBufferSize = thePrefs.m_iFileBufferSize;
+//==> Cache-Buffersize to 4MB [shadow2004] // HDD Protection - Skynetman - //
+#ifdef CACHEUP 
+    m_ctlFileBuffSize.SetRange(16, 4096, TRUE); 
+#else //CACHEUP
 	m_ctlFileBuffSize.SetRange(16, 1024+512, TRUE);
+#endif //CACHEUP
+//<== Cache-Buffersize to 4MB [shadow2004]
 	int iMin, iMax;
 	m_ctlFileBuffSize.GetRange(iMin, iMax);
 	m_ctlFileBuffSize.SetPos(m_iFileBufferSize/1024);
