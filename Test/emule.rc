@@ -4387,6 +4387,30 @@ BEGIN
     IDS_ANTI_FAKE_RANK      "Anti-Fake-Rank enable"
 END
 
+STRINGTABLE
+BEGIN
+    IDS_ANTI_BADCOMUNITY    "Enable anti-bad community control"
+    IDS_ANTI_GPLBREAKER     "Enable anti-GPL breaker control"
+    IDS_STATS_BADCOMUNITYCLIENTS "Bad communitys: %u"
+    IDS_STATS_GPLBREAKERCLIENTS "GPL breakers: %u"
+    IDS_BADCOMUNITYDETREM   "Bad community user detected and removed from the uploadqueue."
+    IDS_GPLBREAKERDETREM    "GPL breaker detected and removed from the uploadqueue."
+    IDS_BADCOMUNITYPUTBACK  "Bad community user put back in the waiting queue."
+    IDS_GPLBREAKERPUTBACK   "GPL breaker put back in the waiting queue."
+    IDS_UPSTOPPEDBADCOMUNITY 
+                            "Upload session not allowed to start. Client seems to be a bad community user."
+    IDS_UPSTOPPEDGPLBREAKER "Upload session not allowed to start. Client seems to be a GPL breaker."
+    IDS_ANTIBADCOMUNITYLOG  "[Anti-Community] Client %s with mod %s has been temporary banned because of suspicious community-leech action"
+    IDS_ANTIGPLBREAKERLOG   "[Anti-GPL-Breaker] Client %s with mod %s has been temporary banned because of suspicious GPL-Breaker action"
+    IDS_UPSTOPPEDLEECHER    "Upload session not allowed to start. Client seems to be a leecher."
+    IDS_ANTILEECHERLOG      "[Anti-Leechermods] Client %s with mod %s has been temporary banned because of suspicious leech action"
+    IDS_LEECHERDETREM       "Leecher detected and removed from the uploadqueue."
+    IDS_LEECHERPUTBACK      "Leecher put back in the waiting queue."
+    IDS_STATS_LEECHERCLIENTS "Leechers: %u"
+    IDS_ANTI_LEECHER        "Enable anti-leechers control"
+    IDS_ANTI_CREDITHACK     "Enable anti-credit hack control"
+END
+
 #endif    // Englisch (USA) resources
 /////////////////////////////////////////////////////////////////////////////
 

@@ -142,6 +142,14 @@ public:
 	static uint32	filteredclients;
 	static DWORD	starttime;
 
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	static uint32	leecherclients;
+	static uint32	badcomunityclients;
+	static uint32	gplbreakerclients;
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
+
 private:
 	typedef struct TransferredData {
 		uint32	datalen;

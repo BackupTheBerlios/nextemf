@@ -294,7 +294,7 @@
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;ASKING;WINSOCK2;SourceXT;RSAIC_SIVKA;QUICKSTART;HARDLIMIT;MODVERSION;SIVKA_BAN;CACHEUP;ANTI_FAKE_RANK;BOLDPROZ;DLWND1"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;ASKING;WINSOCK2;SourceXT;RSAIC_SIVKA;QUICKSTART;HARDLIMIT;MODVERSION;SIVKA_BAN;CACHEUP;ANTI_FAKE_RANK;BOLDPROZ;DLWND1;ANTI_LEECHER"
 				StringPooling="TRUE"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
@@ -2415,6 +2415,9 @@
 		<Filter
 			Name="NextEMF"
 			Filter="">
+			<File
+				RelativePath=".\NextEMF\AdvancedLeecherFilter.cpp">
+			</File>
 			<File
 				RelativePath=".\NextEMF\HardLimit.cpp">
 			</File>

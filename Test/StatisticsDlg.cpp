@@ -2818,6 +2818,13 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		cbuffer.Format(_T("%s: %u (%1.1f%%)"), GetResString(IDS_STATS_PROBLEMATIC), myStats[6],(double)100*myStats[6]/totalclient );stattree.SetItemText(cligen[0], cbuffer);
 		cbuffer.Format(_T("%s: %u (%1.1f%%)"), GetResString(IDS_BANNED), myStats[7], (double)100*myStats[7]/totalclient);stattree.SetItemText(cligen[1], cbuffer);
 		cbuffer.Format(GetResString(IDS_STATS_FILTEREDCLIENTS)+_T(" (%1.1f%%)"),theStats.filteredclients, (double)100*theStats.filteredclients/totalclient);stattree.SetItemText(cligen[2], cbuffer);
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+		cbuffer.Format(GetResString(IDS_STATS_LEECHERCLIENTS) +_T(" (%1.1f%%)"),theStats.leecherclients, (double)100*theStats.leecherclients/totalclient);stattree.SetItemText(cligen[6], cbuffer);
+		cbuffer.Format(GetResString(IDS_STATS_BADCOMUNITYCLIENTS) +_T(" (%1.1f%%)"),theStats.badcomunityclients, (double)100*theStats.badcomunityclients/totalclient);stattree.SetItemText(cligen[7], cbuffer);
+		cbuffer.Format(GetResString(IDS_STATS_GPLBREAKERCLIENTS) +_T(" (%1.1f%%)"),theStats.gplbreakerclients, (double)100*theStats.gplbreakerclients/totalclient);stattree.SetItemText(cligen[8], cbuffer);
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 	} // - END CLIENTS SECTION
 
 
@@ -3272,6 +3279,13 @@ void CStatisticsDlg::CreateMyTree()
 	cligen[3] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), h_clients);
 	for(int i = 0; i<3; i++)
 		cligen[i] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), h_clients);
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	cligen[6] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), h_clients);
+	cligen[7] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), h_clients);
+	cligen[8] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), h_clients);
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 	h_servers = stattree.InsertItem(GetResString(IDS_FSTAT_SERVERS),4,4);					// Servers section
 	for(int i = 0; i<6; i++)
 		srv[i] = stattree.InsertItem(GetResString(IDS_FSTAT_WAITING), h_servers);		// Servers Items

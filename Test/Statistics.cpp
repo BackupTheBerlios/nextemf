@@ -92,7 +92,13 @@ DWORD	CStatistics::transferStarttime;
 DWORD	CStatistics::serverConnectTime;
 uint32	CStatistics::filteredclients;
 DWORD	CStatistics::starttime;
-
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+uint32	CStatistics::leecherclients;
+uint32	CStatistics::badcomunityclients;
+uint32	CStatistics::gplbreakerclients;
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 
 CStatistics::CStatistics()
 {
@@ -157,6 +163,14 @@ CStatistics::CStatistics()
 	m_nUpDataOverheadOther = 0;
 	m_nUpDataOverheadOtherPackets = 0;
 	m_sumavgUDRO = 0;
+
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	leecherclients=0;
+	badcomunityclients=0;
+	gplbreakerclients=0;
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 }
 
 void CStatistics::Init()

@@ -32,6 +32,11 @@ class CSafeMemFile;
 class CEMSocket;
 class CAICHHash;
 enum EUtf8Str;
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+class CTag;
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 
 struct Pending_Block_Struct{
 	Pending_Block_Struct()
@@ -277,6 +282,13 @@ public:
 	void			SetSentCancelTransfer(bool bVal)				{ m_fSentCancelTransfer = bVal; }
 	void			ProcessPublicIPAnswer(const BYTE* pbyData, UINT uSize);
 	void			SendPublicIPRequest();
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	bool			IsLeecher()	const				{return m_bLeecher;}
+	bool			IsBadComunity()	const				{return m_bBadComunity;}
+	bool			IsGplBreaker()	const				{return m_bGplBreaker;}
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 	// secure ident
 	void			SendPublicKeyPacket();
 	void			SendSignaturePacket();
@@ -327,6 +339,13 @@ public:
 	void			Ban(LPCTSTR pszReason = NULL);
 #endif //Sivka-Ban
 //<==Sivka-Ban [cyrex2001]
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	void			BanLeecher(LPCTSTR pszReason = NULL);
+	void			BanBadComunity(LPCTSTR pszReason = NULL);
+	void			BanGplBreaker(LPCTSTR pszReason = NULL);
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 	uint32			GetAskedCount() const							{ return m_cAsked; }
 	void			AddAskedCount()									{ m_cAsked++; }
 	void			SetAskedCount(uint32 m_cInAsked)				{ m_cAsked = m_cInAsked; }
@@ -552,6 +571,13 @@ public:
 	bool IsNextEMF() const { return m_bIsNextEMF;}
 #endif //Modversion
 //<==Modversion [cyrex2001]
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	LPCTSTR		TestLeecher();
+	LPCTSTR		BadComunity();
+	LPCTSTR		GplBreaker();
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 
 protected:
 	int		m_iHttpSendState;
@@ -585,6 +611,23 @@ protected:
 	bool	m_bIsHybrid;
 	//--group to aligned int32
 	TCHAR*	m_pszUsername;
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	TCHAR*	old_m_pszUsername;
+	TCHAR*	old_m_pszUsername1;
+	TCHAR*	old_m_pszUsername2;
+	CString	old_m_strClientSoftware;
+	CString	old_m_strClientSoftware1;
+	bool		m_bLeecher;
+	bool		m_bBadComunity;
+	bool		m_bGplBreaker;
+	CString		comm_m_strClientSoftware;
+	CString		comm_m_pszUsername;
+	CString		extracted_community;
+	void			ProcessUnknownHelloTag(CTag *tag);
+	void			ProcessUnknownInfoTag(CTag *tag);
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 	uchar	m_achUserHash[16];
 	uint16	m_nUDPPort;
 	uint16	m_nKadPort;
@@ -599,7 +642,13 @@ protected:
 	bool	m_bCommentDirty;
 	bool	m_bIsML;
 	//--group to aligned int32
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	//nope
+#else //Anti-Leecher
 	bool	m_bGPLEvildoer;
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 	bool	m_bHelloAnswerPending;
 	uint8	m_byInfopacketsReceived;	// have we received the edonkeyprot and emuleprot packet already (see InfoPacketsReceived() )
 	uint8	m_bySupportSecIdent;
@@ -794,3 +843,75 @@ public:
 
 };
 //#pragma pack()
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+static LPCTSTR apszSnafuTag[] =
+	{
+	_T("[DodgeBoards]"),									//0
+	_T("[DodgeBoards & DarkMule eVorteX]"),					//1
+	_T("[DarkMule v6 eVorteX]"),							//2
+	_T("[eMuleReactor]"),									//3
+	_T("[Bionic]"),											//4
+	_T("[LSD7c]"),											//5
+	_T("[0x8d] unknown Leecher - (client version:60)"),		//6
+	_T("[RAMMSTEIN]"),										//7
+	_T("[MD5 Community]"),									//8
+	_T("[new DarkMule]"),									//9
+	_T("[OMEGA v.07 Heiko]"),								//10
+	_T("[eMule v0.26 Leecher]"),							//11
+	_T("[Hunter]"),											//12
+	_T("[Bionic 0.20 Beta]"),								//13
+	_T("[Rumata (rus)(Plus v1f)]")							//14
+	};
+
+//<<< new tags from eMule 0.04x
+#define CT_UNKNOWNx0			0x00 // Hybrid Horde protocol
+#define CT_UNKNOWNx12			0x12 // http://www.haspepapa-welt.de (DodgeBoards)
+#define CT_UNKNOWNx13			0x13 // http://www.haspepapa-welt.de (DodgeBoards)
+#define CT_UNKNOWNx14			0x14 // http://www.haspepapa-welt.de (DodgeBoards)
+#define CT_UNKNOWNx15			0x15 // http://www.haspepapa-welt.de (DodgeBoards) & DarkMule |eVorte|X|
+#define CT_UNKNOWNx16			0x16 // http://www.haspepapa-welt.de (DodgeBoards)
+#define CT_UNKNOWNx17			0x17 // http://www.haspepapa-welt.de (DodgeBoards)
+#define CT_UNKNOWNx22			0x22 // DarkMule |eVorte|X|
+#define CT_UNKNOWNx63			0x63 // ?
+#define CT_UNKNOWNx64			0x64 // ?
+#define CT_UNKNOWNx69			0x69 // eMuleReactor
+#define CT_UNKNOWNx79			0x79 // Bionic
+#define CT_UNKNOWNx88			0x88 // DarkMule v6 |eVorte|X|
+#define CT_UNKNOWNx8c			0x8c // eMule v0.27c [LSD7c] 
+#define CT_UNKNOWNx8d			0x8d // unknown Leecher - (client version:60)
+#define CT_UNKNOWNx99			0x99 // eMule v0.26d [RAMMSTEIN 8b]
+#define CT_UNKNOWNxbb			0xbb // emule.de (client version:60)
+#define CT_UNKNOWNxc4			0xc4 //MD5 Community from new bionic - hello
+#define CT_FRIENDSHARING		0x66 //eWombat  [SNAFU]
+#define CT_DARK					0x54 //eWombat [SNAFU]
+// unknown eMule tags
+#define ET_MOD_UNKNOWNx12		0x12 // http://www.haspepapa-welt.de
+#define ET_MOD_UNKNOWNx13		0x13 // http://www.haspepapa-welt.de
+#define ET_MOD_UNKNOWNx14		0x14 // http://www.haspepapa-welt.de
+#define ET_MOD_UNKNOWNx17		0x17 // http://www.haspepapa-welt.de
+#define ET_MOD_UNKNOWNx2F		0x2F // eMule v0.30 [OMEGA v.07 Heiko]
+#define ET_MOD_UNKNOWNx30		0x30 // aMule 1.2.0
+#define ET_MOD_UNKNOWNx36		0x36 // eMule v0.26
+#define ET_MOD_UNKNOWNx3C		0x3C // enkeyDev.6 / LamerzChoice 9.9a
+#define ET_MOD_UNKNOWNx41		0x41 // CrewMod (pre-release mod based on Plus) identification
+#define ET_MOD_UNKNOWNx42		0x42 // CrewMod (pre-release mod based on Plus) key verification
+#define ET_MOD_UNKNOWNx43		0x43 // CrewMod (pre-release mod based on Plus) version info
+#define ET_MOD_UNKNOWNx50		0x50 // Bionic 0.20 Beta]
+#define ET_MOD_UNKNOWNx59		0x59 // emule 0.40 / eMule v0.30 [LSD.12e]
+#define ET_MOD_UNKNOWNx5B		0x5B // eMule v0.26
+#define ET_MOD_UNKNOWNx60		0x60 // eMule v0.30a Hunter.6 + eMule v0.26
+#define ET_MOD_UNKNOWNx64		0x64 // LSD.9dT / Athlazan(0.29c)Alpha.3
+#define ET_MOD_UNKNOWNx76		0x76 // http://www.haspepapa-welt.de (DodgeBoards)
+#define ET_MOD_UNKNOWNx84		0x84 // eChanblardv3.2
+#define ET_MOD_UNKNOWNx85		0x85 // ? 
+#define ET_MOD_UNKNOWNx86		0x86 // ? 
+#define ET_MOD_UNKNOWNx93		0x93 // ?
+#define ET_MOD_UNKNOWNxA6		0xA6 // eMule v0.26
+#define ET_MOD_UNKNOWNxB1		0xB1 // Bionic 0.20 Beta]
+#define ET_MOD_UNKNOWNxB4		0xB4 // Bionic 0.20 Beta]
+#define ET_MOD_UNKNOWNxC8		0xC8 // Bionic 0.20 Beta]
+#define ET_MOD_UNKNOWNxC9		0xC9 // Bionic 0.20 Beta]
+#define ET_MOD_UNKNOWNxDA		0xDA // Rumata (rus)(Plus v1f) - leecher mod?
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]

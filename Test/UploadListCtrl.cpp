@@ -109,28 +109,28 @@ void CUploadListCtrl::SetAllIcons()
 	imagelist.DeleteImageList();
 	imagelist.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
 	imagelist.SetBkColor(CLR_NONE);
-	imagelist.Add(CTempIconLoader(_T("ClientEDonkey")));
-	imagelist.Add(CTempIconLoader(_T("ClientCompatible")));
-	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyPlus")));
-	imagelist.Add(CTempIconLoader(_T("ClientCompatiblePlus")));
-	imagelist.Add(CTempIconLoader(_T("Friend")));
-	imagelist.Add(CTempIconLoader(_T("ClientMLDonkey")));
-	imagelist.Add(CTempIconLoader(_T("ClientMLDonkeyPlus")));
-	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyHybrid")));
-	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyHybridPlus")));
-	imagelist.Add(CTempIconLoader(_T("ClientShareaza")));
-	imagelist.Add(CTempIconLoader(_T("ClientShareazaPlus")));
-	imagelist.Add(CTempIconLoader(_T("ClientAMule")));
-	imagelist.Add(CTempIconLoader(_T("ClientAMulePlus")));
-	imagelist.Add(CTempIconLoader(_T("ClientLPhant")));
-	imagelist.Add(CTempIconLoader(_T("ClientLPhantPlus")));
+	imagelist.Add(CTempIconLoader(_T("ClientEDonkey")));//0
+	imagelist.Add(CTempIconLoader(_T("ClientCompatible")));//1
+	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyPlus")));//2
+	imagelist.Add(CTempIconLoader(_T("ClientCompatiblePlus")));//3
+	imagelist.Add(CTempIconLoader(_T("Friend")));//4
+	imagelist.Add(CTempIconLoader(_T("ClientMLDonkey")));//5
+	imagelist.Add(CTempIconLoader(_T("ClientMLDonkeyPlus")));//6
+	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyHybrid")));//7
+	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyHybridPlus")));//8
+	imagelist.Add(CTempIconLoader(_T("ClientShareaza")));//9
+	imagelist.Add(CTempIconLoader(_T("ClientShareazaPlus")));//10
+	imagelist.Add(CTempIconLoader(_T("ClientAMule")));//11
+	imagelist.Add(CTempIconLoader(_T("ClientAMulePlus")));//12
+	imagelist.Add(CTempIconLoader(_T("ClientLPhant")));//13
+	imagelist.Add(CTempIconLoader(_T("ClientLPhantPlus")));//14
+	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);//15
 //==>Modversion [cyrex2001]
 #ifdef MODVERSION
 	imagelist.Add(CTempIconLoader(_T("CLIENT_NEXTEMF")));//16
 #endif //Modversion
 //<==Modversion [cyrex2001]
-	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
-}
+}	
 
 void CUploadListCtrl::Localize()
 {
@@ -323,7 +323,7 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 						else
 							image = 1;
 #endif //Modversion
-//<==Modversion [cyrex2001
+//<==Modversion [cyrex2001]
 					}
 					else{
 						if (client->credits->GetScoreRatio(client->GetIP()) > 1)

@@ -206,8 +206,15 @@ uint32 CUpDownClient::GetScore(bool sysvalue, bool isdownloading, bool onlybasev
 	if (IsFriend() && GetFriendSlot() && !HasLowID())
 		return 0x0FFFFFFF;
 
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	//nope
+#else //Anti-Leecher
 	if (IsBanned() || m_bGPLEvildoer)
 		return 0;
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
+
 
 	if (sysvalue && HasLowID() && !(socket && socket->IsConnected())){
 		return 0;
@@ -879,6 +886,63 @@ void CUpDownClient::Ban(LPCTSTR pszReason)
 #endif //Sivka-Ban
 //<==Sivka-Ban [cyrex2001]
 }
+
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+void CUpDownClient::BanLeecher(LPCTSTR pszReason){
+	theApp.clientlist->AddTrackClient(this);
+	if (!m_bLeecher){
+		theStats.leecherclients++;
+		m_bLeecher = true;
+		AddDebugLogLine(false,GetResString(IDS_ANTILEECHERLOG) + _T(" (%s)"),DbgGetClientInfo(),pszReason==NULL ? _T("No Reason") : pszReason);
+	}
+	theApp.clientlist->AddBannedClient( GetIP() );
+	SetUploadState(US_BANNED);
+	theApp.emuledlg->transferwnd->ShowQueueCount(theApp.uploadqueue->GetWaitingUserCount());
+	theApp.emuledlg->transferwnd->queuelistctrl.RefreshClient(this);
+	if (socket != NULL && socket->IsConnected())
+		socket->ShutDown(SD_RECEIVE); // let the socket timeout, since we dont want to risk to delete the client right now. This isnt acutally perfect, could be changed later
+}
+//MORPH END   - Added by IceCream, Anti-leecher feature
+//cyrex2001 ==>ALF
+void CUpDownClient::BanBadComunity(LPCTSTR pszReason){
+	theApp.clientlist->AddTrackClient(this);
+	if (!m_bBadComunity){
+		theStats.badcomunityclients++;
+		m_bBadComunity = true;
+		AddDebugLogLine(false,GetResString(IDS_ANTIBADCOMUNITYLOG) + _T(" (%s)"),DbgGetClientInfo(),pszReason==NULL ? _T("No Reason") : pszReason);
+
+	}
+	theApp.clientlist->AddBannedClient( GetIP() );
+	SetUploadState(US_BANNED);
+	theApp.emuledlg->transferwnd->ShowQueueCount(theApp.uploadqueue->GetWaitingUserCount());
+	theApp.emuledlg->transferwnd->queuelistctrl.RefreshClient(this);
+//	if (log_message)
+//		AddDebugLogLine(false,GetResString(IDS_ANTIBADCOMUNITYLOG),GetUserName(),DbgGetFullClientSoftVer());
+	if (socket != NULL && socket->IsConnected())
+		socket->ShutDown(SD_RECEIVE); // let the socket timeout, since we dont want to risk to delete the client right now. This isnt acutally perfect, could be changed later
+
+}
+void CUpDownClient::BanGplBreaker(LPCTSTR pszReason){
+	theApp.clientlist->AddTrackClient(this);
+	if (!m_bGplBreaker){
+		theStats.gplbreakerclients++;
+		m_bGplBreaker = true;
+		AddDebugLogLine(false,GetResString(IDS_ANTIGPLBREAKERLOG) + _T(" (%s)"),DbgGetClientInfo(),pszReason==NULL ? _T("No Reason") : pszReason);
+
+	}
+	theApp.clientlist->AddBannedClient( GetIP() );
+	SetUploadState(US_BANNED);
+	theApp.emuledlg->transferwnd->ShowQueueCount(theApp.uploadqueue->GetWaitingUserCount());
+	theApp.emuledlg->transferwnd->queuelistctrl.RefreshClient(this);
+//	if (log_message)
+//		AddDebugLogLine(false,GetResString(IDS_ANTIGPLBREAKERLOG),GetUserName(),DbgGetFullClientSoftVer());
+	if (socket != NULL && socket->IsConnected())
+		socket->ShutDown(SD_RECEIVE); // let the socket timeout, since we dont want to risk to delete the client right now. This isnt acutally perfect, could be changed later
+
+}
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 
 uint32 CUpDownClient::GetWaitStartTime() const
 {

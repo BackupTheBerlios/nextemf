@@ -199,7 +199,6 @@ void CUpDownClient::Init()
     m_addedPayloadQueueSession = 0;
     m_nCurQueueSessionPayloadUp = 0; // PENDING: Is this necessary? ResetSessionUp()...
     m_lastRefreshedULDisplay = ::GetTickCount();
-	m_bGPLEvildoer = false;
 	m_bHelloAnswerPending = false;
 	m_fNoViewSharedFiles = 0;
 	m_bMultiPacket = 0;
@@ -254,6 +253,18 @@ void CUpDownClient::Init()
  m_bValidSource = false;
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	m_bLeecher = false;
+	m_bBadComunity = false;
+	m_bGplBreaker = false;
+	old_m_pszUsername = 0;
+    old_m_pszUsername1 = 0;
+	old_m_pszUsername2 = 0;
+#else //Anti-Leecher
+	m_bGPLEvildoer = false;
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -436,7 +447,13 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 					m_strModVersion = _T("ModID=<Unknwon>");
 				if (bDbgInfo)
 					m_strHelloInfo.AppendFormat(_T("\n  ModID=%s"), m_strModVersion);
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+				GplBreaker();
+#else //Anti-Leecher
 				CheckForGPLEvilDoer();
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 				break;
 			case CT_EMULE_UDPPORTS:
 				// 16 KAD Port
@@ -508,6 +525,12 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 					m_strHelloInfo.AppendFormat(_T("\n  ClientVer=%u.%u.%u.%u  Comptbl=%u"), (m_nClientVersion >> 17) & 0x7f, (m_nClientVersion >> 10) & 0x7f, (m_nClientVersion >> 7) & 0x07, m_nClientVersion & 0x7f, m_byCompatibleClient);
 				break;
 			default:
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+				if (!((temptag.GetNameID() & 0xF0)==0xF0))
+					ProcessUnknownHelloTag(&temptag);
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 				if (bDbgInfo)
 					m_strHelloInfo.AppendFormat(_T("\n  ***UnkTag=%s"), temptag.GetFullInfo());
 		}
@@ -593,7 +616,10 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 		// avoid that an unwanted client instance keeps a friend slot
 		SetFriendSlot(false);
 	}
-
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	//nope
+#else //Anti-Leecher
 	// check for known major gpl breaker
 	CString strBuffer = m_pszUsername;
 	strBuffer.MakeUpper();
@@ -601,6 +627,8 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	if (strBuffer.Find(_T("EMULE-CLIENT")) != -1 || strBuffer.Find(_T("POWERMULE")) != -1 ){
 		m_bGPLEvildoer = true;  
 	}
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 
 	ReGetClientSoft();
 
@@ -610,6 +638,34 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	if (bIsMule){
 		m_bEmuleProtocol = true;
 		m_byInfopacketsReceived |= IP_EMULEPROTPACK;
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+		LPCTSTR pszLeecherReason = NULL;
+		LPCTSTR pszBadComunityReason = NULL;
+		LPCTSTR pszGplBreakerReason = NULL;
+		if(thePrefs.GetEnableAntiCreditHack())
+			if (theApp.GetID()!=m_nUserIDHybrid && memcmp(m_achUserHash, thePrefs.GetUserHash(), 16)==0)
+				pszLeecherReason = _T("Anti Credit Hack");
+		if(thePrefs.GetEnableAntiLeecher() && pszLeecherReason == NULL)
+			pszLeecherReason = TestLeecher(); 
+		if(pszLeecherReason != NULL)
+			BanLeecher(pszLeecherReason);
+		if(thePrefs.GetEnableAntiBadComunity() && pszBadComunityReason == NULL)
+			pszBadComunityReason = BadComunity();
+		if(pszBadComunityReason != NULL)
+			BanBadComunity(pszBadComunityReason);
+		if(thePrefs.GetEnableAntiGplBreaker() && pszGplBreakerReason == NULL)
+			pszGplBreakerReason = BadComunity();
+		if(pszGplBreakerReason != NULL)
+			BanGplBreaker(pszGplBreakerReason);
+		else
+		{
+			m_bLeecher = false;
+			m_bBadComunity = false;
+			m_bGplBreaker = false;
+		}
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 	}
 
 	if (thePrefs.GetVerbose() && GetServerIP() == INADDR_NONE)
@@ -679,13 +735,26 @@ void CUpDownClient::SendMuleInfoPacket(bool bAnswer){
 	CTag tag7(ET_FEATURES, dwTagValue);
 	tag7.WriteTagToFile(&data);
 
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER        
+        if (StrStrI(m_strModVersion,_T("Mison"))||StrStrI(m_strModVersion,_T("eVort"))||StrStrI(m_strModVersion,_T("booster"))||IsLeecher()){
+			CTag tag8(ET_MOD_VERSION, m_strModVersion);
+			tag8.WriteTagToFile(&data);
+		}
+		else{
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 //==>Modversion [cyrex2001]
 #ifdef MODVERSION
 	CTag tag8(ET_MOD_VERSION, theApp.m_strModVersion);
 	tag8.WriteTagToFile(&data);
 #endif //Modversion
 //<==Modversion [cyrex2001]
-
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+                }
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 	Packet* packet = new Packet(&data,OP_EMULEPROT);
 	if (!bAnswer)
 		packet->opcode = OP_EMULEINFO;
@@ -819,9 +888,21 @@ void CUpDownClient::ProcessMuleInfoPacket(char* pachPacket, uint32 nSize)
 					m_strModVersion = _T("ModID=<Unknwon>");
 				if (bDbgInfo)
 					m_strMuleInfo.AppendFormat(_T("\n  ModID=%s"), m_strModVersion);
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+				GplBreaker();
+#else //Anti-Leecher
 				CheckForGPLEvilDoer();
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 				break;
 			default:
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+				if (!((temptag.GetNameID() & 0xF0)==0xF0)) //[SNAFU_V3]
+					ProcessUnknownInfoTag(&temptag); //[SNAFU_V3]
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 				if (bDbgInfo)
 					m_strMuleInfo.AppendFormat(_T("\n  ***UnkTag=%s"), temptag.GetFullInfo());
 		}
@@ -841,6 +922,34 @@ void CUpDownClient::ProcessMuleInfoPacket(char* pachPacket, uint32 nSize)
 
 	if (thePrefs.GetVerbose() && GetServerIP() == INADDR_NONE)
 		AddDebugLogLine(false, _T("Received invalid server IP %s from %s"), ipstr(GetServerIP()), DbgGetClientInfo());
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	if(thePrefs.GetEnableAntiLeecher())
+	{
+		LPCTSTR pszLeecherReason = TestLeecher();
+		if (pszLeecherReason != NULL)
+			BanLeecher(pszLeecherReason);
+		else
+			m_bLeecher = false;
+	}
+	if(thePrefs.GetEnableAntiBadComunity())
+	{
+		LPCTSTR pszBadComunityReason = BadComunity();
+		if (pszBadComunityReason != NULL)
+			BanBadComunity(pszBadComunityReason);
+		else
+			m_bBadComunity = false;
+	}
+	if(thePrefs.GetEnableAntiGplBreaker())
+	{
+		LPCTSTR pszGplBreakerReason = GplBreaker();
+		if (pszGplBreakerReason != NULL)
+			BanGplBreaker(pszGplBreakerReason);
+		else
+			m_bGplBreaker = false;
+	}
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 }
 
 void CUpDownClient::SendHelloAnswer(){
@@ -882,10 +991,16 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 	data->WriteUInt32(tagcount);
 
 	// eD2K Name
-
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+        CTag tagName(CT_NAME, (!IsGplBreaker()) ? thePrefs.GetUserNick() : _T("Please use a GPL-conform version of eMule") );
+	tagName.WriteTagToFile(data, utf8strRaw);  
+#else //Anti-Leecher
 	// TODO implement multi language website which informs users of the effects of bad mods
 	CTag tagName(CT_NAME, (!m_bGPLEvildoer) ? thePrefs.GetUserNick() : _T("Please use a GPL-conform version of eMule") );
 	tagName.WriteTagToFile(data, utf8strRaw);
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 
 	// eD2K Version
 	CTag tagVersion(CT_VERSION,EDONKEYVERSION);
@@ -953,14 +1068,26 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 //				(RESERVED			     ) 
 				);
 	tagMuleVersion.WriteTagToFile(data);
-
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+        if (StrStrI(m_strModVersion,_T("Mison"))||StrStrI(m_strModVersion,_T("eVort"))||StrStrI(m_strModVersion,_T("booster"))||IsLeecher()){
+			CTag tagMODVersion(ET_MOD_VERSION, m_strModVersion);
+			tagMODVersion.WriteTagToFile(data);
+		}
+		else{
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 //==>Modversion [cyrex2001]
 #ifdef MODVERSION
 	CTag tagMODVersion(ET_MOD_VERSION, theApp.m_strModVersion);
 	tagMODVersion.WriteTagToFile(data);
 #endif //Modversion
 //<==Modversion [cyrex2001]
-
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+                }
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 	uint32 dwIP;
 	uint16 nPort;
 	if (theApp.serverconnect->IsConnected()){
@@ -1711,6 +1838,34 @@ void CUpDownClient::SetUserName(LPCTSTR pszNewName)
 	}
 	if( pszNewName )
 		m_pszUsername = _tcsdup(pszNewName);
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	if(thePrefs.GetEnableAntiLeecher())
+	{
+		LPCTSTR pszLeecherReason = TestLeecher();
+		if (pszLeecherReason != NULL)
+			BanLeecher(pszLeecherReason);
+		else
+			m_bLeecher = false;
+	}
+	if(thePrefs.GetEnableAntiBadComunity())
+	{
+		LPCTSTR pszBadComunityReason = BadComunity();
+		if (pszBadComunityReason != NULL)
+			BanBadComunity(pszBadComunityReason);
+		else
+			m_bBadComunity = false;
+	}
+	if(thePrefs.GetEnableAntiGplBreaker())
+	{
+		LPCTSTR pszGplBreakerReason = GplBreaker();
+		if (pszGplBreakerReason != NULL)
+			BanGplBreaker(pszGplBreakerReason);
+		else
+			m_bGplBreaker = false;
+	}
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 }
 
 void CUpDownClient::RequestSharedFileList()
@@ -2343,7 +2498,10 @@ bool CUpDownClient::CheckHandshakeFinished(UINT protocol, UINT opcode) const
 
 	return true;
 }
-
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	//nope
+#else //Anti-Leecher
 void CUpDownClient::CheckForGPLEvilDoer()
 {
 	if (!m_strModVersion.IsEmpty()){
@@ -2352,12 +2510,13 @@ void CUpDownClient::CheckForGPLEvilDoer()
 		// skip leading spaces
 		while (*pszModVersion == _T(' '))
 			pszModVersion++;
-
 		// check for known major gpl breaker
 		if (_tcsnicmp(pszModVersion, _T("LH"), 2)==0 || _tcsnicmp(pszModVersion, _T("LIO"), 3)==0 || _tcsnicmp(pszModVersion, _T("PLUS PLUS"), 9)==0)
 			m_bGPLEvildoer = true;
 	}
 }
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 
 void CUpDownClient::OnSocketConnected(int nErrorCode)
 {
@@ -2546,4 +2705,85 @@ bool CUpDownClient::IsLeecherFakeRank(){
 	return true;
 	}
 #endif //AntiFakeRank
-//<==AntiFakeRank [cyrex2001]
+//<==AntiFakeRank [cyrex2001]//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+void CUpDownClient::ProcessUnknownHelloTag(CTag *tag)//[SNAFU_V3]
+{
+if (!thePrefs.GetEnableAntiLeecher() || IsLeecher())
+	return;
+
+LPCTSTR strSnafuTag=NULL;
+switch(tag->GetNameID())
+	{
+	case CT_UNKNOWNx12:
+	case CT_UNKNOWNx13:
+	case CT_UNKNOWNx14:
+	case CT_UNKNOWNx16:
+	case CT_UNKNOWNx17:			strSnafuTag=apszSnafuTag[0];break;//buffer=_T("DodgeBoards");break;
+	case CT_UNKNOWNx15:			strSnafuTag=apszSnafuTag[1];break;//buffer=_T("DodgeBoards & DarkMule |eVorte|X|");break;
+	case CT_UNKNOWNx22:			strSnafuTag=apszSnafuTag[2];break;//buffer=_T("DarkMule v6 |eVorte|X|");break;
+	//case CT_UNKNOWNx69:			strSnafuTag=apszSnafuTag[3];break;//buffer=_T("eMuleReactor");break;
+	case CT_UNKNOWNx79:			strSnafuTag=apszSnafuTag[4];break;//buffer=_T("Bionic");break;
+	case CT_UNKNOWNx88:
+		////If its a LSD its o.k
+		//if (m_strModVersion.IsEmpty() || !stristrex(((CString)m_strModVersion).Left(3),"lsd"))
+		//	strSnafuTag=apszSnafuTag[5];//[LSD7c]
+		break;
+	case CT_UNKNOWNx8c:			strSnafuTag=apszSnafuTag[5];break;//buffer=_T("[LSD7c]");break; 
+	case CT_UNKNOWNx8d:			strSnafuTag=apszSnafuTag[6];break;//buffer=_T("[0x8d] unknown Leecher - (client version:60)");break;
+	case CT_UNKNOWNx99:			strSnafuTag=apszSnafuTag[7];break;//buffer=_T("[RAMMSTEIN]");break;		//STRIKE BACK
+	case CT_UNKNOWNxc4:			strSnafuTag=apszSnafuTag[8];break;//buffer=_T("[MD5 Community]");break;	//USED BY NEW BIONIC => 0x12 Sender
+	case CT_FRIENDSHARING:		//STRIKE BACK
+		//if (theApp.glob_prefs->GetAntiFriendshare())
+		//	{
+		//	if (tag->tag.type==TAGTYPE_UINT32 && tag->tag.intvalue == FRIENDSHARING_ID) //Mit dieser ID Definitiv
+		//		{
+		//		DoSnafu(snafu_friendsharemod,false,false);
+		//		return;				
+		//		}
+		//	}
+		break;
+	case CT_DARK:				//STRIKE BACK				
+			strSnafuTag=apszSnafuTag[9];break;//buffer=_T("new DarkMule");
+		break;
+	}
+	if (strSnafuTag!=NULL)
+	{
+		CString buffer;
+		buffer.Format(_T("Suspect Hello-Tag: %s %s"), strSnafuTag, tag->GetFullInfo());
+		BanLeecher(buffer);
+	}
+}
+void CUpDownClient::ProcessUnknownInfoTag(CTag *tag)//[SNAFU_V3]
+{
+if (!thePrefs.GetEnableAntiLeecher() || IsLeecher())
+	return;
+LPCTSTR strSnafuTag=NULL;
+switch(tag->GetNameID())
+	{
+	case ET_MOD_UNKNOWNx12:
+	case ET_MOD_UNKNOWNx13:
+	case ET_MOD_UNKNOWNx14:
+	case ET_MOD_UNKNOWNx17:		strSnafuTag=apszSnafuTag[0];break;//("[DodgeBoards]")
+	case ET_MOD_UNKNOWNx2F:		strSnafuTag=apszSnafuTag[10];break;//buffer=_T("[OMEGA v.07 Heiko]");break;
+	case ET_MOD_UNKNOWNx36:
+	case ET_MOD_UNKNOWNx5B:
+	case ET_MOD_UNKNOWNxA6:		strSnafuTag=apszSnafuTag[11];break;//buffer=_T("eMule v0.26 Leecher");break;
+	case ET_MOD_UNKNOWNx60:		strSnafuTag=apszSnafuTag[12];break;//buffer=_T("[Hunter]");break; //STRIKE BACK
+	case ET_MOD_UNKNOWNx76:		strSnafuTag=apszSnafuTag[0];break;//buffer=_T("[DodgeBoards]");break;
+	case ET_MOD_UNKNOWNx50:		
+	case ET_MOD_UNKNOWNxB1:		
+	case ET_MOD_UNKNOWNxB4:		
+	case ET_MOD_UNKNOWNxC8:		
+	case ET_MOD_UNKNOWNxC9:		strSnafuTag=apszSnafuTag[13];break;//buffer=_T("[Bionic 0.20 Beta]");break;
+	case ET_MOD_UNKNOWNxDA:		strSnafuTag=apszSnafuTag[14];break;//buffer=_T("[Rumata (rus)(Plus v1f)]");break;
+	}
+	if (strSnafuTag!=NULL)
+	{
+		CString buffer;
+		buffer.Format(_T("Suspect eMuleInfo-Tag: %s %s"), strSnafuTag, tag->GetFullInfo());
+		BanLeecher(buffer);
+	}
+}
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]

@@ -600,7 +600,49 @@ bool CClientReqSocket::ProcessPacket(char* packet, uint32 size, UINT opcode)
 						Debug(_T("  Start2=%u  End2=%u  Size=%u\n"), auStartOffsets[1], auEndOffsets[1], auEndOffsets[1] - auStartOffsets[1]);
 						Debug(_T("  Start3=%u  End3=%u  Size=%u\n"), auStartOffsets[2], auEndOffsets[2], auEndOffsets[2] - auStartOffsets[2]);
 					}
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+					if(client->IsLeecher()) {
+						// Flag blocks to delete
+                        auStartOffsets[0] = 0; auEndOffsets[0] = 0; 
+                        auStartOffsets[1] = 0; auEndOffsets[1] = 0; 
+                        auStartOffsets[2] = 0; auEndOffsets[2] = 0; 
+						// Remove client from the upload queue
+						theApp.uploadqueue->RemoveFromUploadQueue(client,GetResString(IDS_UPSTOPPEDLEECHER), true, true);
+						AddDebugLogLine(false, GetResString(IDS_LEECHERDETREM));
 
+						theApp.uploadqueue->AddClientToQueue(client);
+						AddDebugLogLine(false, GetResString(IDS_LEECHERPUTBACK));
+						client->SetUploadFileID(theApp.sharedfiles->GetFileByID(reqfilehash));
+					}
+					if(client->IsBadComunity()) {
+						// Flag blocks to delete
+                        auStartOffsets[0] = 0; auEndOffsets[0] = 0; 
+                        auStartOffsets[1] = 0; auEndOffsets[1] = 0; 
+                        auStartOffsets[2] = 0; auEndOffsets[2] = 0; 
+						// Remove client from the upload queue
+						theApp.uploadqueue->RemoveFromUploadQueue(client,GetResString(IDS_UPSTOPPEDBADCOMUNITY), true, true);
+						AddDebugLogLine(false, GetResString(IDS_BADCOMUNITYDETREM));
+						
+						theApp.uploadqueue->AddClientToQueue(client);
+						AddDebugLogLine(false, GetResString(IDS_BADCOMUNITYPUTBACK));
+						client->SetUploadFileID(theApp.sharedfiles->GetFileByID(reqfilehash));
+					}
+					if(client->IsGplBreaker()) {
+						// Flag blocks to delete
+                        auStartOffsets[0] = 0; auEndOffsets[0] = 0; 
+                        auStartOffsets[1] = 0; auEndOffsets[1] = 0; 
+                        auStartOffsets[2] = 0; auEndOffsets[2] = 0; 
+						// Remove client from the upload queue
+						theApp.uploadqueue->RemoveFromUploadQueue(client,GetResString(IDS_UPSTOPPEDGPLBREAKER), true, true);
+						AddDebugLogLine(false, GetResString(IDS_GPLBREAKERDETREM));
+						
+						theApp.uploadqueue->AddClientToQueue(client);
+						AddDebugLogLine(false, GetResString(IDS_GPLBREAKERPUTBACK));
+						client->SetUploadFileID(theApp.sharedfiles->GetFileByID(reqfilehash));
+					}
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 					for (int i = 0; i < ARRSIZE(auStartOffsets); i++)
 					{
 						if (auEndOffsets[i] > auStartOffsets[i])
@@ -761,6 +803,18 @@ bool CClientReqSocket::ProcessPacket(char* packet, uint32 size, UINT opcode)
 						throw CString(_T("invalid message packet"));
 					
 					//filter me?
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+					if ( (thePrefs.MsgOnlyFriends() && !client->IsFriend()) || (thePrefs.MsgOnlySecure() && client->GetUserName()==NULL) || (thePrefs.GetEnableAntiLeecher() && (client->IsLeecher() || client->TestLeecher())))
+					{
+						if (!client->GetMessageFiltered()){
+							if (thePrefs.GetVerbose())
+								AddDebugLogLine(false,_T("Filtered Message from '%s' (IP:%s) (%s)"), client->GetUserName(), ipstr(client->GetConnectIP()), client->GetClientSoftVer());
+						}
+						client->SetMessageFiltered(true);
+						break;
+					}
+#else //Anti-Leecher
 					if ( (thePrefs.MsgOnlyFriends() && !client->IsFriend()) || (thePrefs.MsgOnlySecure() && client->GetUserName()==NULL) )
 					{
 						if (!client->GetMessageFiltered()){
@@ -770,7 +824,8 @@ bool CClientReqSocket::ProcessPacket(char* packet, uint32 size, UINT opcode)
 						client->SetMessageFiltered(true);
 						break;
 					}
-
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 					if (length > MAX_CLIENT_MSG_LEN){
 						if (thePrefs.GetVerbose())
 							AddDebugLogLine(false, _T("Message from '%s' (IP:%s) exceeds limit by %u chars, truncated."), client->GetUserName(), ipstr(client->GetConnectIP()), length - MAX_CLIENT_MSG_LEN);

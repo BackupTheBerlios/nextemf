@@ -613,6 +613,14 @@ public:
 	static bool	AntiFakeRank;
 #endif //AntiFakeRank
 //<==AntiFakeRank [cyrex2001]
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	static bool	enableAntiLeecher;
+	static bool	enableAntiCreditHack;
+	static bool	enableAntiBadComunity;
+	static bool	enableAntiGplBreaker;
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 
 	enum Table
 	{
@@ -1385,6 +1393,14 @@ public:
 	static bool	GetAntiFakeRank()				        {return m_bAntiFakeRank;}
 #endif //AntiFakeRank
 //<==AntiFakeRank [cyrex2001]
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	static	bool	GetEnableAntiCreditHack()				{ return enableAntiCreditHack; }
+	static	bool GetEnableAntiLeecher()						{ return enableAntiLeecher; }
+	static	bool GetEnableAntiBadComunity()					{ return enableAntiBadComunity; }
+	static	bool GetEnableAntiGplBreaker()					{ return enableAntiGplBreaker; }
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 
 protected:
 	static	CString appdir;
