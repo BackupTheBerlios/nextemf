@@ -10,6 +10,7 @@ FIXED  : Modstring wasn't shown in Title, if "show Transfer" is off [shadow2004]
 FIXED  : Bold Download-Settings in Preferences [shadow2004]
 FIXED  : 2 Bugs in Statistik-window by apph [shadow]
 FIXED  : Tiny Tweak ;-) by Moonlight [shadow2004]
+FIXED  : Some small Bugs in Webserver by CML [shadow2004]
 UPDATE : Cleaned Up the own Source-Code [shadow2004]
 
 

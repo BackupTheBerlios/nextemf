@@ -1000,9 +1000,18 @@ bool CemuleApp::GetLangHelpFilePath(CString& strResult)
 	bool bFound;
 	if (thePrefs.GetLanguageID() != MAKELANGID(LANG_ENGLISH, SUBLANG_DEFAULT))
 	{
+//==> off WebServer-Fix [shadow2004]
+#ifdef WEBFIX1
+		int pos = strHelpFile.ReverseFind(_T('\\'));//CML
+		CString temp;
+		temp.Format(_T("%s\\eMule.%u.chm"), strHelpFile.Left(pos), thePrefs.GetLanguageID());//CML
+#else
 		int pos = strHelpFile.ReverseFind(_T('.'));
 		CString temp;
 		temp.Format(_T("%s.%u.chm"), strHelpFile.Left(pos), thePrefs.GetLanguageID());
+#endif
+//<== off WebServer-Fix [shadow2004]
+
 		if (pos>0)
 			strHelpFile = temp;
 		
@@ -1016,6 +1025,14 @@ bool CemuleApp::GetLangHelpFilePath(CString& strResult)
 		strHelpFile.Replace(_T(".HLP"), _T(".chm"));
 	}
 	else{
+//==> off WebServer-Fix [shadow2004]
+#ifdef WEBFIX1
+		int pos = strHelpFile.ReverseFind(_T('\\'));//CML
+		CString temp;//CML
+		temp.Format(_T("%s\\eMule.chm"), strHelpFile.Left(pos));//CML
+		strHelpFile = temp;//CML
+#endif
+//<==> off WebServer-Fix [shadow2004]
 		strHelpFile.Replace(_T(".HLP"), _T(".chm"));
 		if (!ff.FindFile(strHelpFile, 0))
 			bFound = false;

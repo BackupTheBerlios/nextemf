@@ -621,12 +621,18 @@ CString CWebServer::_ParseURL(CString URL, CString fieldname)
 	}
 
 #ifdef _UNICODE
+//==> off WebServer-Fix [shadow2004]
+#ifdef WEBFIX1
+	value = OptUtf8ToStr(value);//CML
+#else
 	CStringA strValueA;
 	LPSTR pszA = strValueA.GetBuffer(value.GetLength());
 	for (int i = 0; i < value.GetLength(); i++)
 		*pszA++ = (CHAR)value[i];
 	strValueA.ReleaseBuffer(value.GetLength());
 	value = strValueA;
+#endif
+//<== off WebServer-Fix [shadow2004]
 #endif
 
 	return value;
@@ -1697,7 +1703,13 @@ CString CWebServer::_GetSharedFilesList(ThreadData Data)
 	CString OutE2 = pThis->m_Templates.sSharedLineChanged; 
 	OutE.Replace(_T("[Ed2klink]"), _GetPlainResString(IDS_SW_LINK));
     OutE.Replace(_T("[PriorityUp]"), _GetPlainResString(IDS_PRIORITY_UP));
+//==> off WebServer-Fix [shadow2004]
+#ifdef WEBFIX1
+    OutE.Replace(_T("[PriorityDown]"), _GetPlainResString(IDS_PRIORITY_DOWN));//CML
+#else
     OutE.Replace(_T("[PriorityUp]"), _GetPlainResString(IDS_PRIORITY_DOWN));
+#endif
+//<== off WebServer-Fix [shadow2004]
 
 	CArray<SharedFiles, SharedFiles> SharedArray;
 	// Populating array
@@ -2703,6 +2715,11 @@ CString	CWebServer::_GetSearch(ThreadData Data)
 		SSearchParams* pParams = new SSearchParams;
 		pParams->strExpression = _ParseURL(Data.sURL, _T("tosearch"));
 		pParams->strFileType = _ParseURL(Data.sURL, _T("type"));
+//==> off WebServer-Fix [shadow2004]
+#ifdef WEBFIX1
+		pParams->bUnicode = (_ParseURL(Data.sURL, _T("unicode")).MakeLower() == _T("on"));//CML-Unicode search
+#endif
+//<== off WebServer-Fix [shadow2004]
 		// for safety: this string is sent to servers and/or kad nodes, validate it!
 		if (!pParams->strFileType.IsEmpty()
 			&& pParams->strFileType != ED2KFTSTR_ARCHIVE
@@ -2781,6 +2798,11 @@ CString	CWebServer::_GetSearch(ThreadData Data)
 	Out.Replace(_T("[WebSearch]"), _GetPlainResString(IDS_SW_WEBBASED));
 	Out.Replace(_T("[Name]"), _GetPlainResString(IDS_SW_NAME));
 	Out.Replace(_T("[Type]"), _GetPlainResString(IDS_TYPE));
+//==> off WebServer-Fix [shadow2004]
+#ifdef WEBFIX1
+	Out.Replace(_T("[Unicode]"), _GetPlainResString(IDS_SEARCH_UNICODE));//CML
+#endif
+//<== off WebServer-Fix [shadow2004]
 
 	// 'file type' display strings
 	Out.Replace(_T("[FileTypeAny]"), _GetPlainResString(IDS_SEARCH_ANY));

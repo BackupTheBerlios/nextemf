@@ -16,6 +16,7 @@
 #define SourceXT						//	Show full sources when searching over Server
 #define CLEANUP							//	Maella's Extended CleanUp
 #define GRAPHIX							//  Graphs In 'statistics' Window Fixed
+#define WEBFIX1							//	Some Fixes in Webserver by CML
 //<== Präprozessoren [shadow2004]
 
 ///////////////////////////////////////////////////////////////////////////////

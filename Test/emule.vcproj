@@ -2405,9 +2405,6 @@
 			<File
 				RelativePath="..\setup\Template.eMuleSkin.ini">
 			</File>
-			<File
-				RelativePath="..\setup\webservices.dat">
-			</File>
 		</Filter>
 		<Filter
 			Name="NextEMF"
