@@ -18,7 +18,7 @@
 #define	TEMPLATE	template <class BASE>
 #else
 // define this to instantiate functions for class 'BASE' right in this CPP module
-#define	TEMPLATE
+#define	TEMPLATE    template<> //VS2003-Fix [shadow]
 #define BASE		CResizableDialog
 #endif
 
