@@ -121,4 +121,10 @@ private:
 	CUpDownClientPtrList KadList;
 	CCriticalSection m_RequestTCPLock;
 	CUpDownClient* m_pBuddy;
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+public:
+	void TrigReaskForDownload(bool immediate);
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 };

@@ -773,3 +773,23 @@ void CClientList::ProcessA4AFClients() {
     //if(thePrefs.GetLogA4AF()) AddDebugLogLine(false, _T(">>> Done with A4AF check"));
 }
 // <-- ZZ:DownloadManager
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+void CClientList::TrigReaskForDownload(bool immediate)
+{
+for(POSITION pos = list.GetHeadPosition(); pos != NULL;)
+	{ 
+    CUpDownClient* cur_client = list.GetNext(pos); 
+	if(immediate == true)
+		{
+		// Compute the next time that the file might be saftly reasked (=> no Ban())
+		cur_client->SetNextTCPAskedTime(0);
+		}
+	else
+		{
+		// Compute the next time that the file might be saftly reasked (=> no Ban())
+		}
+	}	
+}
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]

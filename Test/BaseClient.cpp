@@ -233,6 +233,16 @@ void CUpDownClient::Init()
 	m_pReqFileAICHHash = NULL;
 	m_fSupportsAICH = 0;
 	m_fAICHRequested = 0;
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+	m_bValidSource = false;
+	m_dwLastAskedTime = 0;
+	m_dwLastUDPReaskTime = 0;
+	m_dwNextTCPAskedTime = 0;
+	uint32 jitter = rand() * MIN2S(4) / RAND_MAX; // 0..4 minutes, keep in mind integer overflow
+	m_jitteredFileReaskTime = FILEREASKTIME + SEC2MS(jitter) - MIN2MS(2); // -2..+2 minutes, keep the same average overload
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -1879,6 +1889,13 @@ void CUpDownClient::ResetFileStatusInfo()
 		delete[] m_abyPartStatus;
 		m_abyPartStatus = NULL;
 	}
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+	m_dwLastAskedTime = 0;
+	m_dwLastUDPReaskTime = 0;
+	m_dwNextTCPAskedTime = 0;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 	m_nRemoteQueueRank = 0;
 	m_nPartCount = 0;
 	m_strClientFilename.Empty();
@@ -2130,6 +2147,12 @@ void CUpDownClient::AssertValid() const
 	ASSERT( m_nChatstate >= MS_NONE && m_nChatstate <= MS_UNABLETOCONNECT );
 	(void)m_strFileComment;
 	(void)m_uFileRating;
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC //Reask sourcen after ip change
+	CHECK_BOOL(m_bValidSource);
+	(void)m_dwLastAskedTime;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 #undef CHECK_PTR
 #undef CHECK_BOOL
 }
