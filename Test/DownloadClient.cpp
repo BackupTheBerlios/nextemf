@@ -1296,10 +1296,17 @@ void CUpDownClient::UDPReaskForDownload()
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
 	//the line "m_bUDPPending = true;" use to be here
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	// deadlake PROXYSUPPORT
 	const ProxySettings& proxy = thePrefs.GetProxy();
 	if(m_nUDPPort != 0 && thePrefs.GetUDPPort() != 0 &&
 		!theApp.IsFirewalled() && !(socket && socket->IsConnected())&& (!proxy.UseProxy))
+#else //PROXY
+    if(m_nUDPPort != 0 && thePrefs.GetUDPPort() != 0 &&
+		!theApp.IsFirewalled() && !(socket && socket->IsConnected())) 
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 	{ 
 		if( !HasLowID() )
 		{

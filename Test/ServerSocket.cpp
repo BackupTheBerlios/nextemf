@@ -601,6 +601,8 @@ void CServerSocket::ConnectToServer(CServer* server){
 	cur_server = new CServer(server);
 	AddLogLine(false,GetResString(IDS_CONNECTINGTO),cur_server->GetListName(),cur_server->GetFullIP(),cur_server->GetPort());
 
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	if (thePrefs.IsProxyASCWOP() )
 	{
 		if (thePrefs.GetProxy().UseProxy == true)
@@ -612,6 +614,8 @@ void CServerSocket::ConnectToServer(CServer* server){
 		else
 			thePrefs.SetProxyASCWOP(false);
 	}
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 
 	SetConnectionState(CS_CONNECTING);
 	if (!this->Connect(server->GetAddress(),server->GetPort())){

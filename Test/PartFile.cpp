@@ -473,7 +473,7 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 	m_SettingsSaver.LoadSettings(this);
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001]
-
+	
 	// readfile data form part.met file
 	CSafeBufferedFile metFile;
 	CFileException fexpMet;
