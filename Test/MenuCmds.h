@@ -188,3 +188,8 @@
 */
 #endif //IRC
 //<== remove IRC [shadow2004]
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+#define MP_HARD_LIMIT			17000
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
