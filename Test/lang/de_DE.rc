@@ -1335,7 +1335,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_CUT                 "Ausschneiden"
-    IDS_STATS_SECUREIDENT   "Identifikation (pos : neg)"
+    IDS_STATS_SECUREIDENT   "Identifikation (pos : neg : andere)"
     IDS_ONDISK              "Größe auf Disk: "
     IDS_CLIENTCOL           "Warnung: zu einem bereits verbundenen Client wurde ein gleicher Client gefunden: %s (%s) und %s (%s)"
     IDS_SEARCH_UNTERMSTRING "nicht geschlossene Zeichenkette"
@@ -1611,6 +1611,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_DOWNLOAD_ALPHABETICAL "Download in alphabetischer Reihenfolge"
+    IDS_IRC_ADDTIMESTAMP    "Zeige Zeitstempel im Chat"
 END
 
 STRINGTABLE 
@@ -1800,6 +1801,7 @@ BEGIN
     IDS_DROP_HQS            "Entferne Quellen mit zu hoher Warteposition"
     IDS_DROP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP 
                             "Entferne alles (Ein-Klick-Entfernen)"
+    IDS_DROP_MENUE          "Quellen-Behandlung (Entfernen)"
 END
 
 #endif    // Deutsch (Deutschland) resources
