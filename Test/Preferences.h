@@ -550,6 +550,13 @@ public:
 	static bool	isQuickStartAfterIPChange;
 #endif //Quickstart
 //<==Quickstart [cyrex2001]
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	static	bool	m_MaxSourcesPerFileTakeOver;
+	static	uint16	m_MaxSourcesPerFileTemp;
+	static	bool	m_TakeOverFileSettings;
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 	enum Table
 	{
 		tableDownload, 
@@ -585,6 +592,11 @@ public:
 	friend class CPPgNextEMF;
 #endif //Reask sourcen after ip chnage or Quickstart
 //<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	friend class CHardLimit;
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 	CPreferences();
 	~CPreferences();
 
@@ -1267,6 +1279,15 @@ public:
 	static bool	GetQuickStartAfterIPChange()	{return isQuickStartAfterIPChange;}
 #endif //Quickstart
 //<==Quickstart [cyrex2001]
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	static	bool	GetMaxSourcesPerFileTakeOver(){return m_MaxSourcesPerFileTakeOver;}
+	static	uint16	GetMaxSourcesPerFileTemp(){return m_MaxSourcesPerFileTemp;}
+	static	void	SetMaxSourcesPerFileTemp(uint16 in){m_MaxSourcesPerFileTemp=in;}
+	static	bool	GetTakeOverFileSettings() {return m_TakeOverFileSettings;}
+	static	void	SetTakeOverFileSettings(bool in) {m_TakeOverFileSettings=in;}
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 
 protected:
 	static	CString appdir;

@@ -565,6 +565,13 @@ bool	CPreferences::m_bQuickStartAfterIPChange;
 bool	CPreferences::isQuickStartAfterIPChange;
 #endif //Quickstart
 //<==Quickstart [cyrex2001]
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+bool	CPreferences::m_MaxSourcesPerFileTakeOver;
+uint16	CPreferences::m_MaxSourcesPerFileTemp;
+bool	CPreferences::m_TakeOverFileSettings;
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 
 CPreferences::CPreferences()
 {
@@ -757,7 +764,16 @@ void CPreferences::Init()
 			AfxMessageBox(strError, MB_ICONERROR);
 		}
 	}
-
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	CString sSivkaAutoHLPath = CString(GetTempDir()) + _T("\\") + EMFFOLDER;
+	if (!PathFileExists(sSivkaAutoHLPath.GetBuffer()) && !::CreateDirectory(sSivkaAutoHLPath.GetBuffer(), 0)) {
+		CString strError;
+		strError.Format(_T("Failed to create sivka extra lists directory \"%s\" - %s"), sSivkaAutoHLPath, GetErrorMessage(GetLastError()));
+		AfxMessageBox(strError, MB_ICONERROR);
+	}
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 	if (((int*)userhash[0]) == 0 && ((int*)userhash[1]) == 0 && ((int*)userhash[2]) == 0 && ((int*)userhash[3]) == 0)
 		CreateUserHash();
 }

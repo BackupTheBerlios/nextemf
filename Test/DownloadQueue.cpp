@@ -893,8 +893,13 @@ bool CDownloadQueue::SendNextUDPPacket()
 				}
 			}
 		}
-
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+		if (!bSentPacket && nextfile && nextfile->GetSourceCount() < nextfile->GetMaxSourcesUDPLimit())//cyrex2001 =>hardlimit
+#else //Hardlimit
 		if (!bSentPacket && nextfile && nextfile->GetSourceCount() < thePrefs.GetMaxSourcePerFileUDP())
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 		{
 			dataGlobGetSources.WriteHash16(nextfile->GetFileHash());
 			iFiles++;
@@ -1767,3 +1772,20 @@ void CDownloadQueue::OnConnectionState(bool bConnected)
 			pPartFile->SetActive(bConnected);
 	}
 }
+
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+void CDownloadQueue::InitTempVariables(CPartFile* file)
+{
+	thePrefs.SetTakeOverFileSettings(false);
+
+	thePrefs.SetMaxSourcesPerFileTemp(file->GetMaxSourcesPerFile());
+}
+
+void CDownloadQueue::UpdateFileSettings(CPartFile* file)
+{
+	if(thePrefs.GetMaxSourcesPerFileTakeOver())
+		file->SetMaxSourcesPerFile(thePrefs.GetMaxSourcesPerFileTemp());
+}
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]

@@ -282,6 +282,12 @@ void CPartFile::Init(){
     lastSwapForSourceExchangeTick = ::GetTickCount();
 
 	m_DeadSourceList.Init(false);
+
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	m_MaxSourcesPerFile = thePrefs.GetMaxSourcePerFile();
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 }
 
 
@@ -462,7 +468,12 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 	m_partmetfilename = in_filename;
 	SetPath(in_directory);
 	m_fullname.Format(_T("%s\\%s"), GetPath(), m_partmetfilename);
-	
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	m_SettingsSaver.LoadSettings(this);
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
+
 	// readfile data form part.met file
 	CSafeBufferedFile metFile;
 	CFileException fexpMet;
@@ -968,6 +979,12 @@ bool CPartFile::SavePartFile()
 		case PS_HASHING:
 			return false;
 	}
+
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	m_SettingsSaver.SaveSettings(this);
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 
 	// search part file
 	CFileFind ff;
@@ -1980,7 +1997,14 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 						if( !theApp.DoCallback( cur_src ) )
 						{
 							//If we are almost maxed on sources, slowly remove these client to see if we can find a better source.
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+							if( ((dwCurTick - lastpurgetime) > SEC2MS(30)) && (this->GetSourceCount() >= (this->m_MaxSourcesPerFile*.8 )) )
+
+#else //Hardlimit
 							if( ((dwCurTick - lastpurgetime) > SEC2MS(30)) && (this->GetSourceCount() >= (thePrefs.GetMaxSourcePerFile()*.8 )) )
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 							{
 								theApp.downloadqueue->RemoveSource( cur_src );
 								lastpurgetime = dwCurTick;
@@ -1999,7 +2023,13 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 					if( (dwCurTick - lastpurgetime) > SEC2MS(40) ){
 						lastpurgetime = dwCurTick;
 						// we only delete them if reaching the limit
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+						if (GetSourceCount() >= (this->m_MaxSourcesPerFile *.8 )){
+#else //Hardlimit
 						if (GetSourceCount() >= (thePrefs.GetMaxSourcePerFile()*.8 )){
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 							theApp.downloadqueue->RemoveSource( cur_src );
 							break;
 						}			
@@ -2024,7 +2054,13 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 					// This causes sources to pop in and out creating extra overhead!
 					if( cur_src->IsRemoteQueueFull() ) 
 					{
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+						if( ((dwCurTick - lastpurgetime) > MIN2MS(1)) && (this->GetSourceCount() >= (this->m_MaxSourcesPerFile *.8 )) )
+#else //Hardlimit
 						if( ((dwCurTick - lastpurgetime) > MIN2MS(1)) && (GetSourceCount() >= (thePrefs.GetMaxSourcePerFile()*.8 )) )
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 						{
 							theApp.downloadqueue->RemoveSource( cur_src );
 							lastpurgetime = dwCurTick;
@@ -2256,7 +2292,13 @@ void CPartFile::AddSources(CSafeMemFile* sources, uint32 serverip, uint16 server
 			continue;
 		}
 
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+		if( this->m_MaxSourcesPerFile > this->GetSourceCount() )
+#else //Hardlimit
 		if( thePrefs.GetMaxSourcePerFile() > this->GetSourceCount() )
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 		{
 			debug_possiblesources++;
 			CUpDownClient* newsource = new CUpDownClient(this,port,userid,serverip,serverport,true);
@@ -2483,6 +2525,11 @@ void CPartFile::CompleteFile(bool bIsHashingDone)
 	if (!bIsHashingDone){
 		SetStatus(PS_COMPLETING);
 		datarate = 0;
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+		m_MaxSourcesPerFile = 0;
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 		CAddFileThread* addfilethread = (CAddFileThread*) AfxBeginThread(RUNTIME_CLASS(CAddFileThread), THREAD_PRIORITY_BELOW_NORMAL,0, CREATE_SUSPENDED);
 		if (addfilethread){
 			SetFileOp(PFOP_HASHING);
@@ -2700,6 +2747,12 @@ BOOL CPartFile::PerformFileComplete()
 	}
 	free(newfilename);
 
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	m_SettingsSaver.DeleteFile(this);
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
+
 	DWORD dwMoveResult;
 	if ((dwMoveResult = MoveCompletedPartFile(strPartfilename, strNewname, this)) != ERROR_SUCCESS)
 	{
@@ -2755,6 +2808,12 @@ BOOL CPartFile::PerformFileComplete()
 	SetStatus(PS_COMPLETE);
 	paused = false;
 	SetFileOp(PFOP_NONE);
+
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	m_MaxSourcesPerFile = 0;
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 
 	// explicitly unlock the file before posting something to the main thread.
 	sLock.Unlock();
@@ -2885,6 +2944,12 @@ void CPartFile::DeleteFile(){
 	if (_taccess(BAKName, 0) == 0 && !::DeleteFile(BAKName))
 		AddLogLine(true,GetResString(IDS_ERR_DELETE) + _T(" - ") + GetErrorMessage(GetLastError()), BAKName);
 
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	m_SettingsSaver.DeleteFile(this);
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
+
 	delete this;
 }
 
@@ -3008,6 +3073,13 @@ void CPartFile::StopFile(bool bCancel, bool resort)
 	    theApp.downloadqueue->CheckDiskspace();	// SLUGFILLER: checkDiskspace
     }
 	UpdateDisplayedInfo(true);
+
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	m_MaxSourcesPerFile = thePrefs.GetMaxSourcePerFile();
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
+
 }
 
 void CPartFile::StopPausedFile()
@@ -3647,7 +3719,13 @@ void CPartFile::AddClientSources(CSafeMemFile* sources, uint8 sourceexchangevers
 			}
 		}
 
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+		if( this->m_MaxSourcesPerFile  > this->GetSourceCount() )
+#else //Hardlimit
 		if (thePrefs.GetMaxSourcePerFile() > GetSourceCount())
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 		{
 			CUpDownClient* newsource;
 			if (sourceexchangeversion == 3)

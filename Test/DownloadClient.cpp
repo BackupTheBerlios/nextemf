@@ -255,7 +255,13 @@ bool CUpDownClient::IsSourceRequestAllowed(CPartFile* partfile, bool sourceExcha
 	         //if client has the correct extended protocol
 	         ExtProtocolAvailable() && GetSourceExchangeVersion() > 1 &&
 	         //AND if we need more sources
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	         reqfile->GetMaxSourcesLimitSoft() > uSources &&
+#else //Hardlimit
 	         thePrefs.GetMaxSourcePerFileSoft() > uSources &&
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 	         //AND if...
 	         (
 	           //source is not complete and file is very rare

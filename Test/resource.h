@@ -2151,6 +2151,13 @@
 #define IDS_QUICK_START_AFTER_IP_CHANGE		60006
 #define IDS_QUICK_START_MAX_TIME			60008
 //<==Quickstart [cyrex2001]
+//==>Hardlimit [cyrex2001]
+#define IDC_DEFAULT_BUTTON					61000
+#define IDD_HARDLIMITDLG					61001
+#define IDC_HARDLIMIT_TAKEOVER				61002
+#define IDC_HARDLIMIT						61003
+#define IDC_HARDLIMIT_LABEL					61004
+//<==Hardlimit [cyrex2001]
 
 // Next default values for new objects
 // 

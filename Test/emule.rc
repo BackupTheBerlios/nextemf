@@ -1522,6 +1522,21 @@ BEGIN
                     WS_BORDER | WS_TABSTOP,7,46,213,145
 END
 
+61001 DIALOGEX 0, 0, 225, 58
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU
+CAPTION "AutoHardLimit"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Hard Limit 50...1000",IDC_HARDLIMIT_LABEL,7,9,125,8
+    EDITTEXT        IDC_HARDLIMIT,142,7,30,12,ES_RIGHT | ES_AUTOHSCROLL | 
+                    ES_NUMBER
+    CONTROL         "",IDC_HARDLIMIT_TAKEOVER,"Button",BS_AUTOCHECKBOX | 
+                    BS_FLAT | WS_TABSTOP,209,9,9,8
+    PUSHBUTTON      "Take over",IDC_TAKEOVER,7,39,56,12,BS_FLAT
+    PUSHBUTTON      "Default",IDC_DEFAULT_BUTTON,80,39,66,12,BS_FLAT
+    DEFPUSHBUTTON   "Close",IDOK,162,39,56,12,BS_FLAT
+END
 
 /////////////////////////////////////////////////////////////////////////////
 //

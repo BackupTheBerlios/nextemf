@@ -32,7 +32,13 @@
 #define MP_HM_SEARCH			10212
 #define MP_HM_FILES				10213
 #define MP_HM_MSGS				10214
-#define MP_HM_IRC				10215
+
+//==> remove IRC [shadow2004]
+#if defined(IRC)
+  #define MP_HM_IRC				10215
+#endif //IRC
+//<== remove IRC [shadow2004]
+
 #define MP_HM_STATS				10216
 #define MP_HM_PREFS				10217
 #define MP_HM_OPENINC			10218
@@ -151,6 +157,8 @@
 #define	MP_PREVIEW_APP_MIN		11050
 #define	MP_PREVIEW_APP_MAX		(MP_PREVIEW_APP_MIN+49)
 
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define Irc_Version				"(SMIRCv00.68)"
 #define Irc_Join				10240
 #define Irc_Close				10241
@@ -178,3 +186,9 @@
 #define	Irc_Protect				10256
 #define Irc_DeProtect			10257
 */
+#endif //IRC
+//<== remove IRC [shadow2004]//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+#define MP_HARD_LIMIT			17000
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]

@@ -147,6 +147,13 @@ public:
 
 	void	AddToResolved( CPartFile* pFile, SUnresolvedHostname* pUH );
 
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	void InitTempVariables(CPartFile* file);
+	void UpdateFileSettings(CPartFile* file);
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
+
 	CServer* cur_udpserver;
 
 protected:

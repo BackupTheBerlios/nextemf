@@ -42,6 +42,12 @@
 #include "StringConversion.h"
 #include "AddSourceDlg.h"
 
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+#include ".\NextEMF\HardLimitDlg.h"
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
+
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -1532,6 +1538,40 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					}
 					SetRedraw(true);
 					break;
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+				case MP_HARD_LIMIT:
+					if(selectedCount == 1)
+					{
+						theApp.downloadqueue->InitTempVariables(file);
+						CHardLimitDlg dialog;
+						dialog.DoModal();
+						if(thePrefs.GetTakeOverFileSettings())
+					{
+							theApp.downloadqueue->UpdateFileSettings(file);
+							m_SettingsSaver.SaveSettings(file);
+							UpdateItem(file);
+						}
+					}
+					else if(selectedCount > 1)
+					{
+						theApp.downloadqueue->InitTempVariables(selectedList.GetHead());
+						CHardLimitDlg dialog;
+						dialog.DoModal();
+
+						while(!selectedList.IsEmpty()) {
+							if(thePrefs.GetTakeOverFileSettings())
+					{
+								theApp.downloadqueue->UpdateFileSettings(selectedList.GetHead());
+								m_SettingsSaver.SaveSettings(selectedList.GetHead());
+								UpdateItem(selectedList.GetHead());
+						}
+							selectedList.RemoveHead();
+						}
+					}
+					break;
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 				case MP_PAUSE:
 					SetRedraw(false);
 					while (!selectedList.IsEmpty()){
@@ -2053,6 +2093,14 @@ void CDownloadListCtrl::CreateMenues() {
 	m_FileMenu.CreatePopupMenu();
 	m_FileMenu.AddMenuTitle(GetResString(IDS_DOWNLOADMENUTITLE));
 	m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_PrioMenu.m_hMenu, GetResString(IDS_PRIORITY) + _T(" (") + GetResString(IDS_DOWNLOAD) + _T(")"));
+
+//==>Hardlimit [cyrex2001]
+#ifdef HARDLIMIT
+	m_FileMenu.AppendMenu(MF_SEPARATOR);
+	m_FileMenu.AppendMenu(MF_STRING,MP_HARD_LIMIT, GetResString(IDS_HARDLIMIT)); //cyrex2001 =>hardlimit
+	m_FileMenu.AppendMenu(MF_SEPARATOR);
+#endif //Hardlimit
+//<==Hardlimit [cyrex2001]
 
 	m_FileMenu.AppendMenu(MF_STRING,MP_PAUSE, GetResString(IDS_DL_PAUSE));
 	m_FileMenu.AppendMenu(MF_STRING,MP_STOP, GetResString(IDS_DL_STOP));

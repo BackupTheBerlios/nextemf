@@ -22,7 +22,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;WINSOCK2;ASKING;RSAIC;QUICKSTART"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;WINSOCK2;ASKING;RSAIC;QUICKSTART;HARDLIMIT"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
@@ -87,7 +87,7 @@
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;WINSOCK2;ASKING;RSAIC;QUICKSTART"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;WINSOCK2;ASKING;RSAIC;QUICKSTART;HARDLIMIT"
 				StringPooling="TRUE"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
@@ -150,7 +150,7 @@
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_DUMP;ID3LIB_LINKOPTION=1;WINSOCK2;ASKING;RSAIC;QUICKSTART"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;_DUMP;ID3LIB_LINKOPTION=1;WINSOCK2;ASKING;RSAIC;QUICKSTART;HARDLIMIT"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="0"
@@ -204,7 +204,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;WINSOCK2;ASKING;RSAIC;QUICKSTART"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;WINSOCK2;ASKING;RSAIC;QUICKSTART;HARDLIMIT"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
@@ -270,7 +270,7 @@
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;WINSOCK2;ASKING;RSAIC;QUICKSTART"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;WINSOCK2;ASKING;RSAIC;QUICKSTART;HARDLIMIT"
 				StringPooling="TRUE"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
@@ -2144,6 +2144,18 @@
 		<Filter
 			Name="NextEMF"
 			Filter="">
+			<File
+				RelativePath="NextEMF\HardLimit.cpp">
+			</File>
+			<File
+				RelativePath="NextEMF\HardLimit.h">
+			</File>
+			<File
+				RelativePath="NextEMF\HardLimitDlg.cpp">
+			</File>
+			<File
+				RelativePath="NextEMF\HardLimitDlg.h">
+			</File>
 			<File
 				RelativePath="NextEMF\PPgNextEMF.cpp">
 			</File>
