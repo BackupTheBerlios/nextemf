@@ -106,7 +106,7 @@ void CDownloadListCtrl::Init()
 	InsertColumn(5,GetResString(IDS_DL_SOURCES),LVCFMT_LEFT, 50);
 	InsertColumn(6,GetResString(IDS_PRIORITY),LVCFMT_LEFT, 55);
 	InsertColumn(7,GetResString(IDS_STATUS),LVCFMT_LEFT, 70);
-	InsertColumn(8,GetResString(IDS_DL_REMAINS),LVCFMT_LEFT, 110);
+	InsertColumn(8,GetResString(IDS_DL_REMAINS),LVCFMT_LEFT, 65);
 #else //DLWND1
 	InsertColumn(2,GetResString(IDS_DL_TRANSF),LVCFMT_LEFT, 65);
 	InsertColumn(3,GetResString(IDS_DL_TRANSFCOMPL),LVCFMT_LEFT, 65);
@@ -667,6 +667,8 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 		case 8:		// remaining time & size
 			{
 				if (lpPartFile->GetStatus()!=PS_COMPLETING && lpPartFile->GetStatus()!=PS_COMPLETE ){
+//==>remove Remaining-Time from Upload [shadow2004]
+#if defined(REMDLTIME)
 					// time 
 					sint32 restTime;
 					if (!thePrefs.UseSimpleTimeRemainingComputation())
@@ -675,6 +677,10 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 						restTime = lpPartFile->getTimeRemainingSimple();
 
 					buffer.Format(_T("%s (%s)"), CastSecondsToHM(restTime), CastItoXBytes((lpPartFile->GetFileSize() - lpPartFile->GetCompletedSize()), false, false));
+#else //REMDLTIME
+					buffer.Format(_T("%s"), CastItoXBytes((lpPartFile->GetFileSize() - lpPartFile->GetCompletedSize()), false));
+#endif //REMDLTIME
+//<==remove Remaining-Time from Upload [shadow2004]
 				}
 				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
 			}
@@ -2404,6 +2410,8 @@ int CDownloadListCtrl::Compare(const CPartFile* file1, const CPartFile* file2, L
         }
 	case 8: //Remaining Time asc
 	{
+//==>remove Remaining-Time from Upload [shadow2004]
+#if defined(REMDLTIME)
 		//Make ascending sort so we can have the smaller remaining time on the top 
 		//instead of unknowns so we can see which files are about to finish better..
 		sint32 f1 = file1->getTimeRemaining();
@@ -2422,6 +2430,8 @@ int CDownloadListCtrl::Compare(const CPartFile* file1, const CPartFile* file2, L
 		//If decending, put first on top as it is bigger.
 		//If ascending, put first on bottom as it is bigger.
 		return f1 - f2;
+#endif //REMDLTIME
+//<==remove Remaining-Time from Upload [shadow2004]
 	}
 	case 80: //Remaining SIZE asc 
 		return CompareUnsigned(file1->GetFileSize()-file1->GetCompletedSize(), file2->GetFileSize()-file2->GetCompletedSize());

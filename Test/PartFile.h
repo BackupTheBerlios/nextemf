@@ -201,8 +201,12 @@ public:
 	int		GetValidSourcesCount() const;
 	bool	IsArchive(bool onlyPreviewable = false) const; // Barry - Also want to preview archives
     bool    IsPreviewableFileType() const;
+//==>remove Remaining-Time from Upload [shadow2004]
+#if defined(REMDLTIME)
 	sint32	getTimeRemaining() const;
 	sint32	getTimeRemainingSimple() const;
+#endif //REMDLTIME
+//<==remove Remaining-Time from Upload [shadow2004]
 	uint32	GetDlActiveTime() const;
 
 	// Barry - Added as replacement for BlockReceived to buffer data before writing to disk

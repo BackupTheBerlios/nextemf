@@ -570,7 +570,11 @@ uint16	CPreferences::ListenPort;
 CArray<Category_Struct*,Category_Struct*> CPreferences::catMap;
 uint8	CPreferences::m_nWebMirrorAlertLevel;
 bool	CPreferences::m_bRunAsUser;
+//==>remove Remaining-Time from Upload [shadow2004]
+#if defined(REMDLTIME)
 bool	CPreferences::m_bUseOldTimeRemaining;
+#endif //REMDLTIME
+//<==remove Remaining-Time from Upload [shadow2004]
 uint32	CPreferences::m_uPeerCacheLastSearch;
 bool	CPreferences::m_bPeerCacheWasFound;
 bool	CPreferences::m_bPeerCacheEnabled;
@@ -2106,7 +2110,11 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("NetworkED2K"),networked2k);
 	ini.WriteBool(_T("AutoClearCompleted"),m_bRemoveFinishedDownloads);
 	ini.WriteBool(_T("TransflstRemainOrder"),m_bTransflstRemain);
+//==>remove Remaining-Time from Upload [shadow2004]
+#if defined(REMDLTIME)
 	ini.WriteBool(_T("UseSimpleTimeRemainingcomputation"),m_bUseOldTimeRemaining);
+#endif //REMDLTIME
+//<==remove Remaining-Time from Upload [shadow2004]
 
 	ini.WriteInt(_T("VersionCheckLastAutomatic"), versioncheckLastAutomatic);
 	ini.WriteInt(_T("FilterLevel"),filterlevel);
@@ -2702,7 +2710,11 @@ void CPreferences::LoadPreferences()
 	m_bUseSecureIdent=ini.GetBool(_T("SecureIdent"),true);
 	m_bAdvancedSpamfilter=ini.GetBool(_T("AdvancedSpamFilter"),true);
 	m_bRemoveFinishedDownloads=ini.GetBool(_T("AutoClearCompleted"),false);
+//==>remove Remaining-Time from Upload [shadow2004]
+#if defined(REMDLTIME)
 	m_bUseOldTimeRemaining= ini.GetBool(_T("UseSimpleTimeRemainingcomputation"),false);
+#endif //REMDLTIME
+//<==remove Remaining-Time from Upload [shadow2004]
 
 	// Toolbar
 	_stprintf(m_sToolbarSettings,_T("%s"), ini.GetString(_T("ToolbarSetting"), strDefaultToolbar));
@@ -2920,7 +2932,7 @@ void CPreferences::LoadPreferences()
 //<==Sivka-Ban [cyrex2001]
 //==>AntiFakeRank [cyrex2001]
 #ifdef ANTI_FAKE_RANK
-	AntiFakeRank = ini.GetBool(_T("AntiFakeRank"), false, _T("NextEMF"));
+	AntiFakeRank = ini.GetBool(_T("AntiFakeRank"), true, _T("NextEMF"));
 #endif //AntiFakeRank
 //<==AntiFakeRank [cyrex2001]
 //==>Anti-Leecher [cyrex2001]

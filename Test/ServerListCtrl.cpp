@@ -73,12 +73,17 @@ bool CServerListCtrl::Init(CServerList* in_list)
 	InsertColumn(6, GetResString(IDS_PW_FILES) ,	LVCFMT_RIGHT, 50);
 	InsertColumn(7, GetResString(IDS_PREFERENCE),	LVCFMT_LEFT,  60);
 	InsertColumn(8, GetResString(IDS_UFAILED),		LVCFMT_RIGHT, 50);
+//==> simplify Serverwindow [shadow2004]
+#if defined(SRVWND1)
 	InsertColumn(9, GetResString(IDS_STATICSERVER),	LVCFMT_LEFT,  50);
 	InsertColumn(10,GetResString(IDS_SOFTFILES),	LVCFMT_RIGHT, 50);
 	InsertColumn(11,GetResString(IDS_HARDFILES),	LVCFMT_RIGHT, 50);
 	InsertColumn(12,GetResString(IDS_VERSION),		LVCFMT_LEFT,  50);
 	InsertColumn(13,GetResString(IDS_IDLOW),		LVCFMT_RIGHT, 50);
-
+#else //SRVWND1
+	InsertColumn(9,GetResString(IDS_IDLOW),		LVCFMT_RIGHT, 50);
+#endif //SRVWND1
+//<== simplify Serverwindow [shadow2004]
 	SetAllIcons();
 	Localize();
 	LoadSettings(CPreferences::tableServer);
@@ -167,6 +172,8 @@ void CServerListCtrl::Localize()
 	pHeaderCtrl->SetItem(8, &hdi);
 	strRes.ReleaseBuffer();
 
+//==> simplify Serverwindow [shadow2004]
+#if defined(SRVWND1)
 	strRes = GetResString(IDS_STATICSERVER);
 	hdi.pszText = strRes.GetBuffer();
 	pHeaderCtrl->SetItem(9, &hdi);
@@ -191,6 +198,13 @@ void CServerListCtrl::Localize()
 	hdi.pszText = strRes.GetBuffer();
 	pHeaderCtrl->SetItem(13, &hdi);
 	strRes.ReleaseBuffer();
+#else //SRVWND1
+	strRes = GetResString(IDS_IDLOW);
+	hdi.pszText = strRes.GetBuffer();
+	pHeaderCtrl->SetItem(9, &hdi);
+	strRes.ReleaseBuffer();
+#endif //SRVWND1
+//<== simplify Serverwindow [shadow2004]
 
 	int iItems = GetItemCount();
 	for (int i = 0; i < iItems; i++)
@@ -309,6 +323,8 @@ void CServerListCtrl::RefreshServer(const CServer* server)
 	temp.Format(_T("%i"), server->GetFailedCount());
 	SetItemText(itemnr, 8, temp);
 
+//==> simplify Serverwindow [shadow2004]
+#if defined(SRVWND1)
 	// Static server
 	if (server->IsStaticMember())
 		SetItemText(itemnr,9,GetResString(IDS_YES)); 
@@ -349,6 +365,16 @@ void CServerListCtrl::RefreshServer(const CServer* server)
 		SetItemText(itemnr, 13, CastItoIShort(server->GetLowIDUsers()));
 	else
 		SetItemText(itemnr, 13,_T(""));
+#else //SRVWND1
+	// LowID Users
+	if (server->GetLowIDUsers())
+		SetItemText(itemnr, 9, CastItoIShort(server->GetLowIDUsers()));
+	else
+		SetItemText(itemnr, 9,_T(""));
+
+#endif //SRVWND1
+//<== simplify Serverwindow [shadow2004]
+
 }
 
 // CServerListCtrl message handlers
@@ -729,7 +755,8 @@ int CServerListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 	  case 8:
 		  iResult = CompareUnsigned(item1->GetFailedCount(), item2->GetFailedCount());
 		  break;
-
+//==> simplify Serverwindow [shadow2004]
+#if defined(SRVWND1)
 	  case 9:
 		  iResult = (int)item1->IsStaticMember() - (int)item2->IsStaticMember();
 		  break;
@@ -753,6 +780,14 @@ int CServerListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 		  UNDEFINED_INT_AT_BOTTOM(item1->GetLowIDUsers(), item2->GetLowIDUsers());
 		  iResult = CompareUnsigned(item1->GetLowIDUsers(), item2->GetLowIDUsers());
 		  break;
+#else //SRVWND1
+  	  case 9:
+		  UNDEFINED_INT_AT_BOTTOM(item1->GetLowIDUsers(), item2->GetLowIDUsers());
+		  iResult = CompareUnsigned(item1->GetLowIDUsers(), item2->GetLowIDUsers());
+		  break;
+
+#endif //SRVWND1
+//<== simplify Serverwindow [shadow2004]
 
 	  default: 
 		  iResult = 0;

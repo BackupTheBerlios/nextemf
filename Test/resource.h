@@ -502,7 +502,11 @@
 #define IDS_SF_WORKING                  574
 #define IDS_ADDTOSTATIC                 575
 #define IDS_ADDED2SSF                   576
+//==> simplify Serverwindow [shadow2004]
+#if defined(SRVWND1)
 #define IDS_STATICSERVER                577
+#endif //SRVWND1
+//<== simplify Serverwindow [shadow2004]
 #define IDS_ERROR_SSF                   578
 #define IDS_ERR_PACKAGEERROR            579
 #define IDS_SF_ACTIVECON                580
@@ -1056,8 +1060,12 @@
 #define IDS_STARTPRIO                   1036
 #define IDS_PREF_STARTNEXTFILECAT       1037
 #define IDS_REPAINTGRAPHS               1038
+//==> simplify Serverwindow [shadow2004]
+#if defined(SRVWND1)
 #define IDS_SOFTFILES                   1039
 #define IDS_HARDFILES                   1040
+#endif //SRVWND1
+//<== simplify Serverwindow [shadow2004]
 #define IDS_FILTER                      1041
 #define IDS_LINKS                       1042
 #define IDS_HM_SCHED_ON                 1043
@@ -1185,7 +1193,11 @@
 #define IDS_SEARCH_EXPRERROR            1165
 #define IDS_SEARCH_TOOCOMPLEX           1166
 #define IDS_SEARCH_INVALIDMINMAX        1167
+//==> simplify Serverwindow [shadow2004]
+#if defined(SRVWND1)
 #define IDS_VERSION                     1168
+#endif //SRVWND1
+//<== simplify Serverwindow [shadow2004]
 #define IDS_ALL_A4AF_TO_THIS            1169
 #define IDD_META_DATA                   1170
 #define IDS_PASTE                       1170
@@ -1505,7 +1517,11 @@
 #define IDS_META_SRCIP                  1447
 #define IDS_META_SRCTYPE                1448
 #define IDS_SEARCH_UNICODE              1449
+//==>remove Remaining-Time from Upload [shadow2004]
+#if defined(REMDLTIME)
 #define IDS_PF_ADVANCEDCALC             1450
+#endif //REMDLTIME
+//<==remove Remaining-Time from Upload [shadow2004]
 #define IDS_PERSEC                      1451
 #define IDS_LD_ED2KLINK                 1452
 #define IDS_LD_COPYCLIPBOARD            1453
@@ -2047,7 +2063,11 @@
 #define IDC_FILTERCOMMENTSLABEL         2634
 #define IDC_WATCHCB                     2635
 #define IDC_STATIC_COLOR                2636
+//==>remove Remaining-Time from Upload [shadow2004]
+#if defined(REMDLTIME)
 #define IDC_PF_TIMECALC                 2636
+#endif //REMDLTIME
+//<==remove Remaining-Time from Upload [shadow2004]
 #define IDC_CATTAB2                     2637
 #define IDC_STATIC_CPUMEM               2639
 #define IDC_IBLABEL                     2642

@@ -50,7 +50,11 @@ BEGIN_MESSAGE_MAP(CPPgFiles, CPropertyPage)
 	ON_BN_CLICKED(IDC_SEESHARE1, OnSettingsChange)
 	ON_BN_CLICKED(IDC_SEESHARE2, OnSettingsChange)
 	ON_BN_CLICKED(IDC_SEESHARE3, OnSettingsChange)
+//==>remove Remaining-Time from Upload [shadow2004]
+#if defined(REMDLTIME)
 	ON_BN_CLICKED(IDC_PF_TIMECALC, OnSettingsChange)
+#endif //REMDLTIME
+//<==remove Remaining-Time from Upload [shadow2004]
 	ON_BN_CLICKED(IDC_UAP, OnSettingsChange)
 	ON_BN_CLICKED(IDC_DAP, OnSettingsChange)
 	ON_BN_CLICKED(IDC_PREVIEWPRIO, OnSettingsChange)
@@ -91,11 +95,14 @@ void CPPgFiles::LoadSettings(void)
 		CheckDlgButton(IDC_ADDNEWFILESPAUSED,1);
 	else
 		CheckDlgButton(IDC_ADDNEWFILESPAUSED,0);
-
+//==>remove Remaining-Time from Upload [shadow2004]
+#if defined(REMDLTIME)
 	if(thePrefs.m_bUseOldTimeRemaining)
 		CheckDlgButton(IDC_PF_TIMECALC,0);
 	else
 		CheckDlgButton(IDC_PF_TIMECALC,1);
+#endif //REMDLTIME
+//<==remove Remaining-Time from Upload [shadow2004]
 
 	if(thePrefs.m_bpreviewprio)
 		CheckDlgButton(IDC_PREVIEWPRIO,1);
@@ -201,9 +208,11 @@ BOOL CPPgFiles::OnApply()
 
 	thePrefs.addnewfilespaused = (uint8)IsDlgButtonChecked(IDC_ADDNEWFILESPAUSED);
 	thePrefs.autofilenamecleanup=(uint8)IsDlgButtonChecked(IDC_FNCLEANUP);
-
+//==>remove Remaining-Time from Upload [shadow2004]
+#if defined(REMDLTIME)
 	thePrefs.m_bUseOldTimeRemaining = !IsDlgButtonChecked(IDC_PF_TIMECALC);
-
+#endif //REMDLTIME
+//<==remove Remaining-Time from Upload [shadow2004]
 	GetDlgItem(IDC_VIDEOPLAYER)->GetWindowText(buffer);
 	_sntprintf(thePrefs.VideoPlayer, ARRSIZE(thePrefs.VideoPlayer), _T("%s"), buffer);
 
@@ -220,7 +229,11 @@ void CPPgFiles::Localize(void)
 	if(m_hWnd)
 	{
 		SetWindowText(GetResString(IDS_PW_FILES));
+//==>remove Remaining-Time from Upload [shadow2004]
+#if defined(REMDLTIME)
 		GetDlgItem(IDC_PF_TIMECALC)->SetWindowText(GetResString(IDS_PF_ADVANCEDCALC));
+#endif //REMDLTIME
+//<==remove Remaining-Time from Upload [shadow2004]
 		GetDlgItem(IDC_SEEMYSHARE_FRM)->SetWindowText(GetResString(IDS_PW_SHARE));
 		GetDlgItem(IDC_SEESHARE1)->SetWindowText(GetResString(IDS_PW_EVER));
 		GetDlgItem(IDC_SEESHARE2)->SetWindowText(GetResString(IDS_PW_FRIENDS));

@@ -3267,6 +3267,8 @@ int CPartFile::getPartfileStatusRang() const
 	return 2; // downloading?
 } 
 
+//==>remove Remaining-Time from Upload [shadow2004]
+#if defined(REMDLTIME)
 sint32 CPartFile::getTimeRemainingSimple() const
 {
 	if (GetDatarate()==0) return -1;
@@ -3310,6 +3312,8 @@ sint32 CPartFile::getTimeRemaining() const
 		return -1;
 	return estimate;
 }
+#endif //REMDLTIME
+//<==remove Remaining-Time from Upload [shadow2004]
 
 void CPartFile::PreviewFile()
 {

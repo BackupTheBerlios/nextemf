@@ -398,16 +398,20 @@ BEGIN
                     209,10
     CONTROL         "IDS_PF_WATCHCB",IDC_WATCHCB,"Button",BS_AUTOCHECKBOX | 
                     BS_FLAT | WS_TABSTOP,13,123,209,10
+//==>remove Remaining-Time from Upload [shadow2004]
+#if defined(REMDLTIME)
     CONTROL         "Use advanced calculation method for remaining time",
                     IDC_PF_TIMECALC,"Button",BS_AUTOCHECKBOX | BS_FLAT | 
-                    WS_TABSTOP,13,134,209,10
+                    WS_TABSTOP,13,166,205,10
+#endif //REMDLTIME
+//<==remove Remaining-Time from Upload [shadow2004]
     CONTROL         "Start next paused file when a file completes",
                     IDC_STARTNEXTFILE,"Button",BS_AUTOCHECKBOX | BS_FLAT | 
-                    WS_TABSTOP,13,145,209,10
+                    WS_TABSTOP,13,134,209,10
     CONTROL         "prefer same cat",IDC_STARTNEXTFILECAT,"Button",
-                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,25,157,197,8
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,25,146,197,8
     CONTROL         "only same cat",IDC_STARTNEXTFILECAT2,"Button",
-                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,25,168,197,8
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,25,157,197,8
     EDITTEXT        IDC_VIDEOPLAYER,15,204,151,12,ES_AUTOHSCROLL
     PUSHBUTTON      "Browse",IDC_BROWSEV,169,203,51,14,BS_FLAT
     LTEXT           "(empty = default)",IDC_STATIC_EMPTY,15,217,173,10
@@ -3201,7 +3205,11 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ADDED2SSF           "Added to static server list"
+//==> simplify Serverwindow [shadow2004]
+#if defined(SRVWND1)
     IDS_STATICSERVER        "Static"
+#endif //SRVWND1
+//<== simplify Serverwindow [shadow2004]
     IDS_ERROR_SSF           "Failed to open staticservers.dat"
     IDS_ERR_PACKAGEERROR    "Critical error while processing datapacket for %s (wrong size) - datablock droped"
     IDS_SF_ACTIVECON        "Active Connections (estimate)"
@@ -3805,12 +3813,20 @@ BEGIN
     IDS_STARTPRIO           "Priority for this category"
     IDS_PREF_STARTNEXTFILECAT "prefer same category"
     IDS_REPAINTGRAPHS       "Don't recreate statistic graphs on resize"
+//==> simplify Serverwindow [shadow2004]
+#if defined(SRVWND1)
     IDS_SOFTFILES           "Soft File Limit"
+#endif //SRVWND1
+//<== simplify Serverwindow [shadow2004]
 END
 
 STRINGTABLE 
 BEGIN
+//==> simplify Serverwindow [shadow2004]
+#if defined(SRVWND1)
     IDS_HARDFILES           "Hard File Limit"
+#endif //SRVWND1
+//<== simplify Serverwindow [shadow2004]
     IDS_FILTER              "Filter"
     IDS_LINKS               "Links"
 //==> remove scheduler [shadow2004]
@@ -3975,7 +3991,11 @@ END
 
 STRINGTABLE 
 BEGIN
+//==> simplify Serverwindow [shadow2004]
+#if defined(SRVWND1)
     IDS_VERSION             "Version"
+#endif //SRVWND1
+//<== simplify Serverwindow [shadow2004]
     IDS_ALL_A4AF_TO_THIS    "Swap All Sources To This File Now"
     IDS_PASTE               "Paste"
     IDS_ALL_A4AF_TO_OTHER   "Swap All Sources To Any Other File Now"
@@ -4318,7 +4338,11 @@ BEGIN
     IDS_META_SRCIP          "Source IP"
     IDS_META_SRCTYPE        "Source type"
     IDS_SEARCH_UNICODE      "Search with Unicode"
+//==>remove Remaining-Time from Upload [shadow2004]
+#if defined(REMDLTIME)
     IDS_PF_ADVANCEDCALC     "Use advanced calculation method for remaining time"
+#endif //REMDLTIME
+//<==remove Remaining-Time from Upload [shadow2004]
     IDS_PERSEC              "/s"
     IDS_LD_ED2KLINK         "ED2K Link"
     IDS_LD_COPYCLIPBOARD    "Copy to Clipboard"

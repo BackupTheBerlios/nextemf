@@ -554,8 +554,11 @@ public:
 	static	int		m_iDbgHeap;
 	static	uint8	m_nWebMirrorAlertLevel;
 	static	bool	m_bRunAsUser;
-
+//==>remove Remaining-Time from Upload [shadow2004]
+#if defined(REMDLTIME)
 	static  bool	m_bUseOldTimeRemaining;
+#endif //REMDLTIME
+//<==remove Remaining-Time from Upload [shadow2004]
 
 	// PeerCache
 	static	uint32	m_uPeerCacheLastSearch;
@@ -1311,8 +1314,11 @@ public:
 	static	void	SetWebMirrorAlertLevel(uint8 newValue)		{ m_nWebMirrorAlertLevel = newValue; }
 	static bool	IsDefaultNick(const CString strCheck);
 	static	uint8	GetWebMirrorAlertLevel();
+//==>remove Remaining-Time from Upload [shadow2004]
+#if defined(REMDLTIME)
 	static bool		UseSimpleTimeRemainingComputation()			{ return m_bUseOldTimeRemaining;}
-
+#endif //REMDLTIME
+//<==remove Remaining-Time from Upload [shadow2004]
 	static	bool	IsRunAsUserEnabled();
 
 	// PeerCache
