@@ -294,7 +294,7 @@
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;WINSOCK2;RSAIC_SIVKA;MODVERSION;SIVKA_BAN;DROP;OPTIM;ANTI_LEECHER;HARDLIMIT;ANTI_FAKE_RANK;ASK_FOR_PRIO"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;WINSOCK2;RSAIC_SIVKA;MODVERSION;SIVKA_BAN;DROP;OPTIM;ANTI_LEECHER;HARDLIMIT;ANTI_FAKE_RANK;ASK_FOR_PRIO;LOWID"
 				StringPooling="TRUE"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"

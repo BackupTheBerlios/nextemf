@@ -72,6 +72,12 @@ CPPgNextEMF::CPPgNextEMF()
 //==>timestamp in chatwindow [shadow2004]
 	m_htiEnableTimestamp = NULL; 
 //<==timestamp in chatwindow [shadow2004]
+//==>Lowid retry by SlugFiller [cyrex2001]
+#ifdef LOWID
+	m_htiLowIdRetry = NULL;
+	m_iLowIdRetry = 0;
+#endif //Lowid retry
+//<==Lowid retry [cyrex2001]
 }
 
 CPPgNextEMF::~CPPgNextEMF()
@@ -102,6 +108,12 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
 		}
+//==>Lowid retry by SlugFiller [cyrex2001]
+#ifdef LOWID
+		m_htiLowIdRetry = m_ctrlTreeOptions.InsertItem(GetResString(IDS_RECONNECTONLOWID), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, TVI_ROOT);
+		m_ctrlTreeOptions.AddEditBox(m_htiLowIdRetry, RUNTIME_CLASS(CNumTreeOptionsEdit));
+#endif //Lowid retry
+//<==Lowid retry [cyrex2001]
 //==> Bold Download-Status [shadow2004]
 #ifdef BOLDDL
 		m_htiEnableDownloadInBold = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_DOWNLOAD_IN_BOLD), TVI_ROOT, m_bEnableDownloadInBold);
@@ -158,6 +170,12 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.SendMessage(WM_VSCROLL, SB_TOP);
 		m_bInitializedTreeOpts = true;
 	}
+//==>Lowid retry by SlugFiller [cyrex2001]
+#ifdef LOWID
+	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiLowIdRetry, m_iLowIdRetry);
+	DDV_MinMaxInt(pDX, m_iLowIdRetry, 0, 255);
+#endif //Lowid retry
+//<==Lowid retry [cyrex2001]
 //==> Bold Download-Status [shadow2004]
 #ifdef BOLDDL
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableDownloadInBold, m_bEnableDownloadInBold);
@@ -247,6 +265,11 @@ BOOL CPPgNextEMF::OnInitDialog()
     m_iDropTimer = (int) thePrefs.DropTimer;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
+//==>Lowid retry by SlugFiller [cyrex2001]
+#ifdef LOWID
+	m_iLowIdRetry = thePrefs.GetLowIdRetries();
+#endif //Lowid retry
+//<==Lowid retry [cyrex2001]
 	CPropertyPage::OnInitDialog();
 	Localize();
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -310,6 +333,15 @@ BOOL CPPgNextEMF::OnApply()
 	thePrefs.DropTimer = m_iDropTimer;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
+//==>Lowid retry by SlugFiller [cyrex2001]
+#ifdef LOWID
+	if(m_iLowIdRetry<0)
+		m_iLowIdRetry = 0;
+	if(m_iLowIdRetry>255)
+		m_iLowIdRetry = 255;
+	thePrefs.LowIdRetries = m_iLowIdRetry;
+#endif //Lowid retry
+//<==Lowid retry [cyrex2001]
 	SetModified(FALSE);
 	return CPropertyPage::OnApply();
 }
@@ -327,6 +359,11 @@ void CPPgNextEMF::Localize(void)
 	{
 		SetWindowText(MOD_VERSION);
 		GetDlgItem(IDC_WARNING)->SetWindowText(GetResString(IDS_TWEAKS_WARNING));
+//==>Lowid retry by SlugFiller [cyrex2001]
+#ifdef LOWID
+		if(m_htiLowIdRetry)	m_ctrlTreeOptions.SetEditLabel(m_htiLowIdRetry, GetResString(IDS_RECONNECTONLOWID));
+#endif //Lowid retry
+//<==Lowid retry [cyrex2001]
 //==> Bold Download-Status [shadow2004]
 #ifdef BOLDDL
 		if (m_htiEnableDownloadInBold) m_ctrlTreeOptions.SetItemText(m_htiEnableDownloadInBold, GetResString(IDS_DOWNLOAD_IN_BOLD));
@@ -414,6 +451,11 @@ void CPPgNextEMF::OnDestroy()
     m_htiDropTimer = NULL;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
+//==>Lowid retry by SlugFiller [cyrex2001]
+#ifdef LOWID
+	m_htiLowIdRetry = NULL;
+#endif //Lowid retry
+//<==Lowid retry [cyrex2001]
 
 	CPropertyPage::OnDestroy();
 }

@@ -647,7 +647,12 @@ uint16	CPreferences::MaxRemoveQRS;
 uint16  CPreferences::DropTimer;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
-
+//==>Lowid retry by SlugFiller [cyrex2001]
+#ifdef LOWID
+uint8	CPreferences::LowIdRetries;
+uint8	CPreferences::LowIdRetried;
+#endif //Lowid retry
+//<==Lowid retry [cyrex2001]
 
 CPreferences::CPreferences()
 {
@@ -2374,6 +2379,11 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("DropTimer"),DropTimer, _T("NextEMF"));
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
+//==>Lowid retry by SlugFiller [cyrex2001]
+#ifdef LOWID
+	ini.WriteInt(_T("ReconnectOnLowIdRetries"),LowIdRetries,_T("NextEMF"));
+#endif //Lowid retry
+//<==Lowid retry [cyrex2001]
 }
 
 void CPreferences::SaveCats(){
@@ -3030,6 +3040,11 @@ void CPreferences::LoadPreferences()
     DropTimer=ini.GetInt(_T("DropTimer"),2, _T("NextEMF"));
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
+//==>Lowid retry by SlugFiller [cyrex2001]
+#ifdef LOWID
+	LowIdRetries=ini.GetInt(_T("ReconnectOnLowIdRetries"),3, _T("NextEMF"));
+#endif //Lowid retry
+//<==Lowid retry [cyrex2001]
 
 	LoadCats();
 	if (GetCatCount()==1)

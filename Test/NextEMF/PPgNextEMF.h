@@ -56,6 +56,11 @@ protected:
 //==>timestamp in chatwindow [shadow2004]
 	int m_bEnableTimestamp;
 //<==timestamp in chatwindow [shadow2004]
+//==>Lowid retry by SlugFiller [cyrex2001]
+#ifdef LOWID
+	int	m_iLowIdRetry;
+#endif //Lowid retry
+//<==Lowid retry [cyrex2001]
 
 	HTREEITEM m_htiSecurity;
 	HTREEITEM m_htiIsreaskSourceAfterIPChange;
@@ -97,6 +102,11 @@ protected:
 //==>timestamp in chatwindow [shadow2004]
 	HTREEITEM m_htiEnableTimestamp;
 //<==timestamp in chatwindow [shadow2004]
+//==>Lowid retry by SlugFiller [cyrex2001]
+#ifdef LOWID
+	HTREEITEM	m_htiLowIdRetry;
+#endif //Lowid retry
+//<==Lowid retry [cyrex2001]
 
 
 	CTreeOptionsCtrlEx m_ctrlTreeOptions;

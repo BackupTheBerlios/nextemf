@@ -2394,6 +2394,8 @@
 #define IDS_DROPTIME					61039
 #define IDS_SIVKA_BAN_CONTROL			61040
 #define IDS_SIVKA_BAN					61041
+#define IDS_LOWIDRETRYING				61042
+#define IDS_RECONNECTONLOWID			61043
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

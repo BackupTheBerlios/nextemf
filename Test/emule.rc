@@ -4471,6 +4471,12 @@ BEGIN
     IDS_SIVKA_BAN			"Enable sivka-ban control"
 END
 
+STRINGTABLE 
+BEGIN
+    IDS_LOWIDRETRYING       "LowID -- Trying Again (%i more attempts)"
+    IDS_RECONNECTONLOWID    "Reconnect on LowID retries"
+END
+
 #endif    // Englisch (USA) resources
 /////////////////////////////////////////////////////////////////////////////
 

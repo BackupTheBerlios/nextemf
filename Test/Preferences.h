@@ -640,6 +640,12 @@ public:
 	static    uint16  DropTimer;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
+//==>Lowid retry by SlugFiller [cyrex2001]
+#ifdef LOWID
+	static uint8	LowIdRetries;
+	static uint8	LowIdRetried;
+#endif //Lowid retry
+//<==Lowid retry [cyrex2001]
 
 
 	enum Table
@@ -1440,6 +1446,14 @@ public:
  	static   void	SetDropTimer(int in)             {DropTimer=in;}
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
+//==>Lowid retry by SlugFiller [cyrex2001]
+#ifdef LOWID
+	static	void	SetLowIdRetried()	{LowIdRetried--;}
+	static	void	ResetLowIdRetried()	{LowIdRetried = LowIdRetries;}
+	static	uint8	GetLowIdRetried()	{return LowIdRetried;}
+	static	uint8	GetLowIdRetries()	{return LowIdRetries;}
+#endif //Lowid retry
+//<==Lowid retry [cyrex2001]
 
 protected:
 	static	CString appdir;

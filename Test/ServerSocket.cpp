@@ -267,6 +267,20 @@ bool CServerSocket::ProcessPacket(char* packet, uint32 size, uint8 opcode){
 					}
 				}
 				
+//==>Lowid retry by SlugFiller [cyrex2001]
+#ifdef LOWID
+				if (thePrefs.GetLowIdRetried())
+					{
+					if (la->clientid < 16777216 )
+						{
+						SetConnectionState(CS_ERROR);
+						AddLogLine(true,GetResString(IDS_LOWIDRETRYING),thePrefs.GetLowIdRetried());
+						thePrefs.SetLowIdRetried();
+						break;
+						}
+					}
+#endif //Lowid retry
+//<==Lowid retry [cyrex2001]
 				// we need to know our client's HighID when sending our shared files (done indirectly on SetConnectionState)
 				serverconnect->clientid = la->clientid;
 

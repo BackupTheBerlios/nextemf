@@ -166,6 +166,11 @@ void CServerConnect::StopConnectionTry()
 		if (pSck->m_bIsDeleting == false)	// don't destroy socket if it is going to destroy itself later on
 			DestroySocket(pSck);
 	}
+//==>Lowid retry by SlugFiller [cyrex2001]
+#ifdef LOWID
+	thePrefs.ResetLowIdRetried();
+#endif //Lowid retry
+//<==Lowid retry [cyrex2001]
 }
 
 void CServerConnect::ConnectionEstablished(CServerSocket* sender)
