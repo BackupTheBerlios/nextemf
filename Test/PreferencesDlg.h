@@ -34,7 +34,7 @@
 #include "TreePropSheet.h"
 
 //==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
-#if defined (QUICKSTART) || defined (RSAIC_MAELLA) //Reask sourcen after ip chnage or Quickstart
+#if defined (RSAIC_SIVKA) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
 #include ".\NextEMF\PPgNextEMF.h"
 #endif //Reask sourcen after ip chnage or Quickstart
 //<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
@@ -78,7 +78,7 @@ public:
 #endif
 
 //==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
-#if defined (QUICKSTART) || defined (RSAIC_MAELLA) //Reask sourcen after ip chnage or Quickstart
+#if defined (RSAIC_SIVKA) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
 	CPPgNextEMF		m_wndNextEMF;
 #endif //Reask sourcen after ip chnage or Quickstart
 //<==Reask sourcen after ip chnage or Quickstart [cyrex2001]

@@ -196,3 +196,13 @@
 #define MP_HARD_LIMIT			17000
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001]
+//==>Drop maunal [cyrex2001]
+#ifdef DROP_MANUAL
+#define MP_DROPLOWTOLOWIPSRCS		17001
+#define MP_DROPUNKNOWNERRORBANNEDSRCS	17002
+#define MP_DROPNONEEDEDSRCS		17003
+#define MP_DROPFULLQSRCS		17004
+#define MP_DROPHIGHQRSRCS		17005
+#define MP_CLEANUP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP	17006
+#endif //Drop maunal
+//<==Drop maunal [cyrex2001]

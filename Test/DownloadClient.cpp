@@ -365,12 +365,6 @@ void CUpDownClient::SendFileRequest()
 		    theStats.AddUpDataOverheadFileRequest(packet->size);
 		    socket->SendPacket(packet, true);
 		}
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_MAELLA
-		SetLastAskedTime();
-		m_dwNextTCPAskedTime = GetLastAskedTime() + GetJitteredFileReaskTime();
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 		if( IsEmuleClient() )
 		{
 			SetRemoteQueueFull( true );
@@ -401,11 +395,6 @@ void CUpDownClient::SendFileRequest()
 		}
 	}
     SetLastAskedTime(); // ZZ:DownloadManager
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_MAELLA
-	m_dwNextTCPAskedTime = ::GetTickCount() + GetJitteredFileReaskTime();
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 }
 
 void CUpDownClient::SendStartupLoadReq()
@@ -426,11 +415,6 @@ void CUpDownClient::SendStartupLoadReq()
 	socket->SendPacket(packet, true, true);
 	m_fQueueRankPending = 1;
 	m_fUnaskQueueRankRecv = 0;
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_MAELLA
-	m_dwNextTCPAskedTime = GetLastAskedTime() + 4 * GetJitteredFileReaskTime();
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 }
 
 void CUpDownClient::ProcessFileInfo(CSafeMemFile* data, CPartFile* file)
@@ -1382,15 +1366,6 @@ void CUpDownClient::UDPReaskForDownload()
 	
 	if( m_nTotalUDPPackets > 3 && ((float)(m_nFailedUDPPackets/m_nTotalUDPPackets) > .3))
 		return;
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_MAELLA
-	if((reqfile == NULL) ||
-	   (m_abyPartStatus == NULL) ||
-	   (GetTickCount() - m_dwLastUDPReaskTime < 30000))
-		return;
-	m_dwLastUDPReaskTime = GetTickCount();
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 	//the line "m_bUDPPending = true;" use to be here
 //==> remove PROXY [shadow2004]
 #if defined(PROXY)
@@ -1971,8 +1946,13 @@ uint32 CUpDownClient::GetTimeUntilReask(const CPartFile* file) const {
 uint32 CUpDownClient::GetTimeUntilReask() const {
     return GetTimeUntilReask(reqfile);
 }
-
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_SIVKA //Reask sourcen after ip change
+bool CUpDownClient::IsValidSource2() const
+#else //Reask sourcen after ip change
 bool CUpDownClient::IsValidSource() const
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 {
 	bool valid = false;
 	switch(GetDownloadState())

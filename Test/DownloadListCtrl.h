@@ -113,8 +113,21 @@ protected:
 
 //==>Hardlimit [cyrex2001]
 #ifdef HARDLIMIT
-protected:
 	CHardLimit m_SettingsSaver;
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001]
+
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
+public:
+	uint32 ValidSourcesCounter;
+	uint32 DownloadSourcesCounter;
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
+//==>Drop maunal [cyrex2001]
+#ifdef DROP_MANUAL
+protected:
+	CMenu m_DropMenu;
+#endif //Drop maunal
+//<==Drop maunal [cyrex2001]
 };

@@ -252,6 +252,12 @@ void CUpDownClient::Init()
 	for (uint8 i = 0;i < 5; i++) m_iDifferenceQueueRank[i] = 0;
 #endif //AntiFakeRank
 //<==AntiFakeRank [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_SIVKA
+	m_dwLastAskedTime = 0;
+ m_bValidSource = false;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
 	m_bLeecher = false;
@@ -264,14 +270,11 @@ void CUpDownClient::Init()
 	m_bGPLEvildoer = false;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
-//==>Reask sourcen after ip change [cyrex2001][shadow1004]
-#ifdef RSAIC_MAELLA
-	uint32 jitter = rand() * MIN2S(4) / RAND_MAX;  
-    m_jitteredFileReaskTime = FILEREASKTIME + SEC2MS(jitter) - MIN2MS(2);  
-	m_dwLastUDPReaskTime = 0;
-	m_dwNextTCPAskedTime = 0;
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001][shadow2004]
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
+	m_bValidSource = false;
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -2177,18 +2180,17 @@ void CUpDownClient::ResetFileStatusInfo()
 	m_nPartCount = 0;
 	m_strClientFilename.Empty();
 	m_bCompleteSource = false;
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_SIVKA
+	m_dwLastAskedTime = 0;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 	m_uFileRating = 0;
 	m_strFileComment.Empty();
 	if (m_pReqFileAICHHash != NULL){
 		delete m_pReqFileAICHHash;
 		m_pReqFileAICHHash = NULL;
 	}
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_MAELLA
-	m_dwLastUDPReaskTime = 0;			
-	m_dwNextTCPAskedTime = 0;
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 }
 
 bool CUpDownClient::IsBanned() const
@@ -2435,6 +2437,12 @@ void CUpDownClient::AssertValid() const
 	(void)dwThisClientIsKnownSince;
 #endif //Sivka-Ban
 //<==Sivka-Ban [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_SIVKA
+	(void)m_dwLastAskedTime;
+	CHECK_BOOL(m_bValidSource);
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 #undef CHECK_PTR
 #undef CHECK_BOOL
 }

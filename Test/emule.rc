@@ -1520,7 +1520,7 @@ BEGIN
 END
 
 //==>Reask sourcen after ip change or Quickstart [cyrex2001]
-//#if defined (RSAIC_MAELLA) || defined (QUICKSTART)
+//#if defined (RSAIC_SIVKA) || defined (QUICKSTART)
 IDD_PPG_NEXTEMF DIALOGEX 0, 0, 227, 246
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
@@ -4390,7 +4390,7 @@ BEGIN
 END
 
 //==>Reask sourcen after ip change or Quickstart [cyrex2001]
-//#if defined (RSAIC_MAELLA) || defined (QUICKSTART)
+//#if defined (RSAIC_SIVKA) || defined (QUICKSTART)
 STRINGTABLE 
 BEGIN
     IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK	"Reask sources after reconnection of modem (IP change)"
