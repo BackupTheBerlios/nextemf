@@ -273,7 +273,7 @@ bool CServerSocket::ProcessPacket(char* packet, uint32 size, uint8 opcode){
 				serverconnect->SetClientID(la->clientid);
 				AddLogLine(false, GetResString(IDS_NEWCLIENTID), la->clientid);
 //==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
+#ifdef RSAIC_SIVKA //Reask sourcen after ip change
 				static uint32 s_lastValidId;
 				static uint32 s_lastChangeId;
 				if(thePrefs.IsreaskSourceAfterIPChange()&& s_lastValidId != 0 && serverconnect->GetClientID() != 0 && s_lastValidId != serverconnect->GetClientID())
@@ -292,7 +292,7 @@ bool CServerSocket::ProcessPacket(char* packet, uint32 size, uint8 opcode){
 								}
 #endif //Quickstart
 //<==Quickstart [cyrex2001]
-							theApp.clientlist->TrigReaskForDownload(true);
+							theApp.clientlist->TrigReaskForDownload();
 							AddLogLine (false, _T("Change from %u (%s ID) to %u (%s ID) detected%s"), 
 							s_lastValidId,
 							(s_lastValidId < 16777216) ? _T("low") : _T("high"),
@@ -312,7 +312,7 @@ bool CServerSocket::ProcessPacket(char* packet, uint32 size, uint8 opcode){
 								}
 #endif //Quickstart
 //<==Quickstart [cyrex2001]
-							theApp.clientlist->TrigReaskForDownload(true);
+							theApp.clientlist->TrigReaskForDownload();
 							AddLogLine (false, _T("Change from %u (%s ID) to %u (%s ID) detected%s"), 
 							s_lastValidId,
 							(s_lastValidId < 16777216) ? _T("low") : _T("high"),

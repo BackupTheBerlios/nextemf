@@ -2060,11 +2060,6 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 							break;
 						}			
 					}
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
-				if (!((!cur_src->GetLastAskedTime()) /*|| (dwLastCheck > 2 * cur_src->GetJitteredFileReaskTime()))*/))
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 					// doubled reasktime for no needed parts - save connections and traffic
                     if (cur_src->GetTimeUntilReask() > 0)
 						break; 
@@ -2096,25 +2091,6 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 					//Give up to 1 min for UDP to respond.. If we are within one min of TCP reask, do not try..
 					if (theApp.IsConnected() && cur_src->GetTimeUntilReask() < MIN2MS(2) && cur_src->GetTimeUntilReask() > SEC2MS(1) && ::GetTickCount()-cur_src->getLastTriedToConnectTime() > 20*60*1000) // ZZ:DownloadManager (one resk timestamp for each file)
 						cur_src->UDPReaskForDownload();
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
-					if(theApp.IsConnected() == true)
-						{
-						// Check if a refresh is required for the download session with a cheap UDP
-						if((cur_src->GetLastAskedTime() != 0) &&
-							(cur_src->GetNextTCPAskedTime() > dwCurTick + (10*60000)) /*&&
-																					  // 55 seconds for two attempts to refresh the download session with UDP
-																					  (dwLastCheck < cur_src->GetJitteredFileReaskTime() &&
-																					  (dwLastCheck > cur_src->GetJitteredFileReaskTime() - 55000))*/)
-							{
-							// Send a OP_REASKFILEPING (UDP) to refresh the download session
-							// The refresh of the download session is necessary to stay in the remote queue
-							// => see CUpDownClient::SetLastUpRequest() and MAX_PURGEQUEUETIME
-							cur_src->UDPReaskForDownload();								
-							}
-						}
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 				}
 				case DS_CONNECTING:
 				case DS_TOOMANYCONNS:
@@ -2125,29 +2101,8 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 				{
 					if (theApp.IsConnected() && cur_src->GetTimeUntilReask() == 0 && ::GetTickCount()-cur_src->getLastTriedToConnectTime() > 20*60*1000) // ZZ:DownloadManager (one resk timestamp for each file)
 					{
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
-						// Check if a refresh is required for the download session with TCP
-						if((cur_src->GetLastAskedTime() == 0) || // Never asked before
-							(cur_src->GetNextTCPAskedTime() <= dwCurTick) || // Full refresh with TCP is required
-							(cur_src->socket != NULL && // Take advantage of the current connection
-							cur_src->socket->IsConnected() == true && 
-							cur_src->GetNextTCPAskedTime() - (10*60000) < dwCurTick && 
-							MIN_REQUESTTIME + 60000 < dwCurTick) /*|| 
-																 (dwLastCheck > cur_src->GetJitteredFileReaskTime())*/){ // Time since last refresh (UDP or TCP elapsed)
-
-																 // Initialize or refresh the download session with an expensive TCP session
-																 // The refresh of the download session is necessary to stay in the remote queue
-																 // => see CUpDownClient::SetLastUpRequest() and MAX_PURGEQUEUETIME
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 						if(!cur_src->AskForDownload()) // NOTE: This may *delete* the client!!
 							break; //I left this break here just as a reminder just in case re rearange things..
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
-					}
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 					}
 					break;
 				}

@@ -404,7 +404,7 @@ public:
 	bool			IsSourceRequestAllowed() const;
     bool            IsSourceRequestAllowed(CPartFile* partfile, bool sourceExchangeCheck = false) const; // ZZ:DownloadManager
 //==>//Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
+#ifdef RSAIC_SIVKA //Reask sourcen after ip change
 	bool			IsValidSource2() const;
 #else //Reask sourcen after ip change
 	bool			IsValidSource() const;
@@ -771,20 +771,15 @@ protected:
     bool    RecentlySwappedForSourceExchange() { return ::GetTickCount()-lastSwapForSourceExchangeTick < 30*1000; } // ZZ:DownloadManager
     void    SetSwapForSourceExchangeTick() { lastSwapForSourceExchangeTick = ::GetTickCount(); } // ZZ:DownloadManager
 //==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
+#ifdef RSAIC_SIVKA
 protected:
 	uint32		m_dwLastAskedTime;
-private:
-	bool	m_bValidSource;
-	uint32 m_dwLastUDPReaskTime; // Last attempt to refresh the download session with UDP
-	uint32 m_dwNextTCPAskedTime; // Time of the next refresh for the download session with TCP
-	uint32 m_jitteredFileReaskTime;
 public:
-	bool	IsValidSource() const {return m_bValidSource;};
-	void	SetValidSource(bool in){m_bValidSource = in;};
-	uint32 GetJitteredFileReaskTime() const {return m_jitteredFileReaskTime;} // range 27..31 min 
-	uint32 GetNextTCPAskedTime() const {return m_dwNextTCPAskedTime;}
-	void   SetNextTCPAskedTime(uint32 time) {m_dwNextTCPAskedTime = time;}
+	void SetLastAskedTime(DWORD in) { if(m_dwLastAskedTime>in) m_dwLastAskedTime-=in; else m_dwLastAskedTime=0; }
+	bool IsValidSource() const {return m_bValidSource;};
+	void SetValidSource(bool in){m_bValidSource = in;};
+private:
+	bool m_bValidSource;
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
 //==>Sivka-Ban [cyrex2001]

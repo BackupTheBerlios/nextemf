@@ -835,6 +835,20 @@ CDeletedClient::CDeletedClient(const CUpDownClient* pClient)
 	m_ItemsList.Add(porthash);
 }
 
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_SIVKA
+// ZZ:DownloadManager -->modified by sivka [improved]
+void CClientList::ProcessA4AFClients() {
+	for( POSITION pos = list.GetHeadPosition(); pos;) {
+		CUpDownClient* cur_client = list.GetNext(pos);
+		if( cur_client->GetDownloadState() != DS_DOWNLOADING
+			&& cur_client->GetDownloadState() != DS_CONNECTED
+			&&(!cur_client->m_OtherRequests_list.IsEmpty() || !cur_client->m_OtherNoNeeded_list.IsEmpty()) )
+			cur_client->SwapToAnotherFile(_T("Periodic A4AF check CClientList::ProcessA4AFClients()"), false, false, false, NULL, true, false);
+		}
+	}
+// <-- ZZ:DownloadManager
+#else
 // ZZ:DownloadManager -->
 void CClientList::ProcessA4AFClients() {
     //if(thePrefs.GetLogA4AF()) AddDebugLogLine(false, _T(">>> Starting A4AF check"));
@@ -853,22 +867,17 @@ void CClientList::ProcessA4AFClients() {
     //if(thePrefs.GetLogA4AF()) AddDebugLogLine(false, _T(">>> Done with A4AF check"));
 }
 // <-- ZZ:DownloadManager
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
+
 //==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
-void CClientList::TrigReaskForDownload(bool immediate)
-{
-for(POSITION pos = list.GetHeadPosition(); pos != NULL;)
-	{ 
+#ifdef RSAIC_SIVKA
+void CClientList::TrigReaskForDownload(){
+	const DWORD dwCurTick = ::GetTickCount();
+	for(POSITION pos = list.GetHeadPosition(); pos;){
     CUpDownClient* cur_client = list.GetNext(pos); 
-	if(immediate == true)
-		{
-		// Compute the next time that the file might be saftly reasked (=> no Ban())
-		cur_client->SetNextTCPAskedTime(0);
-		}
-	else
-		{
-		// Compute the next time that the file might be saftly reasked (=> no Ban())
-		}
+		if( cur_client->GetDownloadState() == DS_NONEEDEDPARTS )
+			cur_client->SetLastAskedTime(3000000);
 	}	
 }
 #endif //Reask sourcen after ip change
