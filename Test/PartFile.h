@@ -159,8 +159,15 @@ public:
 
 	void	AddGap(uint32 start, uint32 end);
 	void	FillGap(uint32 start, uint32 end);
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	void	DrawStatusBar(CDC* dc, LPCRECT rect, bool bFlat) /*const*/;
 	virtual void	DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool	 bFlat) const;
+#else
+	void	DrawStatusBar(CDC* dc, LPCRECT rect) /*const*/;
+	virtual void	DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect) const;
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 	bool	IsComplete(uint32 start, uint32 end) const;
 	bool	IsPureGap(uint32 start, uint32 end) const;
 	bool	IsAlreadyRequested(uint32 start, uint32 end) const;

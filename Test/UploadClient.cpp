@@ -51,7 +51,13 @@ static char THIS_FILE[]=__FILE__;
 
 CBarShader CUpDownClient::s_UpStatusBar(16);
 
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 void CUpDownClient::DrawUpStatusBar(CDC* dc, RECT* rect, bool onlygreyrect, bool  bFlat) const
+#else
+void CUpDownClient::DrawUpStatusBar(CDC* dc, RECT* rect, bool onlygreyrect) const
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 {
     COLORREF crNeither;
 	COLORREF crNextSending;
@@ -62,13 +68,19 @@ void CUpDownClient::DrawUpStatusBar(CDC* dc, RECT* rect, bool onlygreyrect, bool
        (GetUploadState() != US_UPLOADING && GetUploadState() != US_CONNECTING) ) {
         crNeither = RGB(224, 224, 224);
 	    crNextSending = RGB(255,208,0);
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	    crBoth = bFlat ? RGB(0, 0, 0) : RGB(104, 104, 104);
+#else
+	    crBoth = RGB(104, 104, 104);
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 	    crSending = RGB(0, 150, 0);
     } else {
         // grayed out
         crNeither = RGB(248, 248, 248);
 	    crNextSending = RGB(255,244,191);
-	    crBoth = bFlat ? RGB(191, 191, 191) : RGB(191, 191, 191);
+	    crBoth = RGB(191, 191, 191);
 	    crSending = RGB(191, 229, 191);
     }
 
@@ -112,7 +124,13 @@ void CUpDownClient::DrawUpStatusBar(CDC* dc, RECT* rect, bool onlygreyrect, bool
 			    s_UpStatusBar.FillRange(block->StartOffset, block->EndOffset + 1, crSending);
 		    }
 	    }
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
    	    s_UpStatusBar.Draw(dc, rect->left, rect->top, bFlat);
+#else
+   	    s_UpStatusBar.Draw(dc, rect->left, rect->top);
+#endif
+//<== removed 3D-Bar-display [shadow2004]
     }
 } 
 

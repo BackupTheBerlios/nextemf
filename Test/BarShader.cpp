@@ -43,18 +43,24 @@ CBarShader::CBarShader(uint32 height, uint32 width) {
 	m_iHeight = height;
 	m_uFileSize = 1;
 	m_Spans.SetAt(0, 0);	// SLUGFILLER: speedBarShader
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	m_Modifiers = NULL;
 	m_bIsPreview=false;
 }
 
 CBarShader::~CBarShader(void) {
 	delete[] m_Modifiers;
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 }
 
 void CBarShader::Reset() {
 	Fill(0);
 }
 
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 void CBarShader::BuildModifiers() {
 	if(m_Modifiers != NULL){
 		delete[] m_Modifiers;
@@ -80,6 +86,8 @@ void CBarShader::BuildModifiers() {
 	for (int i = 0; i < count; i++)
 		m_Modifiers[i] = (float)(sin(base + i * increment));
 }
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 
 void CBarShader::SetWidth(int width) {
 	if(m_iWidth != width) {
@@ -114,8 +122,11 @@ void CBarShader::SetFileSize(uint32 fileSize) {
 void CBarShader::SetHeight(int height) {
 	if(m_iHeight != height) {
 		m_iHeight = height;
-
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 		BuildModifiers();
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 	}
 }
 
@@ -160,7 +171,13 @@ void CBarShader::Fill(COLORREF color) {
 	// SLUGFILLER: speedBarShader
 }
 
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 void CBarShader::Draw(CDC* dc, int iLeft, int iTop, bool bFlat) {
+#else
+void CBarShader::Draw(CDC* dc, int iLeft, int iTop) {
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 	POSITION pos = m_Spans.GetHeadPosition();	// SLUGFILLER: speedBarShader
 	RECT rectSpan;
 	rectSpan.top = iTop;
@@ -179,7 +196,13 @@ void CBarShader::Draw(CDC* dc, int iLeft, int iTop, bool bFlat) {
 		if(iPixels > 0) {
 			rectSpan.left = rectSpan.right;
 			rectSpan.right += iPixels;
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 			FillRect(dc, &rectSpan, color, bFlat);	// SLUGFILLER: speedBarShader
+#else
+                        FillRect(dc, &rectSpan, color);	// SLUGFILLER: speedBarShader
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 
 			start += (int)(iPixels * m_dBytesPerPixel + 0.5f);
 		} else {
@@ -203,7 +226,13 @@ void CBarShader::Draw(CDC* dc, int iLeft, int iTop, bool bFlat) {
 			// SLUGFILLER: speedBarShader
 			rectSpan.left = rectSpan.right;
 			rectSpan.right++;
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 			FillRect(dc, &rectSpan, fRed, fGreen, fBlue, bFlat);
+#else
+
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 			start += iBytesInOnePixel;
 		}
 		// SLUGFILLER: speedBarShader
@@ -215,19 +244,39 @@ void CBarShader::Draw(CDC* dc, int iLeft, int iTop, bool bFlat) {
 	}
 }
 
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 void CBarShader::FillRect(CDC *dc, LPRECT rectSpan, COLORREF color, bool bFlat) {
 	if(!color || bFlat)
 		dc->FillRect(rectSpan, &CBrush(color));
 	else
 		FillRect(dc, rectSpan, GetRValue(color), GetGValue(color), GetBValue(color), false);
+#else
+void CBarShader::FillRect(CDC *dc, LPRECT rectSpan, COLORREF color) {
+	if(!color)
+		dc->FillRect(rectSpan, &CBrush(color));
+	else
+		FillRect(dc, rectSpan, GetRValue(color), GetGValue(color), GetBValue(color));
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 }
 
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 void CBarShader::FillRect(CDC *dc, LPRECT rectSpan, float fRed, float fGreen,
 						  float fBlue, bool bFlat) {
 	if(bFlat) {
+#else
+void CBarShader::FillRect(CDC *dc, LPRECT rectSpan, float fRed, float fGreen,
+						  float fBlue) {
+#endif
+//<== removed 3D-Bar-display [shadow2004]
+
 		COLORREF color = RGB((int)(fRed + .5f), (int)(fGreen + .5f), (int)(fBlue + .5f));
 		dc->FillRect(rectSpan, &CBrush(color));
 
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	} else {
 		if (m_Modifiers == NULL || (m_used3dlevel!=thePrefs.Get3DDepth() && !m_bIsPreview) )
 			BuildModifiers();
@@ -256,4 +305,6 @@ void CBarShader::DrawPreview(CDC* dc, int iLeft, int iTop, uint8 previewLevel)		
 	BuildModifiers();
 	Draw( dc, iLeft, iTop, (previewLevel==0));
 	m_bIsPreview=false;
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 }

@@ -425,7 +425,13 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					if( file->GetPartCount()){
 						cur_rec.bottom--;
 						cur_rec.top++;
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 						file->DrawShareStatusBar(dc,&cur_rec,false,thePrefs.UseFlatBar());
+#else
+						file->DrawShareStatusBar(dc,&cur_rec,false);
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 						cur_rec.bottom++;
 						cur_rec.top--;
 					}

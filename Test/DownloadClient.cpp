@@ -56,14 +56,28 @@ static char THIS_FILE[]=__FILE__;
 //	members of CUpDownClient
 //	which are mainly used for downloading functions 
 CBarShader CUpDownClient::s_StatusBar(16);
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 void CUpDownClient::DrawStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool  bFlat) const
+#else
+void CUpDownClient::DrawStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect) const
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 {
 	COLORREF crNeither;
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	if(bFlat) {
 		crNeither = RGB(224, 224, 224);
 	} else {
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 		crNeither = RGB(240, 240, 240);
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	}
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 
 	ASSERT(reqfile);
 	s_StatusBar.SetFileSize(reqfile->GetFileSize());
@@ -76,6 +90,8 @@ void CUpDownClient::DrawStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool
 		COLORREF crClientOnly;
 		COLORREF crPending;
 		COLORREF crNextPending;
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 		if(bFlat) {
 			crBoth = RGB(0, 0, 0);
 			crNeither = RGB(224, 224, 224);
@@ -83,12 +99,18 @@ void CUpDownClient::DrawStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool
 			crPending = RGB(0,150,0);
 			crNextPending = RGB(255,208,0);
 		} else {
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 			crBoth = RGB(104, 104, 104);
 			crNeither = RGB(240, 240, 240);
 			crClientOnly = RGB(0, 100, 255);
 			crPending = RGB(0, 150, 0);
 			crNextPending = RGB(255,208,0);
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 		}
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 
 		char* pcNextPendingBlks = NULL;
 		if (m_nDownloadState == DS_DOWNLOADING){
@@ -121,7 +143,13 @@ void CUpDownClient::DrawStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool
 		}
 		delete[] pcNextPendingBlks;
 	}
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	s_StatusBar.Draw(dc, rect->left, rect->top, bFlat);
+#else
+	s_StatusBar.Draw(dc, rect->left, rect->top);
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 } 
 
 bool CUpDownClient::Compare(const CUpDownClient* tocomp, bool bIgnoreUserhash) const

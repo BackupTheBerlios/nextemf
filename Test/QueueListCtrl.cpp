@@ -448,7 +448,13 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					if( client->GetUpPartCount()){
 						cur_rec.bottom--;
 						cur_rec.top++;
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 						client->DrawUpStatusBar(dc,&cur_rec,false,thePrefs.UseFlatBar());
+#else
+						client->DrawUpStatusBar(dc,&cur_rec,false);
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 						cur_rec.bottom++;
 						cur_rec.top--;
 					}

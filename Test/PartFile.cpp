@@ -1619,11 +1619,21 @@ void CPartFile::UpdateCompletedInfos(uint32 uTotalGaps)
 	}
 }
 
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 void CPartFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool bFlat) const
 {
 	if( !IsPartFile() )
 	{
 		CKnownFile::DrawShareStatusBar( dc, rect, onlygreyrect, bFlat );
+#else
+void CPartFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect) const
+{
+	if( !IsPartFile() )
+	{
+		CKnownFile::DrawShareStatusBar( dc, rect, onlygreyrect);
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 		return;
 	}
 
@@ -1637,15 +1647,23 @@ void CPartFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, boo
 		COLORREF crProgress;
 		COLORREF crHave;
 		COLORREF crPending;
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 		if(bFlat) { 
 			crProgress = RGB(0, 150, 0);
 			crHave = RGB(0, 0, 0);
 			crPending = RGB(255,208,0);
 		} else { 
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 			crProgress = RGB(0, 224, 0);
 			crHave = RGB(104, 104, 104);
 			crPending = RGB(255, 208, 0);
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 		} 
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 		for (int i = 0; i < GetPartCount(); i++){
 			if(m_SrcpartFrequency[i] > 0 ){
 				COLORREF color = RGB(0, (210-(22*(m_SrcpartFrequency[i]-1)) < 0) ? 0 : 210-(22*(m_SrcpartFrequency[i]-1)), 255);
@@ -1653,10 +1671,19 @@ void CPartFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, boo
 			}
 		}
 	}
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
    	s_ChunkBar.Draw(dc, rect->left, rect->top, bFlat); 
 } 
 
 void CPartFile::DrawStatusBar(CDC* dc, LPCRECT rect, bool bFlat) /*const*/
+#else
+   	s_ChunkBar.Draw(dc, rect->left, rect->top); 
+} 
+
+void CPartFile::DrawStatusBar(CDC* dc, LPCRECT rect) /*const*/
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 {
 	COLORREF crProgress;
 	COLORREF crHave;
@@ -1666,29 +1693,49 @@ void CPartFile::DrawStatusBar(CDC* dc, LPCRECT rect, bool bFlat) /*const*/
 	bool notgray = eVirtualState == PS_EMPTY || eVirtualState == PS_READY; // SLUGFILLER: grayPause - only test once
 
 	// SLUGFILLER: grayPause - Colors by status
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	if(bFlat)
 		crProgress = RGB(0, 150, 0);
 	else
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 		crProgress = RGB(0, 224, 0);
 	if(notgray) {
 		crMissing = RGB(255, 0, 0);
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	    if(bFlat) {
 		    crHave = RGB(0, 0, 0);
 		    crPending = RGB(255,208,0);
 	    } else {
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 		    crHave = RGB(104, 104, 104);
 		    crPending = RGB(255, 208, 0);
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	    }
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 	} else {
 		crMissing = RGB(191, 64, 64);
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 		if(bFlat) {
 			crHave = RGB(64, 64, 64);
 			crPending = RGB(191,168,64);
 		} else {
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 			crHave = RGB(116, 116, 116);
 			crPending = RGB(191, 168, 64);
 		}
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	}
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 	// SLUGFILLER: grayPause
 
 	s_ChunkBar.SetHeight(rect->bottom - rect->top);
@@ -1699,7 +1746,13 @@ void CPartFile::DrawStatusBar(CDC* dc, LPCRECT rect, bool bFlat) /*const*/
 	if (status == PS_COMPLETE || status == PS_COMPLETING)
 	{
 		s_ChunkBar.FillRange(0, m_nFileSize, crProgress);
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 		s_ChunkBar.Draw(dc, rect->left, rect->top, bFlat);
+#else
+		s_ChunkBar.Draw(dc, rect->left, rect->top);
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 		percentcompleted = 100.0F;
 		completedsize = m_nFileSize;
 	}
@@ -1764,7 +1817,13 @@ void CPartFile::DrawStatusBar(CDC* dc, LPCRECT rect, bool bFlat) /*const*/
 		    s_ChunkBar.FillRange(block->StartOffset + block->transferred, block->EndOffset + 1, crPending);
 	    }
     
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D    
 	    s_ChunkBar.Draw(dc, rect->left, rect->top, bFlat);
+#else
+	    s_ChunkBar.Draw(dc, rect->left, rect->top);
+#endif
+//<== removed 3D-Bar-display [shadow2004]
     
 	    // green progress
 	    float blockpixel = (float)(rect->right - rect->left)/(float)m_nFileSize;
@@ -1773,18 +1832,26 @@ void CPartFile::DrawStatusBar(CDC* dc, LPCRECT rect, bool bFlat) /*const*/
 	    gaprect.bottom = gaprect.top + PROGRESS_HEIGHT; // Barry - was 4
 	    gaprect.left = rect->left;
     
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	    if(!bFlat) {
 		    s_LoadBar.SetWidth((m_nFileSize - allgaps)*blockpixel + 0.5F);
 		    s_LoadBar.Fill(crProgress);
 		    s_LoadBar.Draw(dc, gaprect.left, gaprect.top, false);
 	    } else {
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 		    gaprect.right = rect->left + (uint32)((m_nFileSize - allgaps)*blockpixel + 0.5F);
 		    dc->FillRect(&gaprect, &CBrush(crProgress));
 		    //draw gray progress only if flat
 		    gaprect.left = gaprect.right;
 		    gaprect.right = rect->right;
 		    dc->FillRect(&gaprect, &CBrush(RGB(224,224,224)));
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	    }
+#endif
+//<== removed 3D-Bar-display [shadow2004]
     
 	    UpdateCompletedInfos(allgaps);
     }
@@ -1797,6 +1864,8 @@ void CPartFile::DrawStatusBar(CDC* dc, LPCRECT rect, bool bFlat) /*const*/
 		rcFileOpProgress.top = rect->top;
 		rcFileOpProgress.bottom = rcFileOpProgress.top + PROGRESS_HEIGHT;
 		rcFileOpProgress.left = rect->left;
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 		if (!bFlat)
 		{
 			s_LoadBar.SetWidth(GetFileOpProgress()*blockpixel + 0.5F);
@@ -1805,12 +1874,18 @@ void CPartFile::DrawStatusBar(CDC* dc, LPCRECT rect, bool bFlat) /*const*/
 		}
 		else
 		{
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 			rcFileOpProgress.right = rcFileOpProgress.left + (UINT)(GetFileOpProgress()*blockpixel + 0.5F);
 			dc->FillRect(&rcFileOpProgress, &CBrush(RGB(255,208,0)));
 			rcFileOpProgress.left = rcFileOpProgress.right;
 			rcFileOpProgress.right = rect->right;
 			dc->FillRect(&rcFileOpProgress, &CBrush(RGB(224,224,224)));
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 		}
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 	}
 }
 

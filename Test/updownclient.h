@@ -370,7 +370,13 @@ public:
 	uint32			GetQueueSessionPayloadUp() const				{ return m_nCurQueueSessionPayloadUp; }
 	void			ProcessExtendedInfo(CSafeMemFile* packet, CKnownFile* tempreqfile);
 	uint16			GetUpPartCount() const							{ return m_nUpPartCount; }
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	void			DrawUpStatusBar(CDC* dc, RECT* rect, bool onlygreyrect, bool  bFlat) const;
+#else
+	void			DrawUpStatusBar(CDC* dc, RECT* rect, bool onlygreyrect) const;
+#endif
+//<== removed 3D-Bar-display [shadow2004]
     uint32          GetPayloadInBuffer() const						{ return m_addedPayloadQueueSession - GetQueueSessionPayloadUp(); }
 	bool			IsUpPartAvailable(uint16 iPart) const {
 						return (iPart>=m_nUpPartCount || !m_abyUpPartStatus) ? 0 : m_abyUpPartStatus[iPart];
@@ -403,7 +409,13 @@ public:
 	void			SetIsfakerank(bool fake)						{m_nfakerank = fake;}
 #endif //AntiFakeRank
 //<==AntiFakeRank [cyrex2001]
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	void			DrawStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool  bFlat) const;
+#else
+	void			DrawStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect) const;
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 	bool			AskForDownload();
 	virtual void	SendFileRequest();
 	void			SendStartupLoadReq();

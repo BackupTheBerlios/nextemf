@@ -830,14 +830,16 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Display"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    CONTROL         "3D Depth:",IDC_3DDEP,"Static",SS_LEFTNOWORDWRAP | 
-                    WS_GROUP,7,7,84,9
-    CONTROL         "",IDC_3DDEPTH,"msctls_trackbar32",TBS_AUTOTICKS | 
-                    WS_TABSTOP,121,5,102,11,WS_EX_STATICEDGE
-    CONTROL         "flat",IDC_FLAT,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,
-                    121,17,36,9
-    CONTROL         "round",IDC_ROUND,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,
-                    174,17,49,9,WS_EX_RIGHT
+//==> removed 3D-Bar-display [shadow2004]
+//    CONTROL         "3D Depth:",IDC_3DDEP,"Static",SS_LEFTNOWORDWRAP | 
+//                    WS_GROUP,7,7,84,9
+//    CONTROL         "",IDC_3DDEPTH,"msctls_trackbar32",TBS_AUTOTICKS | 
+//                    WS_TABSTOP,121,5,102,11,WS_EX_STATICEDGE
+//    CONTROL         "flat",IDC_FLAT,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,
+//                    121,17,36,9
+//    CONTROL         "round",IDC_ROUND,"Static",SS_LEFTNOWORDWRAP | WS_GROUP,
+//                    174,17,49,9,WS_EX_RIGHT
+//<== removed 3D-Bar-display [shadow2004]
     CONTROL         "Tooltip delay time [sec.]",IDC_TOOLTIPDELAY_LBL,"Static",
                     SS_LEFTNOWORDWRAP | WS_GROUP,7,30,115,8
     EDITTEXT        IDC_TOOLTIPDELAY,122,28,28,12,ES_RIGHT | ES_AUTOHSCROLL | 
@@ -3389,8 +3391,10 @@ BEGIN
     IDS_FULLCHUNKTRANS      "Try to transfer full chunks to all uploads"
     IDS_MANUALSERVERHIGHPRIO "Set manually added servers to high priority"
     IDS_VERBOSE             "Verbose (additional program feedback)"
-    IDS_FLAT                "flat"
-    IDS_ROUND               "round"
+//==> removed 3D-Bar-display [shadow2004]
+//    IDS_FLAT                "flat"
+//    IDS_ROUND               "round"
+//<== removed 3D-Bar-display [shadow2004]
     IDS_SAMEUSERHASH        "Client '%s' and '%s' have the same userhash or IP - removed '%s'"
     IDS_SEARCHEXTENTION     "Extension"
     IDS_SEARCHAVAIL         "Availability"

@@ -112,7 +112,11 @@ public:
 	static	uint8	autoconnectstaticonly; // Barry
 	static	uint8	autotakeed2klinks;	   // Barry
 	static	uint8	addnewfilespaused;	   // Barry
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	static	uint8	depth3D;			   // Barry
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 	static	int		m_iStraightWindowStyles;
 	static	TCHAR	m_szSkinProfile[MAX_PATH];
 	static	TCHAR	m_szSkinProfileDir[MAX_PATH];
@@ -1089,7 +1093,11 @@ public:
 	// -khaos--+++> Changed datatype to avoid overflows
 	static	uint16	GetStatsMax()						{return statsMax;}
 	// <-----khaos-
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	static	uint8	UseFlatBar()						{return (depth3D==0);}
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 	static	int		GetStraightWindowStyles()			{return m_iStraightWindowStyles;}
 	static	LPCTSTR GetSkinProfile()					{return m_szSkinProfile;}
 	static	CString GetSkinProfileDir()					{return m_szSkinProfileDir;}
@@ -1178,7 +1186,11 @@ public:
 	static	int		GetCommitFiles()					{return m_iCommitFiles;}
 
 	// Barry
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	static	uint16	Get3DDepth() { return depth3D;}
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 	static	bool	AutoTakeED2KLinks() {return autotakeed2klinks;}
 	static	bool	AddNewFilesPaused() {return addnewfilespaused;}
 

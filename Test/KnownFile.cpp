@@ -221,7 +221,13 @@ void CKnownFile::Dump(CDumpContext& dc) const
 
 CBarShader CKnownFile::s_ShareStatusBar(16);
 
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 void CKnownFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool  bFlat) const
+#else
+void CKnownFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect) const
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 {
 	const COLORREF crMissing = RGB(255, 0, 0);
 	s_ShareStatusBar.SetFileSize(GetFileSize());
@@ -233,15 +239,23 @@ void CKnownFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bo
 		COLORREF crProgress;
 		COLORREF crHave;
 		COLORREF crPending;
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 		if(bFlat) { 
 			crProgress = RGB(0, 150, 0);
 			crHave = RGB(0, 0, 0);
 			crPending = RGB(255,208,0);
 		} else { 
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 			crProgress = RGB(0, 224, 0);
 			crHave = RGB(104, 104, 104);
 			crPending = RGB(255, 208, 0);
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 		} 
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 		for (int i = 0; i < GetPartCount(); i++){
 			if(m_AvailPartFrequency[i] > 0 ){
 				COLORREF color = RGB(0, (210-(22*(m_AvailPartFrequency[i]-1)) <	0)? 0:210-(22*(m_AvailPartFrequency[i]-1)), 255);
@@ -249,7 +263,13 @@ void CKnownFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bo
 			}
 		}
 	}
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
    	s_ShareStatusBar.Draw(dc, rect->left, rect->top, bFlat); 
+#else
+   	s_ShareStatusBar.Draw(dc, rect->left, rect->top); 
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 } 
 
 // SLUGFILLER: heapsortCompletesrc

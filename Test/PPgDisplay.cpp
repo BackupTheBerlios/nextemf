@@ -48,7 +48,11 @@ CPPgDisplay::~CPPgDisplay()
 void CPPgDisplay::DoDataExchange(CDataExchange* pDX)
 {
 	CPropertyPage::DoDataExchange(pDX);
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	DDX_Control(pDX, IDC_PREVIEW, m_3DPreview);
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 }
 
 
@@ -56,7 +60,11 @@ BEGIN_MESSAGE_MAP(CPPgDisplay, CPropertyPage)
 	ON_BN_CLICKED(IDC_MINTRAY, OnSettingsChange)
 	ON_BN_CLICKED(IDC_DBLCLICK, OnSettingsChange)
 	ON_EN_CHANGE(IDC_TOOLTIPDELAY, OnSettingsChange)
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	ON_WM_HSCROLL()
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 	ON_BN_CLICKED(IDC_UPDATEQUEUE, OnSettingsChange)
 	ON_BN_CLICKED(IDC_SHOWRATEONTITLE, OnSettingsChange)
 	ON_BN_CLICKED(IDC_INDICATERATINGS , OnSettingsChange)
@@ -70,7 +78,11 @@ BEGIN_MESSAGE_MAP(CPPgDisplay, CPropertyPage)
 	ON_BN_CLICKED(IDC_CLEARCOMPL,OnSettingsChange)
 	ON_BN_CLICKED(IDC_RESETHIST, OnBtnClickedResetHist)
 	ON_WM_HELPINFO()
-//	ON_NOTIFY(NM_CUSTOMDRAW, IDC_3DDEPTH, On3DDepth)
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
+	ON_NOTIFY(NM_CUSTOMDRAW, IDC_3DDEPTH, On3DDepth)
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 END_MESSAGE_MAP()
 
 void CPPgDisplay::LoadSettings(void)
@@ -128,13 +140,16 @@ BOOL CPPgDisplay::OnInitDialog()
 	CPropertyPage::OnInitDialog();
 	InitWindowStyles(this);
 
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	// Barry - Controls depth of 3d colour shading
 	CSliderCtrl *slider3D = (CSliderCtrl*)GetDlgItem(IDC_3DDEPTH);
 	slider3D->SetRange(0, 5, true);
 	slider3D->SetPos(thePrefs.Get3DDepth());
 	slider3D->SetTicFreq(1);
 	DrawPreview();
-
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 	LoadSettings();
 	Localize();
 
@@ -149,7 +164,11 @@ BOOL CPPgDisplay::OnApply()
 	uint8 mintotray_old= thePrefs.mintotray;
 	thePrefs.mintotray = (uint8)IsDlgButtonChecked(IDC_MINTRAY);
 	thePrefs.transferDoubleclick= (uint8)IsDlgButtonChecked(IDC_DBLCLICK);
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	thePrefs.depth3D = ((CSliderCtrl*)GetDlgItem(IDC_3DDEPTH))->GetPos();
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 	thePrefs.indicateratings= (uint8)IsDlgButtonChecked(IDC_INDICATERATINGS);
 	thePrefs.dontRecreateGraphs=(uint8)IsDlgButtonChecked(IDC_REPAINT);
 	thePrefs.m_bShowDwlPercentage=(uint8)IsDlgButtonChecked(IDC_SHOWDWLPERCENT);
@@ -248,9 +267,13 @@ void CPPgDisplay::Localize(void)
 		GetDlgItem(IDC_MINTRAY)->SetWindowText(GetResString(IDS_PW_TRAY));
 		GetDlgItem(IDC_DBLCLICK)->SetWindowText(GetResString(IDS_PW_DBLCLICK));
 		GetDlgItem(IDC_TOOLTIPDELAY_LBL)->SetWindowText(GetResString(IDS_PW_TOOL));
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 		GetDlgItem(IDC_3DDEP)->SetWindowText(GetResString(IDS_3DDEP));
 		GetDlgItem(IDC_FLAT)->SetWindowText(GetResString(IDS_FLAT));
 		GetDlgItem(IDC_ROUND)->SetWindowText(GetResString(IDS_ROUND));
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 		GetDlgItem(IDC_UPDATEQUEUE)->SetWindowText(GetResString(IDS_UPDATEQUEUE));
 		GetDlgItem(IDC_SHOWRATEONTITLE)->SetWindowText(GetResString(IDS_SHOWRATEONTITLE));
 		GetDlgItem(IDC_INDICATERATINGS)->SetWindowText(GetResString(IDS_INDICATERATINGS));
@@ -270,6 +293,8 @@ void CPPgDisplay::Localize(void)
 	}
 }
 
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 void CPPgDisplay::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) 
 {
 	SetModified(TRUE);
@@ -279,7 +304,8 @@ void CPPgDisplay::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 	DrawPreview();
 }
-
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 // NOTE: Can't use 'lCustData' for a structure which would hold that static members,
 // because '_pfnChooseFontHook' will be needed *before* WM_INITDIALOG (which would
 // give as the 'lCustData').
@@ -386,13 +412,14 @@ BOOL CPPgDisplay::OnHelpInfo(HELPINFO* pHelpInfo)
 	OnHelp();
 	return TRUE;
 }
-
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 void CPPgDisplay::DrawPreview()
 {
 	int dep=((CSliderCtrl*)GetDlgItem(IDC_3DDEPTH))->GetPos();
 	m_3DPreview.SetSliderPos( dep);
 }
-/*
+
 void CPPgDisplay::On3DDepth(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
@@ -401,4 +428,5 @@ theApp.AddLogLine(true,"ding");
 
 	*pResult = 0;
 }
-*/
+#endif
+//<== removed 3D-Bar-display [shadow2004]

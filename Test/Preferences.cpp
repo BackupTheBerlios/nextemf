@@ -169,7 +169,11 @@ uint8	CPreferences::autoconnect;
 uint8	CPreferences::autoconnectstaticonly;
 uint8	CPreferences::autotakeed2klinks;
 uint8	CPreferences::addnewfilespaused;
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 uint8	CPreferences::depth3D;
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 int		CPreferences::m_iStraightWindowStyles;
 TCHAR	CPreferences::m_szSkinProfile[MAX_PATH];
 TCHAR	CPreferences::m_szSkinProfileDir[MAX_PATH];
@@ -2074,7 +2078,11 @@ void CPreferences::SavePreferences()
     ini.WriteBool(_T("AutoConnectStaticOnly"), autoconnectstaticonly);  
 	ini.WriteBool(_T("AutoTakeED2KLinks"), autotakeed2klinks);  
     ini.WriteBool(_T("AddNewFilesPaused"), addnewfilespaused);  
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
     ini.WriteInt (_T("3DDepth"), depth3D);  
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 
 	ini.WriteBool(_T("NotifyOnDownload"),useDownloadNotifier); // Added by enkeyDEV
 	ini.WriteBool(_T("NotifyOnNewDownload"),useNewDownloadNotifier);
@@ -2654,6 +2662,9 @@ void CPreferences::LoadPreferences()
 	autoconnectstaticonly = ini.GetBool(_T("AutoConnectStaticOnly"),false); 
 	autotakeed2klinks = ini.GetBool(_T("AutoTakeED2KLinks"),true); 
 	addnewfilespaused = ini.GetBool(_T("AddNewFilesPaused"),false); 
+
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	depth3D = ini.GetInt(_T("3DDepth"), 0);
 
 	// as temporarial converter for previous versions
@@ -2662,6 +2673,8 @@ void CPreferences::LoadPreferences()
 			depth3D = 0;
 		else 
 			depth3D = 5;
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 
     useDownloadNotifier=ini.GetBool(_T("NotifyOnDownload"),false);	// Added by enkeyDEV
 	useNewDownloadNotifier=ini.GetBool(_T("NotifyOnNewDownload"),false);

@@ -195,7 +195,13 @@ public:
 	void	AddUploadingClient(CUpDownClient* client);
 	void	RemoveUploadingClient(CUpDownClient* client);
 	virtual void	UpdatePartsInfo();
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 	virtual	void	DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool bFlat) const;
+#else
+	virtual	void	DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect) const;
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 
 	// comment
 	const CString& GetFileComment() /*const*/;

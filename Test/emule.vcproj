@@ -1160,9 +1160,6 @@
 			Name="Interface Source"
 			Filter="">
 			<File
-				RelativePath="3DPreviewControl.cpp">
-			</File>
-			<File
 				RelativePath="AddFriend.cpp">
 			</File>
 			<File
@@ -1474,9 +1471,6 @@
 		<Filter
 			Name="Interface Header"
 			Filter="">
-			<File
-				RelativePath="3DPreviewControl.h">
-			</File>
 			<File
 				RelativePath="AddFriend.h">
 			</File>

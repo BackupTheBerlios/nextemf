@@ -821,8 +821,10 @@
 #define IDS_FULLCHUNKTRANS              824
 #define IDS_MANUALSERVERHIGHPRIO        825
 #define IDS_VERBOSE                     826
-#define IDS_FLAT                        827
-#define IDS_ROUND                       828
+//==> removed 3D-Bar-display [shadow2004]
+//#define IDS_FLAT                        827
+//#define IDS_ROUND                       828
+//<== removed 3D-Bar-display [shadow2004]
 #define IDS_SAMEUSERHASH                829
 #define IDS_SEARCHEXTENTION             830
 #define IDS_SEARCHAVAIL                 831
@@ -2035,8 +2037,10 @@
 #define IDC_RATEHELP                    2597
 #define IDC_RATELIST                    2598
 #define IDC_TAB3                        2599
-#define IDC_3DDEPTH                     2600
-#define IDC_3DDEP                       2601
+//==> removed 3D-Bar-display [shadow2004]
+//#define IDC_3DDEPTH                     2600
+//#define IDC_3DDEP                       2601
+//<== removed 3D-Bar-display [shadow2004]
 #define IDC_MANUALSERVERHIGHPRIO        2602
 #define IDC_DAYS                        2603
 #define IDC_ROUND                       2605

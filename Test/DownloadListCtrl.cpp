@@ -591,7 +591,13 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 					rec_status.top = 0; 
 					rec_status.bottom = iHeight; 
 					rec_status.right = iWidth; 
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 					lpPartFile->DrawStatusBar(&cdcStatus,  &rec_status, thePrefs.UseFlatBar()); 
+#else
+					lpPartFile->DrawStatusBar(&cdcStatus,  &rec_status); 
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 
 					lpCtrlItem->dwUpdated = dwTicks + (rand() % 128); 
 				} else 
@@ -771,7 +777,13 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 					rec_status.top = 0; 
 					rec_status.bottom = iHeight; 
 					rec_status.right = iWidth; 
+#ifdef BAR3D
 					lpPartFile->DrawStatusBar(&cdcStatus,  &rec_status, thePrefs.UseFlatBar()); 
+#else
+					lpPartFile->DrawStatusBar(&cdcStatus,  &rec_status); 
+#endif
+//<== removed 3D-Bar-display [shadow2004]
+
 
 					lpCtrlItem->dwUpdated = dwTicks + (rand() % 128); 
 				} else 
@@ -1024,11 +1036,9 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 					if ( lpUpDownClient->IsNextEMF() )
 						m_ImageList.Draw(dc, 17, point2, ILD_NORMAL | uOvlImg);
 					else
-						m_ImageList.Draw(dc, 5, point2, ILD_NORMAL | uOvlImg);
-#else //Modversion
-					m_ImageList.Draw(dc, 5, point2, ILD_NORMAL | uOvlImg);
 #endif //Modversion
 //<==Modversion [cyrex2001]
+					m_ImageList.Draw(dc, 5, point2, ILD_NORMAL | uOvlImg);
 				else
 					m_ImageList.Draw(dc, 7, point2, ILD_NORMAL | uOvlImg);
 				cur_rec.left += 20;
@@ -1104,8 +1114,13 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 					rec_status.top = 0; 
 					rec_status.bottom = iHeight; 
 					rec_status.right = iWidth; 
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D					
 					lpUpDownClient->DrawStatusBar(&cdcStatus,  &rec_status,(lpCtrlItem->type == UNAVAILABLE_SOURCE), thePrefs.UseFlatBar()); 
-
+#else
+					lpUpDownClient->DrawStatusBar(&cdcStatus,  &rec_status,(lpCtrlItem->type == UNAVAILABLE_SOURCE)); 
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 					lpCtrlItem->dwUpdated = dwTicks + (rand() % 128); 
 				} else 
 					hOldBitmap = cdcStatus.SelectObject(lpCtrlItem->status); 
