@@ -28,6 +28,19 @@ include where following PreProzesses needed
 #define FIX02						//	Some Bug will crash while adding a friend by Libbnor & WiZaRd
 #define FIX03						//	Empty Username may crash eMule - now banned by WiZaRd
 #define FIX04						//	Save Preferences only if needed by WiZaRd
-#define COMP_SRC					//	A better way to show Complete Sources in Shared-Dialog by WiZaRd
+#define FIX05						//	Fixed some IDC by WiZaRd [shadow2004]
+#define FIX06						//	Bugfix to prevent a crash via Kad by WiZaRd [shadow2004]
+#define COMP_SRC					//	A better way to show Complete Sources in Shared-Dialog by WiZaRd [shadow2004]
 #define SEC_IDENT					//	A better way to show Secure Identification in Statistic by WiZaRd [shadow2004]
+#define KADRECON					//	Reconnect on Kad by Pawcio [shadow2004]
+#define CRASHRPT					//	Crashreport by Maella
+#define RELAX						//	Relax on Start-Up by WiZaRd [shadow2004]
 //<== Präprozessoren [shadow2004]
+//==> Crashreport [shadow2004]
+#ifdef CRASHRPT
+#define CRASH_MOD_VERSION _T("NextEMF v0.2 - CVS 13.01.05")
+#define CRASH_DEBUG_FILE _T("http://people.freenet.de/schmalspur/eMule/crashrpt.rar")
+#define CRASHRPT_POST_MAIL _T("shadow2004@buerotiger.de")
+#endif
+//<== Crashreport [shadow2004]
+

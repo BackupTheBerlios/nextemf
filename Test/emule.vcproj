@@ -2404,6 +2404,9 @@
 				RelativePath=".\NextEMF\AdvancedLeecherFilter.cpp">
 			</File>
 			<File
+				RelativePath=".\NextEMF\Crashrpt.h">
+			</File>
+			<File
 				RelativePath=".\NextEMF\HardLimit.cpp">
 			</File>
 			<File

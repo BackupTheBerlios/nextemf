@@ -4475,6 +4475,9 @@ STRINGTABLE
 BEGIN
     IDS_LOWIDRETRYING       "LowID -- Trying Again (%i more attempts)"
     IDS_RECONNECTONLOWID    "Reconnect on LowID retries"
+    IDS_CRASHRPT_DONE       "Crash report has been generated. Please send it at %s"
+    IDS_CRASHRPT_AV         "CrashReporter is available and running."
+    IDS_CRASHRPT_NOTAV      "CrashReporter not found in emule's directory. If you want to help us debug our mod, please download the CrashRpt.dll from %s."
 END
 
 #endif    // Englisch (USA) resources

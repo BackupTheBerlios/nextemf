@@ -2396,6 +2396,11 @@
 #define IDS_SIVKA_BAN					61041
 #define IDS_LOWIDRETRYING				61042
 #define IDS_RECONNECTONLOWID			61043
+
+#define IDS_CRASHRPT_DONE				61044
+#define IDS_CRASHRPT_AV					61045
+#define IDS_CRASHRPT_NOTAV				61046
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

@@ -426,6 +426,16 @@ VOID CALLBACK CServerConnect::RetryConnectTimer(HWND hWnd, UINT nMsg, UINT nId, 
 		_this->ConnectToAnyServer();
 	}
 	CATCH_DFLT_EXCEPTIONS(_T("CServerConnect::RetryConnectTimer"))
+//==> Crashreport [shadow2004]
+#ifdef CRASHRPT
+	// Remark: The macro CATCH_DFLT_EXCEPTIONS will not catch all types of exception.
+	//         The exceptions thrown in callback function are not intercepted by the dbghelp.dll (e.g. eMule Dump, crashRpt, etc...)
+	catch(...) {
+		if(theApp.emuledlg != NULL)
+			AddLogLine(true, _T("Unknown %s exception in %s"), __FUNCTION__);
+	}
+#endif
+//<== Crashreport [shadow2004]
 }
 
 void CServerConnect::CheckForTimeout()

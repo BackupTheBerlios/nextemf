@@ -76,6 +76,11 @@
 #include "FirewallOpener.h"
 #include "StringConversion.h"
 #include "Log.h"
+//==> Crashreport [shadow2004]
+#ifdef CRASHRPT
+#include ".\NextEMF\crashrpt.h"
+#endif
+//<== Crashreport [shadow2004]
 
 CLogFile theLog;
 CLogFile theVerboseLog;
@@ -541,6 +546,21 @@ BOOL CemuleApp::InitInstance()
 //<== remove scheduler [shadow2004]
 	m_pPeerCache = new CPeerCacheFinder();
 	
+//==> Crashreport [shadow2004]
+#ifdef CRASHRPT
+	if (s_miniDump.IsMiniDumpActivated())
+	{
+		AddLogLine(false, GetResString(IDS_CRASHRPT_AV));
+	}
+	else
+	{
+		CString logline; 
+		logline.Format(GetResString(IDS_CRASHRPT_NOTAV), CRASH_DEBUG_FILE);
+		AddLogLine(false, logline); 
+	}
+#endif
+//<== Crashreport [shadow2004]
+
 	thePerfLog.Startup();
 	dlg.DoModal();
 

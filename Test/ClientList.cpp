@@ -56,9 +56,18 @@ static char THIS_FILE[]=__FILE__;
 
 
 CClientList::CClientList(){
+//==> Relax on Start-Up [shadow2004]
+#ifdef RELAX
+    const uint32 cur_tick = ::GetTickCount(); 
+    m_dwLastBannCleanUp = cur_tick+CLIENTBANTIME; 
+    m_dwLastTrackedCleanUp = cur_tick+KEEPTRACK_TIME; 
+    m_dwLastClientCleanUp = cur_tick; 
+#else
 	m_dwLastBannCleanUp = 0;
 	m_dwLastTrackedCleanUp = 0;
 	m_dwLastClientCleanUp = 0;
+#endif
+//<== Relax on Start-Up [shadow2004]
 	m_bHaveBuddy = 0;
 //==>List Of Dont Ask This IPs [cyrex2001]
 #ifdef DROP
@@ -817,7 +826,7 @@ void CClientList::RemoveFromKadList(CUpDownClient* torem){
 		{
 			m_pBuddy = NULL;
 //==> Bugfix to prevent a crash by WiZaRd [shadow2004]
-#ifdef FIX05
+#ifdef FIX06
 			m_bHaveBuddy = false;
 #endif
 //<== Bugfix to prevent a crash by WiZaRd [shadow2004]
