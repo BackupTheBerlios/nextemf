@@ -17,7 +17,7 @@
 #pragma once
 
 //==> Präprozessoren [shadow2004]
-#include "MenuCmds.h"
+#include ".\NextEMF\PraeProDec.h"
 //<== Präprozessoren [shadow2004]
 
 // MOD Note: Do not change this part - Merkur
@@ -106,7 +106,7 @@
 #define CONNECTION_LATENCY		22050		// latency for responces
 #define MINWAIT_BEFORE_DLDISPLAY_WINDOWUPDATE   1000
 #define MINWAIT_BEFORE_ULDISPLAY_WINDOWUPDATE   1000
-#define CLIENTBANTIME			HR2MS(2)	// 2h
+#define CLIENTBANTIME			HR2MS(6)	// changed 2h to 6h
 #define TRACKED_CLEANUP_TIME	HR2MS(1)	// 1 hour
 #define KEEPTRACK_TIME			HR2MS(2)	// 2h	//how long to keep track of clients which were once in the uploadqueue
 #define LOCALSERVERREQUESTS		20000		// only one local src request during this timespan (WHERE IS THIS USED?)

@@ -134,7 +134,13 @@ void CChatWnd::ShowFriendMsgDetails(CFriend* pFriend)
 		// Identification
 		if (pFriend->GetLinkedClient())
 		{
+//==>Bug will crash while adding a friend [shadow2004]
+#ifdef FIX02
+			if (theApp.clientcredits->CryptoAvailable() && pFriend->GetLinkedClient()->Credits())
+#else
 			if (theApp.clientcredits->CryptoAvailable())
+#endif
+//<==Bug will crash while adding a friend [shadow2004]
 			{
 				switch(pFriend->GetLinkedClient()->Credits()->GetCurrentIdentState(pFriend->GetLinkedClient()->GetIP()))
 				{
@@ -158,14 +164,26 @@ void CChatWnd::ShowFriendMsgDetails(CFriend* pFriend)
 			GetDlgItem(IDC_FRIENDS_IDENTIFICACION_EDIT)->SetWindowText(_T("?"));
 
 		// Upoload and downloaded
-		if (pFriend->GetLinkedClient())
+		if (pFriend->GetLinkedClient()
+//==>Bug will crash while adding a friend [shadow2004]
+#ifdef FIX02
+		&& pFriend->GetLinkedClient()->Credits()
+#endif
+//<==Bug will crash while adding a friend [shadow2004]
+			)
 		{
 			GetDlgItem(IDC_FRIENDS_DESCARGADO_EDIT)->SetWindowText(CastItoXBytes(pFriend->GetLinkedClient()->Credits()->GetDownloadedTotal(), false, false));
 		}
 		else
 			GetDlgItem(IDC_FRIENDS_DESCARGADO_EDIT)->SetWindowText(_T("?"));
 
-		if (pFriend->GetLinkedClient())
+		if (pFriend->GetLinkedClient()
+//==>Bug will crash while adding a friend [shadow2004]
+#ifdef FIX02
+		&& pFriend->GetLinkedClient()->Credits()
+#endif
+//<==Bug will crash while adding a friend [shadow2004]
+			)
 		{
 			GetDlgItem(IDC_FRIENDS_SUBIDO_EDIT)->SetWindowText(CastItoXBytes(pFriend->GetLinkedClient()->Credits()->GetUploadedTotal(), false, false));
 		}

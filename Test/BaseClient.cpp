@@ -394,9 +394,7 @@ bool CUpDownClient::ProcessHelloAnswer(char* pachPacket, uint32 nSize)
 		if(IsNickThief()){ 
 				CString buffer;
 				buffer.Format(_T("[Anti-Nickthief] Client (%s) used a NickThief. Banned temporarly!"),m_pszUsername);
-				BanLeecher(buffer);
-				//Ban(_T("You were Banned!!! Banreason: Nickthief"));
-				//AddLogLine(true, _T("[Anti-Nickthief] Client (%s) used a NickThief. Banned temporarly!"),m_pszUsername); 
+				BanALF(1,buffer); 
 		}
 	}
 //<==AntiNickThief [shadow2004]
@@ -453,6 +451,12 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 					}
 					m_strHelloInfo.AppendFormat(_T("\n  Name='%s'"), m_pszUsername);
 				}
+//==>Anti-Crash by WiZaRd [shadow2004]
+#ifdef FIX03
+                if(!m_pszUsername) 
+                    BanALF(1,_T("Tried to crash us!")); 
+#endif FIX03
+//<==Anti-Crash by WiZaRd [shadow2004]
 				break;
 			case CT_VERSION:
 				if (bDbgInfo)
@@ -676,36 +680,23 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 		m_byInfopacketsReceived |= IP_EMULEPROTPACK;
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-		LPCTSTR pszLeecherReason = NULL;
-		LPCTSTR pszBadComunityReason = NULL;
-		LPCTSTR pszGplBreakerReason = NULL;
-		m_bLeecher = false; 
-                m_bBadComunity = false; 
-                m_bGplBreaker = false; 
+		LPCTSTR pszALFReason = NULL; 
 		if(thePrefs.GetEnableAntiCreditHack())
 			if (theApp.GetID()!=m_nUserIDHybrid && memcmp(m_achUserHash, thePrefs.GetUserHash(), 16)==0)
-				pszLeecherReason = _T("Anti Credit Hack");
-		if(thePrefs.GetEnableAntiLeecher() && pszLeecherReason == NULL)
-			pszLeecherReason = TestLeecher(); 
-		if(pszLeecherReason != NULL){
-			BanLeecher(pszLeecherReason);
-				m_bLeecher = true; }
-		else
+				pszALFReason = _T("Anti Credit Hack"); 
+		if(thePrefs.GetEnableAntiLeecher() && pszALFReason == NULL) 
+                pszALFReason = TestLeecher();  
+		
+		(pszALFReason != NULL)?BanALF(1,pszALFReason):m_bLeecher=false;
+		if(thePrefs.GetEnableAntiBadComunity() && pszALFReason == NULL) 
 				{ 
-					if(thePrefs.GetEnableAntiBadComunity()) 
-                    { 
-			pszBadComunityReason = BadComunity();
-						if(pszBadComunityReason != NULL) {
-			BanBadComunity(pszBadComunityReason);
-							m_bBadComunity = true; }
+			pszALFReason = BadComunity(); 
+			(pszALFReason != NULL)?BanALF(2,pszALFReason):m_bBadComunity=false;
                     } 
-					else if (thePrefs.GetEnableAntiGplBreaker() && pszBadComunityReason == NULL) 
+		if (thePrefs.GetEnableAntiGplBreaker() && pszALFReason == NULL) 
 					{
-			pszGplBreakerReason = BadComunity();
-						if(pszGplBreakerReason != NULL) {
-			BanGplBreaker(pszGplBreakerReason);
-							m_bGplBreaker = true; }
-                    } 
+			pszALFReason = BadComunity(); 
+			(pszALFReason != NULL)?BanALF(3,pszALFReason):m_bGplBreaker=false;
 		}
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
@@ -967,20 +958,24 @@ void CUpDownClient::ProcessMuleInfoPacket(char* pachPacket, uint32 nSize)
 		AddDebugLogLine(false, _T("Received invalid server IP %s from %s"), ipstr(GetServerIP()), DbgGetClientInfo());
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
+	if (m_bLeecher == false && m_bBadComunity == false && m_bGplBreaker == false)
+	{
+		LPCTSTR pszALFReason = NULL;
 	if(thePrefs.GetEnableAntiLeecher())
 	{
-		LPCTSTR pszLeecherReason = TestLeecher();
-		(pszLeecherReason != NULL)?BanLeecher(pszLeecherReason):m_bLeecher = false;
+			LPCTSTR pszALFReason = TestLeecher();
+			(pszALFReason != NULL)?BanALF(1,pszALFReason):m_bLeecher = false;
 	}
-	if(thePrefs.GetEnableAntiBadComunity() && m_bLeecher == false)
+		if(thePrefs.GetEnableAntiBadComunity() && pszALFReason == NULL)
 	{
-		LPCTSTR pszBadComunityReason = BadComunity();
-		(pszBadComunityReason != NULL)?BanBadComunity(pszBadComunityReason):m_bBadComunity = false;
+			LPCTSTR pszALFReason = BadComunity();
+			(pszALFReason != NULL)?BanALF(2,pszALFReason):m_bBadComunity = false;
 	}
-	if(thePrefs.GetEnableAntiGplBreaker() && m_bLeecher == false && m_bBadComunity == false)
+		if(thePrefs.GetEnableAntiGplBreaker() && pszALFReason == NULL)
 	{
-		LPCTSTR pszGplBreakerReason = GplBreaker();
-		(pszGplBreakerReason != NULL)?BanGplBreaker(pszGplBreakerReason):m_bGplBreaker = false;
+			LPCTSTR pszALFReason = GplBreaker();
+			(pszALFReason != NULL)?BanALF(3,pszALFReason):m_bGplBreaker = false;
+		}
 	}
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
@@ -1886,20 +1881,24 @@ void CUpDownClient::SetUserName(LPCTSTR pszNewName)
 		m_pszUsername = _tcsdup(pszNewName);
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
+	if (m_bLeecher == false && m_bBadComunity == false && m_bGplBreaker == false)
+	{
+		LPCTSTR pszALFReason = NULL;
 	if(thePrefs.GetEnableAntiLeecher())
 	{
-		LPCTSTR pszLeecherReason = TestLeecher();
-		(pszLeecherReason != NULL)?BanLeecher(pszLeecherReason):m_bLeecher = false;
+			LPCTSTR pszALFReason = TestLeecher();
+			(pszALFReason != NULL)?BanALF(1,pszALFReason):m_bLeecher = false;
 	}
-	if(thePrefs.GetEnableAntiBadComunity() && m_bLeecher == false)
+		if(thePrefs.GetEnableAntiBadComunity() && pszALFReason == NULL)
 	{
-		LPCTSTR pszBadComunityReason = BadComunity();
-		(pszBadComunityReason != NULL)?BanBadComunity(pszBadComunityReason):m_bBadComunity = false;
+			LPCTSTR pszALFReason = BadComunity();
+			(pszALFReason != NULL)?BanALF(2,pszALFReason):m_bBadComunity = false;
 	}
-	if(thePrefs.GetEnableAntiGplBreaker() && m_bLeecher == false && m_bBadComunity == false)
+		if(thePrefs.GetEnableAntiGplBreaker() && pszALFReason == NULL)
 	{
-		LPCTSTR pszGplBreakerReason = GplBreaker();
-		(pszGplBreakerReason != NULL)?BanGplBreaker(pszGplBreakerReason):m_bGplBreaker = false;
+			LPCTSTR pszALFReason = GplBreaker();
+			(pszALFReason != NULL)?BanALF(3,pszALFReason):m_bGplBreaker = false;
+		}
 	}
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
@@ -2442,6 +2441,13 @@ void CUpDownClient::AssertValid() const
 	(void)m_dwLastAskedTime;
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	(void)m_bLeecher;
+	(void)m_bBadComunity;
+	(void)m_bGplBreaker;
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 //==>List Of Dont Ask This IPs [cyrex2001]
 #ifdef DROP
 	CHECK_BOOL(m_bValidSource);
@@ -2786,7 +2792,7 @@ switch(tag->GetNameID())
 		//	{
 		if (tag->IsInt() && tag->GetInt() == FRIENDSHARING_ID) //Mit dieser ID Definitiv
 				{
-				BanLeecher(_T("Friend Sharing detected"));
+				BanALF(1,_T("Friend Sharing detected"));
 				return;				
 				}
 		//	}
@@ -2799,7 +2805,7 @@ switch(tag->GetNameID())
 	{
 		CString buffer;
 		buffer.Format(_T("Suspect Hello-Tag: %s %s"), strSnafuTag, tag->GetFullInfo());
-		BanLeecher(buffer);
+		BanALF(1,buffer);
 	}
 }
 void CUpDownClient::ProcessUnknownInfoTag(CTag *tag)//[SNAFU_V3]
@@ -2830,7 +2836,7 @@ switch(tag->GetNameID())
 	{
 		CString buffer;
 		buffer.Format(_T("Suspect eMuleInfo-Tag: %s %s"), strSnafuTag, tag->GetFullInfo());
-		BanLeecher(buffer);
+		BanALF(1,buffer);
 	}
 }
 #endif //Anti-Leecher

@@ -17,7 +17,7 @@
 #pragma once
 #include "DeadSourceList.h"
 //==> Präprozessoren [shadow2004]
-#include "MenuCmds.h"
+#include ".\NextEMF\PraeProDec.h"
 //<== Präprozessoren [shadow2004]
 
 class CClientReqSocket;

@@ -15,7 +15,7 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
 //==> Präprozessoren [shadow2004]
-#include "MenuCmds.h"
+#include ".\NextEMF\PraeProDec.h"
 //<== Präprozessoren [shadow2004]
 #include "KnownFile.h"
 #include "DeadSourceList.h"

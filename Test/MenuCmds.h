@@ -1,23 +1,7 @@
 #pragma once
 
 //==> Präprozessoren [shadow2004]
-#define BOLDDL							//	Aktiver Download in Fett
-#define HARDLIMIT						//	Sivka Hardlimit
-#define FIX_CLOSED						//	ChatFix: Close- and Submit-Button
-#define USERHASH						//	show Userhash in Info
-#define	CACHEUP							//	Cachesize up to 4MB
-#define ANTI_FAKE_RANK					//	Anti-Fake-Rank
-#define	DLWND1							//	Some Cosmetics in Downloadwindow
-#define QUICKSTART						//	Quickstart
-#define BOLDPROZ						//	Show Percentage in Bold
-//#define SRVWND1						//	Removed some Colums in Serverwindow
-#define ASKING							//	Asking-Bug-Fix
-#define CSP								//	Chunk Selection Patch
-#define SourceXT						//	Show full sources when searching over Server
-#define CLEANUP							//	Maella's Extended CleanUp
-#define GRAPHIX							//  Graphs In 'statistics' Window Fixed
-#define WEBFIX1							//	Some Fixes in Webserver by CML
-#define FIX01							//	some optimizations by WiZaRd (StatisticDlg.cpp)
+#include ".\NextEMF\PraeProDec.h"
 //<== Präprozessoren [shadow2004]
 
 ///////////////////////////////////////////////////////////////////////////////

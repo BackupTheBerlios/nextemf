@@ -2,9 +2,6 @@
 // Microsoft Visual C++ generated include file.
 // Used by emule.rc
 //
-//==> Präprozessoren [shadow2004]
-#include "MenuCmds.h"
-//<== Präprozessoren [shadow2004]
 #define IDR_MANIFEST                    1
 #define IDC_STATUSBAR                   100
 #define IDD_ABOUTBOX                    101
@@ -1196,11 +1193,7 @@
 #define IDS_SEARCH_EXPRERROR            1165
 #define IDS_SEARCH_TOOCOMPLEX           1166
 #define IDS_SEARCH_INVALIDMINMAX        1167
-//==> simplify Serverwindow or Userhash in status window [shadow2004][cyrex2001]
-#if defined(SRVWND1) || defined (USERHASH)
 #define IDS_VERSION                     1168
-#endif //SRVWND1 or USERHASH
-//<== simplify Serverwindow or Userhash in status window [shadow2004][cyrex2001]
 #define IDS_ALL_A4AF_TO_THIS            1169
 #define IDD_META_DATA                   1170
 #define IDS_PASTE                       1170

@@ -37,6 +37,11 @@
 #include "TransferWnd.h"
 #include "serverwnd.h"
 #include "Log.h"
+//==>Anti-Leecher [cyrex2001][shadow2004]
+#ifdef ANTI_LEECHER
+#include "Statistics.h"
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001][shadow2004]
 //==>Extended clean-up II by MAELLA [shadow2004]
 #ifdef CLEANUP
 #include "Partfile.h"	
@@ -562,8 +567,17 @@ void CClientList::Process(){
 		uint32 dwBantime;
 		while (pos != NULL){
 			m_bannedList.GetNextAssoc( pos, nKey, dwBantime );
-			if (dwBantime + CLIENTBANTIME < cur_tick )
+			if (dwBantime + CLIENTBANTIME < cur_tick ){
 				RemoveBannedClient(nKey);
+//==>Anti-Leecher [cyrex2001][shadow2004]
+#ifdef ANTI_LEECHER
+				CUpDownClient* cur_client;
+				if (cur_client->m_bLeecher == true) { theStats.leecherclients--; cur_client->m_bLeecher = false; }
+				if (cur_client->m_bBadComunity == true) { theStats.badcomunityclients--; cur_client->m_bBadComunity = false; }
+				if (cur_client->m_bGplBreaker == true) { theStats.gplbreakerclients--; cur_client->m_bGplBreaker = false; }
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001][shadow2004]
+			}
 		}
 	}
 

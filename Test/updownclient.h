@@ -16,7 +16,7 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
 //==> Präprozessoren [shadow2004]
-#include "MenuCmds.h"
+#include ".\NextEMF\PraeProDec.h"
 //<== Präprozessoren [shadow2004]
 #include "BarShader.h"
 
@@ -348,9 +348,7 @@ public:
 //<==Sivka-Ban [cyrex2001]
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-	void			BanLeecher(LPCTSTR pszReason = NULL);
-	void			BanBadComunity(LPCTSTR pszReason = NULL);
-	void			BanGplBreaker(LPCTSTR pszReason = NULL);
+	void			BanALF(WORD alfType = 1, LPCTSTR pszReason = NULL);
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 	uint32			GetAskedCount() const							{ return m_cAsked; }
@@ -632,9 +630,11 @@ protected:
 	TCHAR*	old_m_pszUsername2;
 	CString	old_m_strClientSoftware;
 	CString	old_m_strClientSoftware1;
+public:
 	bool		m_bLeecher;
 	bool		m_bBadComunity;
 	bool		m_bGplBreaker;
+protected:
 	CString		comm_m_strClientSoftware;
 	CString		comm_m_pszUsername;
 	CString		extracted_community;

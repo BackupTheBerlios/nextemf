@@ -19,7 +19,7 @@
 #include "TitleMenu.h"
 #include <map>
 //==> Präprozessoren [shadow2004]
-#include "MenuCmds.h"
+#include ".\NextEMF\PraeProDec.h"
 //<== Präprozessoren [shadow2004]
 //==>Hardlimit [cyrex2001]
 #ifdef HARDLIMIT
