@@ -1253,9 +1253,6 @@
 				RelativePath="FileDetailDialog.cpp">
 			</File>
 			<File
-				RelativePath="FileInfoDialog.cpp">
-			</File>
-			<File
 				RelativePath="Flex.skl">
 			</File>
 			<File
@@ -1575,9 +1572,6 @@
 			</File>
 			<File
 				RelativePath="FileDetailDialog.h">
-			</File>
-			<File
-				RelativePath="FileInfoDialog.h">
 			</File>
 			<File
 				RelativePath="GDIThread.h">
@@ -2148,9 +2142,6 @@
 			</File>
 			<File
 				RelativePath="res\Logo.jpg">
-			</File>
-			<File
-				RelativePath="res\MediaInfo.ico">
 			</File>
 			<File
 				RelativePath="res\Message.ico">

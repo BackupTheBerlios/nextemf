@@ -20,7 +20,11 @@
 #include "SharedFilesCtrl.h"
 #include "OtherFunctions.h"
 #include "CommentDialog.h"
+//==>remove MediaInfo [shadow2004]
+#ifdef MEDIAINFO
 #include "FileInfoDialog.h"
+#endif //MEDIAINFO
+//<==remove MediaInfo [shadow2004]
 #include "MetaDataDlg.h"
 #include "ResizableLib/ResizableSheet.h"
 #include "KnownFile.h"
@@ -64,7 +68,11 @@ public:
 
 protected:
 	CSimpleArray<const CKnownFile*> m_aKnownFiles;
+//==>remove MediaInfo [shadow2004]
+#ifdef MEDIAINFO
 	CFileInfoDialog		m_wndMediaInfo;
+#endif //MEDIAINFO
+//<==remove MediaInfo [shadow2004]
 	CMetaDataDlg		m_wndMetaData;
 	CED2kLinkDlg		m_wndFileLink;
 
@@ -92,19 +100,30 @@ CSharedFileDetailsSheet::CSharedFileDetailsSheet(const CTypedPtrList<CPtrList, C
 	m_psh.dwFlags &= ~PSH_HASHELP;
 	m_psh.dwFlags |= PSH_NOAPPLYNOW;
 	
+//==>remove MediaInfo [shadow2004]
+#ifdef MEDIAINFO
 	m_wndMediaInfo.m_psp.dwFlags &= ~PSP_HASHELP;
 	m_wndMediaInfo.m_psp.dwFlags |= PSP_USEICONID;
 	m_wndMediaInfo.m_psp.pszIcon = _T("MEDIAINFO");
+#endif //MEDIAINFO
+//<==remove MediaInfo [shadow2004]
 
 	m_wndMetaData.m_psp.dwFlags &= ~PSP_HASHELP;
 	m_wndMetaData.m_psp.dwFlags |= PSP_USEICONID;
 	m_wndMetaData.m_psp.pszIcon = _T("METADATA");
 
+//==>remove MediaInfo [shadow2004]
+#ifdef MEDIAINFO
 	m_wndMediaInfo.SetMyfile(&m_aKnownFiles);
+#endif //MEDIAINFO
+//<==remove MediaInfo [shadow2004]
 	if (m_aKnownFiles.GetSize() == 1 && thePrefs.IsExtControlsEnabled())
 		m_wndMetaData.SetFile(m_aKnownFiles[0]);
-
+//==>remove MediaInfo [shadow2004]
+#ifdef MEDIAINFO
 	AddPage(&m_wndMediaInfo);
+#endif //MEDIAINFO
+//<==remove MediaInfo [shadow2004]
 	if (m_aKnownFiles.GetSize() == 1 && thePrefs.IsExtControlsEnabled())
 		AddPage(&m_wndMetaData);
 

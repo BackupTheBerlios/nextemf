@@ -17,7 +17,11 @@
 #include "stdafx.h"
 #include "emule.h"
 #include "OtherFunctions.h"
+//==>remove MediaInfo [shadow2004]
+#ifdef MEDIAINFO
 #include "FileInfoDialog.h"
+#endif //MEDIAINFO
+//<==remove MediaInfo [shadow2004]
 #include "FileDetailDialog.h"
 #include "Preferences.h"
 #include "UpDownClient.h"
@@ -75,11 +79,15 @@ CFileDetailDialog::CFileDetailDialog(const CSimpleArray<CPartFile*>* paFiles, EI
 		AddPage(&m_wndComments);
 	}
 
+//==>remove MediaInfo [shadow2004]
+#ifdef MEDIAINFO
 	m_wndMediaInfo.m_psp.dwFlags &= ~PSP_HASHELP;
 	m_wndMediaInfo.m_psp.dwFlags |= PSP_USEICONID;
 	m_wndMediaInfo.m_psp.pszIcon = _T("MEDIAINFO");
 	m_wndMediaInfo.SetMyfile(&m_aKnownFiles);
 	AddPage(&m_wndMediaInfo);
+#endif //MEDIAINFO
+//<==remove MediaInfo [shadow2004]
 
 	if (paFiles->GetSize() == 1)
 	{

@@ -2343,7 +2343,11 @@ RENAME                  ICON                    "res\\Rename.ico"
 ED2KLINK                ICON                    "res\\eD2kLink.ico"
 PASTELINK               ICON                    "res\\eD2kLinkPaste.ico"
 FILEINFO                ICON                    "res\\FileInfo.ico"
+//==>remove MediaInfo [shadow2004]
+#ifdef MEDIAINFO
 MEDIAINFO               ICON                    "res\\MediaInfo.ico"
+#endif //MEDIAINFO
+//<==remove MediaInfo [shadow2004]
 METADATA                ICON                    "res\\MetaData.ico"
 FILECOMMENTS            ICON                    "res\\FileComments.ico"
 FILERENAME              ICON                    "res\\FileRename.ico"
@@ -3493,7 +3497,11 @@ BEGIN
     IDS_LENGTH              "Length"
     IDS_VIDEO               "Video"
     IDS_AUDIO               "Audio"
+//==>remove MediaInfo [shadow2004]
+#ifdef MEDIAINFO
     IDS_FILEINFO            "Media Info"
+#endif //MEDIAINFO
+//<==remove MediaInfo [shadow2004]
     IDS_CODEC               "Codec"
     IDS_BITRATE             "Bitrate"
     IDS_WIDTH               "Width"

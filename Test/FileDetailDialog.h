@@ -17,7 +17,11 @@
 #pragma once
 #include "ResizableLib/ResizablePage.h"
 #include "ResizableLib/ResizableSheet.h"
+//==>remove MediaInfo [shadow2004]
+#ifdef MEDIAINFO
 #include "FileInfoDialog.h"
+#endif //MEDIAINFO
+//<==remove MediaInfo [shadow2004]
 #include "CommentDialogLst.h"
 #include "MetaDataDlg.h"
 #include "MuleListCtrl.h"
@@ -139,7 +143,11 @@ protected:
 	CSimpleArray<const CKnownFile*> m_aKnownFiles;
 	CFileDetailDialogInfo	m_wndInfo;
 	CFileDetailDialogName	m_wndName;
+//==>remove MediaInfo [shadow2004]
+#ifdef MEDIAINFO
 	CFileInfoDialog			m_wndMediaInfo;
+#endif //MEDIAINFO
+//<==remove MediaInfo [shadow2004]
 	CCommentDialogLst		m_wndComments;
 	CMetaDataDlg			m_wndMetaData;
 	CED2kLinkDlg			m_wndFileLink;
