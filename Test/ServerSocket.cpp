@@ -92,6 +92,8 @@ void CServerSocket::OnConnect(int nErrorCode){
 			SetConnectionState(CS_SERVERDEAD);
 			serverconnect->DestroySocket(this);
 			return;
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 		// deadlake PROXYSUPPORT
 		case WSAECONNABORTED:
 			if (m_ProxyConnectFailed)
@@ -104,6 +106,8 @@ void CServerSocket::OnConnect(int nErrorCode){
 				serverconnect->DestroySocket(this);
 				return;
 			}
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 		default:	
 			if (thePrefs.GetVerbose())
 				DebugLogError(_T("Failed to connect to server %s; %s"), cur_server->GetAddress(), GetErrorMessage(nErrorCode, 1));

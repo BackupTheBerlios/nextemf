@@ -18,6 +18,7 @@ FIXED  : Small optimizations by WiZaRd [shadow2004]
 FIXED  : Some Bug will crash while adding a friend by Libbnor & WiZaRd [shadow2004]
 FIXED  : An empty Client-Name could Crash Emule. Now will banned by WiZaRd [shadow2004]
 MODIFY : Some small optimizations in AntiLeecher-Filter [cyrex2001][shadow2004]
+MODIFY : Removed some parts of Proxy which were left [shadow2004]
 UPDATE : Cleaned Up the own Source-Code [shadow2004]
 
 

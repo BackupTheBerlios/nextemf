@@ -56,17 +56,18 @@ public:
 	virtual UINT GetTimeOut() const;
 	virtual void SetTimeOut(UINT uTimeOut);
 
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	// deadlake PROXYSUPPORT
 	// By Maverick: Connection necessary initalizing calls are done by class itself and not anymore by the Owner
 	virtual BOOL Connect(LPCTSTR lpszHostAddress, UINT nHostPort);
 	virtual BOOL Connect(SOCKADDR* pSockAddr, int iSockAddrLen);
-//==> remove PROXY [shadow2004]
-#if defined(PROXY)
 	void InitProxySupport();
-#endif //PROXY
-//<== remove PROXY [shadow2004]
 	// Reset Layer Chain
 	virtual void RemoveAllLayers();
+#endif //PROXY
+//<== remove PROXY [shadow2004]
+
 
     //DWORD   GetLastSendLatency() { return (m_Average_sendlatency_list.GetCount() > 0)?(m_Average_sendlatency_list.GetTail().latency):0; }
     //DWORD   GetAverageLatency() { return (m_Average_sendlatency_list.GetCount() > 0)?(m_latency_sum/m_Average_sendlatency_list.GetCount()):0; }
@@ -90,7 +91,11 @@ public:
 #endif
 
 protected:
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	virtual int	OnLayerCallback(const CAsyncSocketExLayer *pLayer, int nType, int nParam1, int nParam2);	// deadlake PROXYSUPPORT
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 	
 	virtual void	DataReceived(const BYTE* pcData, UINT uSize);
 	virtual bool	PacketReceived(Packet* packet) = 0;
@@ -102,9 +107,13 @@ protected:
 	uint8	byConnected;
 	UINT	m_uTimeOut;
 
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	// deadlake PROXYSUPPORT
 	bool	m_ProxyConnectFailed;
 	CAsyncProxySocketLayer* m_pProxyLayer;
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 
 private:
     virtual SocketSentBytes Send(uint32 maxNumberOfBytesToSend, uint32 minFragSize, bool onlyAllowedToSendControlPacket);

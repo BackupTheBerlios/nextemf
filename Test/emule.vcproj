@@ -361,9 +361,6 @@
 				RelativePath="ArchiveRecovery.cpp">
 			</File>
 			<File
-				RelativePath="AsyncProxySocketLayer.cpp">
-			</File>
-			<File
 				RelativePath="AsyncSocketEx.cpp">
 			</File>
 			<File
@@ -877,9 +874,6 @@
 			</File>
 			<File
 				RelativePath="ArchiveRecovery.h">
-			</File>
-			<File
-				RelativePath="AsyncProxySocketLayer.h">
 			</File>
 			<File
 				RelativePath="AsyncSocketEx.h">

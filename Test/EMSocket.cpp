@@ -20,7 +20,11 @@
 #endif
 #include "emule.h"
 #include "emsocket.h"
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 #include "AsyncProxySocketLayer.h"
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 #include "Packets.h"
 #include "OtherFunctions.h"
 #include "UploadBandwidthThrottler.h"
@@ -106,9 +110,13 @@ CEMSocket::CEMSocket(void){
 	sent = 0;
 	//m_bLinkedPackets = false;
 
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	// deadlake PROXYSUPPORT
 	m_pProxyLayer = NULL;
 	m_ProxyConnectFailed = false;
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 
     //m_startSendTick = 0;
     //m_lastSendLatency = 0;
@@ -151,19 +159,23 @@ CEMSocket::~CEMSocket(){
     theApp.uploadBandwidthThrottler->RemoveFromAllQueues(this);
 
     ClearQueues();
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	RemoveAllLayers(); // deadlake PROXYSUPPORT
+#else	
+	CAsyncSocketEx::RemoveAllLayers();
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 	AsyncSelect(0);
 }
 
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 // deadlake PROXYSUPPORT
 // By Maverick: Connection initialisition is done by class itself
 BOOL CEMSocket::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
 {
-//==> remove PROXY [shadow2004]
-#if defined(PROXY)
 	InitProxySupport();
-#endif //PROXY
-//<== remove PROXY [shadow2004]
 	return CAsyncSocketEx::Connect(lpszHostAddress, nHostPort);
 }
 // end deadlake
@@ -173,17 +185,10 @@ BOOL CEMSocket::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
 //BOOL CEMSocket::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
 BOOL CEMSocket::Connect(SOCKADDR* pSockAddr, int iSockAddrLen)
 {
-//==> remove PROXY [shadow2004]
-#if defined(PROXY)
 	InitProxySupport();
-#endif //PROXY
-//<== remove PROXY [shadow2004]
 	return CAsyncSocketEx::Connect(pSockAddr, iSockAddrLen);
 }
 // end deadlake
-
-//==> remove PROXY [shadow2004]
-#if defined(PROXY)
 void CEMSocket::InitProxySupport()
 {
 	// ProxyInitialisation
@@ -273,7 +278,13 @@ void CEMSocket::OnClose(int nErrorCode){
     theApp.uploadBandwidthThrottler->RemoveFromAllQueues(this);
 
 	CAsyncSocketEx::OnClose(nErrorCode); // deadlake changed socket to PROXYSUPPORT ( AsyncSocketEx )
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	RemoveAllLayers(); // deadlake PROXYSUPPORT
+#else	
+	CAsyncSocketEx::RemoveAllLayers();
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 	ClearQueues();
 };
 
@@ -964,7 +975,8 @@ int CEMSocket::Receive(void* lpBuf, int nBufLen, int nFlags)
 	return SOCKET_ERROR;
 }
 
-
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)	
 // deadlake PROXYSUPPORT ( RESETS LAYER CHAIN BY MAVERICK )
 void CEMSocket::RemoveAllLayers()
 {
@@ -993,8 +1005,6 @@ int CEMSocket::OnLayerCallback(const CAsyncSocketExLayer *pLayer, int nType, int
 			//AddLogLine(false,logline);
 		return 1;
 	}
-//==> remove PROXY [shadow2004]
-#if defined(PROXY)
 	else if (nType==LAYERCALLBACK_LAYERSPECIFIC)
 	{
 		if (pLayer==m_pProxyLayer)
@@ -1046,11 +1056,11 @@ int CEMSocket::OnLayerCallback(const CAsyncSocketExLayer *pLayer, int nType, int
 			}
 		}
 	}
-#endif //PROXY
-//<== remove PROXY [shadow2004]
 	return 1;
 }
 // end deadlake
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 
 /**
  * Removes all packets from the standard queue that don't have to be sent for the socket to be able to send a control packet.
