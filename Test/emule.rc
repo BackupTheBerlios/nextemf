@@ -4421,7 +4421,7 @@ END
 //#if defined (ANTI_FAKE_RANK)
 STRINGTABLE 
 BEGIN
-    IDS_ANTI_FAKE_RANK      "Anti-Fake-Rank enable"
+    IDS_ANTI_FAKE_RANK      "Enable Anti-Fake-Rank"
 END
 //#endif //Anti-Fake-Rank
 //<==Anti-Fake-Rank [cyrex2001]

@@ -2538,7 +2538,6 @@ void CPreferences::LoadPreferences()
 		splitterbarPositionStat_HL = 66;
 		splitterbarPositionStat_HR = 33;
 	}
-	splitterbarPositionFriend=ini.GetInt(_T("SplitterbarPositionFriend"),252);//(300) remove IRC [shadow]
 //==> remove IRC [shadow2004]
 #if defined(IRC)
         splitterbarPositionFriend=ini.GetInt(_T("SplitterbarPositionFriend"),300);
