@@ -266,6 +266,11 @@ CemuleApp::CemuleApp(LPCTSTR lpszAppName)
     conchecker.SetPreferences();
 #endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
 //<== Spooky Mode ConChecker [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+	m_lastValidId	= 0;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]	
 }
 
 
@@ -1904,3 +1909,65 @@ void CemuleApp::InitConChecker(void)
 } 
 #endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
 //<== Spooky Mode ConChecker [cyrex2001]
+
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+void CemuleApp::CheckIDChange(void)
+	{
+	if(thePrefs.IsreaskSourceAfterIPChange()&& (m_lastValidId != 0 && serverconnect->GetClientID() != 0 && m_lastValidId != serverconnect->GetClientID())||
+		(conchecker.GetIP() != 0 && conchecker.GetIP() != m_lastValidId)||
+		(GetPublicIP() != 0 && GetPublicIP() != m_lastValidId))
+		{
+		//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+		if(thePrefs.GetQuickStart() && thePrefs.GetQuickStartAfterIPChange())
+			{
+			theApp.downloadqueue->quickflag = 0;
+			theApp.downloadqueue->quickflags = 0;
+			}
+#endif //Quickstart
+		//<==Quickstart [cyrex2001]
+		theApp.clientlist->TrigReaskForDownload(true);
+		if(serverconnect->GetClientID() != 0 && serverconnect->GetClientID() != m_lastValidId)
+			{
+			AddLogLine (false, _T("Change from IP:%s (%s ID:%u) to IP:%s (%s ID:%u) detected%s"), 
+				ipstr(m_lastValidId),
+				(m_lastValidId < 16777216) ? _T("low") : _T("high"),
+				m_lastValidId,
+				ipstr(serverconnect->GetClientID()),
+				(serverconnect->GetClientID() < 16777216)  ? _T("low") : _T("high"),
+				serverconnect->GetClientID(),
+				(m_lastValidId < 16777216 && serverconnect->GetClientID() < 16777216) ? 
+				_T("") : _T(", all sources will be reasked on 1...10 minutes"));
+			m_lastValidId = serverconnect->GetClientID();
+			}
+		else if(conchecker.GetIP() != 0 && conchecker.GetIP() != m_lastValidId)
+			{
+			AddLogLine (false, _T("Change from IP:%s (%s ID:%u) to IP:%s (%s ID:%u) detected%s"), 
+				ipstr(m_lastValidId),
+				(m_lastValidId < 16777216) ? _T("low") : _T("high"),
+				m_lastValidId,
+				ipstr(conchecker.GetIP()),
+				(conchecker.GetIP() < 16777216)  ? _T("low") : _T("high"),
+				conchecker.GetIP(),
+				(m_lastValidId < 16777216 && conchecker.GetIP() < 16777216) ? 
+				_T("") : _T(", all sources will be reasked on 1...10 minutes"));
+			m_lastValidId = conchecker.GetIP();
+			}
+		else if (GetPublicIP() != 0 && GetPublicIP() != m_lastValidId)
+			{
+			AddLogLine (false, _T("Change from IP:%s (%s ID:%u) to IP:%s (%s ID:%u) detected%s"), 
+				ipstr(m_lastValidId),
+				(m_lastValidId < 16777216) ? _T("low") : _T("high"),
+				m_lastValidId,
+				ipstr(GetPublicIP()),
+				(GetPublicIP() < 16777216)  ? _T("low") : _T("high"),
+				GetPublicIP(),
+				(m_lastValidId < 16777216 && GetPublicIP() < 16777216) ? 
+				_T("") : _T(", all sources will be reasked on 1...10 minutes"));
+			m_lastValidId = GetPublicIP();
+			}
+		}
+	}
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]

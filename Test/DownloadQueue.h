@@ -221,7 +221,7 @@ private:
     DWORD       m_dwLastA4AFtime; // ZZ:DownloadManager
 //==>Quickstart [cyrex2001]
 #ifdef QUICKSTART //Quickstart
-private:
+public:
 	int quickflag;
 	int quickflags;
 #endif //Quickstart

@@ -960,17 +960,23 @@ bool CClientList::DontAskThisIP(uint32 dwIP){
 
 //==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA
-void CClientList::TrigReaskForDownload(bool immediate){
-	for(POSITION pos = list.GetHeadPosition(); pos != NULL;){				
+void CClientList::TrigReaskForDownload(bool immediate)
+	{
+	for(POSITION pos = list.GetHeadPosition(); pos != NULL;)
+		{
+		const DWORD dwCurTick = ::GetTickCount();				
 		CUpDownClient* cur_client =	list.GetNext(pos);
-		if(immediate == true){
-			// Compute the next time that the file might be saftly reasked (=> no Ban())
-			cur_client->SetNextTCPAskedTime(0);
+		if (!cur_client )
+		    continue;
+		if(immediate == true)
+			{
+			if (cur_client->GetTimeUntilReask(cur_client->GetRequestFile()) >= (MIN_REQUESTTIME * 2))
+				cur_client->SetNextTCPAskedTime(dwCurTick + cur_client->GetTimeUntilReask(cur_client->GetRequestFile()) - FILEREASKTIME + MIN_REQUESTTIME);
+			else if (cur_client->GetTimeUntilReask(cur_client->GetRequestFile()) >= (MIN_REQUESTTIME * 1))
+				cur_client->SetNextTCPAskedTime(dwCurTick + cur_client->GetTimeUntilReask(cur_client->GetRequestFile()) + MIN_REQUESTTIME - FILEREASKTIME);
 		}
-		else{
-			// Compute the next time that the file might be saftly reasked (=> no Ban())
-			cur_client->TrigNextSafeAskForDownload(cur_client->GetRequestFile());
-		}
+		else
+		    cur_client->SetNextTCPAskedTime(dwCurTick + cur_client->GetTimeUntilReask(cur_client->GetRequestFile()));
 	}	
 }
 #endif //Reask sourcen after ip change

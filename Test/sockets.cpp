@@ -709,7 +709,7 @@ void CServerConnect::ResetSpooky(bool bInform)
 	m_bSpooky=false; 
 	m_dwGhostServerIP=0; 
 	m_dwGhostServerPort=0; 
-	m_strGhostServerFullIP="0.0.0.0"; 
+	m_strGhostServerFullIP=_T("0.0.0.0"); 
 	if (bInform) 
 		theApp.emuledlg->ShowConnectionState(); 
 	m_nConErrorCount=0; 
@@ -766,7 +766,7 @@ bool CServerConnect::ConnectSpooky(void)
 
 	in_addr host; 
 	host.S_un.S_addr = m_dwGhostServerIP; 
-	m_strGhostServerFullIP.Format(_T("%s"),inet_ntoa(host)); 
+	m_strGhostServerFullIP.Format(_T("%s"),CString(inet_ntoa(host))); 
 	AddLogLine(false,_T("*** spooky-mode: Ghost-Server: %s (IP:%s Port:%u)"),server->GetListName(),m_strGhostServerFullIP,m_dwGhostServerPort); 
 	CreateGhostServer(); 
 	m_bSpooky =    true; 
@@ -778,8 +778,11 @@ bool CServerConnect::ConnectSpooky(void)
 	theApp.downloadqueue->ResetLocalServerRequests(); 
 	theApp.emuledlg->ShowConnectionState(); 
 
-	//Diese Funktion ist nicht zwingend notwendig, wer will kann sie aber einbauen.. 
-	//theApp.CheckIDChange();    //<<< eWombat [Maella/XMan Inform sources of an ID change] 
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+	theApp.CheckIDChange();
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 	return true; 
 	} 
 //>>> eWombat [SPOOKY-STUFF] 
