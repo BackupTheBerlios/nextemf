@@ -96,13 +96,13 @@ void CClientListCtrl::SetAllIcons()
 	imagelist.Add(CTempIconLoader(_T("ClientMLDonkey")));//3
 	imagelist.Add(CTempIconLoader(_T("ClientEDonkeyHybrid")));//4
 	imagelist.Add(CTempIconLoader(_T("ClientShareaza")));//5
-	imagelist.Add(CTempIconLoader(_T("Server")));//7
-	imagelist.Add(CTempIconLoader(_T("ClientAMule")));//8
-	imagelist.Add(CTempIconLoader(_T("ClientLPhant")));//9
-	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);//10
+	imagelist.Add(CTempIconLoader(_T("Server")));//6
+	imagelist.Add(CTempIconLoader(_T("ClientAMule")));//7
+	imagelist.Add(CTempIconLoader(_T("ClientLPhant")));//8
+	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);//9
 //==>Modversion [cyrex2001]
 #ifdef MODVERSION
-	imagelist.Add(CTempIconLoader(_T("CLIENT_NEXTEMF")));//11
+	imagelist.Add(CTempIconLoader(_T("CLIENT_NEXTEMF")));//10
 #endif //Modversion
 //<==Modversion [cyrex2001]
 }
@@ -278,13 +278,13 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					else if (client->GetClientSoft() == SO_LPHANT)
 						image = 8;
 					else if (client->ExtProtocolAvailable())
-//==>Modversion [cyrex2001]
+//==>Modversion [cyrex2001][shadow2004]
 #ifdef MODVERSION
-						image = (client->IsNextEMF())?11:1;
+						image = (client->IsNextEMF())?10:1;
 #else //Modversion
 						image = 1;
 #endif //Modversion
-//<==Modversion [cyrex2001]
+//<==Modversion [cyrex2001][shadow2004]
 					else
 						image = 0;
 

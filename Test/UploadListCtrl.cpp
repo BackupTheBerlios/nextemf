@@ -315,15 +315,23 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					}
 					else if (client->ExtProtocolAvailable()){
 						if(client->credits->GetScoreRatio(client->GetIP()) > 1)
-//==>Modversion [cyrex2001]
+//==>Modversion [cyrex2001][shadow2004]
 #ifdef MODVERSION
-						image = (client->IsNextEMF())?16:1;
+						image = (client->IsNextEMF())?16:3;
 #else //Modversion
 							image = 3;
+#endif //Modversion
+//<==Modversion [cyrex2001][shadow2004]
+						 // image = (client->credits->GetScoreRatio(client->GetIP()) > 1)?3:1 
 						else
+//==>Modversion [cyrex2001][shadow2004]
+#ifdef MODVERSION
+							image = (client->IsNextEMF())?16:1;
+#else //Modversion
 							image = 1;
 #endif //Modversion
-//<==Modversion [cyrex2001]
+//<==Modversion [cyrex2001][shadow2004]
+
 					}
 					else{
 						if (client->credits->GetScoreRatio(client->GetIP()) > 1)
