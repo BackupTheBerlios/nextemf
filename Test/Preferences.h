@@ -338,13 +338,14 @@ public:
 	static	uint8	notifierImportantError;
 	static	uint8	notifierNewVersion;
 	static	TCHAR	notifierSoundFilePath[510];
-
+//==>timestamp in chatwindow [shadow2004]
+	static	bool	m_bircaddtimestamp;
+//<==timestamp in chatwindow [shadow2004]
 //==> remove IRC [shadow2004]
 #if defined(IRC)
 	static	TCHAR	m_sircserver[50];
 	static	TCHAR	m_sircnick[30];
 	static	TCHAR	m_sircchannamefilter[50];
-	static	bool	m_bircaddtimestamp;
 	static	bool	m_bircusechanfilter;
 	static	uint16	m_iircchanneluserfilter;
 	static	TCHAR	m_sircperformstring[255];
@@ -1057,13 +1058,14 @@ public:
 	static	bool	GetNotifierPopOnImportantError()	{return notifierImportantError;}
 	static	bool	GetNotifierPopOnNewVersion()		{return notifierNewVersion;}
 	static	TCHAR*	GetNotifierWavSoundPath()			{return notifierSoundFilePath;}
-
+//==>timestamp in chatwindow [shadow2004]
+	static	bool	GetIRCAddTimestamp()				{return m_bircaddtimestamp;}
+//<==timestamp in chatwindow [shadow2004]
 //==> remove IRC [shadow2004]
 #if defined(IRC)
 	static	CString GetIRCNick()						{return m_sircnick;}
 	static	void	SetIRCNick( TCHAR in_nick[] )		{ _tcscpy(m_sircnick,in_nick);}
 	static	CString GetIRCServer()						{return m_sircserver;}
-	static	bool	GetIRCAddTimestamp()				{return m_bircaddtimestamp;}
 	static	CString GetIRCChanNameFilter()				{return m_sircchannamefilter;}
 	static	bool	GetIRCUseChanFilter()				{return m_bircusechanfilter;}
 	static	uint16	GetIRCChannelUserFilter()			{return m_iircchanneluserfilter;}

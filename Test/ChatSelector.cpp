@@ -259,12 +259,10 @@ void CChatSelector::ProcessMessage(CUpDownClient* sender, const CString& message
 		ci = StartSession(sender, false);
 		isNewChatWindow = true; 
 	}
-//==> remove IRC [shadow2004]
-#if defined(IRC)
+//==>timestamp in chatwindow [shadow2004]
 	if (thePrefs.GetIRCAddTimestamp())
 		AddTimeStamp(ci);
-#endif //IRC
-//<== remove IRC [shadow2004]
+//<==timestamp in chatwindow [shadow2004]
 	ci->log->AppendKeyWord(sender->GetUserName(), RGB(50,200,250));
 	ci->log->AppendText(_T(": "));
 	ci->log->AppendText(message + _T("\n"));
@@ -304,12 +302,10 @@ bool CChatSelector::SendMessage(const CString& rstrMessage)
 	ci->client->SetSpammer(false);
 	if (ci->client->GetChatState() == MS_CONNECTING)
 		return false;
-//==> remove IRC [shadow2004]
-#if defined(IRC)
+//==>timestamp in chatwindow [shadow2004]
 	if (thePrefs.GetIRCAddTimestamp())
 		AddTimeStamp(ci);
-#endif //IRC
-//<== remove IRC [shadow2004]
+//<==timestamp in chatwindow [shadow2004]
 	if (ci->client->socket && ci->client->socket->IsConnected())
 	{
 		CSafeMemFile data;
@@ -351,12 +347,10 @@ void CChatSelector::ConnectingResult(CUpDownClient* sender, bool success)
 			ci->strMessagePending.Empty();
 		}
 		else{
-//==> remove IRC [shadow2004]
-#if defined(IRC)
+//==>timestamp in chatwindow [shadow2004]
 			if (thePrefs.GetIRCAddTimestamp())
 				AddTimeStamp(ci);
-#endif //IRC
-//<== remove IRC [shadow2004]
+//<==timestamp in chatwindow [shadow2004]
 			ci->log->AppendKeyWord(GetResString(IDS_CHATDISCONNECTED) + _T("\n"), RGB(255,0,0));
 		}
 	}
@@ -369,12 +363,10 @@ void CChatSelector::ConnectingResult(CUpDownClient* sender, bool success)
 		theStats.AddUpDataOverheadOther(packet->size);
 		ci->client->socket->SendPacket(packet, true, true);
 
-//==> remove IRC [shadow2004]
-#if defined(IRC)
+//==>timestamp in chatwindow [shadow2004]
 		if (thePrefs.GetIRCAddTimestamp())
 			AddTimeStamp(ci);
-#endif //IRC
-//<== remove IRC [shadow2004]
+//<==timestamp in chatwindow [shadow2004]
 		ci->log->AppendKeyWord(thePrefs.GetUserNick(), RGB(1,180,20));
 		ci->log->AppendText(_T(": "));
 		ci->log->AppendText(ci->strMessagePending + _T("\n"));
@@ -382,12 +374,10 @@ void CChatSelector::ConnectingResult(CUpDownClient* sender, bool success)
 		ci->strMessagePending.Empty();
 	}
 	else{
-//==> remove IRC [shadow2004]
-#if defined(IRC)
+//==>timestamp in chatwindow [shadow2004]
 		if (thePrefs.GetIRCAddTimestamp())
 			AddTimeStamp(ci);
-#endif //IRC
-//<== remove IRC [shadow2004]
+//==>timestamp in chatwindow [shadow2004]
 		ci->log->AppendKeyWord(_T("*** Connected\n"), RGB(255,0,0));
 	}
 }

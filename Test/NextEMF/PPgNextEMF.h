@@ -53,6 +53,9 @@ protected:
     int iMaxRemoveQRS;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
+//==>timestamp in chatwindow [shadow2004]
+	int m_bEnableTimestamp;
+//<==timestamp in chatwindow [shadow2004]
 
 	HTREEITEM m_htiSecurity;
 	HTREEITEM m_htiIsreaskSourceAfterIPChange;
@@ -90,6 +93,9 @@ protected:
 	HTREEITEM m_htiHqrBox;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
+//==>timestamp in chatwindow [shadow2004]
+	HTREEITEM m_htiEnableTimestamp;
+//<==timestamp in chatwindow [shadow2004]
 
 
 	CTreeOptionsCtrlEx m_ctrlTreeOptions;

@@ -2428,6 +2428,9 @@
 				RelativePath=".\NextEMF\HardLimitDlg.h">
 			</File>
 			<File
+				RelativePath=".\NextEMF_Changelog.txt">
+			</File>
+			<File
 				RelativePath=".\NextEMF\PPgNextEMF.cpp">
 			</File>
 			<File

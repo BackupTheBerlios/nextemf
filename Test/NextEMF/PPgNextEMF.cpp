@@ -67,6 +67,9 @@ CPPgNextEMF::CPPgNextEMF()
     m_htiHqrBox = NULL;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
+//==>timestamp in chatwindow [shadow2004]
+	m_htiEnableTimestamp = NULL; 
+//<==timestamp in chatwindow [shadow2004]
 }
 
 CPPgNextEMF::~CPPgNextEMF()
@@ -102,6 +105,9 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		m_htiEnableDownloadInBold = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_DOWNLOAD_IN_BOLD), TVI_ROOT, m_bEnableDownloadInBold);
 #endif //BOLDDL
 //<== Bold Download-Status [shadow2004]
+//==>timestamp in chatwindow [shadow2004]
+		m_htiEnableTimestamp = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_IRC_ADDTIMESTAMP), TVI_ROOT, m_bEnableTimestamp);
+//<==timestamp in chatwindow [shadow2004]
 		m_htiIsreaskSourceAfterIPChange = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK ), TVI_ROOT, m_bIsreaskSourceAfterIPChange);
 		m_htiQuickStart = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_QUICK_START), TVI_ROOT, m_bQuickStart);
 		m_htiQuickStartMaxTime = m_ctrlTreeOptions.InsertItem(GetResString(IDS_QUICK_START_MAX_TIME), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiQuickStart);
@@ -153,6 +159,9 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableDownloadInBold, m_bEnableDownloadInBold);
 #endif //BOLDDL
 //<== Bold Download-Status [shadow2004]
+//==>timestamp in chatwindow [shadow2004]
+	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableTimestamp, m_bEnableTimestamp);
+//<==timestamp in chatwindow [shadow2004]
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiIsreaskSourceAfterIPChange, m_bIsreaskSourceAfterIPChange);
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiQuickStart, m_bQuickStart);
 	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiQuickStartMaxTime, m_iQuickStartMaxTime);
@@ -219,6 +228,9 @@ BOOL CPPgNextEMF::OnInitDialog()
 	m_bEnableDownloadInBold = thePrefs.m_bShowActiveDownloadsBold;
 #endif //BOLDDL
 //<== Bold Download-Status [shadow2004]
+//==>timestamp in chatwindow [shadow2004]
+	m_bEnableTimestamp = thePrefs.m_bircaddtimestamp;
+//<==timestamp in chatwindow [shadow2004]
 //==>AntiNickThief [shadow2004]
 	m_bEnableAntiNickThief = thePrefs.m_bAntiNickThief;
 //<==AntiNickThief [shadow2004]
@@ -279,6 +291,9 @@ BOOL CPPgNextEMF::OnApply()
 	thePrefs.m_bShowActiveDownloadsBold = m_bEnableDownloadInBold;
 #endif //BOLDDL
 //<== Bold Download-Status [shadow2004]
+//==>timestamp in chatwindow [shadow2004]
+	thePrefs.m_bircaddtimestamp = m_bEnableTimestamp;
+//<==timestamp in chatwindow [shadow2004]
 //==>AntiNickThief [shadow2004]
 	thePrefs.m_bAntiNickThief = m_bEnableAntiNickThief;
 //<==AntiNickThief [shadow2004]
@@ -307,7 +322,14 @@ void CPPgNextEMF::Localize(void)
 	{
 		SetWindowText(MOD_VERSION);
 		GetDlgItem(IDC_WARNING)->SetWindowText(GetResString(IDS_TWEAKS_WARNING));
-
+//==> Bold Download-Status [shadow2004]
+#ifdef BOLDDL
+		if (m_htiEnableDownloadInBold) m_ctrlTreeOptions.SetItemText(m_htiEnableDownloadInBold, GetResString(IDS_DOWNLOAD_IN_BOLD));
+#endif
+//<== Bold Download-Status [shadow2004]
+//==>timestamp in chatwindow [shadow2004]
+		if (m_htiEnableTimestamp) m_ctrlTreeOptions.SetItemText(m_htiEnableTimestamp, GetResString(IDS_IRC_ADDTIMESTAMP));
+//<==timestamp in chatwindow [shadow2004]
 		if (m_htiIsreaskSourceAfterIPChange) m_ctrlTreeOptions.SetItemText(m_htiIsreaskSourceAfterIPChange, GetResString(IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK ));
 		if (m_htiQuickStart) m_ctrlTreeOptions.SetItemText(m_htiQuickStart, GetResString(IDS_QUICK_START));
 		if (m_htiQuickStartMaxTime) m_ctrlTreeOptions.SetEditLabel(m_htiQuickStartMaxTime, GetResString(IDS_QUICK_START_MAX_TIME));
@@ -357,6 +379,14 @@ void CPPgNextEMF::OnDestroy()
 	m_htiSivkaAskCounter = NULL;
 	m_htiSivkaAskLog = NULL;
 	m_htiAntiFakeRank = NULL;
+//==> Bold Download-Status [shadow2004]
+#ifdef BOLDDL
+	m_htiEnableDownloadInBold = NULL;
+#endif
+//<== Bold Download-Status [shadow2004]
+//==>timestamp in chatwindow [shadow2004]
+	m_htiEnableTimestamp = NULL;
+//<==timestamp in chatwindow [shadow2004]
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
 	m_htiEnableAntiLeecher = NULL;

@@ -618,6 +618,9 @@
 #endif //IRC
 //<== remove IRC [shadow2004]
 #define IDS_DOWNLOAD_ALPHABETICAL       661
+//==>timestamp in chatwindow [shadow2004]
+#define IDS_IRC_ADDTIMESTAMP            671
+//<==timestamp in chatwindow [shadow2004]
 //==> remove IRC [shadow2004]
 #if defined(IRC)
 #define IDS_IRC_HASQUIT                 662
@@ -629,7 +632,6 @@
 #define IDS_IRC_SEND                    668
 #define IDS_IRC_NAME                    669
 #define IDS_IRC_SLAPMSGSEND             670
-#define IDS_IRC_ADDTIMESTAMP            671
 #define IDS_IRC_USEFILTER               672
 #define IDS_IRC_PERFORM                 673
 #define IDS_IRC_USEPERFORM              674

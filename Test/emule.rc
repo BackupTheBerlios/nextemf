@@ -3396,6 +3396,7 @@ BEGIN
     IDS_PR_SHORT_HIGH       "[Hi]"
     IDS_STATS_FRATIO        "Session UL:DL Ratio (Friends UL excluded):"
     IDS_STATS_UDATA_FRIENDS "Uploaded Data to Friend Slots (Session): %s"
+    IDS_IRC_ADDTIMESTAMP    "Add timestamp to messages"
 END
 
 //==> remove IRC [shadow2004]
@@ -3417,7 +3418,6 @@ BEGIN
     IDS_IRC_SEND            "Send"
     IDS_IRC_NAME            "Name"
     IDS_IRC_SLAPMSGSEND     "PRIVMSG %s :\001ACTION slaps %s around with a large Babelfish!\001"
-    IDS_IRC_ADDTIMESTAMP    "Add timestamp to messages"
 END
 
 STRINGTABLE 

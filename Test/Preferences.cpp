@@ -360,12 +360,14 @@ uint8	CPreferences::notifierPopsEveryChatMsg;
 uint8	CPreferences::notifierImportantError;
 uint8	CPreferences::notifierNewVersion;
 TCHAR	CPreferences::notifierSoundFilePath[510];
+//==>timestamp in chatwindow [shadow2004]
+bool	CPreferences::m_bircaddtimestamp;
+//<==timestamp in chatwindow [shadow2004]
 //==> remove IRC [shadow2004]
 #if defined(IRC)
 TCHAR	CPreferences::m_sircserver[50];
 TCHAR	CPreferences::m_sircnick[30];
 TCHAR	CPreferences::m_sircchannamefilter[50];
-bool	CPreferences::m_bircaddtimestamp;
 bool	CPreferences::m_bircusechanfilter;
 uint16	CPreferences::m_iircchanneluserfilter;
 TCHAR	CPreferences::m_sircperformstring[255];
@@ -2064,12 +2066,13 @@ void CPreferences::SavePreferences()
 	ini.WriteString(_T("WebTemplateFile"),m_sTemplateFile);
 	ini.WriteString(_T("FilenameCleanups"),filenameCleanups);
 	ini.WriteInt(_T("ExtractMetaData"),m_iExtractMetaData);
-
+//==>timestamp in chatwindow [shadow2004]
+	ini.WriteBool(_T("IRCAddTimestamp"), m_bircaddtimestamp);
+//<==timestamp in chatwindow [shadow2004]
 //==> remove IRC [shadow2004]
 #if defined(IRC)
 	ini.WriteString(_T("DefaultIRCServerNew"),m_sircserver);
 	ini.WriteString(_T("IRCNick"),m_sircnick);
-	ini.WriteBool(_T("IRCAddTimestamp"), m_bircaddtimestamp);
 	ini.WriteString(_T("IRCFilterName"), m_sircchannamefilter);
 	ini.WriteInt(_T("IRCFilterUser"), m_iircchanneluserfilter);
 	ini.WriteBool(_T("IRCUseFilter"), m_bircusechanfilter);
@@ -2615,12 +2618,13 @@ void CPreferences::LoadPreferences()
 
 	_stprintf(datetimeformat4log,_T("%s"),ini.GetString(_T("DateTimeFormat4Log"),_T("%c")));
 	if (_tcslen(datetimeformat4log)==0) _tcscpy(datetimeformat4log,_T("%c"));
-
+//==>timestamp in chatwindow [shadow2004]
+	m_bircaddtimestamp=ini.GetBool(_T("IRCAddTimestamp"),true);
+//<==timestamp in chatwindow [shadow2004]
 //==> remove IRC [shadow2004]
 #if defined(IRC)
 	_stprintf(m_sircserver,_T("%s"),ini.GetString(_T("DefaultIRCServerNew"),_T("ircchat.emule-project.net")));
 	_stprintf(m_sircnick,_T("%s"),ini.GetString(_T("IRCNick"),_T("eMule")));
-	m_bircaddtimestamp=ini.GetBool(_T("IRCAddTimestamp"),true);
 	_stprintf(m_sircchannamefilter,_T("%s"),ini.GetString(_T("IRCFilterName"), _T("") ));
 	m_bircusechanfilter=ini.GetBool(_T("IRCUseFilter"), false);
 	m_iircchanneluserfilter=ini.GetInt(_T("IRCFilterUser"), 0);
