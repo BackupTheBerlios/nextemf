@@ -119,14 +119,21 @@ void CDownloadListCtrl::Init()
 	LoadSettings(CPreferences::tableDownload);
 	curTab=0;
 
+//==> Bold Download-Status [shadow2004]
+#ifdef NOTBOLDDL
 	if (thePrefs.GetShowActiveDownloadsBold())
 	{
+#else //NOTBOLDDL
 		CFont* pFont = GetFont();
 		LOGFONT lfFont = {0};
 		pFont->GetLogFont(&lfFont);
 		lfFont.lfWeight = FW_BOLD;
 		m_fontBold.CreateFontIndirect(&lfFont);
+#endif //NOTBOLDDL
+#ifdef NOTBOLDDL
 	}
+#endif //NOTBOLDDL
+//<== Bold Download-Status [shadow2004]
 
 	// Barry - Use preferred sort order from preferences
 	m_bRemainSort=thePrefs.TransferlistRemainSortStyle();
@@ -510,6 +517,42 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 				cdcStatus.SelectObject(hOldBitmap);
 				//added end
 
+//==> bold Filepercentage [shadow2004]
+#ifdef BOLDPROZ
+				if (thePrefs.GetUseDwlPercentage()) {
+					COLORREF oldclr = dc->SetTextColor(RGB(0,0,0));
+					int iOMode = dc->SetBkMode(TRANSPARENT);
+					buffer.Format(_T("%.1f%%"), lpPartFile->GetPercentCompleted());
+					CFont *pOldFont = dc->SelectObject(&m_fontBold);
+					
+#define	DrawPercentText	dc->DrawText(buffer, buffer.GetLength(), &rcDraw, ((DLC_DT_TEXT | DT_RIGHT) & ~DT_LEFT) | DT_CENTER)
+					DrawPercentText;
+					rcDraw.left+=1;rcDraw.right+=1;
+					DrawPercentText;
+					rcDraw.left+=1;rcDraw.right+=1;
+					DrawPercentText;
+					
+					rcDraw.top+=1;rcDraw.bottom+=1;
+					DrawPercentText;
+					rcDraw.top+=1;rcDraw.bottom+=1;
+					DrawPercentText;
+					
+					rcDraw.left-=1;rcDraw.right-=1;
+					DrawPercentText;
+					rcDraw.left-=1;rcDraw.right-=1;
+					DrawPercentText;
+					
+					rcDraw.top-=1;rcDraw.bottom-=1;
+					DrawPercentText;
+					
+					rcDraw.left++;rcDraw.right++;
+					dc->SetTextColor(RGB(255,255,255));
+					DrawPercentText;
+					dc->SelectObject(pOldFont);
+					dc->SetBkMode(iOMode);
+					dc->SetTextColor(oldclr);
+				}
+#else //BOLDPROZ
 				if (thePrefs.GetUseDwlPercentage()) {
 					// HoaX_69: BEGIN Display percent in progress bar
 					COLORREF oldclr = dc->SetTextColor(RGB(255,255,255));
@@ -520,6 +563,8 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 					dc->SetTextColor(oldclr);
 					// HoaX_69: END
 				}
+#endif //BOLDPROZ
+//<== bold Filepercentage [shadow2004]
 			}
 			break;
 
