@@ -100,7 +100,15 @@ public:
 
 	bool    CheckAndAddSource(CPartFile* sender,CUpDownClient* source);
 	bool    CheckAndAddKnownSource(CPartFile* sender,CUpDownClient* source, bool bIgnoreGlobDeadList = false);
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
+	bool	RemoveSource(CUpDownClient* toremove, bool bDoStatsUpdate = true, POSITION pos = NULL);
+	void	RemoveSourceAndDontAsk(CUpDownClient* toremove, bool bDoStatsUpdate = true, POSITION pos = NULL);
+#else
 	bool	RemoveSource(CUpDownClient* toremove, bool bDoStatsUpdate = true);
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
+
 
 	// statistics
 	typedef struct{
@@ -200,8 +208,18 @@ private:
     DWORD       m_dwLastA4AFtime; // ZZ:DownloadManager
 //==>Quickstart [cyrex2001]
 #ifdef QUICKSTART //Quickstart
+private:
 	int quickflag;
 	int quickflags;
 #endif //Quickstart
 //<==Quickstart [cyrex2001]
+
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
+private:
+	uint32 ValidSourcesCounterTemp;
+	uint32 DownloadSourcesCounterTemp;
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
+
 };

@@ -17,6 +17,7 @@
 #pragma once
 #include "BarShader.h"
 
+
 class CClientReqSocket;
 class CPeerCacheDownSocket;
 class CPeerCacheUpSocket;
@@ -426,13 +427,13 @@ public:
 	void			UDPReaskForDownload();
 	bool			IsSourceRequestAllowed() const;
     bool            IsSourceRequestAllowed(CPartFile* partfile, bool sourceExchangeCheck = false) const; // ZZ:DownloadManager
-//==>//Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA //Reask sourcen after ip change
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
 	bool			IsValidSource2() const;
-#else //Reask sourcen after ip change
+#else
 	bool			IsValidSource() const;
-#endif //Reask sourcen after ip change
-//<==//Reask sourcen after ip change [cyrex2001]
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
 	ESourceFrom		GetSourceFrom() const							{ return (ESourceFrom)m_nSourceFrom; }
 	void			SetSourceFrom(ESourceFrom val)					{ m_nSourceFrom = val; }
 
@@ -741,7 +742,16 @@ protected:
 	//////////////////////////////////////////////////////////
 	// Download
 	//
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
+public:
 	CPartFile*	reqfile;
+protected:
+#else
+	CPartFile*	reqfile;
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
+
 	CAICHHash*  m_pReqFileAICHHash; 
 	uint32		m_cDownAsked;
 	uint8*		m_abyPartStatus;
@@ -823,30 +833,6 @@ protected:
     DWORD   m_dwLastTriedToConnect; // ZZ:DownloadManager (one resk timestamp for each file)
     bool    RecentlySwappedForSourceExchange() { return ::GetTickCount()-lastSwapForSourceExchangeTick < 30*1000; } // ZZ:DownloadManager
     void    SetSwapForSourceExchangeTick() { lastSwapForSourceExchangeTick = ::GetTickCount(); } // ZZ:DownloadManager
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA
-protected:
-	uint32		m_dwLastAskedTime;
-public:
-	void SetLastAskedTime(DWORD in) { if(m_dwLastAskedTime>in) m_dwLastAskedTime-=in; else m_dwLastAskedTime=0; }
-	bool IsValidSource() const {return m_bValidSource;};
-	void SetValidSource(bool in){m_bValidSource = in;};
-//==>AntiNickThief [shadow2004]
-	bool        IsNickThief()    {return m_bNickThief;} 
-	CString     CreateAntiNickThiefTag(); 
-	CString     GetAntiNickThiefNick(); 
-//<==AntiNickThief [shadow2004]
-
-private:
-	bool m_bValidSource;
-//==>AntiNickThief [shadow2004]
-	bool        m_bNickThief; 
-	CString     m_sAntiNickThiefTag;
-//<==AntiNickThief [shadow2004]
-
-
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 //==>Sivka-Ban [cyrex2001]
 #ifdef SIVKA_BAN
 public:
@@ -857,6 +843,39 @@ public:
 #endif //Sivka-Ban
 //<==Sivka-Ban [cyrex2001]
 
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+public:
+	uint32 GetJitteredFileReaskTime() const {return m_jitteredFileReaskTime;}
+	uint32 GetNextTCPAskedTime() const {return m_dwNextTCPAskedTime;}
+	void   SetNextTCPAskedTime(uint32 time) {m_dwNextTCPAskedTime = time;}
+private:
+	uint32 m_dwLastUDPReaskTime;
+	uint32 m_dwNextTCPAskedTime;
+	uint32 m_jitteredFileReaskTime;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
+//==>AntiNickThief [shadow2004]
+public:
+	bool        IsNickThief()    {return m_bNickThief;} 
+	CString     CreateAntiNickThiefTag(); 
+	CString     GetAntiNickThiefNick(); 
+//<==AntiNickThief [shadow2004]
+
+//==>AntiNickThief [shadow2004]
+private:
+	bool        m_bNickThief; 
+	CString     m_sAntiNickThiefTag;
+//<==AntiNickThief [shadow2004]
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
+public:
+	bool	IsValidSource() const {return m_bValidSource;};
+	void	SetValidSource(bool in){m_bValidSource = in;};
+private:
+	bool	m_bValidSource;
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
 };
 //#pragma pack()
 //==>Anti-Leecher [cyrex2001]
@@ -901,6 +920,7 @@ static LPCTSTR apszSnafuTag[] =
 #define CT_UNKNOWNxc4			0xc4 //MD5 Community from new bionic - hello
 #define CT_FRIENDSHARING		0x66 //eWombat  [SNAFU]
 #define CT_DARK					0x54 //eWombat [SNAFU]
+#define FRIENDSHARING_ID		0x5F73F1A0 // Magic Key, DO NOT CHANGE!
 // unknown eMule tags
 #define ET_MOD_UNKNOWNx12		0x12 // http://www.haspepapa-welt.de
 #define ET_MOD_UNKNOWNx13		0x13 // http://www.haspepapa-welt.de

@@ -365,6 +365,12 @@ void CUpDownClient::SendFileRequest()
 		    theStats.AddUpDataOverheadFileRequest(packet->size);
 		    socket->SendPacket(packet, true);
 		}
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+		SetLastAskedTime();
+		m_dwNextTCPAskedTime = GetLastAskedTime() + GetJitteredFileReaskTime();
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 		if( IsEmuleClient() )
 		{
 			SetRemoteQueueFull( true );
@@ -395,6 +401,11 @@ void CUpDownClient::SendFileRequest()
 		}
 	}
     SetLastAskedTime(); // ZZ:DownloadManager
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+	m_dwNextTCPAskedTime = ::GetTickCount() + GetJitteredFileReaskTime();
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 }
 
 void CUpDownClient::SendStartupLoadReq()
@@ -415,6 +426,11 @@ void CUpDownClient::SendStartupLoadReq()
 	socket->SendPacket(packet, true, true);
 	m_fQueueRankPending = 1;
 	m_fUnaskQueueRankRecv = 0;
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+	m_dwNextTCPAskedTime = GetLastAskedTime() + 4 * GetJitteredFileReaskTime();
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 }
 
 void CUpDownClient::ProcessFileInfo(CSafeMemFile* data, CPartFile* file)
@@ -650,7 +666,7 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState){
 			case DS_TOOMANYCONNSKAD:
 				//This client had already been set to DS_CONNECTING.
 				//So we reset this time so it isn't stuck at TOOMANYCONNS for 20mins.
-				m_dwLastTriedToConnect = ::GetTickCount()-20*60*1000;
+				m_dwLastTriedToConnect = ::GetTickCount()-MIN2MS(20);
 				break;
 			case DS_WAITCALLBACKKAD:
 			case DS_WAITCALLBACK:
@@ -662,7 +678,7 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState){
 					case DS_WAITCALLBACKKAD:
 						break;
 					default:
-						m_dwLastTriedToConnect = ::GetTickCount()-20*60*1000;
+						m_dwLastTriedToConnect = ::GetTickCount()-MIN2MS(20);
 						break;
 				}
 				break;
@@ -1366,6 +1382,15 @@ void CUpDownClient::UDPReaskForDownload()
 	
 	if( m_nTotalUDPPackets > 3 && ((float)(m_nFailedUDPPackets/m_nTotalUDPPackets) > .3))
 		return;
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+	if((reqfile == NULL) ||
+	   (m_abyPartStatus == NULL) ||
+	   (GetTickCount() - m_dwLastUDPReaskTime < 30000))
+		return;
+	m_dwLastUDPReaskTime = GetTickCount();
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 	//the line "m_bUDPPending = true;" use to be here
 //==> remove PROXY [shadow2004]
 #if defined(PROXY)
@@ -1914,12 +1939,10 @@ bool CUpDownClient::IsSwapSuspended(const CPartFile* file, const bool allowShort
 
 	return false;
 }
-
 uint32 CUpDownClient::GetTimeUntilReask(const CPartFile* file, const bool allowShortReaskTime, const bool useGivenNNP, const bool givenNNP) const {
     DWORD lastAskedTimeTick = GetLastAskedTime(file);
     if(lastAskedTimeTick != 0) {
         DWORD tick = ::GetTickCount();
-
         DWORD reaskTime;
         if(allowShortReaskTime) {
             reaskTime = MIN_REQUESTTIME;
@@ -1948,13 +1971,14 @@ uint32 CUpDownClient::GetTimeUntilReask(const CPartFile* file) const {
 uint32 CUpDownClient::GetTimeUntilReask() const {
     return GetTimeUntilReask(reqfile);
 }
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA //Reask sourcen after ip change
+
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
 bool CUpDownClient::IsValidSource2() const
-#else //Reask sourcen after ip change
+#else
 bool CUpDownClient::IsValidSource() const
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
 {
 	bool valid = false;
 	switch(GetDownloadState())

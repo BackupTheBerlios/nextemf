@@ -224,7 +224,7 @@ void CUpDownClient::Init()
 	m_fNeedOurPublicIP = 0;
     m_random_update_wait = (uint32)(rand()/(RAND_MAX/1000));
     m_bSourceExchangeSwapped = false; // ZZ:DownloadManager
-    m_dwLastTriedToConnect = ::GetTickCount()-20*60*1000; // ZZ:DownloadManager
+    m_dwLastTriedToConnect = ::GetTickCount()-MIN2MS(20); // ZZ:DownloadManager
 	m_fQueueRankPending = 0;
 	m_fUnaskQueueRankRecv = 0;
 	m_fFailedFileIdReqs = 0;
@@ -252,12 +252,6 @@ void CUpDownClient::Init()
 	for (uint8 i = 0;i < 5; i++) m_iDifferenceQueueRank[i] = 0;
 #endif //AntiFakeRank
 //<==AntiFakeRank [cyrex2001]
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA
-	m_dwLastAskedTime = 0;
- m_bValidSource = false;
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
 	m_bLeecher = false;
@@ -270,6 +264,17 @@ void CUpDownClient::Init()
 	m_bGPLEvildoer = false;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+	m_dwLastUDPReaskTime = 0;
+	m_dwNextTCPAskedTime = 0;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
+	m_bValidSource = false;
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -328,9 +333,7 @@ CUpDownClient::~CUpDownClient(){
 	
 	DEBUG_ONLY (theApp.listensocket->Debug_ClientDeleted(this));
 	SetUploadFileID(NULL);
-
     m_fileReaskTimes.RemoveAll(); // ZZ:DownloadManager (one resk timestamp for each file)
-
 	if (m_pReqFileAICHHash != NULL)
 		delete m_pReqFileAICHHash;
 }
@@ -2177,17 +2180,18 @@ void CUpDownClient::ResetFileStatusInfo()
 	m_nPartCount = 0;
 	m_strClientFilename.Empty();
 	m_bCompleteSource = false;
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA
-	m_dwLastAskedTime = 0;
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 	m_uFileRating = 0;
 	m_strFileComment.Empty();
 	if (m_pReqFileAICHHash != NULL){
 		delete m_pReqFileAICHHash;
 		m_pReqFileAICHHash = NULL;
 	}
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+	m_dwLastUDPReaskTime = 0;			
+	m_dwNextTCPAskedTime = 0;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 }
 
 bool CUpDownClient::IsBanned() const
@@ -2434,12 +2438,11 @@ void CUpDownClient::AssertValid() const
 	(void)dwThisClientIsKnownSince;
 #endif //Sivka-Ban
 //<==Sivka-Ban [cyrex2001]
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA
-	(void)m_dwLastAskedTime;
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
 	CHECK_BOOL(m_bValidSource);
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
 #undef CHECK_PTR
 #undef CHECK_BOOL
 }
@@ -2766,9 +2769,9 @@ switch(tag->GetNameID())
 	//case CT_UNKNOWNx69:			strSnafuTag=apszSnafuTag[3];break;//buffer=_T("eMuleReactor");break;
 	case CT_UNKNOWNx79:			strSnafuTag=apszSnafuTag[4];break;//buffer=_T("Bionic");break;
 	case CT_UNKNOWNx88:
-		////If its a LSD its o.k
-		//if (m_strModVersion.IsEmpty() || !stristrex(((CString)m_strModVersion).Left(3),"lsd"))
-		//	strSnafuTag=apszSnafuTag[5];//[LSD7c]
+		//If its a LSD its o.k
+        if (m_strModVersion.IsEmpty() || _tcsnicmp(m_strModVersion,_T("LSD"),3)!=0)
+			strSnafuTag=apszSnafuTag[5];//[LSD7c]
 		break;
 	case CT_UNKNOWNx8c:			strSnafuTag=apszSnafuTag[5];break;//buffer=_T("[LSD7c]");break; 
 	case CT_UNKNOWNx8d:			strSnafuTag=apszSnafuTag[6];break;//buffer=_T("[0x8d] unknown Leecher - (client version:60)");break;
@@ -2777,11 +2780,11 @@ switch(tag->GetNameID())
 	case CT_FRIENDSHARING:		//STRIKE BACK
 		//if (theApp.glob_prefs->GetAntiFriendshare())
 		//	{
-		//	if (tag->tag.type==TAGTYPE_UINT32 && tag->tag.intvalue == FRIENDSHARING_ID) //Mit dieser ID Definitiv
-		//		{
-		//		DoSnafu(snafu_friendsharemod,false,false);
-		//		return;				
-		//		}
+		if (tag->IsInt() && tag->GetInt() == FRIENDSHARING_ID) //Mit dieser ID Definitiv
+				{
+				BanLeecher(_T("Friend Sharing detected"));
+				return;				
+				}
 		//	}
 		break;
 	case CT_DARK:				//STRIKE BACK				

@@ -2321,13 +2321,13 @@
 #define IDC_UIP                         2910
 
 //==>Window for nextemf-option [cyrex2001]
-//#if defined (RSAIC_SIVKA) || defined (QUICKSTART)
+//#if defined (QUICKSTART) || defined (RSAIC_MAELLA)
 #define IDD_PPG_NEXTEMF					60000
 #define IDC_PPG_NEXTEMF_OPTS			60001
 //#endif
 //<==Window for nextemf-option [cyrex2001]
 //==>Reask sourcen after ip change [cyrex2001]
-//#if defined (RSAIC_SIVKA)
+//#if defined (RSAIC_MAELLA)
 #define IDC_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK 60002
 #define IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK 60002
 //#endif

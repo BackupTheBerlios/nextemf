@@ -81,6 +81,12 @@ CDownloadQueue::CDownloadQueue(CSharedFileList* in_sharedfilelist)
 	quickflags = 0;
 #endif //Quickstart
 //<==Quickstart [cyrex2001]
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
+	ValidSourcesCounterTemp = 0;
+	DownloadSourcesCounterTemp = 0;
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
 }
 
 void CDownloadQueue::AddPartFilesToShare()
@@ -412,7 +418,12 @@ void CDownloadQueue::Process(){
 	} else {
 		datarate = 0;
 	}
-
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
+	ValidSourcesCounterTemp = 0;
+	DownloadSourcesCounterTemp = 0;
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
 	uint32 datarateX=0;
 	udcounter++;
 
@@ -421,12 +432,25 @@ void CDownloadQueue::Process(){
 		CPartFile* cur_file = filelist.GetNext(pos);
 		if (cur_file->GetStatus() == PS_READY || cur_file->GetStatus() == PS_EMPTY){
 			datarateX += cur_file->Process(downspeed,udcounter);
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
+			ValidSourcesCounterTemp += cur_file->GetValidState_SRC_Count();
+			DownloadSourcesCounterTemp += cur_file->GetSourceCount();
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
 		}
 		else{
 			//This will make sure we don't keep old sources to paused and stoped files..
 			cur_file->StopPausedFile();
 		}
 	}
+
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
+	theApp.emuledlg->transferwnd->downloadlistctrl.ValidSourcesCounter = ValidSourcesCounterTemp;
+	theApp.emuledlg->transferwnd->downloadlistctrl.DownloadSourcesCounter = DownloadSourcesCounterTemp;
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
 
 	TransferredData newitem = {datarateX, ::GetTickCount()};
 	avarage_dr_list.AddTail(newitem);
@@ -520,7 +544,14 @@ bool CDownloadQueue::CheckAndAddSource(CPartFile* sender,CUpDownClient* source){
 		delete source;
 		return false;
 	}
-
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
+	if(theApp.clientlist->DontAskThisIP(source->GetIP())){
+		delete source;
+		return false;
+	}
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
 	if (source->HasValidHash())
 	{
 		if(!md4cmp(source->GetUserHash(), thePrefs.GetUserHash()))
@@ -606,7 +637,13 @@ bool CDownloadQueue::CheckAndAddSource(CPartFile* sender,CUpDownClient* source){
 bool CDownloadQueue::CheckAndAddKnownSource(CPartFile* sender,CUpDownClient* source, bool bIgnoreGlobDeadList){
 	if (sender->IsStopped())
 		return false;
-	
+	//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
+	if(theApp.clientlist->DontAskThisIP(source->GetIP())){
+		return false;
+	}
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
 	// filter sources which are known to be dead/useless
 	if ( (theApp.clientlist->m_globDeadSourceList.IsDeadSource(source) && !bIgnoreGlobDeadList) || sender->m_DeadSourceList.IsDeadSource(source)){
 		if (thePrefs.GetLogFilteredIPs())
@@ -669,6 +706,38 @@ bool CDownloadQueue::CheckAndAddKnownSource(CPartFile* sender,CUpDownClient* sou
 	return true;
 }
 
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
+bool CDownloadQueue::RemoveSource(CUpDownClient* toremove, bool bDoStatsUpdate, POSITION pos){
+	if(!toremove || !toremove->reqfile) return false;
+	bool removed = false;
+				
+	if(pos = pos ? pos : toremove->reqfile->srclist.Find(toremove))
+	{
+		toremove->reqfile->srclist.RemoveAt(pos);
+				removed = true;
+				if ( bDoStatsUpdate ){
+			toremove->reqfile->RemoveDownloadingSource(toremove);
+			toremove->reqfile->UpdatePartsInfo();
+			toremove->reqfile->UpdateAvailablePartsCount();
+		}
+	}
+	for(POSITION pos3, pos2, pos1 = toremove->m_OtherRequests_list.GetHeadPosition();(pos2=pos1)!=NULL;)
+	{
+		if( pos3 = toremove->m_OtherRequests_list.GetNext(pos1)->A4AFsrclist.Find(toremove) )
+		{ 
+			toremove->m_OtherRequests_list.GetAt(pos2)->A4AFsrclist.RemoveAt(pos3);
+			theApp.emuledlg->transferwnd->downloadlistctrl.RemoveSource(toremove,toremove->m_OtherRequests_list.GetAt(pos2));
+			toremove->m_OtherRequests_list.RemoveAt(pos2);
+		}
+	}
+	toremove->SetDownloadState(DS_NONE);
+	theApp.emuledlg->transferwnd->downloadlistctrl.RemoveSource(toremove,0);
+	toremove->ResetFileStatusInfo();
+	toremove->reqfile = 0;
+	return removed;
+}
+#else
 bool CDownloadQueue::RemoveSource(CUpDownClient* toremove, bool bDoStatsUpdate)
 {
 	bool bRemovedSrcFromPartFile = false;
@@ -723,6 +792,8 @@ bool CDownloadQueue::RemoveSource(CUpDownClient* toremove, bool bDoStatsUpdate)
 	toremove->SetRequestFile(NULL);
 	return bRemovedSrcFromPartFile;
 }
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
 
 void CDownloadQueue::RemoveFile(CPartFile* toremove)
 {
@@ -1809,3 +1880,15 @@ void CDownloadQueue::UpdateFileSettings(CPartFile* file)
 }
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001]
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
+void CDownloadQueue::RemoveSourceAndDontAsk(CUpDownClient* toremove, bool bDoStatsUpdate, POSITION pos)
+{
+	if( RemoveSource(toremove, bDoStatsUpdate, pos) ){
+		if( !toremove->IsFriend() ){
+			theApp.clientlist->AddToDontAskThisIP(toremove->GetIP());
+		}
+	}
+}
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]

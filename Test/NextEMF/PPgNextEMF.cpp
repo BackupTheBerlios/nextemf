@@ -13,9 +13,10 @@
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
+
 #endif
 //==>Reask sourcen after ip chnage or Quickstart or Sivka-Ban [cyrex2001]
-#if defined (RSAIC_SIVKA)|| defined (QUICKSTART)|| defined (SIVKA_BAN) //Reask sourcen after ip chnage or Quickstart or Sivka-Ban
+#if defined (QUICKSTART)|| defined (SIVKA_BAN) || defined (RSAIC_MAELLA) //Reask sourcen after ip chnage or Quickstart or Sivka-Ban
 
 IMPLEMENT_DYNAMIC(CPPgNextEMF, CPropertyPage)
 BEGIN_MESSAGE_MAP(CPPgNextEMF, CPropertyPage)

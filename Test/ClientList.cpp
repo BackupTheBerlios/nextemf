@@ -50,7 +50,15 @@ CClientList::CClientList(){
 	m_dwLastTrackedCleanUp = 0;
 	m_dwLastClientCleanUp = 0;
 	m_bHaveBuddy = 0;
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
+	m_dwLastCleanUpDontAskThisIP = 0;
+	m_bannedList.InitHashTable(2011);
+	m_DontAskThisIPList.InitHashTable(22229);
+#else
 	m_bannedList.InitHashTable(331);
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
 	m_trackedClientsList.InitHashTable(2011);
 	m_globDeadSourceList.Init(true);
 	m_pBuddy = NULL;
@@ -525,6 +533,22 @@ uint32 CClientList::GetBadRequests(const CUpDownClient* upcClient) const{
 
 void CClientList::Process(){
 	const uint32 cur_tick = ::GetTickCount();
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
+	if( (m_dwLastCleanUpDontAskThisIP + HR2S(2)) < cur_tick ){
+		m_dwLastCleanUpDontAskThisIP = cur_tick;
+
+		POSITION pos = m_DontAskThisIPList.GetStartPosition();
+		uint32 uKey;
+		uint32 uDontAskTime;
+		while (pos != NULL){
+			m_DontAskThisIPList.GetNextAssoc( pos, uKey, uDontAskTime );
+			if( (uDontAskTime + 7200000) < cur_tick )
+				m_DontAskThisIPList.RemoveKey(uKey);
+		}
+	}
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
 	if (m_dwLastBannCleanUp + BAN_CLEANUP_TIME < cur_tick){
 		m_dwLastBannCleanUp = cur_tick;
 		
@@ -835,21 +859,6 @@ CDeletedClient::CDeletedClient(const CUpDownClient* pClient)
 	m_ItemsList.Add(porthash);
 }
 
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA
-// ZZ:DownloadManager -->modified by sivka [improved]
-void CClientList::ProcessA4AFClients() {
-	for( POSITION pos = list.GetHeadPosition(); pos;) {
-		CUpDownClient* cur_client = list.GetNext(pos);
-		if( cur_client->GetDownloadState() != DS_DOWNLOADING
-			&& cur_client->GetDownloadState() != DS_CONNECTED
-			&&(!cur_client->m_OtherRequests_list.IsEmpty() || !cur_client->m_OtherNoNeeded_list.IsEmpty()) )
-			cur_client->SwapToAnotherFile(_T("Periodic A4AF check CClientList::ProcessA4AFClients()"), false, false, false, NULL, true, false);
-		}
-	}
-// <-- ZZ:DownloadManager
-#else
-// ZZ:DownloadManager -->
 void CClientList::ProcessA4AFClients() {
     //if(thePrefs.GetLogA4AF()) AddDebugLogLine(false, _T(">>> Starting A4AF check"));
 	POSITION pos1, pos2;
@@ -867,19 +876,35 @@ void CClientList::ProcessA4AFClients() {
     //if(thePrefs.GetLogA4AF()) AddDebugLogLine(false, _T(">>> Done with A4AF check"));
 }
 // <-- ZZ:DownloadManager
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
+
+//==>List Of Dont Ask This IPs [cyrex2001]
+#ifdef LODATI
+bool CClientList::DontAskThisIP(uint32 dwIP){
+	uint32 uDontAskTime = 0;
+	if( m_DontAskThisIPList.Lookup(dwIP, uDontAskTime) ){
+		if( (uDontAskTime + HR2S(3)) > ::GetTickCount() )
+			return true;
+		else
+			m_DontAskThisIPList.RemoveKey(dwIP);
+	}
+	return false; 
+}
+#endif //List Of Dont Ask This IPs
+//<==List Of Dont Ask This IPs [cyrex2001]
 
 //==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA
-void CClientList::TrigReaskForDownload(){
-	const DWORD dwCurTick = ::GetTickCount();
-	for(POSITION pos = list.GetHeadPosition(); pos;){
+#ifdef RSAIC_MAELLA
+void CClientList::TrigReaskForDownload(bool immediate){
+	for(POSITION pos = list.GetHeadPosition(); pos != NULL;){				
     CUpDownClient* cur_client = list.GetNext(pos); 
-		if( cur_client->GetDownloadState() == DS_NONEEDEDPARTS )
-			cur_client->SetLastAskedTime(3000000);
-		else
-			cur_client->SetLastAskedTime(FILEREASKTIME-MIN2MS(10));
+		if(immediate == true){
+			// Compute the next time that the file might be saftly reasked (=> no Ban())
+			cur_client->SetNextTCPAskedTime(0);
+		}
+		else{
+			// Compute the next time that the file might be saftly reasked (=> no Ban())
+			//cur_client->TrigNextSafeAskForDownload(cur_client->GetRequestFile());
+		}
 	}	
 }
 #endif //Reask sourcen after ip change
