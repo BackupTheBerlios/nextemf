@@ -1948,7 +1948,7 @@ uint32 CUpDownClient::GetTimeUntilReask() const {
 }
 
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 bool CUpDownClient::IsValidSource2() const
 #else
 bool CUpDownClient::IsValidSource() const
@@ -1968,6 +1968,37 @@ bool CUpDownClient::IsValidSource() const
 	}
 	return valid;
 }
+
+//==>Extended clean-up II by MAELLA [shadow2004]
+#ifdef CLEANUP
+void CUpDownClient::CleanUp(CPartFile* pDeletedFile){
+	// Check if all pointers to the delete file have been removed
+	if(reqfile == pDeletedFile){
+		ASSERT(FALSE);
+		reqfile = NULL;
+		//AddDebugLogLine(false, _T("CleanUp() reports an error with reqfile"));
+	}
+
+	for(POSITION pos = m_OtherRequests_list.GetHeadPosition(); pos != 0; ){
+		POSITION cur_pos = pos;
+		CPartFile* cur_file = m_OtherRequests_list.GetNext(pos);
+		if(cur_file == pDeletedFile){
+			m_OtherRequests_list.RemoveAt(cur_pos);
+			//AddDebugLogLine(false, _T("CleanUp() reports an error with m_OtherRequests_list"));
+		}
+	}
+
+	for(POSITION pos = m_OtherNoNeeded_list.GetHeadPosition(); pos != 0; ){
+		POSITION cur_pos = pos;
+		CPartFile* cur_file = m_OtherNoNeeded_list.GetNext(pos);
+		if(cur_file == pDeletedFile){
+			m_OtherNoNeeded_list.RemoveAt(cur_pos);
+			//AddDebugLogLine(false, _T("CleanUp() reports an error with m_OtherNoNeeded_list"));
+		}
+	}
+}
+#endif
+//<==Extended clean-up II by MAELLA [shadow2004]
 
 void CUpDownClient::StartDownload()
 {

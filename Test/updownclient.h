@@ -15,6 +15,9 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
+//==> Präprozessoren [shadow2004]
+#include "MenuCmds.h"
+//<== Präprozessoren [shadow2004]
 #include "BarShader.h"
 
 class CClientReqSocket;
@@ -593,6 +596,13 @@ protected:
 	EPeerCacheDownState m_ePeerCacheDownState;
 	EPeerCacheUpState m_ePeerCacheUpState;
 
+//==>Extended clean-up II by MAELLA [shadow2004]
+#ifdef CLEANUP
+public:
+	void CleanUp(CPartFile* pDeletedFile);
+	DWORD m_lastCleanUpCheck;
+#endif
+//<==Extended clean-up II by MAELLA [shadow2004]
 protected:
 	// base
 	void	Init();
@@ -742,7 +752,7 @@ protected:
 	// Download
 	//
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 public:
 	CPartFile*	reqfile;
 protected:

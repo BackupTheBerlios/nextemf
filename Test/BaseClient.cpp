@@ -196,6 +196,11 @@ void CUpDownClient::Init()
 	m_byInfopacketsReceived = IP_NONE;
 	m_lastPartAsked = 0xffff;
 	m_nUpCompleteSourcesCount= 0;
+//==>Extended clean-up II by MAELLA [shadow2004]
+#ifdef CLEANUP
+	m_lastCleanUpCheck = GetTickCount();
+#endif
+//<==Extended clean-up II by MAELLA [shadow2004]
 	m_fSupportsPreview = 0;
 	m_fPreviewReqPending = 0;
 	m_fPreviewAnsPending = 0;
@@ -271,7 +276,7 @@ void CUpDownClient::Init()
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 	m_bValidSource = false;
 #endif //List Of Dont Ask This IPs
 //<==List Of Dont Ask This IPs [cyrex2001]
@@ -2443,7 +2448,7 @@ void CUpDownClient::AssertValid() const
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 	CHECK_BOOL(m_bValidSource);
 #endif //List Of Dont Ask This IPs
 //<==List Of Dont Ask This IPs [cyrex2001]

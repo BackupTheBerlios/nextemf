@@ -62,7 +62,7 @@ CPPgNextEMF::CPPgNextEMF()
 	m_htiEnableZeroFilledTest = NULL;
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
     m_htiDropSources = NULL;
     m_htiHqrBox = NULL;
 #endif //Drop maunal
@@ -85,7 +85,7 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		int iImgOpt = 8;
 		int iImgSecurity = 8;
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
 		int iImgDrop = 8;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
@@ -95,7 +95,7 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 			iImgOpt = piml->Add(CTempIconLoader(_T("CONNECTION")));
 			iImgSecurity = piml->Add(CTempIconLoader(_T("SECURITY")));
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
 			iImgDrop = piml->Add(CTempIconLoader(_T("DROP")));
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
@@ -141,7 +141,7 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 //<==defeat 0-filled partsenders [shadow2004]
 
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
 		m_htiDropSources = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_DROPS), iImgDrop, TVI_ROOT);
 		m_htiHqrBox = m_ctrlTreeOptions.InsertItem(GetResString(IDS_DROPHQSLIMIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiDropSources);
 		m_ctrlTreeOptions.AddEditBox(m_htiHqrBox , RUNTIME_CLASS(CNumTreeOptionsEdit));
@@ -192,7 +192,7 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableZeroFilledTest, m_bEnableZeroFilledTest);
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
     DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiHqrBox, iMaxRemoveQRS);
 	DDV_MinMaxInt(pDX, iMaxRemoveQRS, 2500, 100000);
 #endif //Drop maunal
@@ -238,7 +238,7 @@ BOOL CPPgNextEMF::OnInitDialog()
 	m_bEnableZeroFilledTest = thePrefs.enableZeroFilledTest;
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
     iMaxRemoveQRS = thePrefs.GetMaxRemoveQRS();
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
@@ -301,7 +301,7 @@ BOOL CPPgNextEMF::OnApply()
 	thePrefs.enableZeroFilledTest = m_bEnableZeroFilledTest;
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
 	thePrefs.SetMaxRemoveQRS(iMaxRemoveQRS ? iMaxRemoveQRS : 5000);
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
@@ -355,7 +355,7 @@ void CPPgNextEMF::Localize(void)
 	    if (m_htiEnableZeroFilledTest) m_ctrlTreeOptions.SetItemText(m_htiEnableZeroFilledTest, GetResString(IDS_ZERO_FILLED_TEST));
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
 		if (m_htiHqrBox) m_ctrlTreeOptions.SetEditLabel(m_htiHqrBox, GetResString(IDS_DROPHQSLIMIT));
 		if (m_htiDropSources) m_ctrlTreeOptions.SetItemText(m_htiDropSources, GetResString(IDS_DROPS)); 
 #endif //Drop maunal
@@ -402,7 +402,7 @@ void CPPgNextEMF::OnDestroy()
 	m_htiEnableZeroFilledTest = NULL;
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
     m_htiDropSources = NULL;
     m_htiHqrBox = NULL;
 #endif //Drop maunal

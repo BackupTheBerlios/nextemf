@@ -15,6 +15,10 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
 
+//==> Präprozessoren [shadow2004]
+#include "MenuCmds.h"
+//<== Präprozessoren [shadow2004]
+
 class CSafeMemFile;
 class CSearchFile;
 class CUpDownClient;
@@ -101,7 +105,7 @@ public:
 	bool    CheckAndAddSource(CPartFile* sender,CUpDownClient* source);
 	bool    CheckAndAddKnownSource(CPartFile* sender,CUpDownClient* source, bool bIgnoreGlobDeadList = false);
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 	bool	RemoveSource(CUpDownClient* toremove, bool bDoStatsUpdate = true, POSITION pos = NULL);
 	void	RemoveSourceAndDontAsk(CUpDownClient* toremove, bool bDoStatsUpdate = true, POSITION pos = NULL);
 #else
@@ -215,7 +219,7 @@ private:
 //<==Quickstart [cyrex2001]
 
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 private:
 	uint32 ValidSourcesCounterTemp;
 	uint32 DownloadSourcesCounterTemp;

@@ -2,6 +2,9 @@
 // Microsoft Visual C++ generated include file.
 // Used by emule.rc
 //
+//==> Präprozessoren [shadow2004]
+#include "MenuCmds.h"
+//<== Präprozessoren [shadow2004]
 #define IDR_MANIFEST                    1
 #define IDC_STATUSBAR                   100
 #define IDD_ABOUTBOX                    101

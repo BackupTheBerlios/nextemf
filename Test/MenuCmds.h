@@ -1,5 +1,22 @@
 #pragma once
 
+//==> Präprozessoren [shadow2004]
+#define BOLDDL							//	Aktiver Download in Fett
+#define HARDLIMIT						//	Sivka Hardlimit
+#define FIX_CLOSED						//	ChatFix: Close- and Submit-Button
+#define USERHASH						//	show Userhash in Info
+#define	CACHEUP							//	Cachesize up to 4MB
+#define ANTI_FAKE_RANK					//	Anti-Fake-Rank
+#define	DLWND1							//	Some Cosmetics in Downloadwindow
+#define QUICKSTART						//	Quickstart
+#define BOLDPROZ						//	Show Percentage in Bold
+//#define SRVWND1						//	Removed some Colums in Serverwindow
+#define ASKING							//	Asking-Bug-Fix
+#define CSP								//	Chunk Selection Patch
+#define SourceXT						//	Show full sources when searching over Server
+#define CLEANUP							//	Maella's Extended CleanUp
+//<== Präprozessoren [shadow2004]
+
 ///////////////////////////////////////////////////////////////////////////////
 // Menu commands for GUI only
 
@@ -197,7 +214,7 @@
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001]
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
 #define MP_DROPLOWTOLOWIPSRCS		17001
 #define MP_DROPUNKNOWNERRORBANNEDSRCS	17002
 #define MP_DROPNONEEDEDSRCS		17003

@@ -52,7 +52,7 @@
 
 
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 #include "Clientlist.h"
 #endif //List Of Dont Ask This IPs
 //<==List Of Dont Ask This IPs [cyrex2001]
@@ -81,7 +81,7 @@ CDownloadListCtrl::~CDownloadListCtrl(){
 	if (m_PrioMenu) VERIFY( m_PrioMenu.DestroyMenu() );
     if (m_A4AFMenu) VERIFY( m_A4AFMenu.DestroyMenu() );
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
 	if (m_DropMenu) VERIFY( m_DropMenu.DestroyMenu() );
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
@@ -95,7 +95,7 @@ CDownloadListCtrl::~CDownloadListCtrl(){
 void CDownloadListCtrl::Init()
 {
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 	DownloadSourcesCounter = 0;
 #endif //List Of Dont Ask This IPs
 //<==List Of Dont Ask This IPs [cyrex2001]
@@ -258,7 +258,7 @@ void CDownloadListCtrl::Localize()
 	strRes.ReleaseBuffer();
 
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 	strRes.Format(_T("SRC (%u/%u)"), theApp.clientlist->GetCountDontAskThisIP(), DownloadSourcesCounter);
 #else
 	strRes = GetResString(IDS_DL_SOURCES);
@@ -305,7 +305,7 @@ void CDownloadListCtrl::Localize()
 	strRes.ReleaseBuffer();
 
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 	strRes.Format(_T("SRC (%u/%u)"), theApp.clientlist->GetCountDontAskThisIP(), DownloadSourcesCounter);
 #else
 	strRes = GetResString(IDS_DL_SOURCES);
@@ -659,7 +659,7 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 // ZZ:DownloadManager -->
                 if(!(lpPartFile->GetStatus() == PS_PAUSED && sc == 0) && lpPartFile->GetStatus() != PS_COMPLETE) {
 //==>Show Hardlimit [cyrex2001]
-#ifdef SHOW_HARDLIMIT
+#ifdef HARDLIMIT
 					buffer.Format(_T("[HL:%i] "), lpPartFile->GetMaxSourcesPerFile());
 					buffer.AppendFormat(_T("%i"), sc-ncsc); 
 #else
@@ -1618,7 +1618,7 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct){
 	dc->SelectObject(pOldFont);
 	dc->SetTextColor(crOldTextColor);
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 	HDITEM hdi;
 	hdi.mask = HDI_TEXT;
 	CString strRes;
@@ -1820,7 +1820,7 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001][shadow2004]
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
 			m_FileMenu.EnableMenuItem((UINT_PTR)m_DropMenu.m_hMenu, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
@@ -1941,7 +1941,7 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001][shadow2004]
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
 		m_FileMenu.EnableMenuItem((UINT_PTR)m_DropMenu.m_hMenu, MF_GRAYED);
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
@@ -2153,7 +2153,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001]
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
 				case MP_DROPLOWTOLOWIPSRCS: // Added by sivka
 					SetRedraw(false);
 					while(!selectedList.IsEmpty())
@@ -2792,7 +2792,7 @@ void CDownloadListCtrl::CreateMenues() {
 	if (m_PrioMenu) VERIFY( m_PrioMenu.DestroyMenu() );
 	if (m_A4AFMenu) VERIFY( m_A4AFMenu.DestroyMenu() );
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
 	if (m_DropMenu) VERIFY( m_DropMenu.DestroyMenu() );
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
@@ -2814,7 +2814,7 @@ void CDownloadListCtrl::CreateMenues() {
 	m_A4AFMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_AUTO, GetResString(IDS_ALL_A4AF_AUTO)); // sivka [Tarod]
 
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
 //START adding by sivka
 	m_DropMenu.CreateMenu();
 	m_DropMenu.AddMenuTitle(_T("DROP"), true);
@@ -2840,7 +2840,7 @@ void CDownloadListCtrl::CreateMenues() {
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001]
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
 	if (thePrefs.IsExtControlsEnabled())
 		{
 		m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_DropMenu.m_hMenu, GetResString(IDS_DROP_MENUE), _T("DROP") );

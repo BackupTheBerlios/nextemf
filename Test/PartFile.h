@@ -14,6 +14,9 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
+//==> Präprozessoren [shadow2004]
+#include "MenuCmds.h"
+//<== Präprozessoren [shadow2004]
 #include "KnownFile.h"
 #include "DeadSourceList.h"
 #include "CorruptionBlackBox.h"
@@ -410,7 +413,7 @@ private:
 
     DWORD   lastSwapForSourceExchangeTick; // ZZ:DownloadManaager
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 private:
 	uint16	m_ValidState_SRC_Count;
 	uint16	m_ValidState_SRC_Count_Temp;
@@ -422,7 +425,7 @@ public:
 #endif //List Of Dont Ask This IPs
 //<==List Of Dont Ask This IPs [cyrex2001]
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
 private:
 	uint16	m_MaxRemoveQRS;
 public:

@@ -307,7 +307,7 @@ void CPartFile::Init(){
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001]
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 	m_ValidState_SRC_Count = 0;
 	m_ValidState_SRC_Count_Temp = 0;
 	m_InValidState_SRC_Count = 0;
@@ -413,7 +413,7 @@ void CPartFile::AssertValid() const
 	CHECK_BOOL(m_is_A4AF_auto);
 	(void)m_dwFileAttributes;
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 	(void)m_ValidState_SRC_Count;
 	(void)m_ValidState_SRC_Count_Temp;
 	(void)m_InValidState_SRC_Count;
@@ -1960,7 +1960,7 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 		uint16 nCountForState;
 
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 		m_ValidState_SRC_Count_Temp = 0;
 		m_InValidState_SRC_Count_Temp = 0;
 #endif //List Of Dont Ask This IPs
@@ -2051,7 +2051,7 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 						}
 					}
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 					m_ValidState_SRC_Count_Temp++;
 					cur_src->SetValidSource(true);
 #endif //List Of Dont Ask This IPs
@@ -2095,7 +2095,7 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 				case DS_NONEEDEDPARTS:
 				{ 
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 					cur_src->SetValidSource(false);
 #endif //List Of Dont Ask This IPs
 //<==List Of Dont Ask This IPs [cyrex2001]
@@ -2127,7 +2127,7 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 				case DS_ONQUEUE:
 				{
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 					m_ValidState_SRC_Count_Temp++;
 					cur_src->SetValidSource(true);
 #endif //List Of Dont Ask This IPs
@@ -2137,7 +2137,7 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 					if( cur_src->IsRemoteQueueFull() ) 
 					{
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 						m_ValidState_SRC_Count_Temp--;
 						cur_src->SetValidSource(false);
 #endif //List Of Dont Ask This IPs
@@ -2177,7 +2177,7 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 		}
 
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 		m_ValidState_SRC_Count = m_ValidState_SRC_Count_Temp;
 		m_InValidState_SRC_Count = m_InValidState_SRC_Count_Temp;
 #endif //List Of Dont Ask This IPs
@@ -2252,7 +2252,7 @@ bool CPartFile::CanAddSource(uint32 userid, uint16 port, uint32 serverip, uint16
 	}
 
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 	//added by sivka [-List of Dont Ask This IPs-]
 	if(theApp.clientlist->DontAskThisIP(userid)){
 		return false;
@@ -2868,7 +2868,7 @@ BOOL CPartFile::PerformFileComplete()
 		m_bCompletionError = true;
 		SetFileOp(PFOP_NONE);
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 		m_ValidState_SRC_Count = 0;
 		m_InValidState_SRC_Count = 0;
 #endif //List Of Dont Ask This IPs
@@ -2922,7 +2922,7 @@ BOOL CPartFile::PerformFileComplete()
 //<==Hardlimit [cyrex2001]
 
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 	m_ValidState_SRC_Count = 0;
 	m_InValidState_SRC_Count = 0;
 #endif //List Of Dont Ask This IPs
@@ -4458,7 +4458,7 @@ void CPartFile::UpdateDisplayedInfo(bool force)
 	}
 }
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 void CPartFile::UpdateAutoDownPriority(){
 	if( !IsAutoDownPriority() )
 		return;
@@ -5378,7 +5378,7 @@ void CPartFile::AICHRecoveryDataAvailable(uint16 nPart){
 
 }
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
 void CPartFile::RemoveLow2LowIPSourcesManual()
 {
 	for(POSITION pos2, pos1 = srclist.GetHeadPosition(); (pos2=pos1)!=NULL; ){

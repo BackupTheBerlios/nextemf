@@ -16,6 +16,10 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
 
+//==> Präprozessoren [shadow2004]
+#include "MenuCmds.h"
+//<== Präprozessoren [shadow2004]
+
 #define	DFLT_TRANSFER_WND2	1
 
 //==> remove IRC [shadow2004]
@@ -632,7 +636,7 @@ public:
 	static bool	enableZeroFilledTest;
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
 	static    uint16  MaxRemoveQRS;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
@@ -1430,7 +1434,7 @@ public:
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
  	static   uint16 CPreferences::GetMaxRemoveQRS()      { return MaxRemoveQRS; }
  	static   void	SetMaxRemoveQRS(int in)             {MaxRemoveQRS=in;}
 #endif //Drop maunal

@@ -82,7 +82,7 @@ CDownloadQueue::CDownloadQueue(CSharedFileList* in_sharedfilelist)
 #endif //Quickstart
 //<==Quickstart [cyrex2001]
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 	ValidSourcesCounterTemp = 0;
 	DownloadSourcesCounterTemp = 0;
 #endif //List Of Dont Ask This IPs
@@ -419,7 +419,7 @@ void CDownloadQueue::Process(){
 		datarate = 0;
 	}
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 	ValidSourcesCounterTemp = 0;
 	DownloadSourcesCounterTemp = 0;
 #endif //List Of Dont Ask This IPs
@@ -433,7 +433,7 @@ void CDownloadQueue::Process(){
 		if (cur_file->GetStatus() == PS_READY || cur_file->GetStatus() == PS_EMPTY){
 			datarateX += cur_file->Process(downspeed,udcounter);
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 			ValidSourcesCounterTemp += cur_file->GetValidState_SRC_Count();
 			DownloadSourcesCounterTemp += cur_file->GetSourceCount();
 #endif //List Of Dont Ask This IPs
@@ -446,7 +446,7 @@ void CDownloadQueue::Process(){
 	}
 
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 	theApp.emuledlg->transferwnd->downloadlistctrl.ValidSourcesCounter = ValidSourcesCounterTemp;
 	theApp.emuledlg->transferwnd->downloadlistctrl.DownloadSourcesCounter = DownloadSourcesCounterTemp;
 #endif //List Of Dont Ask This IPs
@@ -545,7 +545,7 @@ bool CDownloadQueue::CheckAndAddSource(CPartFile* sender,CUpDownClient* source){
 		return false;
 	}
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 	if(theApp.clientlist->DontAskThisIP(source->GetIP())){
 		delete source;
 		return false;
@@ -638,7 +638,7 @@ bool CDownloadQueue::CheckAndAddKnownSource(CPartFile* sender,CUpDownClient* sou
 	if (sender->IsStopped())
 		return false;
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 	if(theApp.clientlist->DontAskThisIP(source->GetIP())){
 		return false;
 	}
@@ -707,7 +707,7 @@ bool CDownloadQueue::CheckAndAddKnownSource(CPartFile* sender,CUpDownClient* sou
 }
 
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 bool CDownloadQueue::RemoveSource(CUpDownClient* toremove, bool bDoStatsUpdate, POSITION pos){
 	if(!toremove || !toremove->reqfile) return false;
 	bool removed = false;
@@ -1881,7 +1881,7 @@ void CDownloadQueue::UpdateFileSettings(CPartFile* file)
 #endif //Hardlimit
 //<==Hardlimit [cyrex2001]
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 void CDownloadQueue::RemoveSourceAndDontAsk(CUpDownClient* toremove, bool bDoStatsUpdate, POSITION pos)
 {
 	if( RemoveSource(toremove, bDoStatsUpdate, pos) ){

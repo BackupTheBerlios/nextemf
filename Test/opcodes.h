@@ -16,6 +16,10 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
 
+//==> Präprozessoren [shadow2004]
+#include "MenuCmds.h"
+//<== Präprozessoren [shadow2004]
+
 // MOD Note: Do not change this part - Merkur
 #define	EMULE_PROTOCOL			0x01
 // MOD Note: end

@@ -643,7 +643,7 @@ bool	CPreferences::m_bAntiNickThief;
 bool	CPreferences::enableZeroFilledTest;
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
 uint16	CPreferences::MaxRemoveQRS;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
@@ -2370,7 +2370,7 @@ void CPreferences::SavePreferences()
 #endif //BOLDDL
 //<== Bold Download-Status [shadow2004]
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
     ini.WriteInt(_T("MaxRemoveQueueRatingSources"),MaxRemoveQRS, _T("NextEMF"));
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
@@ -3026,7 +3026,7 @@ void CPreferences::LoadPreferences()
 	enableZeroFilledTest = ini.GetBool(_T("EnableZeroFilledTest"), true, _T("NextEMF"));
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
     MaxRemoveQRS=ini.GetInt(_T("MaxRemoveQueueRatingSources"),5000, _T("NextEMF"));
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]

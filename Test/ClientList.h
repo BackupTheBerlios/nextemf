@@ -16,9 +16,17 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
 #include "DeadSourceList.h"
+//==> Präprozessoren [shadow2004]
+#include "MenuCmds.h"
+//<== Präprozessoren [shadow2004]
 
 class CClientReqSocket;
 class CUpDownClient;
+//==>Extended clean-up II by MAELLA [shadow2004]
+#ifdef CLEANUP
+class CPartFile;	
+#endif
+//<==Extended clean-up II by MAELLA [shadow2004]
 namespace Kademlia{
 	class CContact;
 	class CUInt128;
@@ -89,6 +97,12 @@ public:
 	void	AddTrackClient(CUpDownClient* toadd);
 	bool	ComparePriorUserhash(uint32 dwIP, uint16 nPort, void* pNewHash);
 	UINT	GetClientsFromIP(uint32 dwIP) const;
+//==>Extended clean-up II by MAELLA [shadow2004]
+#ifdef CLEANUP
+	void CleanUpProcess();
+	void CleanUp(CPartFile* pDeletedFile);
+#endif
+//<==Extended clean-up II by MAELLA [shadow2004]
 	void	TrackBadRequest(const CUpDownClient* upcClient, sint32 nIncreaseCounter);
 	uint32	GetBadRequests(const CUpDownClient* upcClient) const;
 
@@ -133,7 +147,7 @@ public:
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 public:
 	void AddToDontAskThisIP(uint32 dwIP) {m_DontAskThisIPList.SetAt(dwIP,::GetTickCount());}
 	void RemoveDontAskThisIP(uint32 dwIP) {m_DontAskThisIPList.RemoveKey(dwIP);}

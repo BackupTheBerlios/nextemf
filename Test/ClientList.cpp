@@ -37,6 +37,11 @@
 #include "TransferWnd.h"
 #include "serverwnd.h"
 #include "Log.h"
+//==>Extended clean-up II by MAELLA [shadow2004]
+#ifdef CLEANUP
+#include "Partfile.h"	
+#endif
+//<==Extended clean-up II by MAELLA [shadow2004]
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -51,7 +56,7 @@ CClientList::CClientList(){
 	m_dwLastClientCleanUp = 0;
 	m_bHaveBuddy = 0;
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 	m_dwLastCleanUpDontAskThisIP = 0;
 	m_bannedList.InitHashTable(2011);
 	m_DontAskThisIPList.InitHashTable(22229);
@@ -534,7 +539,7 @@ uint32 CClientList::GetBadRequests(const CUpDownClient* upcClient) const{
 void CClientList::Process(){
 	const uint32 cur_tick = ::GetTickCount();
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 	if( (m_dwLastCleanUpDontAskThisIP + HR2S(2)) < cur_tick ){
 		m_dwLastCleanUpDontAskThisIP = cur_tick;
 
@@ -859,6 +864,42 @@ CDeletedClient::CDeletedClient(const CUpDownClient* pClient)
 	m_ItemsList.Add(porthash);
 }
 
+//==>Extended clean-up II by MAELLA [shadow2004]
+#ifdef CLEANUP
+void CClientList::CleanUpProcess(){
+	// Look for instance of clients that can be deleted
+	for(POSITION pos = list.GetHeadPosition(); pos != NULL;){
+		CUpDownClient* cur_client =	list.GetNext(pos);
+		// Check state of client (all state == None + no socket)
+		if(cur_client->GetDownloadState() == DS_NONE &&
+		   cur_client->GetUploadState() == US_NONE &&
+		   cur_client->GetChatState() == MS_NONE &&
+		   cur_client->socket == NULL){
+			// Check if this client has been in a 'NONE' state for a long time
+			const DWORD delta = GetTickCount() - cur_client->m_lastCleanUpCheck;
+			if(delta > 7200000){ // 2 hour
+				// Remove instance of client
+
+				AddDebugLogLine(false, _T("Extended clean-up, delete client '%s' => upload+download states == none"), cur_client->GetUserName());
+
+				delete cur_client;
+			}
+		}
+		else{
+			cur_client->m_lastCleanUpCheck = GetTickCount();
+		}
+	}
+}
+
+void CClientList::CleanUp(CPartFile* pDeletedFile){
+	for(POSITION pos = list.GetHeadPosition(); pos != NULL;){
+		CUpDownClient* cur_client =	list.GetNext(pos);
+		cur_client->CleanUp(pDeletedFile);
+	}
+}
+#endif
+//<==Extended clean-up II by MAELLA [shadow2004]
+
 //==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_SIVKA
 // ZZ:DownloadManager -->modified by sivka [improved]
@@ -894,7 +935,7 @@ void CClientList::ProcessA4AFClients() {
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 bool CClientList::DontAskThisIP(uint32 dwIP){
 	uint32 uDontAskTime = 0;
 	if( m_DontAskThisIPList.Lookup(dwIP, uDontAskTime) ){

@@ -18,7 +18,9 @@
 #include "MuleListCtrl.h"
 #include "TitleMenu.h"
 #include <map>
-
+//==> Präprozessoren [shadow2004]
+#include "MenuCmds.h"
+//<== Präprozessoren [shadow2004]
 //==>Hardlimit [cyrex2001]
 #ifdef HARDLIMIT
 #include ".\NextEMF\HardLimit.h"
@@ -119,14 +121,14 @@ protected:
 //<==Hardlimit [cyrex2001]
 
 //==>List Of Dont Ask This IPs [cyrex2001]
-#ifdef LODATI
+#ifdef DROP
 public:
 	uint32 ValidSourcesCounter;
 	uint32 DownloadSourcesCounter;
 #endif //List Of Dont Ask This IPs
 //<==List Of Dont Ask This IPs [cyrex2001]
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
 protected:
 	CTitleMenu m_DropMenu;
 #endif //Drop maunal

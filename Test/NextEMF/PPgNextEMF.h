@@ -49,7 +49,7 @@ protected:
 #endif //BOLDDL
 //<== Bold Download-Status [shadow2004]
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
     int iMaxRemoveQRS;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
@@ -88,7 +88,7 @@ protected:
 	HTREEITEM m_htiEnableZeroFilledTest;
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
-#ifdef DROP_MANUAL
+#ifdef DROP
     HTREEITEM m_htiDropSources;
 	HTREEITEM m_htiHqrBox;
 #endif //Drop maunal
