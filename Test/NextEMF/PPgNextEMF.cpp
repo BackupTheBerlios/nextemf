@@ -41,6 +41,13 @@ CPPgNextEMF::CPPgNextEMF()
 	m_htiSivkaAskCounter = NULL;
 	m_htiSivkaAskLog = NULL;
 	m_htiAntiFakeRank = NULL;
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	m_htiEnableAntiLeecher = NULL;
+	m_htiEnableAntiBadComunity = NULL;
+	m_htiEnableAntiGplBreaker = NULL;
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 }
 
 CPPgNextEMF::~CPPgNextEMF()
@@ -78,6 +85,13 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.AddEditBox(m_htiSivkaAskCounter, RUNTIME_CLASS(CNumTreeOptionsEdit));
 		m_htiSivkaAskLog = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SIVKA_ASK_LOG), m_htiSecurity, m_bSivkaAskLog);
 		m_htiAntiFakeRank = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTI_FAKE_RANK), m_htiSecurity, m_bAntiFakeRank);
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+		m_htiEnableAntiLeecher = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTI_LEECHER), m_htiSecurity, m_bEnableAntiLeecher);
+		m_htiEnableAntiBadComunity = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTI_BADCOMUNITY), m_htiSecurity, m_bEnableAntiBadComunity);
+		m_htiEnableAntiGplBreaker = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTI_GPLBREAKER), m_htiSecurity, m_bEnableAntiGplBreaker);
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
         m_ctrlTreeOptions.Expand(m_htiSecurity, TVE_EXPAND);
 
 		m_ctrlTreeOptions.SendMessage(WM_VSCROLL, SB_TOP);
@@ -98,6 +112,13 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, m_iSivkaAskCounter, 5, 15);
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiSivkaAskLog, m_bSivkaAskLog);
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiAntiFakeRank, m_bAntiFakeRank);
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableAntiLeecher, m_bEnableAntiLeecher);
+	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableAntiBadComunity, m_bEnableAntiBadComunity);
+	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableAntiGplBreaker, m_bEnableAntiGplBreaker);
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 }
 
 BOOL CPPgNextEMF::OnInitDialog()
@@ -112,6 +133,13 @@ BOOL CPPgNextEMF::OnInitDialog()
 	m_iSivkaAskCounter = (int)(thePrefs.SivkaAskCounter);
 	m_bSivkaAskLog = thePrefs.SivkaAskLog;
 	m_bAntiFakeRank = thePrefs.AntiFakeRank;
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	m_bEnableAntiLeecher = thePrefs.enableAntiLeecher;
+	m_bEnableAntiBadComunity = thePrefs.enableAntiBadComunity;
+	m_bEnableAntiGplBreaker = thePrefs.enableAntiGplBreaker;
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 
 	CPropertyPage::OnInitDialog();
 	Localize();
@@ -146,7 +174,13 @@ BOOL CPPgNextEMF::OnApply()
 	thePrefs.SivkaAskCounter = m_iSivkaAskCounter;
 	thePrefs.SivkaAskLog = m_bSivkaAskLog;
 	thePrefs.AntiFakeRank = m_bAntiFakeRank;
-
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	thePrefs.enableAntiLeecher = m_bEnableAntiLeecher;
+	thePrefs.enableAntiBadComunity = m_bEnableAntiBadComunity;
+	thePrefs.enableAntiGplBreaker = m_bEnableAntiGplBreaker;
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 	SetModified(FALSE);
 	return CPropertyPage::OnApply();
 }
@@ -175,6 +209,13 @@ void CPPgNextEMF::Localize(void)
 		if (m_htiSivkaAskCounter) m_ctrlTreeOptions.SetEditLabel(m_htiSivkaAskCounter, GetResString(IDS_SIVKA_ASK_COUNTER));
 		if (m_htiSivkaAskLog) m_ctrlTreeOptions.SetItemText(m_htiSivkaAskLog, GetResString(IDS_SIVKA_ASK_LOG));
 		if (m_htiAntiFakeRank) m_ctrlTreeOptions.SetItemText(m_htiAntiFakeRank, GetResString(IDS_ANTI_FAKE_RANK));
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+		if (m_htiEnableAntiLeecher) m_ctrlTreeOptions.SetItemText(m_htiEnableAntiLeecher, GetResString(IDS_ANTI_LEECHER));
+		if (m_htiEnableAntiBadComunity) m_ctrlTreeOptions.SetItemText(m_htiEnableAntiBadComunity, GetResString(IDS_ANTI_BADCOMUNITY));
+		if (m_htiEnableAntiGplBreaker) m_ctrlTreeOptions.SetItemText(m_htiEnableAntiGplBreaker, GetResString(IDS_ANTI_GPLBREAKER));
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 	}
 }
 
@@ -194,6 +235,13 @@ void CPPgNextEMF::OnDestroy()
 	m_htiSivkaAskCounter = NULL;
 	m_htiSivkaAskLog = NULL;
 	m_htiAntiFakeRank = NULL;
+//==>Anti-Leecher [cyrex2001]
+#ifdef ANTI_LEECHER
+	m_htiEnableAntiLeecher = NULL;
+	m_htiEnableAntiBadComunity = NULL;
+	m_htiEnableAntiGplBreaker = NULL;
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 
 	CPropertyPage::OnDestroy();
 }
