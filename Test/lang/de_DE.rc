@@ -1753,6 +1753,7 @@ BEGIN
     IDS_QUICK_START_MAX_TIME "Dauer des Schnellstarts [8-18 min.]"
     IDS_ANTINICKTHIEF       "Anti-Nick-Thief aktivieren"
     IDS_ZERO_FILLED_TEST    "Erkenne 0-Daten-Sender"
+    IDS_CORRUPTDATASENT     "Benutzer '%s' (IP %s:%i), hash %s, Client=%s wurde temporät zur Filterliste hinzugefügt, da er korrupte Daten sendet"
 END
 
 STRINGTABLE 
@@ -1766,29 +1767,16 @@ STRINGTABLE
 BEGIN
     IDS_PW_NEXTEMF          "NextEMF Einstellungen"
     IDS_ANTI_FAKE_RANK      "Anti-Fake-Rank aktivieren"
-    IDS_ANTI_BADCOMUNITY    "Bad-Community filtern"
-    IDS_ANTI_GPLBREAKER     "GPL-Verletzer filtern"
-    IDS_STATS_BADCOMUNITYCLIENTS "Communitys: %u"
-    IDS_STATS_GPLBREAKERCLIENTS "GPL-Verletzer: %u"
-    IDS_BADCOMUNITYDETREM   "Community Nutzer entdeckt und aus der Upload-Warteschlange entfernt."
-    IDS_GPLBREAKERDETREM    "GPL-Verletzer entdeckt und von der Upload-Warteschlange entfernt."
-    IDS_BADCOMUNITYPUTBACK  "Community-Nutzer entdeckt und in der Warteschlange zurückgesetzt."
-    IDS_GPLBREAKERPUTBACK   "GPL-Verletzter wurde in der Warteschlange zurückgesetzt."
-    IDS_UPSTOPPEDBADCOMUNITY 
-                            "Uploadsession nicht erlaubt. Client scheint ein Community-Nutzer zu sein."
-    IDS_UPSTOPPEDGPLBREAKER "Uploadsession nicht erlaubt. Client scheint ein GPL-Verletzter zu sein."
-    IDS_ANTIBADCOMUNITYLOG  "[Anti-Community] Client %s mit MOD %s wurde temporär gebannt. Vedacht auf Community-Leecher-Aktion"
-    IDS_ANTIGPLBREAKERLOG   "[Anti-GPL-Verletzer] Client %s mit MOD %s wurde temporär gebannt. Vedacht auf GPL-Verletzung"
-    IDS_UPSTOPPEDLEECHER    "Uploadsession nicht erlaubt. Client scheint ein Leecher zu sein."
-    IDS_ANTILEECHERLOG      "[Anti-Leechermods] Client %s mit MOD %s wurde temporär gebannt. Vedacht auf Leech-Versuch"
+    IDS_UPSTOPPEDALF        "[ALF - Anti-Leecher-Filter] Upload Session ist veboten. Client scheint ein Leecher zu sein."
+    IDS_ALFLOG              "[ALF - Anti-Leecher-Filter] CLIENT :  %s | GRUND :"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_LEECHERDETREM       "Leecher wurde entdeckt und aus der Upload-Warteschlange entfernt."
-    IDS_LEECHERPUTBACK      "Leecher wurde in der Warteliste zurückgesetzt."
-    IDS_STATS_LEECHERCLIENTS "Leechers: %u"
-    IDS_ANTI_LEECHER        "Anti-Leecher-Kontrolle nutzen"
+    IDS_ALFDETREM           "[ALF - Anti-Leecher-Filter] Client erkannt und aus der Warteschlange entfernt."
+    IDS_ALFPUTBACK          "[ALF - Anti-Leecher-Filter] Client wurde in der Warteschlange zurückgesetzt."
+    IDS_STATS_ALFCLIENTS    "ALF-Erkennung: %u"
+    IDS_ALF                 "ALF aktiviern (Anti-Leecher-Filter)"
     IDS_ANTI_CREDITHACK     "Anti-Credit-Diebstahl nutzen"
     IDS_DOWNLOAD_IN_BOLD    "Aktive Downloads fett anzeigen"
     IDS_DROPS               "Entfernen"
@@ -1802,6 +1790,15 @@ BEGIN
     IDS_DROP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP 
                             "Entferne alles (Ein-Klick-Entfernen)"
     IDS_DROP_MENUE          "Quellen-Behandlung (Entfernen)"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_FPU_ACTIVE          "FPU Optimierung aktiv"
+    IDS_MMX_ACTIVE          "MMX Optimierung aktiv"
+    IDS_AMD_ACTIVE          "AMD Optimierung aktiv"
+    IDS_SSE_ACTIVE          "SSE Optimierung aktiv"
+    IDS_OPTIMIZATIONS_DISABLED "Optimierung deaktiviert"
 END
 
 #endif    // Deutsch (Deutschland) resources
