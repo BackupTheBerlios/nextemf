@@ -14,8 +14,8 @@
 static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
-//==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
-#if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+//==>Reask sourcen after ip chnage or Quickstart or Sivka-Ban [cyrex2001]
+#if defined (RSAIC) || defined (QUICKSTART)|| defined (SIVKA_BAN) //Reask sourcen after ip chnage or Quickstart or Sivka-Ban
 
 IMPLEMENT_DYNAMIC(CPPgNextEMF, CPropertyPage)
 BEGIN_MESSAGE_MAP(CPPgNextEMF, CPropertyPage)
@@ -37,6 +37,9 @@ CPPgNextEMF::CPPgNextEMF()
 	m_htiQuickStartMaxConnPerFive = NULL;
 	m_htiQuickStartMaxConn = NULL;
 	m_htiQuickStartAfterIPChange = NULL;
+	m_htiSivkaAskTime = NULL;
+	m_htiSivkaAskCounter = NULL;
+	m_htiSivkaAskLog = NULL;
 }
 
 CPPgNextEMF::~CPPgNextEMF()
@@ -50,10 +53,12 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 	if (!m_bInitializedTreeOpts)
 	{
 		int iImgOpt = 8;
+		int iImgSecurity = 8;
 		CImageList* piml = m_ctrlTreeOptions.GetImageList(TVSIL_NORMAL);
 		if (piml)
 		{
 			iImgOpt = piml->Add(CTempIconLoader(_T("PREF_CONNECTION")));
+			iImgSecurity = piml->Add(CTempIconLoader(_T("PREF_SECURITY")));
 		}
 		m_htiIsreaskSourceAfterIPChange = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK ), TVI_ROOT, m_bIsreaskSourceAfterIPChange);
 		m_htiQuickStart = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_QUICK_START), TVI_ROOT, m_bQuickStart);
@@ -65,6 +70,13 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.AddEditBox(m_htiQuickStartMaxConn, RUNTIME_CLASS(CNumTreeOptionsEdit));
                 m_ctrlTreeOptions.Expand(m_htiQuickStart, TVE_EXPAND);
 		m_htiQuickStartAfterIPChange = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_QUICK_START_AFTER_IP_CHANGE), TVI_ROOT, m_bQuickStartAfterIPChange);
+		m_htiSecurity = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SECURITY), iImgSecurity, TVI_ROOT);
+		m_htiSivkaAskTime = m_ctrlTreeOptions.InsertItem(GetResString(IDS_SIVKA_ASK_TIME), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSecurity);
+		m_ctrlTreeOptions.AddEditBox(m_htiSivkaAskTime, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_htiSivkaAskCounter = m_ctrlTreeOptions.InsertItem(GetResString(IDS_SIVKA_ASK_COUNTER), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSecurity);
+		m_ctrlTreeOptions.AddEditBox(m_htiSivkaAskCounter, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_htiSivkaAskLog = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SIVKA_ASK_LOG), m_htiSecurity, m_bSivkaAskLog);
+        m_ctrlTreeOptions.Expand(m_htiSecurity, TVE_EXPAND);
 
 		m_ctrlTreeOptions.SendMessage(WM_VSCROLL, SB_TOP);
 		m_bInitializedTreeOpts = true;
@@ -78,6 +90,11 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiQuickStartMaxConn, m_iQuickStartMaxConn);
 	DDV_MinMaxInt(pDX, m_iQuickStartMaxConn, 200, 2000);
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiQuickStartAfterIPChange, m_bQuickStartAfterIPChange);
+	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiSivkaAskTime, m_iSivkaAskTime);
+	DDV_MinMaxInt(pDX, m_iSivkaAskTime, 5, 12);
+	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiSivkaAskCounter, m_iSivkaAskCounter);
+	DDV_MinMaxInt(pDX, m_iSivkaAskCounter, 5, 15);
+	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiSivkaAskLog, m_bSivkaAskLog);
 }
 
 BOOL CPPgNextEMF::OnInitDialog()
@@ -88,6 +105,9 @@ BOOL CPPgNextEMF::OnInitDialog()
 	m_iQuickStartMaxConnPerFive = (int)(thePrefs.QuickStartMaxConnPerFive);
 	m_iQuickStartMaxConn = (int)(thePrefs.QuickStartMaxConn);
 	m_bQuickStartAfterIPChange = thePrefs.isQuickStartAfterIPChange;
+	m_iSivkaAskTime = (int)(thePrefs.SivkaAskTime);
+	m_iSivkaAskCounter = (int)(thePrefs.SivkaAskCounter);
+	m_bSivkaAskLog = thePrefs.SivkaAskLog;
 
 	CPropertyPage::OnInitDialog();
 	Localize();
@@ -118,6 +138,9 @@ BOOL CPPgNextEMF::OnApply()
 	thePrefs.QuickStartMaxConnPerFive = m_iQuickStartMaxConnPerFive;
 	thePrefs.QuickStartMaxConn = m_iQuickStartMaxConn;
 	thePrefs.isQuickStartAfterIPChange = m_bQuickStartAfterIPChange;
+	thePrefs.SivkaAskTime = m_iSivkaAskTime;
+	thePrefs.SivkaAskCounter = m_iSivkaAskCounter;
+	thePrefs.SivkaAskLog = m_bSivkaAskLog;
 
 	SetModified(FALSE);
 	return CPropertyPage::OnApply();
@@ -143,6 +166,9 @@ void CPPgNextEMF::Localize(void)
 		if (m_htiQuickStartMaxConnPerFive) m_ctrlTreeOptions.SetEditLabel(m_htiQuickStartMaxConnPerFive, GetResString(IDS_QUICK_START_MAX_CONN_PER_FIVE));
 		if (m_htiQuickStartMaxConn) m_ctrlTreeOptions.SetEditLabel(m_htiQuickStartMaxConn, GetResString(IDS_QUICK_START_MAX_CONN));
 		if (m_htiQuickStartAfterIPChange) m_ctrlTreeOptions.SetItemText(m_htiQuickStartAfterIPChange, GetResString(IDS_QUICK_START_AFTER_IP_CHANGE));
+		if (m_htiSivkaAskTime) m_ctrlTreeOptions.SetEditLabel(m_htiSivkaAskTime, GetResString(IDS_SIVKA_ASK_TIME));
+		if (m_htiSivkaAskCounter) m_ctrlTreeOptions.SetEditLabel(m_htiSivkaAskCounter, GetResString(IDS_SIVKA_ASK_COUNTER));
+		if (m_htiSivkaAskLog) m_ctrlTreeOptions.SetItemText(m_htiSivkaAskLog, GetResString(IDS_SIVKA_ASK_LOG));
 	}
 }
 
@@ -158,6 +184,9 @@ void CPPgNextEMF::OnDestroy()
 	m_htiQuickStartMaxConnPerFive = NULL;
 	m_htiQuickStartMaxConn = NULL;
 	m_htiQuickStartAfterIPChange = NULL;
+	m_htiSivkaAskTime = NULL;
+	m_htiSivkaAskCounter = NULL;
+	m_htiSivkaAskLog = NULL;
 
 	CPropertyPage::OnDestroy();
 }
@@ -170,5 +199,5 @@ LRESULT CPPgNextEMF::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
 	}
 	return 0;
 }
-#endif //Reask sourcen after ip chnage or Quickstart
-//<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#endif //Reask sourcen after ip chnage or Quickstart or Sivka-Ban
+//<==Reask sourcen after ip chnage or Quickstart or Sivka-Ban [cyrex2001]

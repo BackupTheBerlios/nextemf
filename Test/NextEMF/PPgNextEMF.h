@@ -1,5 +1,5 @@
-//==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
-#if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+//==>Reask sourcen after ip chnage or Quickstart or Sivka-Ban [cyrex2001]
+#if defined (RSAIC) || defined (QUICKSTART) || defined (SIVKA_BAN) //Reask sourcen after ip chnage or Quickstart or Sivka-Ban
 
 #pragma once
 #include "preferences.h"
@@ -25,13 +25,20 @@ protected:
 	int m_iQuickStartMaxConnPerFive;
 	int m_iQuickStartMaxConn;
 	int m_bQuickStartAfterIPChange;
+	int m_iSivkaAskTime;
+	int m_iSivkaAskCounter;
+	int m_bSivkaAskLog;
 
+	HTREEITEM m_htiSecurity;
 	HTREEITEM m_htiIsreaskSourceAfterIPChange;
 	HTREEITEM m_htiQuickStart;
 	HTREEITEM m_htiQuickStartMaxTime;
 	HTREEITEM m_htiQuickStartMaxConnPerFive;
 	HTREEITEM m_htiQuickStartMaxConn;
 	HTREEITEM m_htiQuickStartAfterIPChange;
+	HTREEITEM m_htiSivkaAskTime;
+	HTREEITEM m_htiSivkaAskCounter;
+	HTREEITEM m_htiSivkaAskLog;
 
 	CTreeOptionsCtrlEx m_ctrlTreeOptions;
 	bool m_bInitializedTreeOpts;
@@ -53,5 +60,5 @@ public:
 	afx_msg void OnSettingsChange()			{ SetModified(); }
 	afx_msg void OnNMCustomdrawUpSlotsSlider(NMHDR *pNMHDR, LRESULT *pResult);
 };
-#endif //Reask sourcen after ip chnage or Quickstart
-//<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#endif //Reask sourcen after ip chnage or Quickstart or Sivka-Ban
+//<==Reask sourcen after ip chnage or Quickstart or Sivka-Ban [cyrex2001]
