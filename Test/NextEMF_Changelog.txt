@@ -1,16 +1,25 @@
 eMule 0.44d [NextEMF v0.x]
 ===========================
 
+ADDED  : Connection-checker by eWombat/WiZaRd [cyrex2001]
+ADDED  : Spooky-mode by eWombat/Fenderman [cyrex2001]
 ADDED  : Lowid retry by SlugFiller [cyrex2001]
 ADDED  : Timer for droped sourcen [2-4h] [cyrex2001]
 ADDED  : Ban aggressive clients(sivka-ban) enable/disable [cyrex2001]
-ADDED  : ask for download priority by Xman [cyrex2001]
+ADDED  : Ask for download priority by Xman [cyrex2001]
 ADDED  : Chunk Selection Patch by Xman [cyrex2001] 
 ADDED  : Timestamp is now available for Chatwindow [shadow2004]
 ADDED  : show hardlimit to sourcelist [cyrex2001] 
 ADDED  : Extended Clean-Up by Maella [shadow2004]
+<<<<<<< NextEMF_Changelog.txt
+FIXED  : Reask source after ip change by Maella [cyrex2001]
+=======
 ADDED  : Reconnect on Kad by Pawcio [shadow2004]
+<<<<<<< NextEMF_Changelog.txt
+>>>>>>> 1.18
+=======
 ADDED  : Crashreport by Maella [shadow2004]
+>>>>>>> 1.19
 FIXED  : Drop menue for debug version [cyrex2001]
 FIXED  : Modstring wasn't shown in Title, if "show Transfer" is off [shadow2004]
 FIXED  : Bold Download-Settings in Preferences [shadow2004]
