@@ -1770,6 +1770,27 @@ STRINGTABLE
 BEGIN
     IDS_PW_NEXTEMF          "NextEMF Einstellungen"
     IDS_ANTI_FAKE_RANK      "Anti-Fake-Rank aktivieren"
+    IDS_ANTI_BADCOMUNITY    "Bad-Community filtern"
+    IDS_ANTI_GPLBREAKER     "GPL-Verletzer filtern"
+    IDS_STATS_BADCOMUNITYCLIENTS "Communitys: %u"
+    IDS_STATS_GPLBREAKERCLIENTS "GPL-Verletzer: %u"
+    IDS_BADCOMUNITYDETREM   "Community Nutzer entdeckt und aus der Upload-Warteschlange entfernt."
+    IDS_GPLBREAKERDETREM    "GPL-Verletzer entdeckt und von der Upload-Warteschlange entfernt."
+    IDS_BADCOMUNITYPUTBACK  "Community-Nutzer entdeckt und in der Warteschlange zurückgesetzt."
+    IDS_GPLBREAKERPUTBACK   "GPL-Verletzter wurde in der Warteschlange zurückgesetzt."
+    IDS_UPSTOPPEDBADCOMUNITY 
+                            "Uploadsession nicht erlaubt. Client scheint ein Community-Nutzer zu sein."
+    IDS_UPSTOPPEDGPLBREAKER "Uploadsession nicht erlaubt. Client scheint ein GPL-Verletzter zu sein."
+    IDS_ANTIBADCOMUNITYLOG  "[Anti-Community] Client %s mit MOD %s wurde temporär gebannt. Vedacht auf Community-Leecher-Aktion"
+    IDS_ANTIGPLBREAKERLOG   "[Anti-GPL-Verletzer] Client %s mit MOD %s wurde temporär gebannt. Vedacht auf GPL-Verletzung"
+    IDS_UPSTOPPEDLEECHER    "Uploadsession nicht erlaubt. Client scheint ein Leecher zu sein."
+    IDS_ANTILEECHERLOG      "[Anti-Leechermods] Client %s mit MOD %s wurde temporär gebannt. Vedacht auf Leech-Versuch"
+    IDS_LEECHERDETREM       "Leecher wurde entdeckt und aus der Upload-Warteschlange entfernt."
+    IDS_LEECHERPUTBACK      "Leecher wurde in der Warteliste zurückgesetzt."
+    IDS_STATS_LEECHERCLIENTS "Leechers: %u"
+    IDS_ANTI_LEECHER        "Anti-Leecher-Kontrolle nutzen"
+    IDS_ANTI_CREDITHACK     "Anti-Credit-Diebstahl nutzen"
+
 END
 
 #endif    // Deutsch (Deutschland) resources
