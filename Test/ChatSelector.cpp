@@ -84,7 +84,13 @@ CChatSelector::CChatSelector()
 	m_lastemptyicon = false;
 	m_blinkstate = false;
 	m_Timer = 0;
+//==>Fix for closed  [cyrex2001]
+#ifdef FIX_CLOSED
+	m_bCloseable = true;
+#else
 	m_bCloseable = false;
+#endif //Fix for closed
+//<==Fix for closed [cyrex2001]
 }
 
 CChatSelector::~CChatSelector()
@@ -321,7 +327,13 @@ bool CChatSelector::SendMessage(const CString& rstrMessage)
 		ci->log->AppendKeyWord(_T("*** ") + GetResString(IDS_CONNECTING), RGB(255,0,0));
 		ci->strMessagePending = rstrMessage;
 		ci->client->SetChatState(MS_CONNECTING);
+//==>Fix for closed  [cyrex2001]
+#ifdef FIX_CLOSED
+		ci->client->TryToConnect(true);
+#else //Fix for closed
 		ci->client->TryToConnect();
+#endif //Fix for closed
+//<==Fix for closed [cyrex2001]
 	}
 	return true;
 }
@@ -719,6 +731,12 @@ BOOL CChatSelector::OnCommand(WPARAM wParam, LPARAM lParam)
 				EndSession(ci->client);
 			break;
 		}
+//==>Fix for closed  [cyrex2001]
+#ifdef FIX_CLOSED
+		default:
+			return CClosableTabCtrl::OnCommand(wParam, lParam);
+#endif //Fix for closed
+//<==Fix for closed [cyrex2001]
 	}
 	return TRUE;
 }
