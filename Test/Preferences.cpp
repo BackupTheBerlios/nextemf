@@ -653,6 +653,22 @@ uint8	CPreferences::LowIdRetries;
 uint8	CPreferences::LowIdRetried;
 #endif //Lowid retry
 //<==Lowid retry [cyrex2001]
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+bool	CPreferences::m_bEnableSpookyMode;
+bool	CPreferences::m_bReconSpooky;
+bool	CPreferences::m_bSpookyFailed;
+uint8	CPreferences::m_iSpookyFailedCount;
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+bool	CPreferences::m_bICMP; 
+uint8   CPreferences::m_uiPingTimeOut; 
+uint8   CPreferences::m_uiPingTTL; 
+bool    CPreferences::m_bCheckCon;
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 
 CPreferences::CPreferences()
 {
@@ -2384,6 +2400,22 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("ReconnectOnLowIdRetries"),LowIdRetries,_T("NextEMF"));
 #endif //Lowid retry
 //<==Lowid retry [cyrex2001]
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+	ini.WriteBool(_T("SpookyMode"),m_bEnableSpookyMode,_T("NextEMF"));
+	ini.WriteBool(_T("SpookyModeReconnect"),m_bReconSpooky,_T("NextEMF"));
+	ini.WriteBool(_T("SpookyModeFailedReconnect"),m_bSpookyFailed,_T("NextEMF"));
+	ini.WriteInt(_T("Spookyfailedconnect"),m_iSpookyFailedCount,_T("NextEMF"));
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+    ini.WriteBool(_T("CheckConnection"), m_bCheckCon,_T("NextEMF")); 
+    ini.WriteBool(_T("UseICMP"), m_bICMP,_T("NextEMF"));  
+    ini.WriteInt(_T("PingTimeOut"), m_uiPingTimeOut,_T("NextEMF")); 
+    ini.WriteInt(_T("PingTTL"), m_uiPingTTL,_T("NextEMF"));
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 }
 
 void CPreferences::SaveCats(){
@@ -3045,6 +3077,22 @@ void CPreferences::LoadPreferences()
 	LowIdRetries=ini.GetInt(_T("ReconnectOnLowIdRetries"),3, _T("NextEMF"));
 #endif //Lowid retry
 //<==Lowid retry [cyrex2001]
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+	m_bEnableSpookyMode = ini.GetBool(_T("SpookyMode"),false, _T("NextEMF"));
+	m_bReconSpooky = ini.GetBool(_T("SpookyModeReconnect"),false, _T("NextEMF"));
+	m_bSpookyFailed = ini.GetBool(_T("SpookyModeFailedReconnect"),false, _T("NextEMF"));
+	m_iSpookyFailedCount=ini.GetInt(_T("Spookyfailedconnect"),5, _T("NextEMF"));
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+	m_bCheckCon = ini.GetBool(_T("CheckConnection"), true, _T("NextEMF")); 
+    m_bICMP = ini.GetBool(_T("UseICMP"), true, _T("NextEMF"));
+    m_uiPingTimeOut = ini.GetInt(_T("PingTimeOut"), 5, _T("NextEMF")); 
+    m_uiPingTTL = ini.GetInt(_T("PingTTL"), 10, _T("NextEMF")); 
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 
 	LoadCats();
 	if (GetCatCount()==1)

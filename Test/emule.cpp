@@ -261,6 +261,11 @@ CemuleApp::CemuleApp(LPCTSTR lpszAppName)
 #endif //Modversion
 //<==Modversion [cyrex2001]
 
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+    conchecker.SetPreferences();
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 }
 
 
@@ -526,6 +531,11 @@ BOOL CemuleApp::InitInstance()
 	knownfiles = new CKnownFileList();
 	serverlist = new CServerList();
 	serverconnect = new CServerConnect(serverlist);
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+    serverconnect->SetConChecker(&conchecker);
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]	
 	sharedfiles = new CSharedFileList(serverconnect);
 	listensocket = new CListenSocket();
 	clientudp	= new CClientUDPSocket();
@@ -562,6 +572,11 @@ BOOL CemuleApp::InitInstance()
 //<== Crashreport [shadow2004]
 
 	thePerfLog.Startup();
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+    InitConChecker(); 
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 	dlg.DoModal();
 
 
@@ -961,6 +976,15 @@ void CemuleApp::OnlineSig() // Added By Bouc7
 				strBuff = serverconnect->GetCurrentServer()->GetListName();
 				file.Write(strBuff, strBuff.GetLength()); 
 			}
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+            else if(serverconnect->IsSpooky()) 
+               { 
+				   strBuff.Format("Spooky-Mode", serverconnect->GetGhostServer()->GetListName());
+                   file.Write(strBuff, strBuff.GetLength());  
+               }
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 			else{
 				strBuff = "Kademlia";
 				file.Write(strBuff,strBuff.GetLength()); 
@@ -980,6 +1004,15 @@ void CemuleApp::OnlineSig() // Added By Bouc7
 				itoa(serverconnect->GetCurrentServer()->GetPort(),buffer,10); 
 				file.Write(buffer,strlen(buffer));
 			}
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+            else if(serverconnect->IsSpooky()) 
+               { 
+                    itoa(serverconnect->GetGhostServer()->GetPort(), buffer, 10); 
+                    file.Write(buffer,strlen(buffer)); 
+               }
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 			else{
 				strBuff = "0";
 				file.Write(strBuff,strBuff.GetLength());
@@ -1171,10 +1204,23 @@ int CemuleApp::GetFileTypeSystemImageIdx(LPCTSTR pszFilePath, int iLength /* = -
 	return (int)vData;
 }
 
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+bool CemuleApp::IsConnected(bool bIncludeSpooky) 
+{ 
+    return (theApp.serverconnect->IsConnected(bIncludeSpooky) || Kademlia::CKademlia::isConnected()); 
+} 
+bool CemuleApp::IsOnlySpooky() 
+{ 
+return (theApp.serverconnect->IsSpooky() && !(Kademlia::CKademlia::isConnected() && !Kademlia::CKademlia::isFirewalled())); 
+} 
+#else
 bool CemuleApp::IsConnected()
 {
 	return (theApp.serverconnect->IsConnected() || Kademlia::CKademlia::isConnected());
 }
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 
 bool CemuleApp::IsPortchangeAllowed() {
 	return ( theApp.clientlist->GetClientCount()==0 && !IsConnected() );
@@ -1823,3 +1869,38 @@ if (!emuledlg)
 #endif //OPTIM
 //<==optimizer added [shadow2004]
 
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+void CemuleApp::InitConChecker(void) 
+{ 
+    if (!emuledlg) 
+        return; 
+
+    SetConnectionState(CONSTATE_NULL); 
+
+    AddLogLine(false,_T("***")); 
+    if (!thePrefs.GetCheckCon()) 
+        AddLogLine(false,_T("*** connection check not activated!")); 
+    else 
+    { 
+        AddLogLine(false,_T("*** connection check activated!")); 
+        DWORD state=conchecker.InitialCheck(); 
+        SetConnectionState(CONSTATE_ONLINE); 
+        if (state==CONSTATE_BLOCKED) 
+        { 
+            AddLogLine(false,_T("*** Passive Ping failed, check your Router/Firewall/Proxy...")); 
+            AddLogLine(false,_T("*** ICMP must be allowed to use connection check...")); 
+            AddLogLine(false,_T("*** connection check deactivated!")); 
+            thePrefs.SetCheckCon(false); 
+            if (theApp.serverconnect->GetCurrentMode()==MODE_SPOOKY) 
+                theApp.serverconnect->DisconnectSpooky(); 
+        } 
+        else if (state==CONSTATE_OFFLINE) 
+            AddLogLine(false,_T("*** receiving IP failed: spooky-mode not available!")); 
+        else if (state==CONSTATE_ONLINE) 
+            AddLogLine(false,_T("*** Current IP: %s (ID:%u)"),conchecker.GetIPString(),conchecker.GetIP()); 
+    } 
+    AddLogLine(false,_T("***")); 
+} 
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]

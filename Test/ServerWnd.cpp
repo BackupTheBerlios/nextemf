@@ -55,6 +55,11 @@ BEGIN_MESSAGE_MAP(CServerWnd, CResizableDialog)
 	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB3, OnTcnSelchangeTab3)
 	ON_NOTIFY(EN_LINK, IDC_SERVMSG, OnEnLinkServerBox)
 	ON_BN_CLICKED(IDC_ED2KCONNECT, OnBnConnect)
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+    ON_BN_CLICKED(IDC_SPOOKYCONNECT, OnSpookyconnect) 
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 	ON_WM_SYSCOLORCHANGE()
 	ON_BN_CLICKED(IDC_DD,OnDDClicked)
 	ON_WM_HELPINFO()
@@ -112,6 +117,11 @@ BOOL CServerWnd::OnInitDialog()
 	ReplaceRichEditCtrl(GetDlgItem(IDC_MYINFOLIST), this, GetDlgItem(IDC_SSTATIC)->GetFont());
 #endif
 	CResizableDialog::OnInitDialog();
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+//        m_cSpookyConnect.SetFlatEx(); 
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 
 	// using ES_NOHIDESEL is actually not needed, but it helps to get around a tricky window update problem!
 #define	LOG_PANE_RICHEDIT_STYTES WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_HSCROLL | ES_MULTILINE | ES_READONLY | ES_NOHIDESEL
@@ -209,6 +219,11 @@ BOOL CServerWnd::OnInitDialog()
 	AddAnchor(IDC_UPDATESERVERMETFROMURL, TOP_RIGHT);
 	AddAnchor(IDC_TAB3,MIDDLE_LEFT, BOTTOM_RIGHT);
 	AddAnchor(IDC_LOGRESET, MIDDLE_RIGHT); // avoid resizing GUI glitches with the tab control by adding this control as the last one (Z-order)
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+    AddAnchor(IDC_SPOOKYCONNECT, TOP_RIGHT);
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 	AddAnchor(IDC_ED2KCONNECT, TOP_RIGHT);
 	AddAnchor(IDC_DD, TOP_RIGHT);
 	// The resizing of those log controls (rich edit controls) works 'better' when added as last anchors (?)
@@ -285,6 +300,11 @@ void CServerWnd::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_SSTATIC6, m_ctrlUpdateServerFrm);
 	DDX_Control(pDX, IDC_MYINFO, m_ctrlMyInfo);
 	DDX_Control(pDX, IDC_TAB3, StatusSelector);
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+    DDX_Control(pDX, IDC_SPOOKYCONNECT, m_cSpookyConnect);
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 	DDX_Control(pDX, IDC_MYINFOLIST, m_MyInfo);
 }
 
@@ -353,6 +373,11 @@ void CServerWnd::Localize()
 
 	if (thePrefs.GetLanguageID() != m_uLangID){
 		m_uLangID = thePrefs.GetLanguageID();
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+        m_cSpookyConnect.SetWindowText(_T("Spooky Mode")); 
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 	    GetDlgItem(IDC_SERVLIST_TEXT)->SetWindowText(GetResString(IDS_SV_SERVERLIST));
 	    GetDlgItem(IDC_SSTATIC)->SetWindowText(GetResString(IDS_SV_NEWSERVER));
 	    m_ctrlNewServerFrm.SetText(GetResString(IDS_SV_NEWSERVER));
@@ -714,6 +739,33 @@ void CServerWnd::OnEnLinkServerBox(NMHDR *pNMHDR, LRESULT *pResult)
 	}
 }
 
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+void CServerWnd::UpdateControlsState(bool bSpookyOnly) 
+{ 
+    CString strLabel; 
+    //int iconid; 
+    if (!bSpookyOnly) 
+    { 
+    if (theApp.serverconnect->IsConnected()) 
+        strLabel = GetResString(IDS_MAIN_BTN_DISCONNECT); 
+    else if (theApp.serverconnect->IsConnecting()) 
+        strLabel = GetResString(IDS_MAIN_BTN_CANCEL); 
+    else 
+        strLabel = GetResString(IDS_MAIN_BTN_CONNECT); 
+    strLabel.Remove(_T('&')); 
+    GetDlgItem(IDC_ED2KCONNECT)->SetWindowText(strLabel); 
+    } 
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat]
+ m_cSpookyConnect.EnableWindow(theApp.conchecker.SpookyAvailable() && theApp.GetConnectionState()!=CONSTATE_OFFLINE);
+#else
+    m_cSpookyConnect.EnableWindow(thePrefs.EnableSpookyMode()); 
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]    
+	m_cSpookyConnect.SetIcon(theApp.serverconnect->IsSpooky()?_T("IDI_CANCEL"):_T("IDI_SPOOKY"), NULL);// WiZaRd
+} 
+#else 
 void CServerWnd::UpdateControlsState()
 {
 	CString strLabel;
@@ -726,6 +778,8 @@ void CServerWnd::UpdateControlsState()
 	strLabel.Remove(_T('&'));
 	GetDlgItem(IDC_ED2KCONNECT)->SetWindowText(strLabel);
 }
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 
 void CServerWnd::OnBnConnect()
 {
@@ -771,3 +825,15 @@ void CServerWnd::OnSvrTextChange()
 	GetDlgItem(IDC_ADDSERVER)->EnableWindow(GetDlgItem(IDC_IPADDRESS)->GetWindowTextLength());
 	GetDlgItem(IDC_UPDATESERVERMETFROMURL)->EnableWindow( GetDlgItem(IDC_SERVERMETURL)->GetWindowTextLength()>0 );
 }
+
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+void CServerWnd::OnSpookyconnect() 
+{ 
+if (!theApp.serverconnect->IsSpooky()) 
+    theApp.serverconnect->ConnectSpooky(); 
+else 
+    theApp.serverconnect->DisconnectSpooky(); 
+} 
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]

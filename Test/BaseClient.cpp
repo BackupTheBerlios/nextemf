@@ -1159,6 +1159,15 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 		}
 #endif
 	}
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+    else if (theApp.serverconnect->IsSpooky()) 
+        { 
+        dwIP = theApp.serverconnect->GetGhostServerIP(); 
+        nPort = theApp.serverconnect->GetGhostServerPort(); 
+        } 
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 	else{
 		nPort = 0;
 		dwIP = 0;

@@ -110,7 +110,7 @@ STYLE DS_LOCALEDIT | DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD |
     WS_SYSMENU
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    PUSHBUTTON      "Connect",IDC_ED2KCONNECT,420,16,80,13,BS_FLAT
+    PUSHBUTTON      "Connect",IDC_ED2KCONNECT,420,20,80,13,BS_FLAT
     GROUPBOX        "Add Server",IDC_SSTATIC,367,36,140,78,BS_FLAT
     LTEXT           "IP or Address:",IDC_SSTATIC4,373,47,76,8
     LTEXT           "Port:",IDC_SSTATIC7,466,47,27,8
@@ -126,11 +126,12 @@ BEGIN
     PUSHBUTTON      "v",IDC_DD,491,129,11,12,BS_CENTER | BS_FLAT
     PUSHBUTTON      "Update",IDC_UPDATESERVERMETFROMURL,445,145,57,13,
                     BS_FLAT
+    PUSHBUTTON      "Spooky Mode",IDC_SPOOKYCONNECT,420,3,80,13,BS_FLAT
     GROUPBOX        "My Info",IDC_MYINFO,367,164,140,122,BS_FLAT
     CONTROL         "",IDC_MYINFOLIST,"RichEdit20A",ES_MULTILINE | 
                     ES_READONLY | WS_VSCROLL | WS_HSCROLL | WS_TABSTOP,372,
                     176,130,106,WS_EX_STATICEDGE
-    ICON            "",IDC_SERVLST_ICO,5,5,20,20
+    ICON            "",IDC_SERVLST_ICO,5,5,21,20
     CONTROL         "Servers:",IDC_SERVLIST_TEXT,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,18,6,91,8
     CONTROL         "",IDC_SERVLIST,"SysListView32",LVS_OWNERDRAWFIXED | 
@@ -2387,6 +2388,8 @@ EXPORTALL               ICON                    "res\\ExportAll.ico"
 CLIENT_NEXTEMF          ICON                    "res\\client_nextemf.ico"
 HARDLIMIT               ICON                    "res\\HL.ico"
 DROP                    ICON                    "res\\DROP.ico"
+IDI_CANCEL              ICON                    "res\\cancel.ico"
+IDI_SPOOKY              ICON                    "res\\spooky.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -4478,6 +4481,20 @@ BEGIN
     IDS_CRASHRPT_DONE       "Crash report has been generated. Please send it at %s"
     IDS_CRASHRPT_AV         "CrashReporter is available and running."
     IDS_CRASHRPT_NOTAV      "CrashReporter not found in emule's directory. If you want to help us debug our mod, please download the CrashRpt.dll from %s."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SPOOKY              "Spooky-Mode"
+    IDS_ENABLE_SPOOKY_MODE  "Enable Spooky-Mode"
+    IDS_RECON_SPOOKY        "Reconnect on connection lost"
+    IDS_FAILED_SPOOKY       "Enable after server connection error"
+    IDS_FAILED_SPOOKY_COUNT "max. server connection retries"
+    IDS_CONCHECK            "Connection Check"
+    IDS_ENABLE_CON_CHECK    "Enable connection check"
+    IDS_ENABLE_ICMP         "Enable ICMP otherwise RAW"
+    IDS_PING_TIME_OUT       "Ping timeout (1-20sec.)"
+    IDS_PING_TLL            "Ping TLL (8-64)"
 END
 
 #endif    // Englisch (USA) resources

@@ -32,6 +32,12 @@
 #endif //Modversion
 //<==Modversion [cyrex2001]
 
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+#include ".\NextEMF\ConChecker.h"
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
+
 #define	DEFAULT_NICK		thePrefs.GetHomepageBaseURL()
 #define	DEFAULT_TCP_PORT	4662
 #define	DEFAULT_UDP_PORT	(DEFAULT_TCP_PORT+10)
@@ -80,6 +86,14 @@ class CemuleApp : public CWinApp
 {
 public:
 	CemuleApp(LPCTSTR lpszAppName = NULL);
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+WombatAgent::CConChecker    conchecker;
+	bool	InitAppLog();
+	void	InitConChecker(void);
+	BOOL	InitSockets(void);
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]	
 //==>optimizer added [shadow2004]
 #ifdef OPTIM
 	CPUInfo 		cpu;
@@ -165,7 +179,14 @@ public:
 	void		CreateBackwardDiagonalBrush();
 	void		CreateAllFonts();
 	bool		IsPortchangeAllowed();
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+    bool        IsConnected(bool bIncludeSpooky=true); 
+    bool        IsOnlySpooky(); 
+#else 
 	bool		IsConnected();
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 	bool		IsFirewalled();
 	bool		DoCallback( CUpDownClient *client );
 	uint32		GetID();
@@ -232,7 +253,10 @@ public:
 //<==optimizer added [shadow2004]
 //==> WINSOCK2 [cyrex2001]
 #ifdef WINSOCK2 //WINSOCK2
+protected:
+	bool	m_bWinSock2;
 public:
+	bool WinSock2() {return m_bWinSock2;}
 	WSADATA				m_wsaData;
 #endif //WINSOCK2
 //<== WINSOCK2 [cyrex2001]
@@ -244,6 +268,15 @@ public:
 	CString		m_strModLongVersion;
 #endif //Modversion
 //<==Modversion [cyrex2001]
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+public:
+	uint32        GetConnectionState()					{return m_nConnectionState;} 
+    void          SetConnectionState(uint32 state)		{m_nConnectionState=state;}
+private:
+		uint32          m_nConnectionState;
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 };
 
 extern CemuleApp theApp;

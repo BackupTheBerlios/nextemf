@@ -20,6 +20,11 @@
 #include "IconStatic.h"
 #include "RichEditCtrlX.h"
 #include "ClosableTabCtrl.h"
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+#include "btnst.h" 
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 
 class CHTRichEditCtrl;
 class CCustomAutoComplete;
@@ -39,7 +44,13 @@ public:
 	void SaveAllSettings();
 	BOOL SaveServerMetStrings();
 	void ShowNetworkInfo();
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+    void UpdateControlsState(bool bSpookyOnly=false); 
+#else 
 	void UpdateControlsState();
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 	void ResetHistory();
 	void PasteServerFromClipboard();
 	bool AddServer(uint16 uPort, CString strIP, CString strName = _T(""), bool bShowErrorMB = true);
@@ -55,6 +66,11 @@ public:
 	};
 
 	CServerListCtrl serverlistctrl;
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+    CButtonST        m_cSpookyConnect; 
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 	CHTRichEditCtrl* servermsgbox;
 	CHTRichEditCtrl* logbox;
 	CHTRichEditCtrl* debuglog;
@@ -71,6 +87,11 @@ protected:
 	afx_msg void OnBnClickedUpdateservermetfromurl();
 	afx_msg void OnBnClickedResetLog();
 	afx_msg void OnBnConnect();
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+    afx_msg void OnSpookyconnect();
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 	afx_msg void OnTcnSelchangeTab3(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnEnLinkServerBox(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnSysColorChange();

@@ -251,6 +251,11 @@ BEGIN_MESSAGE_MAP(CemuleDlg, CTrayDialog)
 	// quick-speed changer -- based on xrmb	
 
 	ON_REGISTERED_MESSAGE(UWM_ARE_YOU_EMULE, OnAreYouEmule)
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+    ON_REGISTERED_MESSAGE(UWM_CONCHECKER, OnConChecker)
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 	ON_BN_CLICKED(IDC_HOTMENU, OnBnClickedHotmenu)
 
 	///////////////////////////////////////////////////////////////////////////
@@ -610,6 +615,11 @@ void CALLBACK CemuleDlg::StartupTimer(HWND hwnd, UINT uiMsg, UINT idEvent, DWORD
 				break;
 			}
 			case 5:
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+                    theApp.conchecker.Start();
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]			
 				break;
 			default:
 				theApp.emuledlg->StopTimer();
@@ -1408,7 +1418,11 @@ void CemuleDlg::OnClose()
 	}
 
 	Kademlia::CKademlia::stop();
-
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+    theApp.conchecker.Stop(true);
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 	// try to wait untill the hashing thread notices that we are shutting down
 	CSingleLock sLock1(&theApp.hashing_mut); // only one filehash at a time
 	sLock1.Lock(2000);
@@ -2649,3 +2663,62 @@ LRESULT CemuleDlg::OnPeerCacheResponse(WPARAM wParam, LPARAM lParam)
 {
 	return theApp.m_pPeerCache->OnPeerCacheCheckResponse(wParam,lParam);
 }
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+LRESULT CemuleDlg::OnConChecker(WPARAM wParam, LPARAM lParam) 
+{ 
+    //WPARAM 0 = started 
+    //WPARAM 1 = stopped 
+    //WRAPAM 2 = status        LPARAM dwState 
+    if (m_hTimer !=0) 
+        return 0; 
+
+    CString str; 
+    switch(wParam) 
+    { 
+    case 2: //STATUS 
+        { 
+            switch(lParam) 
+            { 
+            case CONSTATE_ONLINE: 
+                if (theApp.GetConnectionState()!=CONSTATE_ONLINE) 
+                { 
+                    AddLogLine(true, _T("internet connection state: online")); 
+                    theApp.SetConnectionState(CONSTATE_ONLINE); 
+                } 
+                break; 
+            case CONSTATE_OFFLINE: 
+                if (theApp.GetConnectionState()!=CONSTATE_OFFLINE) 
+                { 
+                    AddLogLine(true, _T("internet connection state: offline")); 
+                    theApp.SetConnectionState(CONSTATE_OFFLINE); 
+                } 
+                break; 
+            case CONSTATE_BLOCKED: 
+                { 
+                    AddLogLine(false, _T("*** Passive Ping failed, check your Router/Firewall/Proxy...")); 
+                    AddLogLine(false, _T("*** ICMP must be allowed to use connection check...")); 
+                    AddLogLine(false, _T("*** connection check deactivated!")); 
+                    thePrefs.SetCheckCon(false); 
+                    if (!theApp.serverconnect->IsConnected() && thePrefs.Reconnect()) 
+                        theApp.serverconnect->ConnectToAnyServer(); 
+                    ShowConnectionState(); 
+                } 
+            default: 
+                AddLogLine(false, _T("internet connection state: unknown")); 
+                theApp.SetConnectionState(CONSTATE_NULL); 
+                break; 
+            } 
+        } 
+        break; 
+    case 0: //STARTED 
+        AddDebugLogLine(false, _T("*** internet connection check: started")); 
+        break; 
+    case 1: //STOPPED 
+        AddDebugLogLine(false, _T("*** internet connection check: stopped")); 
+        break; 
+    } 
+    return 0; 
+} 
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]

@@ -36,6 +36,11 @@
 #include <atlbase.h>
 #include "StringConversion.h"
 #include "shahashset.h"
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+#include "afxinet.h"
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -2610,3 +2615,123 @@ void RemAutoStart()
 	mKey.DeleteValue(strKeyName);
 	mKey.Close();
 }
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+int FindWebAddress(char* szAuthLine,DWORD &ip,CString *fullip) 
+{ 
+     DWORD dwRet = 0; 
+     BOOL bResult; 
+     struct in_addr inAddr; 
+     CString sAddr; 
+     DWORD dwIPNr; 
+     ip=0; 
+     //     We want to open a session to checkip.dyndns.org, because in the HTML source this site returns 
+     //     it reports our hostname and IP-number as the site sees us. 
+     CInternetSession *pSession = new CInternetSession(_T("GetIPNr"), 1, INTERNET_OPEN_TYPE_PRECONFIG); 
+     CHttpConnection* pConnection = pSession->GetHttpConnection(_T("checkip.dyndns.org")); 
+ 
+     CHttpFile* pFile = pConnection->OpenRequest(CHttpConnection::HTTP_VERB_GET, _T("/")); 
+ 
+     //     Do we have proxy information to send with this request ? 
+     if(szAuthLine[0])                    // Userid/ password specified? 
+          pFile->AddRequestHeaders(CString(szAuthLine), HTTP_ADDREQ_FLAG_ADD, strlen(szAuthLine));  
+ 
+     //     Now see if we can connect to checkip.dyndns.org 
+     try 
+     { 
+          bResult = pFile->SendRequest(NULL); 
+     }
+     catch (CInternetException* pEx) 
+     { 
+          pEx->Delete(); 
+          pFile->Close(); 
+          SAFE_DELETE(pFile); 
+          pConnection->Close(); 
+          SAFE_DELETE(pConnection); 
+          SAFE_DELETE(pSession); 
+          return 0;                              // Apparently no way to go to the Internet 
+     } 
+ 
+     pFile->QueryInfoStatusCode(dwRet);      
+ 
+     //     dwRet now contains HTTP return code.  
+     //     Return code in 2xx range means successful connection. 
+     //     Return code 407 means authorization is required. 
+     //     Request successful (returncode 200 through 299)? 
+     if(dwRet / 100 == 2) // Yes! 
+     { 
+//<<< eWombat [SMALLFIX] avoid buffer overrun due other html-layout as expected 
+          uint64 size = min(1024*8,pFile->GetLength()); 
+          char *p = new char[size+1]; 
+          char *q = p; 
+          UINT len=pFile->Read(p, size);               // Now read max. first 1024*8 bytes of HTML. Should be enough. 
+          p[len]=(char)0; 
+          dwIPNr = 0; 
+          while(len && *p) 
+//<<< eWombat [SMALLFIX] avoid buffer overrun due other html-layout as expected 
+          { 
+               int n = strcspn(p, "1234567890"); 
+               p += n; 
+               dwIPNr = GetValidIP(&p);     // Go find IP-number 
+               if(dwIPNr)  
+               {      
+                    // Found IP-number other than 0.0.0.0 ? 
+                    ip=(uint32)dwIPNr;           
+                    memmove (&inAddr, &dwIPNr, 4); 
+                    sAddr = inet_ntoa (inAddr); 
+                    if (fullip!=NULL) 
+                         fullip->Format(_T("%s"), sAddr);  
+               } 
+          } 
+          SAFE_DELETE(q); 
+     } 
+     pFile->Close(); 
+     SAFE_DELETE(pFile); 
+     pConnection->Close(); 
+     SAFE_DELETE(pConnection); 
+     SAFE_DELETE(pSession); 
+     return dwRet; 
+}
+long GetValidIP(char **szText)          //     Find a valid IP-number in szText 
+{ 
+     char *p, *s; 
+     int n; 
+ 
+     p = s = *szText; 
+ 
+     // An IP address can never be shorter than 7 characters 
+     n = strspn(p, "1234567890."); 
+     if (n < 7)  
+     { 
+          *szText = p + n; 
+          return 0; 
+     }
+// It should consist of 4 groups 
+     for (int i = 0; i < 4; i++)  
+     { 
+          // Each group should be a number of at least 1 and at most 3 digits 
+          n = strspn(p, "1234567890"); 
+          if ((n < 1) || (n > 3))  
+          { 
+               *szText = p + n; 
+               return 0; 
+          } 
+          p += n; 
+          // And separated by a period 
+          if (i == 3)  
+          { 
+               if (*p == '.')  
+               { 
+                    *szText = p + 1; 
+                    return 0; 
+               } 
+               else  
+                    *p = '\0'; 
+          } 
+          p++; 
+     } 
+     *szText = p; 
+     return inet_addr(s); 
+}
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]

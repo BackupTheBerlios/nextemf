@@ -145,6 +145,11 @@ protected:
 	afx_msg void OnEndSession(BOOL bEnding);
 	afx_msg LRESULT OnKickIdle(UINT nWhy, long lIdleCount);
 	afx_msg void OnShowWindow( BOOL bShow, UINT nStatus );
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+	afx_msg    LRESULT OnConChecker(WPARAM wParam, LPARAM lParam);
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 
 	// quick-speed changer -- based on xrmb
 	afx_msg void QuickSpeedUpload(UINT nID);

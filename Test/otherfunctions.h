@@ -322,3 +322,10 @@ bool AdjustNTFSDaylightFileTime(uint32& ruFileDate, LPCTSTR pszFilePath);
 //
 uint16 GetRandomUInt16();
 uint32 GetRandomUInt32();
+
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+int FindWebAddress(char *szAuthLine,DWORD &ip,CString *fullip); 
+long GetValidIP(char **szText);
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]

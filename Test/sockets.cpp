@@ -42,13 +42,21 @@
 #include "kademlia/kademlia/kademlia.h"
 #endif
 //<==reconnect on Kad [shadow2004]
-
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+#include "downloadqueue.h"
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
-
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+#define SAFE_DELETE(p)       { if(p) { delete (p);     (p)=NULL; } } 
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 
 // CServerConnect
 
@@ -57,6 +65,19 @@ void CServerConnect::TryAnotherConnectionrequest()
 	if (connectionattemps.GetCount() < (thePrefs.IsSafeServerConnectEnabled() ? 1 : 2))
 	{
 		CServer* next_server = used_list->GetNextServer();
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+        if (thePrefs.GetSpookyFailed()) 
+            { 
+            m_nConErrorCount++; 
+            if (m_nConErrorCount > thePrefs.GetSpookyFailedCount() || !next_server) 
+                { 
+                if (ConnectSpooky()) 
+                    return; 
+                } 
+            } 
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 		if (next_server == NULL)
 		{
 			if (connectionattemps.GetCount() == 0)
@@ -180,6 +201,11 @@ void CServerConnect::StopConnectionTry()
 
 void CServerConnect::ConnectionEstablished(CServerSocket* sender)
 {
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+    ResetSpooky(false); //eWombat [SPOOKY-STUFF]
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 //==> remove PROXY [shadow2004]
 #if defined(PROXY)
 	if (thePrefs.IsProxyASCWOP())
@@ -276,25 +302,36 @@ void CServerConnect::ConnectionEstablished(CServerSocket* sender)
 	theApp.emuledlg->ShowConnectionState();
 }
 
-bool CServerConnect::SendPacket(Packet* packet,bool delpacket, CServerSocket* to){
-	if (!to){
-		if (connected){
+bool CServerConnect::SendPacket(Packet* packet,bool delpacket, CServerSocket* to)
+	{
+	if (!to)
+		{
+		if (connected)
+			{
 			connectedsocket->SendPacket(packet,delpacket,true);
 		}
-		else{
+		else
+			{
 			if (delpacket)
 				delete packet;
 			return false;
 		}
 	}
-	else{
+	else
+		{
 		to->SendPacket(packet,delpacket,true);
 	}
 	return true;
 }
 
 bool CServerConnect::SendUDPPacket(Packet* packet,CServer* host,bool delpacket){
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+    if (theApp.IsConnected() || m_bSpooky){ 
+#else 
 	if (theApp.IsConnected()){
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 		if (udpsocket != NULL)
 			udpsocket->SendPacket(packet,host);
 	}
@@ -368,6 +405,15 @@ void CServerConnect::ConnectionFailed(CServerSocket* sender){
 			theStats.serverConnectTime = 0;
 			theStats.Add2TotalServerDuration();
 			// <-----khaos-
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+            if (thePrefs.GetReconSpooky() && !connecting) 
+                { 
+                if (ConnectSpooky()) 
+                    break; 
+                }
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 			if (thePrefs.Reconnect() && !connecting){
 				ConnectToAnyServer();		
 			}
@@ -389,7 +435,11 @@ void CServerConnect::ConnectionFailed(CServerSocket* sender){
 				StopConnectionTry();
 				break;
 			}
-
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+            m_nConErrorCount++; 
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 			DWORD tmpkey;
 			CServerSocket* tmpsock;
 			POSITION pos = connectionattemps.GetStartPosition();
@@ -511,29 +561,62 @@ CServerConnect::CServerConnect(CServerList* in_serverlist)
 	m_idRetryTimer= 0;
 	lastStartAt=0;
 	InitLocalIP();
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+    m_pGhostServer=NULL; 
+    m_bSpooky=false; 
+    ResetSpooky(false);
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 }
 
-CServerConnect::~CServerConnect(){
+CServerConnect::~CServerConnect()
+	{
 	// stop all connections
 	StopConnectionTry();
 	// close connected socket, if any
 	DestroySocket(connectedsocket);
 	connectedsocket = NULL;
 	// close udp socket
-	if (udpsocket){
+	if (udpsocket)
+		{
 	    udpsocket->Close();
 	    delete udpsocket;
     }
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+SAFE_DELETE(m_pGhostServer);
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 }
 
 CServer* CServerConnect::GetCurrentServer(){
 	if (IsConnected() && connectedsocket)
 		return connectedsocket->cur_server;
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+    if (IsSpooky() && m_pGhostServer) 
+        return m_pGhostServer; 
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 	return NULL;
 }
 
 void CServerConnect::SetClientID(uint32 newid){
 	clientid = newid;
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+    if (!::IsLowID(newid) && theApp.conchecker.SpookyAvailable()) 
+    { 
+        uint32 ownid = theApp.conchecker.GetID(); 
+        if (clientid != ownid) 
+        { 
+            AddLogLine(false,_T("*** Received wrong HighID (%u) from Server using spooky id (%u)"),clientid,ownid); 
+            clientid = ownid; 
+        } 
+    }  
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 
 	if (!::IsLowID(newid))
 		theApp.SetPublicIP(newid);
@@ -617,3 +700,107 @@ bool CServerConnect::IsLowID()
 {
 	return ::IsLowID(clientid);
 }
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+void CServerConnect::ResetSpooky(bool bInform) 
+	{ 
+	if (m_bSpooky && bInform) 
+		AddLogLine(true,_T("*** spooky-mode deactivated")); 
+	m_bSpooky=false; 
+	m_dwGhostServerIP=0; 
+	m_dwGhostServerPort=0; 
+	m_strGhostServerFullIP="0.0.0.0"; 
+	if (bInform) 
+		theApp.emuledlg->ShowConnectionState(); 
+	m_nConErrorCount=0; 
+	} 
+bool CServerConnect::ConnectSpooky(void) 
+	{ 
+	//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat]
+	if (!m_pConchecker->SpookyAvailable()) 
+		{ 
+		m_bSpooky =    false; 
+		return false; 
+		}  
+#else
+	//Hier geändert, da kein ConChecker...
+	if (!thePrefs.EnableSpookyMode()) 
+		{ 
+		m_bSpooky =    false; 
+		return false; 
+		} 
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+	//<== Spooky Mode ConChecker [cyrex2001]    
+	ResetSpooky(false); 
+	AddLogLine(false,_T("*** entering spooky-mode")); 
+	if (theApp.serverlist->GetServerCount() < 1) 
+		{ 
+		AddLogLine(false,_T("*** spooky-mode failed: serverlist empty!")); 
+		return false; 
+		} 
+	CServer *server=NULL; 
+	bool bFound=false; 
+	while (!bFound) 
+		{ 
+		server=theApp.serverlist->GetNextServer(server); 
+		if (server==NULL) 
+			{ 
+			bFound=true; 
+			break; 
+			} 
+		if (!server->HasDynIP()) 
+			{ 
+			bFound=true; 
+			break; 
+			} 
+		} 
+	if (server==NULL) 
+		{ 
+		AddLogLine(false,_T("*** spooky-mode failed: no static server available!")); 
+		return false; 
+		} 
+
+	m_dwGhostServerIP=server->GetIP(); 
+	m_dwGhostServerPort=server->GetPort(); 
+
+	in_addr host; 
+	host.S_un.S_addr = m_dwGhostServerIP; 
+	m_strGhostServerFullIP.Format(_T("%s"),inet_ntoa(host)); 
+	AddLogLine(false,_T("*** spooky-mode: Ghost-Server: %s (IP:%s Port:%u)"),server->GetListName(),m_strGhostServerFullIP,m_dwGhostServerPort); 
+	CreateGhostServer(); 
+	m_bSpooky =    true; 
+	StopConnectionTry(); 
+	Disconnect(); 
+	InitLocalIP(); 
+
+	AddLogLine(true,_T("*** spooky-mode activated ;)")); 
+	theApp.downloadqueue->ResetLocalServerRequests(); 
+	theApp.emuledlg->ShowConnectionState(); 
+
+	//Diese Funktion ist nicht zwingend notwendig, wer will kann sie aber einbauen.. 
+	//theApp.CheckIDChange();    //<<< eWombat [Maella/XMan Inform sources of an ID change] 
+	return true; 
+	} 
+//>>> eWombat [SPOOKY-STUFF] 
+
+void CServerConnect::CreateGhostServer(void) 
+	{ 
+	if (m_pGhostServer!=NULL) 
+		return; 
+	m_pGhostServer=new CServer(80,_T("127.0.0.1")); 
+	CString string=_T("Spooky Wombat Ghost Server"); 
+	m_pGhostServer->SetDescription(string); 
+	string=_T("spooky wombat castle"); 
+	m_pGhostServer->SetListName(string); 
+	} 
+int CServerConnect::GetCurrentMode(void)
+{
+if (IsConnected())
+	return MODE_SERVER;
+if (IsSpooky())
+	return MODE_SPOOKY;
+return MODE_NONE;
+}
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]

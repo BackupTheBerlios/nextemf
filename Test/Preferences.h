@@ -647,7 +647,22 @@ public:
 	static uint8	LowIdRetried;
 #endif //Lowid retry
 //<==Lowid retry [cyrex2001]
-
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+	static bool	m_bEnableSpookyMode;
+	static bool	m_bReconSpooky;
+	static bool	m_bSpookyFailed;
+	static uint8	m_iSpookyFailedCount;
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+    static  bool	m_bICMP; 
+	static	uint8	m_uiPingTimeOut;
+    static	uint8	m_uiPingTTL; 
+    static	bool	m_bCheckCon;
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 
 	enum Table
 	{
@@ -1455,6 +1470,27 @@ public:
 	static	uint8	GetLowIdRetries()	{return LowIdRetries;}
 #endif //Lowid retry
 //<==Lowid retry [cyrex2001]
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+	static	bool	EnableSpookyMode()						{return m_bEnableSpookyMode;}
+	static	bool	GetReconSpooky()						{return m_bReconSpooky;}
+	static	bool	GetSpookyFailed()						{return m_bSpookyFailed;}
+	static	void SetSpookyFailedCount(uint8 i)				{m_iSpookyFailedCount = i;}
+	uint8 GetSpookyFailedCount()							{return m_iSpookyFailedCount;}
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+    static     bool     GetICMP()							{return m_bICMP;} 
+    static     void     SetICMP(const bool &b)				{m_bICMP = b;} 
+ 	static     uint8    GetPingTimeout()					{return m_uiPingTimeOut;} 
+    static     void     SetPingTimeout(const uint8 &in)		{m_uiPingTimeOut = in;} 
+    static     uint8    GetPingTTL()						{return m_uiPingTTL;} 
+    static     void     SetPingTTL(const uint8 &in)			{m_uiPingTTL = in;} 
+    bool     GetCheckCon()                                  {return m_bCheckCon;} 
+    void     SetCheckCon(const bool &b)						{m_bCheckCon = b;}
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 
 protected:
 	static	CString appdir;

@@ -107,3 +107,10 @@ extern "C" int __cdecl __ascii_stricmp(const char * dst, const char * src);
 #define memzero(a, b) memzero_optimized(a, b)
 #endif //OPTIM
 //<==optimizer added [shadow2004]
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Fenderman - Spooky Mode [eWombat] 
+#define ARRSIZE(x)	(sizeof(x)/sizeof(x[0]))
+#define SAFE_DELETE(p)       { if(p) { delete (p);     (p)=NULL; } }
+#define SAFE_DELETE_ARRAY(p) { if(p) { delete[] (p);   (p)=NULL; } }
+#endif // Fenderman - Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
