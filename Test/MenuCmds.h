@@ -15,6 +15,7 @@
 #define CSP								//	Chunk Selection Patch
 #define SourceXT						//	Show full sources when searching over Server
 #define CLEANUP							//	Maella's Extended CleanUp
+#define GRAPHIX							//  Graphs In 'statistics' Window Fixed
 //<== Präprozessoren [shadow2004]
 
 ///////////////////////////////////////////////////////////////////////////////

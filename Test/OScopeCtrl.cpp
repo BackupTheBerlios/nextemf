@@ -172,7 +172,13 @@ END_MESSAGE_MAP()
 BOOL COScopeCtrl::Create(DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID) 
 {
 	BOOL result;
+//==>Graphs in Statistik Window fixed by apph [shadow2004]
+#ifdef GRAPHIX
+	static CString className = AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW, AfxGetApp()->LoadStandardCursor(IDC_ARROW), NULL, NULL);
+#else
 	static CString className = AfxRegisterWndClass(CS_HREDRAW | CS_VREDRAW);
+#endif
+//<==Graphs in Statistik Window fixed by apph [shadow2004]
 	
 	result = CWnd::CreateEx(WS_EX_CLIENTEDGE /*| WS_EX_STATICEDGE*/, 
 		className, NULL, dwStyle, 
@@ -722,6 +728,21 @@ void COScopeCtrl::DrawPoint()
 	{
 		if(m_nShiftPixels > 0)
 		{
+//==>Graphs in Statistik Window fixed by apph [shadow2004]
+#ifdef GRAPHIX
+			ScrollRect = m_rectPlot;
+			ScrollRect.right ++;
+			ScrollRect.left ++;
+			ScrollRect.bottom ++;
+			m_dcPlot.ScrollDC(-m_nShiftPixels, 0, (LPCRECT)&ScrollRect, (LPCRECT)&ScrollRect, NULL, NULL);
+
+			// establish a rectangle over the right side of plot
+			// which now needs to be cleaned up proir to adding the new point
+			rectCleanUp = m_rectPlot;
+			rectCleanUp.left  = rectCleanUp.right - m_nShiftPixels + 1;
+			rectCleanUp.right ++;
+			rectCleanUp.bottom ++;
+#else
 			ScrollRect.left = m_rectPlot.left;
 			ScrollRect.top  = m_rectPlot.top + 1;
 			ScrollRect.right  = m_rectPlot.left + m_nPlotWidth;
@@ -735,6 +756,8 @@ void COScopeCtrl::DrawPoint()
 			rectCleanUp = m_rectPlot;
 			rectCleanUp.left  = rectCleanUp.right - m_nShiftPixels + 1;
 			rectCleanUp.right ++;
+#endif
+//<==Graphs in Statistik Window fixed by apph [shadow2004]
 			// fill the cleanup area with the background
 			m_dcPlot.FillRect(rectCleanUp, &m_brushBack);
 		}
@@ -757,14 +780,26 @@ void COScopeCtrl::DrawPoint()
 				(long)((m_PlotData[iTrend].dPreviousPosition - m_PlotData[iTrend].dLowerLimit) * m_PlotData[iTrend].dVerticalFactor);
 			}
 			if(!m_PlotData[iTrend].BarsPlot)
+//==>Graphs in Statistik Window fixed by apph [shadow2004]
+#ifdef GRAPHIX
+				m_dcPlot.MoveTo(prevX, prevY);
+#else
 				m_dcPlot.MoveTo(prevX - 1, prevY);
+#endif
+//<==Graphs in Statistik Window fixed by apph [shadow2004]
 			// draw to the current point
 			currX = m_rectPlot.right;
 			currY = m_rectPlot.bottom -
 				(long)((m_PlotData[iTrend].dCurrentPosition - m_PlotData[iTrend].dLowerLimit) * m_PlotData[iTrend].dVerticalFactor);
 			m_PlotData[iTrend].nPrevY = currY;
 			if(m_PlotData[iTrend].BarsPlot)
+//==>Graphs in Statistik Window fixed by apph [shadow2004]
+#ifdef GRAPHIX
+				m_dcPlot.MoveTo(currX, m_rectPlot.bottom);
+#else
 				m_dcPlot.MoveTo(currX - 1, m_rectPlot.bottom);
+#endif
+//<==Graphs in Statistik Window fixed by apph [shadow2004]
 			else
 			{
 				if(abs(prevX - currX) > abs(prevY - currY))
@@ -776,7 +811,13 @@ void COScopeCtrl::DrawPoint()
 					currY += prevY - currY>0 ? -1 : 1;
 				}
 			}
+//==>Graphs in Statistik Window fixed by apph [shadow2004]
+#ifdef GRAPHIX
+			m_dcPlot.LineTo(currX, currY);
+#else
 			m_dcPlot.LineTo(currX - 1, currY);
+#endif
+//<==Graphs in Statistik Window fixed by apph [shadow2004]
 			//if(drawBars) || m_PlotData[iTrend].BarsPlot)
 			//	m_dcPlot.LineTo(currX - 1, m_rectPlot.bottom);
 			
@@ -791,9 +832,15 @@ void COScopeCtrl::DrawPoint()
 			// as opposed to always calling IntersectClipRect
 			if((prevY <= m_rectPlot.top) || (currY <= m_rectPlot.top))
 				m_dcPlot.FillRect(CRect(prevX - 1, m_rectClient.top, currX + 5, m_rectPlot.top + 1), &m_brushBack);
+//==>Graphs in Statistik Window fixed by apph [shadow2004]
+#ifdef GRAPHIX
+			if((prevY > m_rectPlot.bottom) || (currY > m_rectPlot.bottom))
+				m_dcPlot.FillRect(CRect(prevX - 1, m_rectPlot.bottom + 1, currX + 5, m_rectClient.bottom + 1), &m_brushBack);
+#else
 			if((prevY >= m_rectPlot.bottom) || (currY >= m_rectPlot.bottom))
 				m_dcPlot.FillRect(CRect(prevX - 1, m_rectPlot.bottom + 1, currX + 5, m_rectClient.bottom + 1), &m_brushBack);
-			
+#endif			
+//<==Graphs in Statistik Window fixed by apph [shadow2004]
 			// store the current point for connection to the next point
 			m_PlotData[iTrend].dPreviousPosition = m_PlotData[iTrend].dCurrentPosition;
 		}
