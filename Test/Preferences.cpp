@@ -2997,8 +2997,8 @@ void CPreferences::LoadPreferences()
 //==>Sivka-Ban [cyrex2001]
 #ifdef SIVKA_BAN
 	enableSivkaBan = ini.GetBool(_T("EnableSivkaBan"), true, _T("NextEMF"));
-	SivkaAskTime = ini.GetInt(_T("SivkaAskTime"), 10, _T("NextEMF"));
-	SivkaAskCounter = ini.GetInt(_T("SivkaAskCounter"), 7, _T("NextEMF"));
+	SivkaAskTime = ini.GetInt(_T("SivkaAskTime"), 7, _T("NextEMF"));
+	SivkaAskCounter = ini.GetInt(_T("SivkaAskCounter"), 5, _T("NextEMF"));
 	SivkaAskLog = ini.GetBool(_T("SivkaAskLog"),false, _T("NextEMF"));
 #endif //Sivka-Ban
 //<==Sivka-Ban [cyrex2001]

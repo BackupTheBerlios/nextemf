@@ -887,24 +887,6 @@ public:
 		sint8 m_downloadpriority;
 #endif //Xman askfordownload priority
 //<==Xman askfordownload priority [cyrex2001]
-
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_MAELLA
-public:
-	uint32 GetJitteredFileReaskTime() const {return m_jitteredFileReaskTime;} // range 27..31 min 
-
-private:
-	uint32 m_jitteredFileReaskTime;
-public:
-	uint32 GetNextTCPAskedTime() const {return m_dwNextTCPAskedTime;}
-	void   SetNextTCPAskedTime(uint32 time) {m_dwNextTCPAskedTime = time;}
-   // uint32 GetLastTCPAskedTime(CPartFile* pFile) {if (!pFile) return 0; return m_partStatusMap[pFile].dwStartUploadReqTime;}
-private:
-	uint32 m_dwLastUDPReaskTime;  // Last attempt to refresh the download session with UDP
-	uint32 m_dwNextTCPAskedTime;  // Time of the next refresh for the download session with TCP
-// Maella end
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 };
 //#pragma pack()
 //==>Anti-Leecher [cyrex2001]
