@@ -2089,12 +2089,6 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("IRCHelpChannel"), m_birchelpchannel);
 #endif //IRC
 //<== remove IRC [shadow2004]
-//==>AntiNickThief [shadow2004]
-	ini.WriteBool(_T("AntiNickThief"),m_bAntiNickThief ,_T("NextEMF"));
-//<==AntiNickThief [shadow2004]
-//==>defeat 0-filled partsenders [shadow2004]
-	ini.WriteBool(_T("EnableZeroFilledTest"), enableZeroFilledTest,_T("NextEMF"));
-//<==defeat 0-filled partsenders [shadow2004]
 	ini.WriteBool(_T("SmartIdCheck"), smartidcheck);
 	ini.WriteBool(_T("Verbose"), m_bVerbose);
 	ini.WriteBool(_T("DebugSourceExchange"), m_bDebugSourceExchange);	// do *not* use the according 'Get...' function here!
@@ -2327,7 +2321,12 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("Found"), m_bPeerCacheWasFound);
 	ini.WriteBool(_T("Enabled"), m_bPeerCacheEnabled);
 	ini.WriteInt(_T("PCPort"), m_nPeerCachePort);
-
+//==>AntiNickThief [shadow2004]
+	ini.WriteBool(_T("AntiNickThief"),m_bAntiNickThief ,_T("NextEMF"));
+//<==AntiNickThief [shadow2004]
+//==>defeat 0-filled partsenders [shadow2004]
+	ini.WriteBool(_T("EnableZeroFilledTest"), enableZeroFilledTest,_T("NextEMF"));
+//<==defeat 0-filled partsenders [shadow2004]
 //==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_SIVKA //Reask sourcen after ip change
 	ini.WriteBool(_T("ReaskSourceAfterIPChange"),isreaskSourceAfterIPChange,_T("NextEMF"));
