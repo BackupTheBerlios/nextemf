@@ -2223,7 +2223,7 @@
 #define IDC_CORRUPTED                   2786
 #define IDD_IPFILTER                    2786
 #define IDC_COMPRESSION                 2787
-#define IDD_ED2KLINK                    2788 // 7 [shadow2004] - BUG?
+#define IDD_ED2KLINK                    2788 
 #define IDC_TIMELEFTTEXT                2789
 #define IDC_TRANSFER_RATE_LABEL         2790
 #define IDC_RADIP                       2791
@@ -2390,7 +2390,9 @@
 #define IDS_ANTI_CREDITHACK                     61028
 //#endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
-
+#define IDS_DOWNLOAD_IN_BOLD            61029
+// Next default values for new objects
+// 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        1411

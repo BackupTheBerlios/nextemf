@@ -2316,7 +2316,11 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("EnableAntiCreditHack"), enableAntiCreditHack,_T("NextEMF"));
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
-
+//==> Bold Download-Status [shadow2004]
+#ifdef BOLDDL
+	ini.WriteBool(_T("EnableDownloadInBold"), m_bShowActiveDownloadsBold,_T("eMule"));
+#endif //BOLDDL
+//<== Bold Download-Status [shadow2004]
 }
 
 void CPreferences::SaveCats(){
@@ -2693,7 +2697,6 @@ void CPreferences::LoadPreferences()
 	if (m_iMaxChatHistory < 1)
 		m_iMaxChatHistory = 100;
 	maxmsgsessions=ini.GetInt(_T("MaxMessageSessions"),50);
-	m_bShowActiveDownloadsBold = ini.GetBool(_T("ShowActiveDownloadsBold"), false);
 
 	_stprintf(TxtEditor,_T("%s"),ini.GetString(_T("TxtEditor"),_T("notepad.exe")));
 	_stprintf(VideoPlayer,_T("%s"),ini.GetString(_T("VideoPlayer"),_T("")));
@@ -2943,6 +2946,11 @@ void CPreferences::LoadPreferences()
 	enableAntiCreditHack = ini.GetBool(_T("EnableAntiCreditHack"), true, _T("NextEMF"));
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
+//==> Bold Download-Status [shadow2004]
+#ifdef BOLDDL
+	m_bShowActiveDownloadsBold = ini.GetBool(_T("EnableDownloadInBold"), true);
+#endif //BOLDDL
+//<== Bold Download-Status [shadow2004]
 
 	LoadCats();
 	if (GetCatCount()==1)

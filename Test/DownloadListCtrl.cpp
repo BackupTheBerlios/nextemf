@@ -133,19 +133,22 @@ void CDownloadListCtrl::Init()
 	curTab=0;
 
 //==> Bold Download-Status [shadow2004]
-#ifdef NOTBOLDDL
+#ifdef BOLDDL
+	        CFont* pFont = GetFont();
+		LOGFONT lfFont = {0};
+		pFont->GetLogFont(&lfFont);
+		lfFont.lfWeight = FW_BOLD;
+		m_fontBold.CreateFontIndirect(&lfFont);
+#else //BOLDDL
 	if (thePrefs.GetShowActiveDownloadsBold())
 	{
-#else //NOTBOLDDL
 		CFont* pFont = GetFont();
 		LOGFONT lfFont = {0};
 		pFont->GetLogFont(&lfFont);
 		lfFont.lfWeight = FW_BOLD;
 		m_fontBold.CreateFontIndirect(&lfFont);
-#endif //NOTBOLDDL
-#ifdef NOTBOLDDL
 	}
-#endif //NOTBOLDDL
+#endif //BOLDDL
 //<== Bold Download-Status [shadow2004]
 
 	// Barry - Use preferred sort order from preferences

@@ -1531,7 +1531,7 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     LTEXT           "Static",IDC_WARNING,7,7,213,39
     CONTROL         "",IDC_PPG_NEXTEMF_OPTS,"SysTreeView32",TVS_DISABLEDRAGDROP | 
-                    WS_BORDER | WS_TABSTOP,7,46,213,145
+                    WS_BORDER | WS_TABSTOP,7,46,213,185
 END
 //#endif
 //<==Reask sourcen after ip change or Quickstart [cyrex2001]
@@ -4440,6 +4440,7 @@ BEGIN
     IDS_STATS_LEECHERCLIENTS "Leechers: %u"
     IDS_ANTI_LEECHER        "Enable anti-leechers control"
     IDS_ANTI_CREDITHACK     "Enable anti-credit hack control"
+    IDS_DOWNLOAD_IN_BOLD    "Show active downloads in bold"
 END
 //#endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
