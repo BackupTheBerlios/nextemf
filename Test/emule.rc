@@ -499,6 +499,8 @@ BEGIN
     PUSHBUTTON      "Test ports",IDC_STARTTEST,145,104,71,14,BS_FLAT
 END
 
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 IDD_IRC DIALOGEX 0, 35, 511, 289
 STYLE DS_LOCALEDIT | DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | 
     WS_SYSMENU
@@ -522,6 +524,8 @@ BEGIN
     CONTROL         "",IDC_SPLITTER_IRC,"Static",SS_BLACKFRAME | NOT 
                     WS_VISIBLE,110,5,4,278
 END
+#endif //IRC
+//<== remove IRC [shadow2004]
 
 IDD_FILES DIALOGEX 0, 35, 511, 289
 STYLE DS_LOCALEDIT | DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | 
@@ -601,6 +605,8 @@ BEGIN
                     BS_MULTILINE | BS_FLAT | WS_TABSTOP,22,138,191,22
 END
 
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 IDD_PPG_IRC DIALOGEX 0, 0, 229, 239
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "IRC"
@@ -627,6 +633,8 @@ BEGIN
     CONTROL         "",IDC_MISC_IRC,"SysTreeView32",TVS_DISABLEDRAGDROP | 
                     WS_BORDER | WS_TABSTOP,14,158,202,69
 END
+#endif //IRC
+//<== remove IRC [shadow2004]
 
 IDD_WIZARD DIALOGEX 0, 0, 263, 262
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
@@ -1700,6 +1708,8 @@ BEGIN
         HORZGUIDE, 237
     END
 
+//==> remove IRC [shadow2004]
+#if defined(IRC)
     IDD_IRC, DIALOG
     BEGIN
         LEFTMARGIN, 5
@@ -1707,6 +1717,8 @@ BEGIN
         TOPMARGIN, 4
         BOTTOMMARGIN, 286
     END
+#endif //IRC
+//<== remove IRC [shadow2004]
 
     IDD_FILES, DIALOG
     BEGIN
@@ -1732,6 +1744,8 @@ BEGIN
         BOTTOMMARGIN, 195
     END
 
+//==> remove IRC [shadow2004]
+#if defined(IRC)
     IDD_PPG_IRC, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -1742,6 +1756,8 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 232
     END
+#endif //IRC
+//<== remove IRC [shadow2004]
 
     IDD_WIZARD, DIALOG
     BEGIN
@@ -2130,7 +2146,11 @@ BN_DOWNLOAD             ICON                    "res\\transfer.ico"
 BN_FILES                ICON                    "res\\shared.ico"
 BN_STATISTICS           ICON                    "res\\bn_statistics.ico"
 BN_MESSAGES             ICON                    "res\\bn_messages.ico"
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 BN_IRC                  ICON                    "res\\IRC.ico"
+#endif //IRC
+//<== remove IRC [shadow2004]
 BN_PREFERENCES          ICON                    "res\\preferences.ico"
 BN_TOOLS                ICON                    "res\\tools.ICO"
 BN_HELP                 ICON                    "res\\help.ico"
@@ -2148,7 +2168,11 @@ PREF_CONNECTION         ICON                    "res\\Prefs_Connection.ico"
 PREF_FILES              ICON                    "res\\Prefs_Files.ico"
 PREF_FOLDERS            ICON                    "res\\Prefs_Folders.ico"
 PREF_GENERAL            ICON                    "res\\Prefs_General.ico"
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 PREF_IRC                ICON                    "res\\Prefs_IRC.ico"
+#endif //IRC
+//<== remove IRC [shadow2004]
 PREF_STATISTICS         ICON                    "res\\Prefs_Statistics.ico"
 PREF_PROXY              ICON                    "res\\Prefs_Proxy.ico"
 SEARCHPARAMS            ICON                    "res\\NormalSearch.ico"
@@ -2796,7 +2820,11 @@ END
 
 STRINGTABLE 
 BEGIN
+//==> remove IRC [shadow2004]
+#if defined(IRC)
     IDS_IRC                 "&IRC"
+#endif //IRC
+//<== remove IRC [shadow2004]
     IDS_SW_RESULT           "Search Results"
     IDS_SW_DOWNLOAD         "Download Selected"
     IDS_SV_SERVERLIST       "Servers"
@@ -3109,17 +3137,25 @@ BEGIN
     IDS_STATS_AVGLABEL      "Time for average graph: %i mins"
     IDS_GRAPHS              "Graphs"
     IDS_STREE               "Statistics tree"
+//==> remove IRC [shadow2004]
+#if defined(IRC)
     IDS_IRC_IGNOREQUITMESSAGE "Ignore Quit info messages"
-    IDS_STATSSETUPINFO      "Statistics"
     IDS_IRC_SOUNDEVENTS     "Play sound events"
+#endif //IRC
+//<== remove IRC [shadow2004]
+    IDS_STATSSETUPINFO      "Statistics"
 END
 
 STRINGTABLE 
 BEGIN
     IDS_ERR_NOTCONNECTEDKAD "You are currently not connected to the Kad network!"
+//==> remove IRC [shadow2004]
+#if defined(IRC)
     IDS_IRC_NOSFS           "No Shared File Selected"
-    IDS_RESETLABEL          "Auto completion (history function)"
     IDS_IRC_IGNOREMISCMESSAGE "Ignore Misc info messages"
+#endif //IRC
+//<== remove IRC [shadow2004]
+    IDS_RESETLABEL          "Auto completion (history function)"
     IDS_KNOWN               "Known"
     IDS_RAU_RUNNING         "eMule running as unprivileged user ""%s"""
     IDS_RAU_FAILED          "Failed to start eMule as unprivileged user ""eMule_Secure"". Keeping the privileges of the current user (""%ls"")."
@@ -3177,21 +3213,29 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PW_CON_CAPFRM       "Capacities"
+//==> remove IRC [shadow2004]
+#if defined(IRC)
     IDS_IRC_STATUSLOG       "Status Log"
     IDS_IRC_STATUS          "Status"
     IDS_IRC_PRIVATECHANSTART "* Private chat session started"
     IDS_IRC_SLAPMSG         "* %s slaps %s around with a large Babelfish!"
     IDS_IRC_PRIVMESSAGE     "Private Message"
+#endif //IRC
+//<== remove IRC [shadow2004]
     IDS_WEB_REMOTE_LINK_ADDED "Link added: "
     IDS_WEB_REMOTE_LINK_NOT_ADDED "Link not added. Wrong password."
     IDS_SOURCEEXCHANGESWAP  "Temporary Source Exchange Swap"
     IDS_DL_TRY_TO_GET_PREVIEW_PARTS "Download parts needed for preview first"
     IDS_PR_SHORT_LOW        "[Lo]"
+//==> remove IRC [shadow2004]
+#if defined(IRC)
     IDS_IRC_KICK            "Kick"
     IDS_IRC_SLAP            "Slap"
     IDS_IRC_JOIN            "Join"
     IDS_IRC_CHANNELLIST     "Channel list"
     IDS_IRC_CONNECT         "Connect"
+#endif //IRC
+//<== remove IRC [shadow2004]
 END
 
 STRINGTABLE 
@@ -3234,6 +3278,8 @@ BEGIN
     IDS_IRC_ADDTIMESTAMP    "Add timestamp to messages"
 END
 
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 STRINGTABLE 
 BEGIN
     IDS_IRC_USEFILTER       "Use channel list filter"
@@ -3253,6 +3299,8 @@ BEGIN
     IDS_SHARED              "Shared"
     IDS_DOWNLOADED          "Downloaded"
 END
+#endif //IRC
+//<== remove IRC [shadow2004]
 
 STRINGTABLE 
 BEGIN
@@ -3338,8 +3386,12 @@ END
 STRINGTABLE 
 BEGIN
     IDS_STATS_MAXDL         "max. Downloadrate: %s"
+//==> remove IRC [shadow2004]
+#if defined(IRC)
     IDS_IRC_EMULEPROTO_IGNOREADDFRIEND 
                             "Ignore eMule add friend protocol messages"
+#endif //IRC
+//<== remove IRC [shadow2004]
     IDS_PW_FASTSRVCON       "Safe Connect"
     IDS_SOURCELINKFAILED    "You need a HighID to create a valid sourcelink"
     IDS_CREATESOURCELINK    "Copy eD2K Links To Clipboard (&Source)"
@@ -3819,9 +3871,13 @@ BEGIN
     IDS_FD_TIMEDATE         "Dates"
     IDS_FILEINFORMATION     "File Information"
     IDS_STATS_FREESPACE     "Free Space on Tempdrive: "
+//==> remove IRC [shadow2004]
+#if defined(IRC)
     IDS_IRC_HELPCHANNEL     "Connect to help channel"
     IDS_IRC_HELPCHANNELPERFORM "/join #emule | /join #emule-english"
     IDS_IRC_ACCEPTLINKSFRIENDS "From friends only"
+#endif //IRC
+//<== remove IRC [shadow2004]
     IDS_COMPLSOURCES        "Complete Sources"
     IDS_CHECKNOENDTIME      "No end time"
     IDS_FD_DOWNLOADSTARTED  "Download added:"
@@ -4109,8 +4165,12 @@ BEGIN
     IDS_SOURCECLIENT        "Source Client"
     IDS_USERSIP             "Users IP"
     IDS_FEATURES            "Features"
+//==> remove IRC [shadow2004]
+#if defined(IRC)
     IDS_IRC_NEWNICK         "Select a IRC nick."
     IDS_IRC_NEWNICKDESC     "Should be one word less than 20 characters containing (A-Z, 0-9). It can be changed again in Preferences->Irc."
+#endif //IRC
+//<== remove IRC [shadow2004]
 END
 
 #endif    // Englisch (USA) resources
