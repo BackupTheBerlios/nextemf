@@ -37,9 +37,7 @@ protected:
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-	int m_bEnableAntiLeecher;
-	int m_bEnableAntiBadComunity;
-	int m_bEnableAntiGplBreaker;
+	int m_bEnableALF;
 	int m_bEnableAntiCreditHack;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
@@ -70,9 +68,7 @@ protected:
 	HTREEITEM m_htiAntiFakeRank;
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-	HTREEITEM m_htiEnableAntiLeecher;
-	HTREEITEM m_htiEnableAntiBadComunity;
-	HTREEITEM m_htiEnableAntiGplBreaker;
+	HTREEITEM m_htiEnableALF;
 	HTREEITEM m_htiEnableAntiCreditHack;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]

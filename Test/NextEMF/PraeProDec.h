@@ -27,6 +27,7 @@ include where following PreProzesses needed
 #define FIX01						//	some optimizations by WiZaRd (StatisticDlg.cpp)
 #define FIX02						//	Some Bug will crash while adding a friend by Libbnor & WiZaRd
 #define FIX03						//	Empty Username may crash eMule - now banned by WiZaRd
+#define FIX04						//	Save Preferences only if needed by WiZaRd
 #define COMP_SRC					//	A better way to show Complete Sources in Shared-Dialog by WiZaRd
 #define SEC_IDENT					//	A better way to show Secure Identification in Statistic by WiZaRd [shadow2004]
 //<== Präprozessoren [shadow2004]

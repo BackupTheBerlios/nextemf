@@ -44,10 +44,8 @@ CPPgNextEMF::CPPgNextEMF()
 	m_htiAntiFakeRank = NULL;
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-	m_htiEnableAntiLeecher = NULL;
-	m_htiEnableAntiBadComunity = NULL;
-	m_htiEnableAntiGplBreaker = NULL;
-        m_htiEnableAntiCreditHack = NULL;
+	m_htiEnableALF = NULL;
+    m_htiEnableAntiCreditHack = NULL;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 //==> Bold Download-Status [shadow2004]
@@ -127,10 +125,8 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		m_htiAntiFakeRank = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTI_FAKE_RANK), m_htiSecurity, m_bAntiFakeRank);
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-		m_htiEnableAntiLeecher = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTI_LEECHER), m_htiSecurity, m_bEnableAntiLeecher);
-		m_htiEnableAntiBadComunity = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTI_BADCOMUNITY), m_htiSecurity, m_bEnableAntiBadComunity);
-		m_htiEnableAntiGplBreaker = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTI_GPLBREAKER), m_htiSecurity, m_bEnableAntiGplBreaker);
-                m_htiEnableAntiCreditHack = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTI_CREDITHACK), m_htiSecurity, m_bEnableAntiCreditHack);
+		m_htiEnableALF = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ALF), m_htiSecurity, m_bEnableALF);
+        m_htiEnableAntiCreditHack = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTI_CREDITHACK), m_htiSecurity, m_bEnableAntiCreditHack);
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
 //==>AntiNickThief [shadow2004]
@@ -179,9 +175,7 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiAntiFakeRank, m_bAntiFakeRank);
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableAntiLeecher, m_bEnableAntiLeecher);
-	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableAntiBadComunity, m_bEnableAntiBadComunity);
-	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableAntiGplBreaker, m_bEnableAntiGplBreaker);
+	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableALF, m_bEnableALF);
     DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableAntiCreditHack, m_bEnableAntiCreditHack);
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
@@ -217,9 +211,7 @@ BOOL CPPgNextEMF::OnInitDialog()
 	m_bAntiFakeRank = thePrefs.AntiFakeRank;
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-	m_bEnableAntiLeecher = thePrefs.enableAntiLeecher;
-	m_bEnableAntiBadComunity = thePrefs.enableAntiBadComunity;
-	m_bEnableAntiGplBreaker = thePrefs.enableAntiGplBreaker;
+	m_bEnableALF = thePrefs.enableALF;
 	m_bEnableAntiCreditHack = thePrefs.enableAntiCreditHack;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
@@ -280,9 +272,7 @@ BOOL CPPgNextEMF::OnApply()
 	thePrefs.AntiFakeRank = m_bAntiFakeRank;
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-	thePrefs.enableAntiLeecher = m_bEnableAntiLeecher;
-	thePrefs.enableAntiBadComunity = m_bEnableAntiBadComunity;
-	thePrefs.enableAntiGplBreaker = m_bEnableAntiGplBreaker;
+	thePrefs.enableALF = m_bEnableALF;
 	thePrefs.enableAntiCreditHack = m_bEnableAntiCreditHack;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
@@ -342,9 +332,7 @@ void CPPgNextEMF::Localize(void)
 		if (m_htiAntiFakeRank) m_ctrlTreeOptions.SetItemText(m_htiAntiFakeRank, GetResString(IDS_ANTI_FAKE_RANK));
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-		if (m_htiEnableAntiLeecher) m_ctrlTreeOptions.SetItemText(m_htiEnableAntiLeecher, GetResString(IDS_ANTI_LEECHER));
-		if (m_htiEnableAntiBadComunity) m_ctrlTreeOptions.SetItemText(m_htiEnableAntiBadComunity, GetResString(IDS_ANTI_BADCOMUNITY));
-		if (m_htiEnableAntiGplBreaker) m_ctrlTreeOptions.SetItemText(m_htiEnableAntiGplBreaker, GetResString(IDS_ANTI_GPLBREAKER));
+		if (m_htiEnableALF) m_ctrlTreeOptions.SetItemText(m_htiEnableALF, GetResString(IDS_ALF));
 		if (m_htiEnableAntiCreditHack) m_ctrlTreeOptions.SetItemText(m_htiEnableAntiCreditHack, GetResString(IDS_ANTI_CREDITHACK));
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
@@ -389,9 +377,7 @@ void CPPgNextEMF::OnDestroy()
 //<==timestamp in chatwindow [shadow2004]
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
-	m_htiEnableAntiLeecher = NULL;
-	m_htiEnableAntiBadComunity = NULL;
-	m_htiEnableAntiGplBreaker = NULL;
+	m_htiEnableALF = NULL;
 	m_htiEnableAntiCreditHack = NULL;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]

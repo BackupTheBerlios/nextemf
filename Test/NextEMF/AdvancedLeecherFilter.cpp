@@ -536,7 +536,7 @@ LPCTSTR CUpDownClient::TestLeecher()
 			old_m_pszUsername = m_pszUsername;
 			return _T("Bad USERNAME detected");
 			}
-		}else if (IsLeecher())
+		}else if (IsALF())
 			return _T("Allready Known");
 		return NULL;
 	}
@@ -578,7 +578,7 @@ LPCTSTR CUpDownClient::BadComunity()
 			old_m_pszUsername1 = m_pszUsername;
 			return _T("Bad Comunity detected");
 			}
-		}else if (IsBadComunity())
+		}else if (IsALF())
 			return _T("Allready Known");
 		return NULL;
 	}
