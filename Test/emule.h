@@ -18,6 +18,11 @@
 #ifndef __AFXWIN_H__
 	#error include 'stdafx.h' before including this file for PCH
 #endif
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+#include ".\Optimizer\cpu_info.h"
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 #include "resource.h"
 
 
@@ -75,7 +80,11 @@ class CemuleApp : public CWinApp
 {
 public:
 	CemuleApp(LPCTSTR lpszAppName = NULL);
-
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	CPUInfo 		cpu;
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	// ZZ:UploadSpeedSense -->
     UploadBandwidthThrottler* uploadBandwidthThrottler;
     LastCommonRouteFinder* lastCommonRouteFinder;
@@ -215,7 +224,12 @@ protected:
 
 	uint32 m_dwPublicIP;
 	bool m_bAutoStart;
-
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+public:
+	void OptimizerInfo(void);
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 //==> WINSOCK2 [cyrex2001]
 #ifdef WINSOCK2 //WINSOCK2
 public:

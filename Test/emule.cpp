@@ -460,7 +460,11 @@ BOOL CemuleApp::InitInstance()
 	CemuleDlg dlg;
 	emuledlg = &dlg;
 	m_pMainWnd = &dlg;
-
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	OptimizerInfo();//Commander - Added: Optimizer [ePlus]
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	// Barry - Auto-take ed2k links
 	if (thePrefs.AutoTakeED2KLinks())
 		Ask4RegFix(false, true);
@@ -1736,3 +1740,37 @@ void CemuleApp::CreateBackwardDiagonalBrush()
 		VERIFY( m_brushBackwardDiagonal.CreateBrushIndirect(&logBrush) );
 	}
 }
+
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+void CemuleApp::OptimizerInfo(void)
+{
+if (!emuledlg)
+	return;
+	AddLogLine(false,_T("********Optimizer********"));
+	USES_CONVERSION;
+	AddLogLine(false,_T("%s"),A2CT(cpu.GetExtendedProcessorName()));
+	switch (get_cpu_type())
+	{
+		case 1:
+			AddLogLine(false, GetResString(IDS_FPU_ACTIVE));
+			break;
+		case 2:
+			AddLogLine(false, GetResString(IDS_MMX_ACTIVE));
+			break;
+		case 3:
+			AddLogLine(false, GetResString(IDS_AMD_ACTIVE));
+			break;
+		case 4:
+		case 5:
+			AddLogLine(false, GetResString(IDS_SSE_ACTIVE));
+			break;
+		default:
+			AddLogLine(false, GetResString(IDS_OPTIMIZATIONS_DISABLED));
+			break;
+	}
+	AddLogLine(false,_T("********Optimizer********"));
+}
+#endif //OPTIM
+//<==optimizer added [shadow2004]
+

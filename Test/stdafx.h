@@ -40,9 +40,15 @@
 #endif // _AFX_NO_AFXCMN_SUPPORT
 #include <afxole.h>			// MFC OLE support
 
+//==> WINSOCK2 [cyrex2001]
+#ifdef WINSOCK2
+#include ".\system\afxsock.h"	// MFC-Socket-Erweiterungen
+#else //WINSOCK2
 #include <winsock2.h>
 #define _WINSOCKAPI_
 #include <afxsock.h>		// MFC support for Windows Sockets
+#endif //WINSOCK2
+//<== WINSOCK2 [cyrex2001]
 #include <afxdhtml.h>
 
 #include <afxmt.h>			// MFC Multithreaded Extensions (Syncronization Objects)
@@ -91,3 +97,13 @@ typedef	CStringArray CStringAArray;
 #endif
 
 extern "C" int __cdecl __ascii_stricmp(const char * dst, const char * src);
+
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+#include <wchar.h>
+#include ".\Optimizer\Optimize.h"
+#define memcpy(a, b, c)	memcpy_optimized(a, b, c)
+#define memset(a, b, c) memset_optimized(a, b, c)
+#define memzero(a, b) memzero_optimized(a, b)
+#endif //OPTIM
+//<==optimizer added [shadow2004]

@@ -2498,7 +2498,7 @@ END
 
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// Englisch (USA) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 #ifdef _WIN32
@@ -4452,6 +4452,15 @@ BEGIN
 END
 //#endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
+
+STRINGTABLE 
+BEGIN
+    IDS_FPU_ACTIVE          "FPU optimizations active"
+    IDS_MMX_ACTIVE          "MMX optimizations active"
+    IDS_AMD_ACTIVE          "AMD optimizations active"
+    IDS_SSE_ACTIVE          "SSE optimizations active"
+    IDS_OPTIMIZATIONS_DISABLED "Otimizations disabled"
+END
 
 #endif    // Englisch (USA) resources
 /////////////////////////////////////////////////////////////////////////////

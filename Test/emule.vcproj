@@ -222,7 +222,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;ASKING;WINSOCK2;SourceXT;RSAIC_SIVKA;QUICKSTART;HARDLIMIT;MODVERSION;SIVKA_BAN;CACHEUP;ANTI_FAKE_RANK;BOLDPROZ;DLWND1;ANTI_LEECHER;USERHASH;BOLDDL"
+				PreprocessorDefinitions="WIN32;_WINDOWS;_DEBUG;ID3LIB_LINKOPTION=1;ASKING;WINSOCK2;SourceXT;RSAIC_SIVKA;QUICKSTART;HARDLIMIT;MODVERSION;SIVKA_BAN;CACHEUP;ANTI_FAKE_RANK;BOLDPROZ;DLWND1;ANTI_LEECHER;USERHASH;BOLDDL;OPTIM"
 				MinimalRebuild="TRUE"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="1"
@@ -294,7 +294,7 @@
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;ASKING;WINSOCK2;SourceXT;RSAIC_SIVKA;QUICKSTART;HARDLIMIT;MODVERSION;SIVKA_BAN;CACHEUP;ANTI_FAKE_RANK;BOLDPROZ;DLWND1;ANTI_LEECHER;USERHASH;BOLDDL"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;ASKING;WINSOCK2;SourceXT;RSAIC_SIVKA;QUICKSTART;HARDLIMIT;MODVERSION;SIVKA_BAN;CACHEUP;ANTI_FAKE_RANK;BOLDPROZ;DLWND1;ANTI_LEECHER;USERHASH;BOLDDL;OPTIM"
 				StringPooling="TRUE"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
@@ -2426,6 +2426,25 @@
 			</File>
 			<File
 				RelativePath=".\NextEMF\PPgNextEMF.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="Optimizer"
+			Filter="">
+			<File
+				RelativePath=".\Optimizer\cpu_info.cpp">
+			</File>
+			<File
+				RelativePath=".\Optimizer\cpu_info.h">
+			</File>
+			<File
+				RelativePath=".\Optimizer\memcpy_amd.cpp">
+			</File>
+			<File
+				RelativePath=".\Optimizer\memcpy_amd.h">
+			</File>
+			<File
+				RelativePath=".\Optimizer\optimize.h">
 			</File>
 		</Filter>
 	</Files>

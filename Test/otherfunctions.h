@@ -215,12 +215,17 @@ __inline void md4clr(const void* hash) {
 }
 
 // md4cpy -- replacement for memcpy(dst,src,16)
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+#else //OPTIM
 __inline void md4cpy(void* dst, const void* src) {
 	((uint32*)dst)[0] = ((uint32*)src)[0];
 	((uint32*)dst)[1] = ((uint32*)src)[1];
 	((uint32*)dst)[2] = ((uint32*)src)[2];
 	((uint32*)dst)[3] = ((uint32*)src)[3];
 }
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 
 #define	MAX_HASHSTR_SIZE (16*2+1)
 CString md4str(const uchar* hash);

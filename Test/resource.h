@@ -2344,6 +2344,11 @@
 #define IDS_QUICK_START_MAX_TIME			60008
 //#endif
 //<==Quickstart [cyrex2001]
+#define IDS_FPU_ACTIVE                  60100
+#define IDS_MMX_ACTIVE                  60101
+#define IDS_AMD_ACTIVE                  60102
+#define IDS_SSE_ACTIVE                  60103
+#define IDS_OPTIMIZATIONS_DISABLED      60104
 //==>Hardlimit [cyrex2001]
 //#if defined (HARDLIMIT)
 #define IDC_DEFAULT_BUTTON					61000
