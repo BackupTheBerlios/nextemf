@@ -3101,6 +3101,10 @@ void CPartFile::ResumeFile(bool resort)
 	}
 	paused = false;
 	stopped = false;
+#ifdef aHL
+	m_iUpdateHL = ::GetTickCount();
+#endif //aHL
+//<== AutoHardlimit [shadow2004]
 	SetActive(theApp.IsConnected());
 	lastsearchtime = 0;
     if(resort) {

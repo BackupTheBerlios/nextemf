@@ -168,7 +168,8 @@ void CServerConnect::StopConnectionTry()
 	}
 }
 
-void CServerConnect::ConnectionEstablished(CServerSocket* sender){
+void CServerConnect::ConnectionEstablished(CServerSocket* sender)
+{
 //==> remove PROXY [shadow2004]
 #if defined(PROXY)
 	if (thePrefs.IsProxyASCWOP())
