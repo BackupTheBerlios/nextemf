@@ -391,10 +391,22 @@ BOOL CemuleApp::InitInstance()
 
 //==> WINSOCK2 [cyrex2001]
 #ifdef WINSOCK2 //WINSOCK2
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero(&m_wsaData, sizeof(WSADATA));
+#else //OPTIM
 	memset(&m_wsaData, 0, sizeof(WSADATA));
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	if (!InitWinsock2(&m_wsaData)) //first try it with winsock2
 		{
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+		memzero(&m_wsaData, sizeof(WSADATA));
+#else //OPTIM
 		memset(&m_wsaData, 0, sizeof(WSADATA));
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 		if (!AfxSocketInit(&m_wsaData)) //then try it with old winsock
 #else //WINSOCK2
 	if (!AfxSocketInit())

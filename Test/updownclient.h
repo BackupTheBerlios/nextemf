@@ -831,8 +831,20 @@ public:
 	void SetLastAskedTime(DWORD in) { if(m_dwLastAskedTime>in) m_dwLastAskedTime-=in; else m_dwLastAskedTime=0; }
 	bool IsValidSource() const {return m_bValidSource;};
 	void SetValidSource(bool in){m_bValidSource = in;};
+//==>AntiNickThief [shadow2004]
+	bool        IsNickThief()    {return m_bNickThief;} 
+	CString     CreateAntiNickThiefTag(); 
+	CString     GetAntiNickThiefNick(); 
+//<==AntiNickThief [shadow2004]
+
 private:
 	bool m_bValidSource;
+//==>AntiNickThief [shadow2004]
+	bool        m_bNickThief; 
+	CString     m_sAntiNickThiefTag;
+//<==AntiNickThief [shadow2004]
+
+
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
 //==>Sivka-Ban [cyrex2001]

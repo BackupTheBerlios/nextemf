@@ -624,6 +624,9 @@ public:
 	static bool	enableAntiGplBreaker;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
+//==>AntiNickThief [shadow2004]
+	static bool		m_bAntiNickThief;
+//<==AntiNickThief [shadow2004]
 
 	enum Table
 	{

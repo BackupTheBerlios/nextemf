@@ -98,7 +98,13 @@ BOOL CPreviewThread::Run()
 		m_pPartfile->m_bPreviewing = false;
 
 		SHELLEXECUTEINFO SE;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+		memzero(&SE,sizeof(SE));
+#else //OPTIM
 		memset(&SE,0,sizeof(SE));
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 		SE.fMask = SEE_MASK_NOCLOSEPROCESS ;
 		SE.lpVerb = _T("open");
 		

@@ -290,7 +290,13 @@ BOOL CAsyncSocketExLayer::ConnectNext(LPCTSTR lpszHostAddress, UINT nHostPort)
 		ASSERT(lpszHostAddress != NULL);
 
 		SOCKADDR_IN sockAddr;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+		memzero(&sockAddr,sizeof(sockAddr));
+#else //OPTIM
 		memset(&sockAddr,0,sizeof(sockAddr));
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 
 		LPCSTR lpszAscii = T2CA(lpszHostAddress);
 		sockAddr.sin_family = AF_INET;
@@ -352,7 +358,13 @@ BOOL CAsyncSocketExLayer::GetPeerNameNext( CString& rPeerAddress, UINT& rPeerPor
 	{
 		ASSERT(m_pOwnerSocket);
 		SOCKADDR_IN sockAddr;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+		memzero(&sockAddr, sizeof(sockAddr));
+#else //OPTIM
 		memset(&sockAddr, 0, sizeof(sockAddr));
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 
 		int nSockAddrLen = sizeof(sockAddr);
 

@@ -2150,7 +2150,13 @@ CListenSocket::CListenSocket()
 	maxconnectionreached = 0;
 	m_OpenSocketsInterval = 0;
 	m_nPendingConnections = 0;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero(m_ConnectionStates, sizeof m_ConnectionStates);
+#else //OPTIM
 	memset(m_ConnectionStates, 0, sizeof m_ConnectionStates);
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	peakconnections = 0;
 	totalconnectionchecks = 0;
 	averageconnections = 0.0;
@@ -2308,7 +2314,13 @@ void CListenSocket::Process(){
 }
 
 void CListenSocket::RecalculateStats(){
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero(m_ConnectionStates,sizeof m_ConnectionStates);
+#else //OPTIM
 	memset(m_ConnectionStates,0,sizeof m_ConnectionStates);
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	for (POSITION pos = socket_list.GetHeadPosition(); pos != NULL; ){
 		switch (socket_list.GetNext(pos)->GetConState()){
 			case ES_DISCONNECTED:

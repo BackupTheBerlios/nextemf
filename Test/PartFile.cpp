@@ -243,7 +243,13 @@ void CPartFile::Init(){
 		m_bAutoDownPriority = false;
 	}
 	srcarevisible = false;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero(m_anStates,sizeof(m_anStates));
+#else //OPTIM
 	memset(m_anStates,0,sizeof(m_anStates));
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	datarate = 0;
 	hashsetneeded = true;
 	count = 0;
@@ -269,8 +275,15 @@ void CPartFile::Init(){
 	m_lastRefreshedDLDisplay = 0;
 	m_is_A4AF_auto=false;
 	m_bLocalSrcReqQueued = false;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero(src_stats,sizeof(src_stats));
+	memzero(net_stats,sizeof(net_stats));
+#else //OPTIM
 	memset(src_stats,0,sizeof(src_stats));
 	memset(net_stats,0,sizeof(net_stats));
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	m_nCompleteSourcesTime = time(NULL);
 	m_nCompleteSourcesCount = 0;
 	m_nCompleteSourcesCountLo = 0;
@@ -1917,9 +1930,17 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 	else
 	{
 		// -khaos--+++> Moved this here, otherwise we were setting our permanent variables to 0 every tenth of a second...
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+		memzero(m_anStates,sizeof(m_anStates));
+		memzero(src_stats,sizeof(src_stats));
+		memzero(net_stats,sizeof(net_stats));
+#else //OPTIM
 		memset(m_anStates,0,sizeof(m_anStates));
 		memset(src_stats,0,sizeof(src_stats));
 		memset(net_stats,0,sizeof(net_stats));
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 		uint16 nCountForState;
 
 		for (POSITION pos = srclist.GetHeadPosition(); pos != NULL;)
@@ -3050,7 +3071,13 @@ void CPartFile::StopFile(bool bCancel, bool resort)
 	stopped = true;
 	insufficient = false;
 	datarate = 0;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero(m_anStates,sizeof(m_anStates));
+#else //OPTIM
 	memset(m_anStates,0,sizeof(m_anStates));
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	if (!bCancel)
 		FlushBuffer(true);
     if(resort) {

@@ -104,6 +104,10 @@ CUpDownClient::CUpDownClient(CPartFile* in_reqfile, uint16 in_port, uint32 in_us
 
 void CUpDownClient::Init()
 {
+	//==>AntiNickThief [shadow2004]
+	m_bNickThief = false; 
+	m_sAntiNickThiefTag = CreateAntiNickThiefTag(); 
+	//<==AntiNickThief [shadow]
 	credits = 0;
 	m_nSumForAvgUpDataRate = 0;
 	m_bAddNextConnect = false;  // VQB Fix for LowID slots only on connection
@@ -371,6 +375,17 @@ bool CUpDownClient::ProcessHelloAnswer(char* pachPacket, uint32 nSize)
 	CSafeMemFile data((BYTE*)pachPacket,nSize);
 	bool bIsMule = ProcessHelloTypePacket(&data);
 	m_bHelloAnswerPending = false;
+//==>AntiNickThief [shadow2004]
+	if (thePrefs.m_bAntiNickThief){ 
+		if(IsNickThief()){ 
+				CString buffer;
+				buffer.Format(_T("[Anti-Nickthief] Client (%s) used a NickThief. Banned temporarly!"),m_pszUsername);
+				BanLeecher(buffer);
+				//Ban(_T("You were Banned!!! Banreason: Nickthief"));
+				//AddLogLine(true, _T("[Anti-Nickthief] Client (%s) used a NickThief. Banned temporarly!"),m_pszUsername); 
+		}
+	}
+//<==AntiNickThief [shadow2004]
 	return bIsMule;
 }
 
@@ -403,6 +418,12 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 		switch (temptag.GetNameID()){
 			case CT_NAME:
 				if (m_pszUsername){
+//==>AntiNickThief [shadow2004]
+					if(StrStr(m_pszUsername, m_sAntiNickThiefTag)) 
+						m_bNickThief = true; 
+                        else 
+						m_bNickThief = false; 
+//<==AntiNickThief [shadow2004]					
 					free(m_pszUsername);
 					m_pszUsername = NULL; // needed, in case 'nstrdup' fires an exception!!
 				}
@@ -992,6 +1013,15 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 	data->WriteUInt32(tagcount);
 
 	// eD2K Name
+//==>AntiNickThief [shadow2004]
+	if (thePrefs.m_bAntiNickThief)
+	{
+		CTag tagName(CT_NAME, GetAntiNickThiefNick());
+		tagName.WriteTagToFile(data, utf8strRaw);
+	}
+	else
+	{
+//<==AntiNickThief [shadow2004]
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
         CTag tagName(CT_NAME, (!IsGplBreaker()) ? thePrefs.GetUserNick() : _T("Please use a GPL-conform version of eMule") );
@@ -1002,6 +1032,9 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 	tagName.WriteTagToFile(data, utf8strRaw);
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
+//==>AntiNickThief [shadow2004]
+	}
+//<==AntiNickThief [shadow2004]
 
 	// eD2K Version
 	CTag tagVersion(CT_VERSION,EDONKEYVERSION);
@@ -2795,3 +2828,19 @@ switch(tag->GetNameID())
 }
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
+//==>AntiNickThief [shadow2004]
+CString CUpDownClient::CreateAntiNickThiefTag(){ 
+	CString ret; 
+	ret.Format(_T("[%c%c%c%c%c]"), rand()%2?rand()%25+65:rand()%25+97, rand()%2?rand()%25+65:rand()%25+97, rand()%2?rand()%25+65:rand()%25+97, rand()%2?rand()%25+65:rand()%25+97, rand()%2?rand()%25+65:rand()%25+97); 
+	return ret; 
+	} 
+
+CString CUpDownClient::GetAntiNickThiefNick(){ 
+	CString ret; 
+	if(m_sAntiNickThiefTag.IsEmpty()) 
+		CreateAntiNickThiefTag(); 
+
+		ret.Format(_T("%s %s"), thePrefs.GetUserNick(), m_sAntiNickThiefTag); 
+	return ret; 
+} 
+//<==AntiNickThief [shadow2004]

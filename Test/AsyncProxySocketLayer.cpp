@@ -295,7 +295,14 @@ void CAsyncProxySocketLayer::OnReceive(int nErrorCode)
 					if (!ip)
 					{ //No IP return, use the IP of the proxy server
 						SOCKADDR SockAddr;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+						memzero(&SockAddr,sizeof(SockAddr));
+#else //OPTIM
 						memset(&SockAddr,0,sizeof(SockAddr));
+#endif //OPTIM
+//<==optimizer added [shadow2004]
+						
 						int SockAddrLen=sizeof(SockAddr);
 						if (GetPeerName(&SockAddr, &SockAddrLen ))
 						{
@@ -460,7 +467,13 @@ void CAsyncProxySocketLayer::OnReceive(int nErrorCode)
 			USES_CONVERSION;
 			LPCSTR lpszAsciiHost = m_pProxyPeerHost ? T2A(m_pProxyPeerHost) : "";
 			char *command=new char[10+strlen(lpszAsciiHost)+1];
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+			memzero(command,10+strlen(lpszAsciiHost)+1);
+#else //OPTIM
 			memset(command,0,10+strlen(lpszAsciiHost)+1);
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 			command[0]=5;
 			command[1]=(m_nProxyOpID==PROXYOP_CONNECT)?1:2;
 			command[2]=0;
@@ -533,7 +546,13 @@ void CAsyncProxySocketLayer::OnReceive(int nErrorCode)
 				USES_CONVERSION;
 				LPCSTR lpszAsciiHost = m_pProxyPeerHost ? T2A(m_pProxyPeerHost) : "";
 				char *command=new char[10+strlen(lpszAsciiHost)+1];
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+				memzero(command,10+strlen(lpszAsciiHost)+1);
+#else //OPTIM
 				memset(command,0,10+strlen(lpszAsciiHost)+1);
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 				command[0]=5;
 				command[1]=(m_nProxyOpID==PROXYOP_CONNECT)?1:2;
 				command[2]=0;
@@ -729,7 +748,13 @@ void CAsyncProxySocketLayer::OnReceive(int nErrorCode)
 				strcpy(m_pStrBuffer + strlen(tmp), buffer);
 				delete [] tmp;
 			}
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+				memzero(buffer, 9);
+#else //OPTIM
 			memset(buffer, 0, 9);
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 			const char start[] = "HTTP/";
 			if (memcmp(start, m_pStrBuffer, (strlen(start)>strlen(m_pStrBuffer)) ? strlen(m_pStrBuffer) : strlen(start)))
 			{
@@ -781,7 +806,13 @@ BOOL CAsyncProxySocketLayer::Connect( LPCTSTR lpszHostAddress, UINT nHostPort )
 	ASSERT(lpszHostAddress != NULL);
 
 	SOCKADDR_IN sockAddr;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero(&sockAddr,sizeof(sockAddr));
+#else //OPTIM
 	memset(&sockAddr,0,sizeof(sockAddr));
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 
 	LPCSTR lpszAscii = T2A((LPTSTR)lpszHostAddress);
 	sockAddr.sin_family = AF_INET;
@@ -911,7 +942,13 @@ void CAsyncProxySocketLayer::OnConnect(int nErrorCode)
 			USES_CONVERSION;
 			LPCSTR lpszAscii = m_pProxyPeerHost ? T2A(m_pProxyPeerHost) : "";
 			char *command=new char [9+strlen(lpszAscii)+1];
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+			memzero(command,9+strlen(lpszAscii)+1);
+#else //OPTIM
 			memset(command,0,9+strlen(lpszAscii)+1);
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 			int len=9;
 			command[0]=4;
 			command[1]=(m_nProxyOpID==PROXYOP_CONNECT)?1:2; //CONNECT or BIND request
@@ -961,7 +998,13 @@ void CAsyncProxySocketLayer::OnConnect(int nErrorCode)
 		{ //SOCKS5 proxy
 			//Send initialization request
 			unsigned char command[10];
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+			memzero(command,10);
+#else //OPTIM
 			memset(command,0,10);
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 			command[0]=5;
 			//CAsyncProxySocketLayer supports to logon types: No logon and
 			//cleartext username/password (if set) logon

@@ -249,7 +249,13 @@ HTREEITEM CDirectoryTreeCtrl::AddChildItem(HTREEITEM hRoot, CString strText)
 		strPath += _T("\\");
 	CString strDir = strPath + strText;
 	TV_INSERTSTRUCT itInsert;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero(&itInsert, sizeof(itInsert));
+#else //OPTIM
 	memset(&itInsert, 0, sizeof(itInsert));
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	
 	// START: changed by FoRcHa /////
 	WORD wWinVer = thePrefs.GetWindowsVersion();

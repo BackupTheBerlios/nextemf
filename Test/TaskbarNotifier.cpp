@@ -633,7 +633,13 @@ HRGN CTaskbarNotifier::CreateRgnFromBitmap(HBITMAP hBmp, COLORREF color)
 
 	// allocate memory for region data
 	RGNDATAHEADER* pRgnData = (RGNDATAHEADER*)new BYTE[ RDHDR + ++cBlocks * MAXBUF * sizeof(RECT) ];
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero( pRgnData, RDHDR + cBlocks * MAXBUF * sizeof(RECT) );
+#else //OPTIM
 	memset( pRgnData, 0, RDHDR + cBlocks * MAXBUF * sizeof(RECT) );
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	// fill it by default
 	pRgnData->dwSize	= RDHDR;
 	pRgnData->iType		= RDH_RECTANGLES;

@@ -181,7 +181,13 @@ BOOL CSharedFileDetailsSheet::OnInitDialog()
 IMPLEMENT_DYNAMIC(CSharedFilesCtrl, CMuleListCtrl)
 CSharedFilesCtrl::CSharedFilesCtrl()
 {
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero(&sortstat, sizeof(sortstat));
+#else //OPTIM
 	memset(&sortstat, 0, sizeof(sortstat));
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	nAICHHashing = 0;
 }
 
@@ -758,7 +764,13 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 						else{
 							// delete to recycle bin :(
 							TCHAR todel[MAX_PATH+1];
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+							memzero(todel, sizeof todel);
+#else //OPTIM
 							memset(todel, 0, sizeof todel);
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 							_tcsncpy(todel, myfile->GetFilePath(), ARRSIZE(todel)-2);
 
 							SHFILEOPSTRUCT fp = {0};

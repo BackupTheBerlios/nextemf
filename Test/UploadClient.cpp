@@ -411,7 +411,13 @@ void CUpDownClient::ProcessExtendedInfo(CSafeMemFile* data, CKnownFile* tempreqf
 	{
 		m_nUpPartCount = tempreqfile->GetPartCount();
 		m_abyUpPartStatus = new uint8[m_nUpPartCount];
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+		memzero(m_abyUpPartStatus,m_nUpPartCount);
+#else //OPTIM
 		memset(m_abyUpPartStatus,0,m_nUpPartCount);
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	}
 	else
 	{
@@ -778,7 +784,13 @@ void CUpDownClient::SendRankingInfo(){
 		return;
 	Packet* packet = new Packet(OP_QUEUERANKING,12,OP_EMULEPROT);
 	PokeUInt16(packet->pBuffer+0, nRank);
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero(packet->pBuffer+2, 10);
+#else //OPTIM
 	memset(packet->pBuffer+2, 0, 10);
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	if (thePrefs.GetDebugClientTCPLevel() > 0)
 		DebugSend("OP__QueueRank", this);
 	theStats.AddUpDataOverheadFileRequest(packet->size);

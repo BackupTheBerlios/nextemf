@@ -50,7 +50,13 @@ CClientCredits::CClientCredits(CreditStruct* in_credits)
 CClientCredits::CClientCredits(const uchar* key)
 {
 	m_pCredits = new CreditStruct;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero(m_pCredits, sizeof(CreditStruct));
+#else //OPTIM
 	memset(m_pCredits, 0, sizeof(CreditStruct));
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	md4cpy(m_pCredits->abyKey, key);
 	InitalizeIdent();
 	m_dwUnSecureWaitTime = ::GetTickCount();
@@ -230,7 +236,13 @@ void CClientCreditsList::LoadList()
 		uint32 cDeleted = 0;
 		for (UINT i = 0; i < count; i++){
 			CreditStruct* newcstruct = new CreditStruct;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+			memzero(newcstruct, sizeof(CreditStruct));
+#else //OPTIM
 			memset(newcstruct, 0, sizeof(CreditStruct));
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 			if (version == CREDITFILE_VERSION_29)
 				file.Read(newcstruct, sizeof(CreditStruct_29a));
 			else
@@ -343,7 +355,13 @@ void CClientCreditsList::Process()
 
 void CClientCredits::InitalizeIdent(){
 	if (m_pCredits->nKeySize == 0 ){
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+		memzero(m_abyPublicKey,80); // for debugging
+#else //OPTIM
 		memset(m_abyPublicKey,0,80); // for debugging
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 		m_nPublicKeyLen = 0;
 		IdentState = IS_NOTAVAILABLE;
 	}
@@ -402,7 +420,13 @@ using namespace CryptoPP;
 
 void CClientCreditsList::InitalizeCrypting(){
 	m_nMyPublicKeyLen = 0;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero(m_abyMyPublicKey,80); // not really needed; better for debugging tho
+#else //OPTIM
 	memset(m_abyMyPublicKey,0,80); // not really needed; better for debugging tho
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	m_pSignkey = NULL;
 	if (!thePrefs.IsSecureIdentEnabled())
 		return;
@@ -594,7 +618,13 @@ bool CClientCreditsList::Debug_CheckCrypting(){
 	uint32 challenge = rand();
 	// create fake client which pretends to be this emule
 	CreditStruct* newcstruct = new CreditStruct;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero(newcstruct, sizeof(CreditStruct));
+#else //OPTIM
 	memset(newcstruct, 0, sizeof(CreditStruct));
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	CClientCredits* newcredits = new CClientCredits(newcstruct);
 	newcredits->SetSecureIdent(m_abyMyPublicKey,m_nMyPublicKeyLen);
 	newcredits->m_dwCryptRndChallengeFrom = challenge;
@@ -606,7 +636,13 @@ bool CClientCreditsList::Debug_CheckCrypting(){
 
 	// next fake client uses the random created public key
 	CreditStruct* newcstruct2 = new CreditStruct;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero(newcstruct2, sizeof(CreditStruct));
+#else //OPTIM
 	memset(newcstruct2, 0, sizeof(CreditStruct));
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	CClientCredits* newcredits2 = new CClientCredits(newcstruct2);
 	newcredits2->m_dwCryptRndChallengeFor = challenge;
 

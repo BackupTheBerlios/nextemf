@@ -54,12 +54,23 @@ void CPPgDebug::ClearAllMembers()
 	m_bInitializedTreeOpts = false;
 	m_htiServer = NULL;
 	m_htiClient = NULL;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero(m_cb, sizeof m_cb);
+	memzero(m_lv, sizeof m_lv);
+	memzero(m_checks, sizeof m_checks);
+	memzero(m_levels, sizeof m_levels);
+	memzero(m_htiInteger, sizeof m_htiInteger);
+	memzero(m_iValInteger, sizeof m_iValInteger);
+#else //OPTIM
 	memset(m_cb, 0, sizeof m_cb);
 	memset(m_lv, 0, sizeof m_lv);
 	memset(m_checks, 0, sizeof m_checks);
 	memset(m_levels, 0, sizeof m_levels);
 	memset(m_htiInteger, 0, sizeof m_htiInteger);
 	memset(m_iValInteger, 0, sizeof m_iValInteger);
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 }
 
 void CPPgDebug::DoDataExchange(CDataExchange* pDX)

@@ -689,7 +689,13 @@ bool DecodeBase16(const TCHAR *base16Buffer, unsigned int base16BufLen, byte *bu
 	unsigned int uDecodeLengthBase16 = DecodeLengthBase16(base16BufLen);
 	if (uDecodeLengthBase16 > bufflen)
 		return false;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero(buffer, uDecodeLengthBase16);
+#else //OPTIM
     memset(buffer, 0, uDecodeLengthBase16);
+#endif //OPTIM
+//<==optimizer added [shadow2004]
   
     for(unsigned int i = 0; i < base16BufLen; i++) {
 		int lookup = toupper(base16Buffer[i]) - '0';
@@ -1018,7 +1024,13 @@ CStringA md4strA(const uchar* hash)
 
 bool strmd4(const char* pszHash, uchar* hash)
 {
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero(hash, 16);
+#else //OPTIM
 	memset(hash, 0, 16);
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	for (int i = 0; i < 16; i++)
 	{
 		char byte[3];
@@ -1036,7 +1048,13 @@ bool strmd4(const char* pszHash, uchar* hash)
 
 bool strmd4(const CString& rstr, uchar* hash)
 {
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero(hash, 16);
+#else //OPTIM
 	memset(hash, 0, 16);
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	if (rstr.GetLength() != 16*2)
 		return false;
 	for (int i = 0; i < 16; i++)

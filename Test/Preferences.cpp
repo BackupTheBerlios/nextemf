@@ -634,6 +634,10 @@ bool	CPreferences::enableAntiBadComunity;
 bool	CPreferences::enableAntiGplBreaker;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
+//==>AntiNickThief [shadow2004]
+bool	CPreferences::m_bAntiNickThief;
+//<==AntiNickThief [shadow2004]
+
 
 CPreferences::CPreferences()
 {
@@ -652,7 +656,13 @@ void CPreferences::Init()
 	srand((uint32)time(0)); // we need random numbers sometimes
 
 	prefsExt = new Preferences_Ext_Struct;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero(prefsExt, sizeof *prefsExt);
+#else //OPTIM
 	memset(prefsExt, 0, sizeof *prefsExt);
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 
 	//get application start directory
 	TCHAR buffer[490];
@@ -724,7 +734,13 @@ void CPreferences::Init()
 			if (prefsExt->version>17) {// v0.20b+
 				Preferences_Import20b_Struct* prefsImport20b;
 				prefsImport20b=new Preferences_Import20b_Struct;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+				memzero(prefsImport20b,sizeof(Preferences_Import20b_Struct));
+#else //OPTIM
 				memset(prefsImport20b,0,sizeof(Preferences_Import20b_Struct));
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 				fseek(preffile,0,0);
 				fread(prefsImport20b,sizeof(Preferences_Import20b_Struct),1,preffile);
 
@@ -739,7 +755,13 @@ void CPreferences::Init()
 			} else if (prefsExt->version>7) { // v0.20a
 				Preferences_Import20a_Struct* prefsImport20a;
 				prefsImport20a=new Preferences_Import20a_Struct;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+				memzero(prefsImport20a,sizeof(Preferences_Import20a_Struct));
+#else //OPTIM
 				memset(prefsImport20a,0,sizeof(Preferences_Import20a_Struct));
+#endif //OPTIM
+//<==optimizer added [shadow2004]				
 				fseek(preffile,0,0);
 				fread(prefsImport20a,sizeof(Preferences_Import20a_Struct),1,preffile);
 
@@ -754,7 +776,13 @@ void CPreferences::Init()
 			} else {	//v0.19c-
 				Preferences_Import19c_Struct* prefsImport19c;
 				prefsImport19c=new Preferences_Import19c_Struct;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+				memzero(prefsImport19c,sizeof(Preferences_Import19c_Struct));
+#else //OPTIM
 				memset(prefsImport19c,0,sizeof(Preferences_Import19c_Struct));
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 
 				fseek(preffile,0,0);
 				fread(prefsImport19c,sizeof(Preferences_Import19c_Struct),1,preffile);
@@ -2049,6 +2077,9 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("IRCHelpChannel"), m_birchelpchannel);
 #endif //IRC
 //<== remove IRC [shadow2004]
+//==>AntiNickThief [shadow2004]
+	ini.WriteBool(_T("AntiNickThief"),m_bAntiNickThief ,_T("eMule"));
+//<==AntiNickThief [shadow2004]
 	ini.WriteBool(_T("SmartIdCheck"), smartidcheck);
 	ini.WriteBool(_T("Verbose"), m_bVerbose);
 	ini.WriteBool(_T("DebugSourceExchange"), m_bDebugSourceExchange);	// do *not* use the according 'Get...' function here!
@@ -2318,7 +2349,7 @@ void CPreferences::SavePreferences()
 //<==Anti-Leecher [cyrex2001]
 //==> Bold Download-Status [shadow2004]
 #ifdef BOLDDL
-	ini.WriteBool(_T("EnableDownloadInBold"), m_bShowActiveDownloadsBold,_T("eMule"));
+	ini.WriteBool(_T("EnableDownloadInBold"), m_bShowActiveDownloadsBold,_T("NextEMF"));
 #endif //BOLDDL
 //<== Bold Download-Status [shadow2004]
 }
@@ -2802,7 +2833,13 @@ void CPreferences::LoadPreferences()
 	if (ini.GetBinary(_T("HyperTextFont"), &pData, &uSize) && uSize == sizeof m_lfHyperText)
 		memcpy(&m_lfHyperText, pData, sizeof m_lfHyperText);
 	else
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+		memzero(&m_lfHyperText, sizeof m_lfHyperText);
+#else //OPTIM
 		memset(&m_lfHyperText, 0, sizeof m_lfHyperText);
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	delete[] pData;
 
 	pData = NULL;
@@ -2810,7 +2847,13 @@ void CPreferences::LoadPreferences()
 	if (ini.GetBinary(_T("LogTextFont"), &pData, &uSize) && uSize == sizeof m_lfLogText)
 		memcpy(&m_lfLogText, pData, sizeof m_lfLogText);
 	else
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+		memzero(&m_lfLogText, sizeof m_lfLogText);
+#else //OPTIM
 		memset(&m_lfLogText, 0, sizeof m_lfLogText);
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 	delete[] pData;
 
 	m_crLogError = ini.GetColRef(_T("LogErrorColor"), m_crLogError);
@@ -2948,9 +2991,12 @@ void CPreferences::LoadPreferences()
 //<==Anti-Leecher [cyrex2001]
 //==> Bold Download-Status [shadow2004]
 #ifdef BOLDDL
-	m_bShowActiveDownloadsBold = ini.GetBool(_T("EnableDownloadInBold"), true);
+	m_bShowActiveDownloadsBold = ini.GetBool(_T("EnableDownloadInBold"), true, _T("NextEMF"));
 #endif //BOLDDL
 //<== Bold Download-Status [shadow2004]
+//==>AntiNickThief [shadow2004]
+	m_bAntiNickThief=ini.GetBool(_T("AntiNickThief"), true);  
+//<==AntiNickThief [shadow2004]
 
 	LoadCats();
 	if (GetCatCount()==1)

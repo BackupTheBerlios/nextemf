@@ -50,7 +50,13 @@ CHTRichEditCtrl::CHTRichEditCtrl()
 	m_bNoPaint = false;
 	m_bEnErrSpace = false;
 	m_bRestoreFormat = false;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+	memzero(&m_cfDefault, sizeof m_cfDefault);
+#else //OPTIM
 	memset(&m_cfDefault, 0, sizeof m_cfDefault);
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 }
 
 CHTRichEditCtrl::~CHTRichEditCtrl(){
@@ -336,7 +342,13 @@ void CHTRichEditCtrl::AddString(int nPos, LPCTSTR pszString, bool bLink, COLORRE
 	if (bLink)
 	{
 		CHARFORMAT2 cf;
+//==>optimizer added [shadow2004]
+#ifdef OPTIM
+		memzero(&cf, sizeof cf);
+#else //OPTIM
 		memset(&cf, 0, sizeof cf);
+#endif //OPTIM
+//<==optimizer added [shadow2004]
 		GetSelectionCharFormat(cf);
 		cf.dwMask |= CFM_LINK;
 		cf.dwEffects |= CFE_LINK;
