@@ -112,7 +112,6 @@ BEGIN
     IDS_WIZARD_NETWORK      "Welche Netzwerke sollen benutzt werden?"
     IDS_MAIN_READY          "eMule Version %s bereit"
     IDS_WIZARD_ED2K         "ED2k-Netz Einstellungen"
-    IDS_SEL_SKIN            "Wähle Skin..."
 END
 
 STRINGTABLE 
@@ -406,9 +405,7 @@ BEGIN
     IDS_ERR_METCORRUPT      "Fehler: %s (%s) ist beschädigt, Datei kann nicht geladen werden"
     IDS_ERR_FILEERROR       "Unerwarteter Dateifehler beim Lesen von %s (%s): %s"
     IDS_ERR_FILEOPEN        "Datei konnte nicht geöffnet werden: %s (%s)"
-    IDS_SEL_SKINDIR         "Wähle Skin-Verzeichnis..."
     IDS_ERR_REHASH          "Warnung: %s ist möglicherweise beschädigt, vollständig geladene Teile werden überprüft"
-    IDS_SKIN_PROF           "Skin Profile"
     IDS_ERR_PART_FNF        ".part Datei konnte nicht gefunden werden"
     IDS_ERR_OPENMETFILE     ".part Datei konnte nicht geöffnet werden"
     IDS_KADOPEN             "Offen"
@@ -769,8 +766,6 @@ BEGIN
     IDS_MANUALSERVERHIGHPRIO 
                             "setze manuell hinzugefügte Server auf hohe Priorität"
     IDS_VERBOSE             "Verbose (zusätzliche Programmausgaben)"
-    IDS_FLAT                "flach"
-    IDS_ROUND               "rund"
     IDS_SAMEUSERHASH        "Client '%s' und '%s' haben den gleichen Userhash oder IP - entferne:'%s'"
     IDS_SEARCHEXTENTION     "Dateiendung"
     IDS_SEARCHAVAIL         "Verfügbarkeit"
@@ -1521,9 +1516,6 @@ BEGIN
     IDS_EM_KADEMLIA         "&Kad"
     IDS_VIAKAD              "via Kad"
     IDS_VIASE               "via Quellenaustausch"
-    IDS_SELECTTOOLBARBITMAP "Wähle Bitmap für die Toolbar"
-    IDS_SELECTTOOLBARBITMAPDIR "Wähle das Bitmap-Verzeichnis"
-    IDS_TOOLBARSKINS        "Toolbar Skins"
     IDS_NOTEXTLABELS        "keine Bezeichner"
 END
 
@@ -1799,6 +1791,57 @@ BEGIN
     IDS_AMD_ACTIVE          "AMD Optimierung aktiv"
     IDS_SSE_ACTIVE          "SSE Optimierung aktiv"
     IDS_OPTIMIZATIONS_DISABLED "Optimierung deaktiviert"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SIVKA_BAN_CONTROL   "Sivka-Bann Kontrolle"
+    IDS_SIVKA_BAN           "Aktiviere Sivka-Bann-Funktion"
+    IDS_LOWIDRETRYING       "NiedrigeID -- Versuche nochmal (%i weitere Versuche)"
+    IDS_RECONNECTONLOWID    "Wiederverbunden nach Niedriger ID"
+    IDS_SPOOKY              "Spooky-Modus"
+    IDS_ENABLE_SPOOKY_MODE  "Aktiviere Spooky-Modus"
+    IDS_RECON_SPOOKY        "Wiederverbinden nach verlorener Verbindung"
+    IDS_FAILED_SPOOKY       "Aktiviere nach Server-Verbindungs-Fehler"
+    IDS_FAILED_SPOOKY_COUNT "Maximale Server-Verbindungs-Versuche"
+    IDS_CONCHECK            "Verbindungs-Check"
+    IDS_ENABLE_CON_CHECK    "Aktiviere Verbindungs-Check"
+    IDS_ENABLE_ICMP         "Aktiviere ICMP (sonst RAW)"
+    IDS_PING_TIME_OUT       "Ping Auszeit (1-20 Sek.)"
+    IDS_PING_TLL            "Ping TLL (8-64)"
+    IDS_CRASHRPT_DONE       "Crash-Report wurde erstellt. Bitte sende es an %s"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_CRASHRPT_AV         "Crash-Report ist verfügbar und aktiv."
+    IDS_CRASHRPT_NOTAV      "Crash-Report wurde nicht im eMule-Verzeichnis gefunden. Wenn du uns beim Debuggen helfen willst, lade die CrashRpt.dll von %s."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_URL                 "http://www.emulefuture.de/koobi4/rss/?rss=news&pp=15&area=1"
+    IDS_RELURL              "RSS-Nachrichten-URL"
+    IDS_RELAUTOCONNECT      "Automatischer Newsdownload bei Start"
+    IDS_EM_RELEASE          "RSS-News"
+    IDS_REL_SITE            "Seite"
+    IDS_REL_NAME            "RSS-News2"
+    IDS_REL_LINK            "Link"
+    IDS_REL_WARNING1        "Wenn du diese URL leer läßt, wirst du automatisch zu eMuleFuture weitergeleitet."
+    IDS_REL_WARNING2        "Wenn du eine URL hinzufügst, musst du ""http://"" oder ""ftp://"" am Anfang hinzufügen."
+    IDS_REL_WARNING3        "Bitte hämmere die Seiten nicht mit minutenweisen Anfragen zu. Benutze die Anfrage sinnvoll."
+    IDS_REL_WARNING4        """Neues Fenster"" öffnet ein neues Browser-Fenster. (Funktioniert nur mit Internet Explorer)"
+    IDS_REL_WARNING5        "Die ausgewählte URL ist ungültig."
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_REL_DESC            "Beschreibung"
+    IDS_BN_GETRELEASES      "Lade RSS-Datei"
+    IDS_NEWWIN              "Neues Fenster"
+    IDS_BN_THISSITE         "Lade nur von dieser Seite"
+    IDS_BN_DELETESITE       "Lösche diese Seite"
+    IDS_BN_ADDSITE          "Füge diese Seite hinzu"
 END
 
 #endif    // Deutsch (Deutschland) resources
