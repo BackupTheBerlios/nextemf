@@ -98,6 +98,16 @@ void CDownloadListCtrl::Init()
 
 	InsertColumn(0,GetResString(IDS_DL_FILENAME),LVCFMT_LEFT, 260);
 	InsertColumn(1,GetResString(IDS_DL_SIZE),LVCFMT_LEFT, 60);
+//==> Downloadload-Windows minimize [shadow2004]
+#ifdef DLWND1
+	InsertColumn(2,GetResString(IDS_DL_TRANSFCOMPL),LVCFMT_LEFT, 65);
+	InsertColumn(3,GetResString(IDS_DL_SPEED),LVCFMT_LEFT, 65);
+	InsertColumn(4,GetResString(IDS_DL_PROGRESS),LVCFMT_LEFT, 170);
+	InsertColumn(5,GetResString(IDS_DL_SOURCES),LVCFMT_LEFT, 50);
+	InsertColumn(6,GetResString(IDS_PRIORITY),LVCFMT_LEFT, 55);
+	InsertColumn(7,GetResString(IDS_STATUS),LVCFMT_LEFT, 70);
+	InsertColumn(8,GetResString(IDS_DL_REMAINS),LVCFMT_LEFT, 110);
+#else //DLWND1
 	InsertColumn(2,GetResString(IDS_DL_TRANSF),LVCFMT_LEFT, 65);
 	InsertColumn(3,GetResString(IDS_DL_TRANSFCOMPL),LVCFMT_LEFT, 65);
 	InsertColumn(4,GetResString(IDS_DL_SPEED),LVCFMT_LEFT, 65);
@@ -113,6 +123,9 @@ void CDownloadListCtrl::Init()
 	lsctitle.Remove(':');
 	InsertColumn(11, lsctitle,LVCFMT_LEFT, 220);
 	InsertColumn(12, GetResString(IDS_CAT) ,LVCFMT_LEFT, 100);
+#endif //DLWND1
+//<== Download-Windows minimize [shadow2004]
+
 
 	SetAllIcons();
 	Localize();
@@ -205,6 +218,44 @@ void CDownloadListCtrl::Localize()
 	pHeaderCtrl->SetItem(1, &hdi);
 	strRes.ReleaseBuffer();
 
+//==> Download-Windows minimize [shadow2004]
+#ifdef DLWND1
+	strRes = GetResString(IDS_DL_TRANSFCOMPL);
+	hdi.pszText = strRes.GetBuffer();
+	pHeaderCtrl->SetItem(2, &hdi);
+	strRes.ReleaseBuffer();
+
+	strRes = GetResString(IDS_DL_SPEED);
+	hdi.pszText = strRes.GetBuffer();
+	pHeaderCtrl->SetItem(3, &hdi);
+	strRes.ReleaseBuffer();
+
+	strRes = GetResString(IDS_DL_PROGRESS);
+	hdi.pszText = strRes.GetBuffer();
+	pHeaderCtrl->SetItem(4, &hdi);
+	strRes.ReleaseBuffer();
+
+	strRes = GetResString(IDS_DL_SOURCES);
+	hdi.pszText = strRes.GetBuffer();
+	pHeaderCtrl->SetItem(5, &hdi);
+	strRes.ReleaseBuffer();
+
+	strRes = GetResString(IDS_PRIORITY);
+	hdi.pszText = strRes.GetBuffer();
+	pHeaderCtrl->SetItem(6, &hdi);
+	strRes.ReleaseBuffer();
+
+	strRes = GetResString(IDS_STATUS);
+	hdi.pszText = strRes.GetBuffer();
+	pHeaderCtrl->SetItem(7, &hdi);
+	strRes.ReleaseBuffer();
+
+	strRes = GetResString(IDS_DL_REMAINS);
+	hdi.pszText = strRes.GetBuffer();
+	pHeaderCtrl->SetItem(8, &hdi);
+	strRes.ReleaseBuffer();
+
+#else //DLWND1
 	strRes = GetResString(IDS_DL_TRANSF);
 	hdi.pszText = strRes.GetBuffer();
 	pHeaderCtrl->SetItem(2, &hdi);
@@ -261,6 +312,9 @@ void CDownloadListCtrl::Localize()
 	hdi.pszText = strRes.GetBuffer();
 	pHeaderCtrl->SetItem(12, &hdi);
 	strRes.ReleaseBuffer();
+#endif //DLWND1
+//<== Download-Windows minimize [shadow2004]
+
 
 	CreateMenues();
 
@@ -464,7 +518,169 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 			buffer = CastItoXBytes(lpPartFile->GetFileSize(), false, false);
 			dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT | DT_RIGHT);
 			break;
+//==> Download-Windows minimize [shadow2004]
+#ifdef DLWND1
+		case 2:		// transfered complete
+			buffer = CastItoXBytes(lpPartFile->GetCompletedSize(), false, false);
+			dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT | DT_RIGHT);
+			break;
+		case 3:		// speed
+			if (lpPartFile->GetTransferingSrcCount())
+				buffer.Format(_T("%s"), CastItoXBytes(lpPartFile->GetDatarate(), false, true));
+			dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT | DT_RIGHT);
+			break;
 
+		case 4:		// progress
+			{
+				CRect rcDraw(*lpRect);
+				rcDraw.bottom--;
+				rcDraw.top++;
+
+				// added
+				int iWidth = rcDraw.Width();
+				int iHeight = rcDraw.Height();
+				if (lpCtrlItem->status == (HBITMAP)NULL)
+					VERIFY(lpCtrlItem->status.CreateBitmap(1, 1, 1, 8, NULL));
+				CDC cdcStatus;
+				HGDIOBJ hOldBitmap;
+				cdcStatus.CreateCompatibleDC(dc);
+				int cx = lpCtrlItem->status.GetBitmapDimension().cx; 
+				DWORD dwTicks = GetTickCount();
+				if(lpCtrlItem->dwUpdated + DLC_BARUPDATE < dwTicks || cx !=  iWidth || !lpCtrlItem->dwUpdated) {
+					lpCtrlItem->status.DeleteObject(); 
+					lpCtrlItem->status.CreateCompatibleBitmap(dc,  iWidth, iHeight); 
+					lpCtrlItem->status.SetBitmapDimension(iWidth,  iHeight); 
+					hOldBitmap = cdcStatus.SelectObject(lpCtrlItem->status); 
+
+					RECT rec_status; 
+					rec_status.left = 0; 
+					rec_status.top = 0; 
+					rec_status.bottom = iHeight; 
+					rec_status.right = iWidth; 
+					lpPartFile->DrawStatusBar(&cdcStatus,  &rec_status, thePrefs.UseFlatBar()); 
+
+					lpCtrlItem->dwUpdated = dwTicks + (rand() % 128); 
+				} else 
+					hOldBitmap = cdcStatus.SelectObject(lpCtrlItem->status); 
+
+				dc->BitBlt(rcDraw.left, rcDraw.top, iWidth, iHeight,  &cdcStatus, 0, 0, SRCCOPY); 
+				cdcStatus.SelectObject(hOldBitmap);
+				//added end
+
+//==> bold Filepercentage [shadow2004]
+#ifdef BOLDPROZ
+				if (thePrefs.GetUseDwlPercentage()) {
+					COLORREF oldclr = dc->SetTextColor(RGB(0,0,0));
+					int iOMode = dc->SetBkMode(TRANSPARENT);
+					buffer.Format(_T("%.1f%%"), lpPartFile->GetPercentCompleted());
+					CFont *pOldFont = dc->SelectObject(&m_fontBold);
+					
+#define	DrawPercentText	dc->DrawText(buffer, buffer.GetLength(), &rcDraw, ((DLC_DT_TEXT | DT_RIGHT) & ~DT_LEFT) | DT_CENTER)
+					DrawPercentText;
+					rcDraw.left+=1;rcDraw.right+=1;
+					DrawPercentText;
+					rcDraw.left+=1;rcDraw.right+=1;
+					DrawPercentText;
+					
+					rcDraw.top+=1;rcDraw.bottom+=1;
+					DrawPercentText;
+					rcDraw.top+=1;rcDraw.bottom+=1;
+					DrawPercentText;
+					
+					rcDraw.left-=1;rcDraw.right-=1;
+					DrawPercentText;
+					rcDraw.left-=1;rcDraw.right-=1;
+					DrawPercentText;
+					
+					rcDraw.top-=1;rcDraw.bottom-=1;
+					DrawPercentText;
+					
+					rcDraw.left++;rcDraw.right++;
+					dc->SetTextColor(RGB(255,255,255));
+					DrawPercentText;
+					dc->SelectObject(pOldFont);
+					dc->SetBkMode(iOMode);
+					dc->SetTextColor(oldclr);
+				}
+#else //BOLDPROZ
+				if (thePrefs.GetUseDwlPercentage()) {
+					// HoaX_69: BEGIN Display percent in progress bar
+					COLORREF oldclr = dc->SetTextColor(RGB(255,255,255));
+					int iOMode = dc->SetBkMode(TRANSPARENT);
+					buffer.Format(_T("%.1f%%"), lpPartFile->GetPercentCompleted());
+					dc->DrawText(buffer, buffer.GetLength(), &rcDraw, (DLC_DT_TEXT & ~DT_LEFT) | DT_CENTER);
+					dc->SetBkMode(iOMode);
+					dc->SetTextColor(oldclr);
+					// HoaX_69: END
+				}
+#endif //BOLDPROZ
+//<== bold Filepercentage [shadow2004]
+			}
+			break;
+
+		case 5:		// sources
+			{
+				uint16 sc = lpPartFile->GetSourceCount();
+				uint16 ncsc = lpPartFile->GetNotCurrentSourcesCount();				
+// ZZ:DownloadManager -->
+                if(!(lpPartFile->GetStatus() == PS_PAUSED && sc == 0) && lpPartFile->GetStatus() != PS_COMPLETE) {
+                    buffer.Format(_T("%i"), sc-ncsc);
+				    if(ncsc>0) buffer.AppendFormat(_T("/%i"), sc);
+                    if(thePrefs.IsExtControlsEnabled() && lpPartFile->GetSrcA4AFCount() > 0) buffer.AppendFormat(_T("+%i"), lpPartFile->GetSrcA4AFCount());
+				    if(lpPartFile->GetTransferingSrcCount() > 0) buffer.AppendFormat(_T(" (%i)"), lpPartFile->GetTransferingSrcCount());
+                } else {
+                    buffer = _T("");
+				}
+// <-- ZZ:DownloadManager
+				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT | DT_RIGHT);
+			}
+			break;
+
+		case 6:		// prio
+			switch(lpPartFile->GetDownPriority()) {
+			case PR_LOW:
+				if( lpPartFile->IsAutoDownPriority() )
+					dc->DrawText(GetResString(IDS_PRIOAUTOLOW),GetResString(IDS_PRIOAUTOLOW).GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
+				else
+					dc->DrawText(GetResString(IDS_PRIOLOW),GetResString(IDS_PRIOLOW).GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
+				break;
+			case PR_NORMAL:
+				if( lpPartFile->IsAutoDownPriority() )
+					dc->DrawText(GetResString(IDS_PRIOAUTONORMAL),GetResString(IDS_PRIOAUTONORMAL).GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
+				else
+					dc->DrawText(GetResString(IDS_PRIONORMAL),GetResString(IDS_PRIONORMAL).GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
+				break;
+			case PR_HIGH:
+				if( lpPartFile->IsAutoDownPriority() )
+					dc->DrawText(GetResString(IDS_PRIOAUTOHIGH),GetResString(IDS_PRIOAUTOHIGH).GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
+				else
+					dc->DrawText(GetResString(IDS_PRIOHIGH),GetResString(IDS_PRIOHIGH).GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
+				break;
+			}
+			break;
+
+		case 7:		// <<--9/21/02
+			buffer = lpPartFile->getPartfileStatus();
+			dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
+			break;
+
+		case 8:		// remaining time & size
+			{
+				if (lpPartFile->GetStatus()!=PS_COMPLETING && lpPartFile->GetStatus()!=PS_COMPLETE ){
+					// time 
+					sint32 restTime;
+					if (!thePrefs.UseSimpleTimeRemainingComputation())
+						restTime = lpPartFile->getTimeRemaining();
+					else
+						restTime = lpPartFile->getTimeRemainingSimple();
+
+					buffer.Format(_T("%s (%s)"), CastSecondsToHM(restTime), CastItoXBytes((lpPartFile->GetFileSize() - lpPartFile->GetCompletedSize()), false, false));
+				}
+				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
+			}
+			break;
+
+#else //DLWND1
 		case 2:		// transfered
 			buffer = CastItoXBytes(lpPartFile->GetTransfered(), false, false);
 			dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT | DT_RIGHT);
@@ -665,6 +881,8 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
 			}
 			break;
+#endif //DLWND1
+//<== Download-Windows minimize [shadow2004]
 		}
 	}
 }
@@ -782,7 +1000,158 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 			}
 			dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
 			break;
+//==> Download-Windows minimize [shadow2004]
+#ifdef DLWND1
+		case 2:// completed
+			if (lpCtrlItem->type == AVAILABLE_SOURCE && lpUpDownClient->GetTransferedDown()) {
+				buffer = CastItoXBytes(lpUpDownClient->GetTransferedDown(), false, false);
+				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT | DT_RIGHT);
+			}
+			break;
 
+		case 3:		// speed
+			if (lpCtrlItem->type == AVAILABLE_SOURCE && lpUpDownClient->GetDownloadDatarate()){
+				if (lpUpDownClient->GetDownloadDatarate())
+					buffer.Format(_T("%s"), CastItoXBytes(lpUpDownClient->GetDownloadDatarate(), false, true));
+				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT | DT_RIGHT);
+			}
+			break;
+
+		case 4:		// file info
+			{
+				CRect rcDraw(*lpRect);
+				rcDraw.bottom--; 
+				rcDraw.top++; 
+
+				int iWidth = rcDraw.Width();
+				int iHeight = rcDraw.Height();
+				if (lpCtrlItem->status == (HBITMAP)NULL)
+					VERIFY(lpCtrlItem->status.CreateBitmap(1, 1, 1, 8, NULL)); 
+				CDC cdcStatus;
+				HGDIOBJ hOldBitmap;
+				cdcStatus.CreateCompatibleDC(dc);
+				int cx = lpCtrlItem->status.GetBitmapDimension().cx;
+				DWORD dwTicks = GetTickCount();
+				if(lpCtrlItem->dwUpdated + DLC_BARUPDATE < dwTicks || cx !=  iWidth  || !lpCtrlItem->dwUpdated) { 
+					lpCtrlItem->status.DeleteObject(); 
+					lpCtrlItem->status.CreateCompatibleBitmap(dc,  iWidth, iHeight); 
+					lpCtrlItem->status.SetBitmapDimension(iWidth,  iHeight); 
+					hOldBitmap = cdcStatus.SelectObject(lpCtrlItem->status); 
+
+					RECT rec_status; 
+					rec_status.left = 0; 
+					rec_status.top = 0; 
+					rec_status.bottom = iHeight; 
+					rec_status.right = iWidth; 
+					lpUpDownClient->DrawStatusBar(&cdcStatus,  &rec_status,(lpCtrlItem->type == UNAVAILABLE_SOURCE), thePrefs.UseFlatBar()); 
+
+					lpCtrlItem->dwUpdated = dwTicks + (rand() % 128); 
+				} else 
+					hOldBitmap = cdcStatus.SelectObject(lpCtrlItem->status); 
+
+				dc->BitBlt(rcDraw.left, rcDraw.top, iWidth, iHeight,  &cdcStatus, 0, 0, SRCCOPY); 
+				cdcStatus.SelectObject(hOldBitmap);
+			}
+			break;
+
+		case 5:{		// sources
+			buffer = lpUpDownClient->GetClientSoftVer();
+			if (buffer.IsEmpty())
+				buffer = GetResString(IDS_UNKNOWN);
+			dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
+			break;
+		}
+
+		case 6:		// prio
+			if (lpUpDownClient->GetDownloadState()==DS_ONQUEUE){
+				if( lpUpDownClient->IsRemoteQueueFull() ){
+					buffer = GetResString(IDS_QUEUEFULL);
+					dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
+				}
+				else{
+					if ( lpUpDownClient->GetRemoteQueueRank()){
+//==>AntiFakeRank [cyrex2001]
+#ifdef ANTI_FAKE_RANK
+						COLORREF crOldTxtColor;
+						uint16 nDifference = lpUpDownClient->GetDiffQR(0);
+						uint16 nRemoteQueueRank = lpUpDownClient->GetRemoteQueueRank();
+						if (lpUpDownClient->GetIsfakerank()){
+							crOldTxtColor = dc->SetTextColor((COLORREF)RGB(0,0,211));
+							buffer.Format(_T("Fake Rank QR: %u (0)"),nRemoteQueueRank);
+						}
+						else if (lpUpDownClient->IsBanned()){
+									crOldTxtColor = dc->SetTextColor((COLORREF)RGB(0,0,211));
+									buffer.Format(_T("Banned QR: %u (0)"),nRemoteQueueRank);
+						}
+						else
+						{
+							if ((lpUpDownClient->GetDiffQR(0) == nRemoteQueueRank)||(lpUpDownClient->GetDiffQR(0) == 0))
+							{
+							crOldTxtColor = dc->SetTextColor((COLORREF)RGB(0,0,0));
+								buffer.Format(_T("QR: %u (0)"),nRemoteQueueRank);
+							}
+							else if (lpUpDownClient->GetDiffQR(0) > nRemoteQueueRank)
+							{
+								crOldTxtColor = dc->SetTextColor((COLORREF)RGB(10,160,70));
+								buffer.Format(_T("QR: %u (-%u)"),nRemoteQueueRank,(lpUpDownClient->GetDiffQR(0) - nRemoteQueueRank));
+						}
+							else
+							{
+								crOldTxtColor = dc->SetTextColor((COLORREF)RGB(190,60,60));
+								buffer.Format(_T("QR: %u (+%u)"),nRemoteQueueRank,(nRemoteQueueRank - lpUpDownClient->GetDiffQR(0)));
+						}
+						}
+						dc->DrawText(buffer, buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT | DT_RIGHT);
+						dc->SetTextColor(crOldTxtColor);
+#else //AntiFakeRank
+						buffer.Format(_T("QR: %u"),lpUpDownClient->GetRemoteQueueRank());
+						dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
+#endif //AntiFakeRank
+//<==AntiFakeRank [cyrex2001]
+					}
+					else{
+						dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
+					}
+				}
+			} else {
+				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
+			}
+			break;
+
+		case 7:	{	// status
+			if (lpCtrlItem->type == AVAILABLE_SOURCE){
+				buffer = lpUpDownClient->GetDownloadStateDisplayString();
+			}
+			else {
+				buffer = GetResString(IDS_ASKED4ANOTHERFILE);
+
+// ZZ:DownloadManager -->
+                if(thePrefs.IsExtControlsEnabled()) {
+                    if(lpUpDownClient->IsInNoNeededList(lpCtrlItem->owner)) {
+                        buffer += _T(" (") + GetResString(IDS_NONEEDEDPARTS) + _T(")");
+                    } else if(lpUpDownClient->GetDownloadState() == DS_DOWNLOADING) {
+                        buffer += _T(" (") + GetResString(IDS_TRANSFERRING) + _T(")");
+                    } else if(lpUpDownClient->IsSwapSuspended(lpUpDownClient->GetRequestFile())) {
+                        buffer += _T(" (") + GetResString(IDS_SOURCESWAPBLOCKED) + _T(")");
+                    }
+
+                    if (lpUpDownClient && lpUpDownClient->GetRequestFile() && lpUpDownClient->GetRequestFile()->GetFileName()){
+                        buffer.AppendFormat(_T(": \"%s\""),lpUpDownClient->GetRequestFile()->GetFileName());
+                    }
+                }
+			}
+
+            if(thePrefs.IsExtControlsEnabled() && !lpUpDownClient->m_OtherRequests_list.IsEmpty()) {
+                buffer.Append(_T("*"));
+            }
+// ZZ:DownloadManager <--
+
+			dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
+			break;
+		}
+		case 8:		// remaining time & size
+			break;
+#else //DLWND1
 		case 2:// transfered
 			if ( !IsColumnHidden(3)) {
 				dc->DrawText(_T(""),0,const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
@@ -943,6 +1312,8 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 			break;
 		case 12:	// category
 			break;
+#endif //DLWND1
+//<== Download-Windows minimize [shadow2004]
 		}
 	}
 }
@@ -2000,6 +2371,61 @@ int CDownloadListCtrl::Compare(const CPartFile* file1, const CPartFile* file2, L
 		return CompareLocaleStringNoCase(file1->GetFileName(),file2->GetFileName());
 	case 1: //size asc
 		return CompareUnsigned(file1->GetFileSize(), file2->GetFileSize());
+//==> Download-Windows minimize [shadow2004]
+#ifdef DLWND1
+	case 2: //completed asc
+		return CompareUnsigned(file1->GetCompletedSize(), file2->GetCompletedSize());
+	case 3: //speed asc
+		return CompareUnsigned(file1->GetDatarate(), file2->GetDatarate());
+	case 4: //progress asc
+		{
+			float comp = file1->GetPercentCompleted() - file2->GetPercentCompleted();
+			if(comp > 0)
+				return 1;
+			else if(comp < 0)
+				return -1;
+			else
+				return 0;
+		}
+	case 5: //sources asc
+		return file1->GetSourceCount() - file2->GetSourceCount();
+	case 6: //priority asc
+		return file1->GetDownPriority() - file2->GetDownPriority();
+	case 7: //Status asc 
+        {
+            int comp =  file1->getPartfileStatusRang()-file2->getPartfileStatusRang();
+
+            // Second sort order on filename
+            if(comp == 0) {
+                comp = CompareLocaleStringNoCase(file1->GetFileName(),file2->GetFileName());
+            }
+
+            return comp;
+        }
+	case 8: //Remaining Time asc
+	{
+		//Make ascending sort so we can have the smaller remaining time on the top 
+		//instead of unknowns so we can see which files are about to finish better..
+		sint32 f1 = file1->getTimeRemaining();
+		sint32 f2 = file2->getTimeRemaining();
+		//Same, do nothing.
+		if( f1 == f2 )
+			return 0;
+		//If decending, put first on top as it is unknown
+		//If ascending, put first on bottom as it is unknown
+		if( f1 == -1 )
+			return 1;
+		//If decending, put second on top as it is unknown
+		//If ascending, put second on bottom as it is unknown
+		if( f2 == -1 )
+			return -1;
+		//If decending, put first on top as it is bigger.
+		//If ascending, put first on bottom as it is bigger.
+		return f1 - f2;
+	}
+	case 80: //Remaining SIZE asc 
+		return CompareUnsigned(file1->GetFileSize()-file1->GetCompletedSize(), file2->GetFileSize()-file2->GetCompletedSize());
+#else //DLWND1
 	case 2: //transfered asc
 		return CompareUnsigned(file1->GetTransfered(), file2->GetTransfered());
 	case 3: //completed asc
@@ -2077,7 +2503,8 @@ int CDownloadListCtrl::Compare(const CPartFile* file1, const CPartFile* file2, L
 			(const_cast<CPartFile*>(file2)->GetCategory()!=0)?thePrefs.GetCategory(const_cast<CPartFile*>(file2)->GetCategory())->title:GetResString(IDS_ALL)
 		);
 		return 0;
-
+#endif //DLWND1
+//<== Download-Windows minimize [shadow2004]
 	default:
 		return 0;
 	}
