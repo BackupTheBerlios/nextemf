@@ -61,6 +61,22 @@ protected:
 	int	m_iLowIdRetry;
 #endif //Lowid retry
 //<==Lowid retry [cyrex2001]
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Spooky Mode [eWombat]
+	int m_bEnableSpookyMode;
+	int m_bReconSpooky;
+	int m_bSpookyFailed;
+	int m_iSpookyFailedCount;
+#endif // Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+	int m_bCheckCon;
+    int m_bICMP;
+    int m_uiPingTimeOut;
+	int m_uiPingTTL;
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 
 	HTREEITEM m_htiSecurity;
 	HTREEITEM m_htiIsreaskSourceAfterIPChange;
@@ -107,7 +123,24 @@ protected:
 	HTREEITEM	m_htiLowIdRetry;
 #endif //Lowid retry
 //<==Lowid retry [cyrex2001]
-
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Spooky Mode [eWombat]
+	HTREEITEM	m_htiSpooky;
+	HTREEITEM	m_htiEnableSpookyMode;
+	HTREEITEM	m_htiReconSpooky;
+	HTREEITEM	m_htiSpookyFailed;
+	HTREEITEM	m_htiSpookyFailedCount;
+#endif // Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+	HTREEITEM	m_htiCheckConGroup;
+	HTREEITEM	m_htiCheckCon;
+	HTREEITEM	m_htiICMP;
+	HTREEITEM	m_htiPingTimeOut;
+	HTREEITEM	m_htiPingTTL;
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 
 	CTreeOptionsCtrlEx m_ctrlTreeOptions;
 	bool m_bInitializedTreeOpts;

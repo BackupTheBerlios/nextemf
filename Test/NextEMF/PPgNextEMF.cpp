@@ -78,6 +78,24 @@ CPPgNextEMF::CPPgNextEMF()
 	m_iLowIdRetry = 0;
 #endif //Lowid retry
 //<==Lowid retry [cyrex2001]
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Spooky Mode [eWombat]
+	m_htiSpooky = NULL;
+	m_htiEnableSpookyMode = NULL;
+	m_htiReconSpooky = NULL;
+	m_htiSpookyFailed = NULL;
+	m_htiSpookyFailedCount = NULL;
+#endif // Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+	m_htiCheckConGroup = NULL;
+	m_htiCheckCon = NULL;
+	m_htiICMP = NULL;
+	m_htiPingTimeOut = NULL;
+	m_htiPingTTL = NULL;
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 }
 
 CPPgNextEMF::~CPPgNextEMF()
@@ -97,16 +115,30 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		int iImgDrop = 8;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Spooky Mode [eWombat]
+		int iImgSpooky = 8;
+#endif // Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
 		CImageList* piml = m_ctrlTreeOptions.GetImageList(TVSIL_NORMAL);
 		if (piml)
 		{
-			iImgOpt = piml->Add(CTempIconLoader(_T("CONNECTION")));
 			iImgSecurity = piml->Add(CTempIconLoader(_T("SECURITY")));
 //==>Drop maunal [cyrex2001]
 #ifdef DROP
 			iImgDrop = piml->Add(CTempIconLoader(_T("DROP")));
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Spooky Mode [eWombat]
+			iImgSpooky = piml->Add(CTempIconLoader(_T("IDI_SPOOKY")));
+#endif // Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+			iImgOpt = piml->Add(CTempIconLoader(_T("CONNECTION")));
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 		}
 //==>Lowid retry by SlugFiller [cyrex2001]
 #ifdef LOWID
@@ -114,6 +146,27 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.AddEditBox(m_htiLowIdRetry, RUNTIME_CLASS(CNumTreeOptionsEdit));
 #endif //Lowid retry
 //<==Lowid retry [cyrex2001]
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Spooky Mode [eWombat]
+		m_htiSpooky = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SPOOKY), iImgSpooky, TVI_ROOT);
+		m_htiEnableSpookyMode = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ENABLE_SPOOKY_MODE), m_htiSpooky, m_bEnableSpookyMode);
+		m_htiReconSpooky = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_RECON_SPOOKY), m_htiSpooky, m_bReconSpooky);
+		m_htiSpookyFailed = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_FAILED_SPOOKY), m_htiSpooky, m_bSpookyFailed);
+		m_htiSpookyFailedCount = m_ctrlTreeOptions.InsertItem(GetResString(IDS_FAILED_SPOOKY_COUNT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSpooky);
+		m_ctrlTreeOptions.AddEditBox(m_htiSpookyFailedCount, RUNTIME_CLASS(CNumTreeOptionsEdit));
+#endif // Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+		m_htiCheckConGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_CONCHECK), iImgOpt, TVI_ROOT);
+		m_htiCheckCon = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ENABLE_CON_CHECK), m_htiCheckConGroup, m_bCheckCon);
+		m_htiICMP = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ENABLE_ICMP), m_htiCheckConGroup, m_bICMP);
+		m_htiPingTimeOut = m_ctrlTreeOptions.InsertItem(GetResString(IDS_PING_TIME_OUT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiCheckConGroup);
+		m_ctrlTreeOptions.AddEditBox(m_htiPingTimeOut, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_htiPingTTL = m_ctrlTreeOptions.InsertItem(GetResString(IDS_PING_TLL), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiCheckConGroup);
+		m_ctrlTreeOptions.AddEditBox(m_htiPingTTL, RUNTIME_CLASS(CNumTreeOptionsEdit));
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 //==> Bold Download-Status [shadow2004]
 #ifdef BOLDDL
 		m_htiEnableDownloadInBold = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_DOWNLOAD_IN_BOLD), TVI_ROOT, m_bEnableDownloadInBold);
@@ -176,6 +229,25 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 	DDV_MinMaxInt(pDX, m_iLowIdRetry, 0, 255);
 #endif //Lowid retry
 //<==Lowid retry [cyrex2001]
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Spooky Mode [eWombat]
+	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableSpookyMode,m_bEnableSpookyMode);
+	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiReconSpooky,m_bReconSpooky);
+	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiSpookyFailed,m_bSpookyFailed);
+	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiSpookyFailedCount, m_iSpookyFailedCount);
+	DDV_MinMaxInt(pDX, m_iSpookyFailedCount, 3, 25);
+#endif // Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiCheckCon,m_bCheckCon);
+	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiICMP,m_bICMP);
+	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiPingTimeOut, m_uiPingTimeOut);
+	DDV_MinMaxInt(pDX, m_uiPingTimeOut, 1, 20);
+	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiPingTTL, m_uiPingTTL);
+	DDV_MinMaxInt(pDX, m_uiPingTTL, 8, 64);
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 //==> Bold Download-Status [shadow2004]
 #ifdef BOLDDL
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableDownloadInBold, m_bEnableDownloadInBold);
@@ -270,6 +342,22 @@ BOOL CPPgNextEMF::OnInitDialog()
 	m_iLowIdRetry = thePrefs.GetLowIdRetries();
 #endif //Lowid retry
 //<==Lowid retry [cyrex2001]
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Spooky Mode [eWombat]
+	m_bEnableSpookyMode = thePrefs.m_bEnableSpookyMode;
+	m_bReconSpooky = thePrefs.m_bReconSpooky;
+	m_bSpookyFailed = thePrefs.m_bSpookyFailed;
+	m_iSpookyFailedCount = thePrefs.m_iSpookyFailedCount;
+#endif // Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+	m_bCheckCon = thePrefs.m_bCheckCon;
+	m_bICMP = thePrefs.m_bICMP;
+	m_uiPingTimeOut = thePrefs.m_uiPingTimeOut;
+	m_uiPingTTL = thePrefs.m_uiPingTTL;
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 	CPropertyPage::OnInitDialog();
 	Localize();
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -342,6 +430,22 @@ BOOL CPPgNextEMF::OnApply()
 	thePrefs.LowIdRetries = m_iLowIdRetry;
 #endif //Lowid retry
 //<==Lowid retry [cyrex2001]
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Spooky Mode [eWombat]
+	thePrefs.m_bEnableSpookyMode = m_bEnableSpookyMode;
+	thePrefs.m_bReconSpooky = m_bReconSpooky;
+	thePrefs.m_bSpookyFailed = m_bSpookyFailed;
+	thePrefs.m_iSpookyFailedCount = m_iSpookyFailedCount;
+#endif // Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+	thePrefs.m_bCheckCon = m_bCheckCon;
+	thePrefs.m_bICMP = m_bICMP;
+	thePrefs.m_uiPingTimeOut = m_uiPingTimeOut;
+	thePrefs.m_uiPingTTL = m_uiPingTTL;
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 	SetModified(FALSE);
 	return CPropertyPage::OnApply();
 }
@@ -364,6 +468,22 @@ void CPPgNextEMF::Localize(void)
 		if(m_htiLowIdRetry)	m_ctrlTreeOptions.SetEditLabel(m_htiLowIdRetry, GetResString(IDS_RECONNECTONLOWID));
 #endif //Lowid retry
 //<==Lowid retry [cyrex2001]
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Spooky Mode [eWombat]
+		if(m_htiEnableSpookyMode) m_ctrlTreeOptions.SetItemText(m_htiSpooky, GetResString(IDS_ENABLE_SPOOKY_MODE));
+		if(m_htiReconSpooky) m_ctrlTreeOptions.SetItemText(m_htiReconSpooky, GetResString(IDS_RECON_SPOOKY));
+		if(m_htiSpookyFailed) m_ctrlTreeOptions.SetItemText(m_htiSpookyFailed, GetResString(IDS_FAILED_SPOOKY));
+		if(m_htiSpookyFailedCount) m_ctrlTreeOptions.SetEditLabel(m_htiSpookyFailedCount, GetResString(IDS_FAILED_SPOOKY_COUNT));
+#endif // Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+		if(m_htiCheckCon) m_ctrlTreeOptions.SetItemText(m_htiCheckCon, GetResString(IDS_ENABLE_CON_CHECK));
+		if(m_htiICMP) m_ctrlTreeOptions.SetItemText(m_htiICMP, GetResString(IDS_ENABLE_ICMP));
+		if(m_htiPingTimeOut) m_ctrlTreeOptions.SetEditLabel(m_htiPingTimeOut, GetResString(IDS_PING_TIME_OUT));
+		if(m_htiPingTTL) m_ctrlTreeOptions.SetEditLabel(m_htiPingTTL, GetResString(IDS_PING_TLL));
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 //==> Bold Download-Status [shadow2004]
 #ifdef BOLDDL
 		if (m_htiEnableDownloadInBold) m_ctrlTreeOptions.SetItemText(m_htiEnableDownloadInBold, GetResString(IDS_DOWNLOAD_IN_BOLD));
@@ -456,6 +576,24 @@ void CPPgNextEMF::OnDestroy()
 	m_htiLowIdRetry = NULL;
 #endif //Lowid retry
 //<==Lowid retry [cyrex2001]
+//==> Spooky Mode [cyrex2001]
+#ifdef SPOOKY // Spooky Mode [eWombat]
+	m_htiSpooky = NULL;
+	m_htiEnableSpookyMode = NULL;
+	m_htiReconSpooky = NULL;
+	m_htiSpookyFailed = NULL;
+	m_htiSpookyFailedCount = NULL;
+#endif // Spooky Mode [eWombat] 
+//<== Spooky Mode [cyrex2001]
+//==> Spooky Mode ConChecker [cyrex2001]
+#ifdef CONCHECKER //>>>WiZaRd: Spooky Mode ConChecker [eWombat] 
+	m_htiCheckConGroup = NULL;
+	m_htiCheckCon = NULL;
+	m_htiICMP = NULL;
+	m_htiPingTimeOut = NULL;
+	m_htiPingTTL = NULL;
+#endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
+//<== Spooky Mode ConChecker [cyrex2001]
 
 	CPropertyPage::OnDestroy();
 }
