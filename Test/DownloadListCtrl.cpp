@@ -1274,8 +1274,14 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 					rec_status.top = 0; 
 					rec_status.bottom = iHeight; 
 					rec_status.right = iWidth; 
+//==> removed 3D-Bar-display [shadow2004]
+#ifdef BAR3D
 					lpUpDownClient->DrawStatusBar(&cdcStatus,  &rec_status,(lpCtrlItem->type == UNAVAILABLE_SOURCE), thePrefs.UseFlatBar()); 
+#else
+					lpUpDownClient->DrawStatusBar(&cdcStatus,  &rec_status,(lpCtrlItem->type == UNAVAILABLE_SOURCE)); 
 
+#endif
+//<== removed 3D-Bar-display [shadow2004]
 					lpCtrlItem->dwUpdated = dwTicks + (rand() % 128); 
 				} else 
 					hOldBitmap = cdcStatus.SelectObject(lpCtrlItem->status); 

@@ -230,7 +230,7 @@ void CBarShader::Draw(CDC* dc, int iLeft, int iTop) {
 #ifdef BAR3D
 			FillRect(dc, &rectSpan, fRed, fGreen, fBlue, bFlat);
 #else
-
+			FillRect(dc, &rectSpan, fRed, fGreen, fBlue);
 #endif
 //<== removed 3D-Bar-display [shadow2004]
 			start += iBytesInOnePixel;

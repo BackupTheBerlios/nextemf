@@ -19,7 +19,7 @@
 
 
 #define MOD_VERSION_MJR		0
-#define MOD_VERSION_MIN		2
+#define MOD_VERSION_MIN		3
 
 // this one is sent as the mod ID
 #define	MOD_VERSION			_T("NextEMF")	// [SLUGFILLER: -modID-]

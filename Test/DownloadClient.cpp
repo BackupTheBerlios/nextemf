@@ -41,12 +41,6 @@
 #include "SharedFileList.h"
 #include "Log.h"
 
-//==>defeat 0-filled partsenders [shadow2004]
-#ifdef NULLFILLED
-#include "IPFilter.h"
-#endif
-//<==defeat 0-filled partsenders [shadow2004]
-
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -1046,41 +1040,6 @@ void CUpDownClient::ProcessBlockPacket(char *packet, uint32 size, bool packed)
 				// no block can be uncompressed to >2GB, 'lenUnzipped' is obviously errornous.
 				if (result == Z_OK && (int)lenUnzipped >= 0)
 				{
-//==>defeat 0-filled partsenders [shadow2004]
-#ifdef NULLFILLED
-					if((thePrefs.GetEnableZeroFilledTest() == true) && (reqfile->IsCDImage() == false) && (reqfile->IsArchive() == false) && (reqfile->IsDocument() == false)){
-						if(lenUnzipped > 25*nBlockSize 
-							&& (reqfile->GetFileSize()/EMBLOCKSIZE) > (cur_block->block->StartOffset/EMBLOCKSIZE + 3)){
-
-							// Format User hash
-							CString userHash;
-							for(int  i=0; i<16; i++){
-								TCHAR buffer[33];
-								_stprintf(buffer, _T("%02X"), GetUserHash()[i]);
-								userHash += buffer;
-							}
-
-							// Log
-							AddLogLine(true,  _T("Received suspicious block: file '%s', part %i, block %i, blocksize %i, comp. blocksize %i, comp. factor %0.1f)"), reqfile->GetFileName(), cur_block->block->StartOffset/PARTSIZE, cur_block->block->StartOffset/EMBLOCKSIZE, lenUnzipped, nBlockSize, lenUnzipped/nBlockSize);
-							AddLogLine(false, _T("Username '%s' (IP %s:%i), hash %s"), m_pszUsername, ipstr(GetIP()), GetUserPort(), userHash);
-
-							// Ban => serious error (Attack?)
-							if(lenUnzipped > 4*nBlockSize && reqfile->IsArchive() == true){
-								theApp.ipfilter->AddIP(GetIP(), 1, _T("Temporary"));
-								SetDownloadState(DS_ERROR);
-							}
-
-							// Do Not Save
-							lenWritten = 0;
-							lenUnzipped = 0; // skip writting
-							reqfile->RemoveBlockFromList(cur_block->block->StartOffset, cur_block->block->EndOffset);
-							AddLogLine(false, _T("Block dropped"));
-						}
-					}
-#endif
-//<==defeat 0-filled partsenders [shadow2004]
-
-
 					if (lenUnzipped > 0) // Write any unzipped data to disk
 					{
 						ASSERT( (int)lenUnzipped > 0 );
@@ -1135,22 +1094,6 @@ void CUpDownClient::ProcessBlockPacket(char *packet, uint32 size, bool packed)
 					cur_block->fZStreamError = 1;
 					cur_block->totalUnzipped = 0;
 
-//==>defeat 0-filled partsenders [shadow2004]
-#ifdef NULLFILLED
-					if(thePrefs.GetEnableZeroFilledTest() == true) {
-						CString userHash;
-						for(int  i=0; i<16; i++){
-							TCHAR buffer[33];
-							_stprintf(buffer, _T("%02X"), GetUserHash()[i]);
-							userHash += buffer;
-						}
-						// Ban => serious error (Attack?)
-						AddLogLine(false, GetResString(IDS_CORRUPTDATASENT), m_pszUsername, ipstr(GetConnectIP()), GetUserPort(), userHash, GetClientSoftVer()); 
-						theApp.ipfilter->AddIP(GetIP(), 1, _T("Temporary"));
-						SetDownloadState(DS_ERROR);
-					}
-#endif
-//<==defeat 0-filled partsenders [shadow2004]
 				}
 				delete [] unzipped;
 			}

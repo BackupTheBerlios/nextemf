@@ -870,15 +870,14 @@ private:
 	bool m_bValidSource;
 #endif //Drop 
 //<==Drop [cyrex2001]
-//==>AntiNickThief [shadow2004]
+//==>AntiNickThief v2 [shadow2004]
 public:
-	bool        IsNickThief()    {return m_bNickThief;} 
 	CString     CreateAntiNickThiefTag(); 
 	CString     GetAntiNickThiefNick(); 
 private:
 	bool        m_bNickThief; 
 	CString     m_sAntiNickThiefTag;
-//<==AntiNickThief [shadow2004]
+//<==AntiNickThief v2 [shadow2004]
 
 //==>Sivka-Ban [cyrex2001]
 #ifdef SIVKA_BAN

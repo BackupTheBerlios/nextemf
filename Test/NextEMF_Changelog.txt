@@ -1,4 +1,4 @@
-eMule 0.44d [NextEMF v0.x]
+eMule 0.44d [NextEMF v0.3]
 ===========================
 
 ADDED  : Connection-checker by eWombat/WiZaRd [cyrex2001]
@@ -34,7 +34,9 @@ CHANGED: A better way to show Complete Sources in Shared-Dialog by WiZaRd [shado
 REMOVED: Some parts of Proxy which were left [shadow2004]
 REMOVED: SkinSupport and Toolbar-Rightclick-menue [shadow2004]
 REMOVED: 3D-Feature for all bars [shadow2004]
+REMOVED: Defeat 0-filled parts by Morph [shadow2004]
 UPDATE : Cleaned Up the own Source-Code [shadow2004]
+UPDATE : Anti-Nick-Thief v1 to v2 by WiZaRd [shadow2004]  
 UPDATE : German-dll [shadow2004]
 
 

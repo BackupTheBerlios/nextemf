@@ -61,23 +61,6 @@ static int __cdecl CmpSIPFilterByStartAddr(const void* p1, const void* p2)
 	return CompareUnsigned(rng1->start, rng2->start);
 }
 
-//==>defeat 0-filled partsenders [shadow2004]
-#ifdef NULLFILLED
-void CIPFilter::AddIP(uint32 IP, UINT level, const CString& desc)
-{
-	uint32 ip1;
-	((BYTE*)&ip1)[0] = ((BYTE*)&IP)[3];
-	((BYTE*)&ip1)[1] = ((BYTE*)&IP)[2];
-	((BYTE*)&ip1)[2] = ((BYTE*)&IP)[1];
-	((BYTE*)&ip1)[3] = ((BYTE*)&IP)[0];
-	AddIPRange(ip1, ip1, level, desc);
-	// sort the IP filter list by IP range start addresses
-	qsort(m_iplist.GetData(), m_iplist.GetCount(), sizeof(m_iplist[0]), CmpSIPFilterByStartAddr);
-
-}
-#endif
-//<==defeat 0-filled partsenders [shadow2004]
-
 CString CIPFilter::GetDefaultFilePath() const
 {
 	return thePrefs.GetConfigDir() + DFLT_IPFILTER_FILENAME;
