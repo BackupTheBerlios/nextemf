@@ -1,6 +1,9 @@
 eMule 0.44d [NextEMF v0.x]
 ===========================
 
+ADDED  : Timer for droped sourcen [2-4h] [cyrex2001]
+ADDED  : Ban aggressive clients(sivka-ban) enable/disable [cyrex2001]
+ADDED  : ask for download priority by Xman [cyrex2001]
 ADDED  : Chunk Selection Patch by Xman [cyrex2001]
 ADDED  : Timestamp is now available for Chatwindow [shadow2004]
 ADDED  : show hardlimit to sourcelist [cyrex2001]
@@ -17,6 +20,7 @@ FIXED  : An empty Client-Name could Crash Emule. Now will banned by WiZaRd [shad
 FIXED  : Bug in Kad-Buddy could crash eMule by WiZaRd [shadow2004]
 MODIFY : Some small optimizations in AntiLeecher-Filter [cyrex2001][shadow2004]
 MODIFY : Show preferences only if needed by WiZaRd [shadow2004]
+MODIFY : Reask sourcen after ip change [cyrex2001]
 CHANGED: Summary of Secure Identication is now ever 100% by WiZaRd [shadow2004]
 CHANGED: A better way to show Complete Sources in Shared-Dialog by WiZaRd [shadow2004]
 REMOVED: Some parts of Proxy which were left [shadow2004]

@@ -272,7 +272,7 @@ bool CClientUDPSocket::ProcessPacket(BYTE* packet, uint16 size, uint8 opcode, ui
 				// IP banned, no answer for this request
 				if( sender->IsBanned() )
 					break;
-				if( sender->uiULAskingCounter > uint16 (thePrefs.SivkaAskCounter)/*5*/ && ((::GetTickCount()-sender->dwThisClientIsKnownSince)/sender->uiULAskingCounter) < uint32 (MIN2MS(thePrefs.SivkaAskTime))/*MIN_REQUESTTIME*/ ){
+				if(thePrefs.GetEnableSivkaBan() && sender->uiULAskingCounter > uint16 (thePrefs.SivkaAskCounter)/*5*/ && ((::GetTickCount()-sender->dwThisClientIsKnownSince)/sender->uiULAskingCounter) < uint32 (MIN2MS(thePrefs.SivkaAskTime))/*MIN_REQUESTTIME*/ ){
 					if (thePrefs.SivkaAskLog)
 						{
 						AddLogLine(false, _T("OP_REASKFILEPING: (%s/%u)=%s ==> %s(%s) ASK TO FAST, BANNED!!!"), 
@@ -283,7 +283,7 @@ bool CClientUDPSocket::ProcessPacket(BYTE* packet, uint16 size, uint8 opcode, ui
 						sender->DbgGetFullClientSoftVer() );
 						}
 					if( sender->Ban() )
-						theApp.uploadqueue->RemoveFromUploadQueue(sender,_T("sivka-test"), true, false);//cyrex2001 =>sivka:
+						theApp.uploadqueue->RemoveFromUploadQueue(sender,_T("Ask to fast"), true, false);//cyrex2001 =>sivka:
 					Packet* response = new Packet(OP_QUEUEFULL,0,OP_EMULEPROT);
 					theStats.AddUpDataOverheadFileRequest(response->size);
 					SendPacket(response, ip, port);

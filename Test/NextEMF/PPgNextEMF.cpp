@@ -38,6 +38,9 @@ CPPgNextEMF::CPPgNextEMF()
 	m_htiQuickStartMaxConnPerFive = NULL;
 	m_htiQuickStartMaxConn = NULL;
 	m_htiQuickStartAfterIPChange = NULL;
+	m_htiSecurity = NULL;
+	m_htiSivkaBanGroup = NULL;
+	m_htiEnableSivkaBan = NULL;
 	m_htiSivkaAskTime = NULL;
 	m_htiSivkaAskCounter = NULL;
 	m_htiSivkaAskLog = NULL;
@@ -63,6 +66,7 @@ CPPgNextEMF::CPPgNextEMF()
 #ifdef DROP
     m_htiDropSources = NULL;
     m_htiHqrBox = NULL;
+    m_htiDropTimer = NULL;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
 //==>timestamp in chatwindow [shadow2004]
@@ -117,11 +121,13 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
                 m_ctrlTreeOptions.Expand(m_htiQuickStart, TVE_EXPAND);
 		m_htiQuickStartAfterIPChange = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_QUICK_START_AFTER_IP_CHANGE), TVI_ROOT, m_bQuickStartAfterIPChange);
 		m_htiSecurity = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SECURITY), iImgSecurity, TVI_ROOT);
-		m_htiSivkaAskTime = m_ctrlTreeOptions.InsertItem(GetResString(IDS_SIVKA_ASK_TIME), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSecurity);
+		m_htiSivkaBanGroup = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SIVKA_BAN_CONTROL), iImgSecurity, m_htiSecurity);
+		m_htiEnableSivkaBan = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SIVKA_BAN),m_htiSivkaBanGroup, m_bEnableSivkaBan);
+		m_htiSivkaAskTime = m_ctrlTreeOptions.InsertItem(GetResString(IDS_SIVKA_ASK_TIME), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSivkaBanGroup);
 		m_ctrlTreeOptions.AddEditBox(m_htiSivkaAskTime, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		m_htiSivkaAskCounter = m_ctrlTreeOptions.InsertItem(GetResString(IDS_SIVKA_ASK_COUNTER), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSecurity);
+		m_htiSivkaAskCounter = m_ctrlTreeOptions.InsertItem(GetResString(IDS_SIVKA_ASK_COUNTER), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSivkaBanGroup);
 		m_ctrlTreeOptions.AddEditBox(m_htiSivkaAskCounter, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		m_htiSivkaAskLog = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SIVKA_ASK_LOG), m_htiSecurity, m_bSivkaAskLog);
+		m_htiSivkaAskLog = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SIVKA_ASK_LOG), m_htiSivkaBanGroup, m_bSivkaAskLog);
 		m_htiAntiFakeRank = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTI_FAKE_RANK), m_htiSecurity, m_bAntiFakeRank);
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
@@ -141,6 +147,8 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		m_htiDropSources = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_DROPS), iImgDrop, TVI_ROOT);
 		m_htiHqrBox = m_ctrlTreeOptions.InsertItem(GetResString(IDS_DROPHQSLIMIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiDropSources);
 		m_ctrlTreeOptions.AddEditBox(m_htiHqrBox , RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_htiDropTimer = m_ctrlTreeOptions.InsertItem(GetResString(IDS_DROPTIME), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiDropSources);
+		m_ctrlTreeOptions.AddEditBox(m_htiDropTimer , RUNTIME_CLASS(CNumTreeOptionsEdit));
         m_ctrlTreeOptions.Expand(m_htiDropSources, TVE_EXPAND);
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
@@ -167,6 +175,7 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiQuickStartMaxConn, m_iQuickStartMaxConn);
 	DDV_MinMaxInt(pDX, m_iQuickStartMaxConn, 200, 2000);
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiQuickStartAfterIPChange, m_bQuickStartAfterIPChange);
+	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableSivkaBan, m_bEnableSivkaBan);
 	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiSivkaAskTime, m_iSivkaAskTime);
 	DDV_MinMaxInt(pDX, m_iSivkaAskTime, 5, 12);
 	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiSivkaAskCounter, m_iSivkaAskCounter);
@@ -189,6 +198,8 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 #ifdef DROP
     DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiHqrBox, iMaxRemoveQRS);
 	DDV_MinMaxInt(pDX, iMaxRemoveQRS, 2500, 100000);
+	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiDropTimer, m_iDropTimer);
+	DDV_MinMaxInt(pDX, m_iDropTimer, 2, 4);
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
 }
@@ -205,6 +216,7 @@ BOOL CPPgNextEMF::OnInitDialog()
 	m_iQuickStartMaxConnPerFive = (int)(thePrefs.QuickStartMaxConnPerFive);
 	m_iQuickStartMaxConn = (int)(thePrefs.QuickStartMaxConn);
 	m_bQuickStartAfterIPChange = thePrefs.isQuickStartAfterIPChange;
+	m_bEnableSivkaBan = thePrefs.enableSivkaBan;
 	m_iSivkaAskTime = (int)(thePrefs.SivkaAskTime);
 	m_iSivkaAskCounter = (int)(thePrefs.SivkaAskCounter);
 	m_bSivkaAskLog = thePrefs.SivkaAskLog;
@@ -231,7 +243,8 @@ BOOL CPPgNextEMF::OnInitDialog()
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
 #ifdef DROP
-    iMaxRemoveQRS = thePrefs.GetMaxRemoveQRS();
+    iMaxRemoveQRS = (int) thePrefs.GetMaxRemoveQRS();
+    m_iDropTimer = (int) thePrefs.DropTimer;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
 	CPropertyPage::OnInitDialog();
@@ -266,6 +279,7 @@ BOOL CPPgNextEMF::OnApply()
 	thePrefs.QuickStartMaxConnPerFive = m_iQuickStartMaxConnPerFive;
 	thePrefs.QuickStartMaxConn = m_iQuickStartMaxConn;
 	thePrefs.isQuickStartAfterIPChange = m_bQuickStartAfterIPChange;
+	thePrefs.enableSivkaBan = m_bEnableSivkaBan;
 	thePrefs.SivkaAskTime = m_iSivkaAskTime;
 	thePrefs.SivkaAskCounter = m_iSivkaAskCounter;
 	thePrefs.SivkaAskLog = m_bSivkaAskLog;
@@ -293,6 +307,7 @@ BOOL CPPgNextEMF::OnApply()
 //==>Drop maunal [cyrex2001]
 #ifdef DROP
 	thePrefs.SetMaxRemoveQRS(iMaxRemoveQRS ? iMaxRemoveQRS : 5000);
+	thePrefs.DropTimer = m_iDropTimer;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
 	SetModified(FALSE);
@@ -326,6 +341,7 @@ void CPPgNextEMF::Localize(void)
 		if (m_htiQuickStartMaxConnPerFive) m_ctrlTreeOptions.SetEditLabel(m_htiQuickStartMaxConnPerFive, GetResString(IDS_QUICK_START_MAX_CONN_PER_FIVE));
 		if (m_htiQuickStartMaxConn) m_ctrlTreeOptions.SetEditLabel(m_htiQuickStartMaxConn, GetResString(IDS_QUICK_START_MAX_CONN));
 		if (m_htiQuickStartAfterIPChange) m_ctrlTreeOptions.SetItemText(m_htiQuickStartAfterIPChange, GetResString(IDS_QUICK_START_AFTER_IP_CHANGE));
+		if (m_htiEnableSivkaBan) m_ctrlTreeOptions.SetItemText(m_htiEnableSivkaBan, GetResString(IDS_SIVKA_BAN));
 		if (m_htiSivkaAskTime) m_ctrlTreeOptions.SetEditLabel(m_htiSivkaAskTime, GetResString(IDS_SIVKA_ASK_TIME));
 		if (m_htiSivkaAskCounter) m_ctrlTreeOptions.SetEditLabel(m_htiSivkaAskCounter, GetResString(IDS_SIVKA_ASK_COUNTER));
 		if (m_htiSivkaAskLog) m_ctrlTreeOptions.SetItemText(m_htiSivkaAskLog, GetResString(IDS_SIVKA_ASK_LOG));
@@ -345,6 +361,7 @@ void CPPgNextEMF::Localize(void)
 //==>Drop maunal [cyrex2001]
 #ifdef DROP
 		if (m_htiHqrBox) m_ctrlTreeOptions.SetEditLabel(m_htiHqrBox, GetResString(IDS_DROPHQSLIMIT));
+		if (m_htiDropTimer) m_ctrlTreeOptions.SetEditLabel(m_htiDropTimer, GetResString(IDS_DROPTIME));
 		if (m_htiDropSources) m_ctrlTreeOptions.SetItemText(m_htiDropSources, GetResString(IDS_DROPS)); 
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
@@ -363,6 +380,9 @@ void CPPgNextEMF::OnDestroy()
 	m_htiQuickStartMaxConnPerFive = NULL;
 	m_htiQuickStartMaxConn = NULL;
 	m_htiQuickStartAfterIPChange = NULL;
+	m_htiSecurity = NULL;
+	m_htiSivkaBanGroup = NULL;
+	m_htiEnableSivkaBan = NULL;
 	m_htiSivkaAskTime = NULL;
 	m_htiSivkaAskCounter = NULL;
 	m_htiSivkaAskLog = NULL;
@@ -391,6 +411,7 @@ void CPPgNextEMF::OnDestroy()
 #ifdef DROP
     m_htiDropSources = NULL;
     m_htiHqrBox = NULL;
+    m_htiDropTimer = NULL;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
 

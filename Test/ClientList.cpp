@@ -558,7 +558,7 @@ void CClientList::Process(){
 		uint32 uDontAskTime;
 		while (pos != NULL){
 			m_DontAskThisIPList.GetNextAssoc( pos, uKey, uDontAskTime );
-			if( (uDontAskTime + 7200000) < cur_tick )
+			if( (uDontAskTime + HR2MS(thePrefs.GetDropTimer())) < cur_tick )
 				m_DontAskThisIPList.RemoveKey(uKey);
 		}
 	}

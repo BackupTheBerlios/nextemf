@@ -2391,6 +2391,9 @@
 #define IDS_DROP_HQS					61036
 #define IDS_DROP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP		61037
 #define IDS_DROP_MENUE					61038
+#define IDS_DROPTIME					61039
+#define IDS_SIVKA_BAN_CONTROL			61040
+#define IDS_SIVKA_BAN					61041
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

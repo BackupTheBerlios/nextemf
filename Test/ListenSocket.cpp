@@ -521,7 +521,7 @@ bool CClientReqSocket::ProcessPacket(char* packet, uint32 size, UINT opcode)
 					{
 //==>Sivka-Ban [cyrex2001]
 #ifdef SIVKA_BAN
-						if( client->uiULAskingCounter > uint16 (thePrefs.SivkaAskCounter) && ((::GetTickCount()-client->dwThisClientIsKnownSince)/client->uiULAskingCounter) < uint32 (MIN2MS(thePrefs.SivkaAskTime))){
+						if( thePrefs.GetEnableSivkaBan() && client->uiULAskingCounter > uint16 (thePrefs.SivkaAskCounter) && ((::GetTickCount()-client->dwThisClientIsKnownSince)/client->uiULAskingCounter) < uint32 (MIN2MS(thePrefs.SivkaAskTime))){
 							if (thePrefs.SivkaAskLog)
 								{
 								AddLogLine(false, _T("OP_STARTUPLOADREQ: (%s/%u)=%s ==> %s(%s) ASK TO FAST, BANNED!!!"), 

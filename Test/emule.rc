@@ -4464,6 +4464,13 @@ BEGIN
     IDS_OPTIMIZATIONS_DISABLED "Otimizations disabled"
 END
 
+STRINGTABLE 
+BEGIN
+    IDS_DROPTIME			"Waiting time for sourcen droped [2-4h]"
+    IDS_SIVKA_BAN_CONTROL	"Sivka-ban control"
+    IDS_SIVKA_BAN			"Enable sivka-ban control"
+END
+
 #endif    // Englisch (USA) resources
 /////////////////////////////////////////////////////////////////////////////
 

@@ -614,6 +614,7 @@ bool	CPreferences::m_TakeOverFileSettings;
 //<==Hardlimit [cyrex2001]
 //==>Sivka-Ban [cyrex2001]
 #ifdef SIVKA_BAN
+bool	CPreferences::enableSivkaBan;
 uint16  CPreferences::m_iSivkaAskTime;
 uint16  CPreferences::SivkaAskTime;
 uint16  CPreferences::m_iSivkaAskCounter;
@@ -643,6 +644,7 @@ bool	CPreferences::enableZeroFilledTest;
 //==>Drop maunal [cyrex2001]
 #ifdef DROP
 uint16	CPreferences::MaxRemoveQRS;
+uint16  CPreferences::DropTimer;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
 
@@ -2344,6 +2346,7 @@ void CPreferences::SavePreferences()
 //<==Quickstart [cyrex2001]
 //==>Sivka-Ban [cyrex2001]
 #ifdef SIVKA_BAN
+	ini.WriteBool(_T("EnableSivkaBan"), enableSivkaBan,_T("NextEMF"));
 	ini.WriteInt(_T("SivkaAskTime"), SivkaAskTime,_T("NextEMF"));
 	ini.WriteInt(_T("SivkaAskCounter"), SivkaAskCounter,_T("NextEMF"));
 	ini.WriteBool(_T("SivkaAskLog"), SivkaAskLog,_T("NextEMF"));
@@ -2368,6 +2371,7 @@ void CPreferences::SavePreferences()
 //==>Drop maunal [cyrex2001]
 #ifdef DROP
     ini.WriteInt(_T("MaxRemoveQueueRatingSources"),MaxRemoveQRS, _T("NextEMF"));
+	ini.WriteInt(_T("DropTimer"),DropTimer, _T("NextEMF"));
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
 }
@@ -2992,8 +2996,9 @@ void CPreferences::LoadPreferences()
 //<==Quickstart [cyrex2001]
 //==>Sivka-Ban [cyrex2001]
 #ifdef SIVKA_BAN
+	enableSivkaBan = ini.GetBool(_T("EnableSivkaBan"), true, _T("NextEMF"));
 	SivkaAskTime = ini.GetInt(_T("SivkaAskTime"), 10, _T("NextEMF"));
-	SivkaAskCounter = ini.GetInt(_T("SivkaAskCounter"), 5, _T("NextEMF"));
+	SivkaAskCounter = ini.GetInt(_T("SivkaAskCounter"), 7, _T("NextEMF"));
 	SivkaAskLog = ini.GetBool(_T("SivkaAskLog"),false, _T("NextEMF"));
 #endif //Sivka-Ban
 //<==Sivka-Ban [cyrex2001]
@@ -3022,6 +3027,7 @@ void CPreferences::LoadPreferences()
 //==>Drop maunal [cyrex2001]
 #ifdef DROP
     MaxRemoveQRS=ini.GetInt(_T("MaxRemoveQueueRatingSources"),5000, _T("NextEMF"));
+    DropTimer=ini.GetInt(_T("DropTimer"),2, _T("NextEMF"));
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
 

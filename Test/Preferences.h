@@ -607,6 +607,7 @@ public:
 //<==Hardlimit [cyrex2001]
 //==>Sivka-Ban [cyrex2001]
 #ifdef SIVKA_BAN
+	static bool	enableSivkaBan;
 	static uint16  m_iSivkaAskTime;
 	static uint16  SivkaAskTime;
 	static uint16  m_iSivkaAskCounter;
@@ -636,6 +637,7 @@ public:
 //==>Drop maunal [cyrex2001]
 #ifdef DROP
 	static    uint16  MaxRemoveQRS;
+	static    uint16  DropTimer;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
 
@@ -1411,6 +1413,7 @@ public:
 //<==Hardlimit [cyrex2001]
 //==>Sivka-Ban [cyrex2001]
 #ifdef SIVKA_BAN
+	static	bool GetEnableSivkaBan()						{ return enableSivkaBan; }
 	static void	SetSivkaAskTime(int in) { m_iSivkaAskTime = in; }
 	static uint16  GetSivkaAskTime()		{ return m_iSivkaAskTime; }
 	static void    SetSivkaAskCounter (int in) { m_iSivkaAskCounter = in; }
@@ -1433,6 +1436,8 @@ public:
 #ifdef DROP
  	static   uint16 CPreferences::GetMaxRemoveQRS()      { return MaxRemoveQRS; }
  	static   void	SetMaxRemoveQRS(int in)             {MaxRemoveQRS=in;}
+ 	static   uint16 CPreferences::GetDropTimer()      { return DropTimer; }
+ 	static   void	SetDropTimer(int in)             {DropTimer=in;}
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
 

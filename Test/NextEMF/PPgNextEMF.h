@@ -25,6 +25,7 @@ protected:
 	int m_iQuickStartMaxConnPerFive;
 	int m_iQuickStartMaxConn;
 	int m_bQuickStartAfterIPChange;
+	int m_bEnableSivkaBan;
 	int m_iSivkaAskTime;
 	int m_iSivkaAskCounter;
 	int m_bSivkaAskLog;
@@ -49,6 +50,7 @@ protected:
 //==>Drop maunal [cyrex2001]
 #ifdef DROP
     int iMaxRemoveQRS;
+    int m_iDropTimer;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
 //==>timestamp in chatwindow [shadow2004]
@@ -62,6 +64,8 @@ protected:
 	HTREEITEM m_htiQuickStartMaxConnPerFive;
 	HTREEITEM m_htiQuickStartMaxConn;
 	HTREEITEM m_htiQuickStartAfterIPChange;
+	HTREEITEM m_htiSivkaBanGroup;
+	HTREEITEM m_htiEnableSivkaBan;
 	HTREEITEM m_htiSivkaAskTime;
 	HTREEITEM m_htiSivkaAskCounter;
 	HTREEITEM m_htiSivkaAskLog;
@@ -87,6 +91,7 @@ protected:
 #ifdef DROP
     HTREEITEM m_htiDropSources;
 	HTREEITEM m_htiHqrBox;
+    HTREEITEM m_htiDropTimer;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
 //==>timestamp in chatwindow [shadow2004]
