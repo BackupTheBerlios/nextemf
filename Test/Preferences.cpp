@@ -586,7 +586,7 @@ bool	CPreferences::m_bOpenPortsOnStartUp;
 uint8	CPreferences::m_byLogLevel;
 bool	CPreferences::m_bTrustEveryHash;
 //==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA //Reask sourcen after ip change
+#ifdef RSAIC_MAELLA //Reask sourcen after ip change
 bool	CPreferences::isreaskSourceAfterIPChange;
 bool	CPreferences::m_breaskSourceAfterIPChange;
 #endif //Reask sourcen after ip change
@@ -2336,7 +2336,7 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("EnableZeroFilledTest"), enableZeroFilledTest,_T("NextEMF"));
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA //Reask sourcen after ip change
+#ifdef RSAIC_MAELLA //Reask sourcen after ip change
 	ini.WriteBool(_T("ReaskSourceAfterIPChange"),isreaskSourceAfterIPChange,_T("NextEMF"));
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
@@ -2989,7 +2989,7 @@ void CPreferences::LoadPreferences()
 	m_nPeerCachePort = ini.GetInt(_T("PCPort"), 0);
 
 //==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA //Reask sourcen after ip change
+#ifdef RSAIC_MAELLA //Reask sourcen after ip change
 	isreaskSourceAfterIPChange = ini.GetBool(_T("ReaskSourceAfterIPChange"),false, _T("NextEMF"));
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]

@@ -16,7 +16,7 @@ static char THIS_FILE[]=__FILE__;
 
 #endif
 //==>Reask sourcen after ip chnage or Quickstart or Sivka-Ban [cyrex2001]
-#if defined (QUICKSTART)|| defined (SIVKA_BAN) || defined (RSAIC_SIVKA) //Reask sourcen after ip chnage or Quickstart or Sivka-Ban
+#if defined (QUICKSTART)|| defined (SIVKA_BAN) || defined (RSAIC_MAELLA) //Reask sourcen after ip chnage or Quickstart or Sivka-Ban
 
 IMPLEMENT_DYNAMIC(CPPgNextEMF, CPropertyPage)
 BEGIN_MESSAGE_MAP(CPPgNextEMF, CPropertyPage)
@@ -225,7 +225,7 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 BOOL CPPgNextEMF::OnInitDialog()
 {
 //==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA
+#ifdef RSAIC_MAELLA
 	m_bIsreaskSourceAfterIPChange = thePrefs.isreaskSourceAfterIPChange;
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
@@ -293,7 +293,7 @@ BOOL CPPgNextEMF::OnApply()
 	if (!UpdateData())
 		return FALSE;
 //==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA
+#ifdef RSAIC_MAELLA
 	thePrefs.isreaskSourceAfterIPChange = m_bIsreaskSourceAfterIPChange;
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]

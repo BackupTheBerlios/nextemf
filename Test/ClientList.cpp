@@ -679,20 +679,20 @@ void CClientList::Process(){
 	if ( Kademlia::CKademlia::isConnected() )
 	{
 		if( Kademlia::CKademlia::isFirewalled() )
-		{
-			ASSERT( Kademlia::CKademlia::getPrefs() != NULL );
+	{
+		ASSERT( Kademlia::CKademlia::getPrefs() != NULL );
 			if( !m_bHaveBuddy && Kademlia::CKademlia::getPrefs()->getFindBuddy() )
-			{
+		{
 				//We are a firewalled client with no buddy. We have also waited a set time 
 				//to try to avoid a false firewalled status.. So lets look for a buddy..
-				Kademlia::CSearch *findBuddy = new Kademlia::CSearch;
-				findBuddy->setSearchTypes(Kademlia::CSearch::FINDBUDDY);
-				Kademlia::CUInt128 ID(true);
-				ID.xor(Kademlia::CKademlia::getPrefs()->getKadID());
-				findBuddy->setTargetID(ID);
-				Kademlia::CSearchManager::startSearch(findBuddy);
-			}
+			Kademlia::CSearch *findBuddy = new Kademlia::CSearch;
+			findBuddy->setSearchTypes(Kademlia::CSearch::FINDBUDDY);
+			Kademlia::CUInt128 ID(true);
+			ID.xor(Kademlia::CKademlia::getPrefs()->getKadID());
+			findBuddy->setTargetID(ID);
+			Kademlia::CSearchManager::startSearch(findBuddy);
 		}
+	}
 		else
 		{
 			if( m_bHaveBuddy )
@@ -915,20 +915,6 @@ void CClientList::CleanUp(CPartFile* pDeletedFile){
 #endif
 //<==Extended clean-up II by MAELLA [shadow2004]
 
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA
-// ZZ:DownloadManager -->modified by sivka [improved]
-void CClientList::ProcessA4AFClients() {
-	for( POSITION pos = list.GetHeadPosition(); pos;) {
-		CUpDownClient* cur_client = list.GetNext(pos);
-		if( cur_client->GetDownloadState() != DS_DOWNLOADING
-			&& cur_client->GetDownloadState() != DS_CONNECTED
-			&&(!cur_client->m_OtherRequests_list.IsEmpty() || !cur_client->m_OtherNoNeeded_list.IsEmpty()) )
-			cur_client->SwapToAnotherFile(_T("Periodic A4AF check CClientList::ProcessA4AFClients()"), false, false, false, NULL, true, false);
-		}
-	}
-// <-- ZZ:DownloadManager
-#else
 // ZZ:DownloadManager -->
 void CClientList::ProcessA4AFClients() {
     //if(thePrefs.GetLogA4AF()) AddDebugLogLine(false, _T(">>> Starting A4AF check"));
@@ -947,8 +933,7 @@ void CClientList::ProcessA4AFClients() {
     //if(thePrefs.GetLogA4AF()) AddDebugLogLine(false, _T(">>> Done with A4AF check"));
 }
 // <-- ZZ:DownloadManager
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
+
 //==>List Of Dont Ask This IPs [cyrex2001]
 #ifdef DROP
 bool CClientList::DontAskThisIP(uint32 dwIP){
@@ -964,33 +949,20 @@ bool CClientList::DontAskThisIP(uint32 dwIP){
 #endif //List Of Dont Ask This IPs
 //<==List Of Dont Ask This IPs [cyrex2001]
 
-
 //==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA
-void CClientList::TrigReaskForDownload()
-	{
-	for(POSITION pos = list.GetHeadPosition(); pos;)
-		{
-    CUpDownClient* cur_client = list.GetNext(pos); 
-		m_dwLastAskedTime = cur_client->GetTimeUntilReask(cur_client->GetRequestFile());
-		if( cur_client->GetDownloadState() == DS_NONEEDEDPARTS )
-			{
-			m_dwLastAskedTime = FILEREASKTIME;
-			cur_client->SetLastAskedTime(m_dwLastAskedTime);
-			}
-		else
-			{
-			if (m_dwLastAskedTime >= MIN_REQUESTTIME * 2)
-				{
-                m_dwLastAskedTime -= (FILEREASKTIME - MIN_REQUESTTIME);
-				}
-			else if (cur_client->GetTimeUntilReask(cur_client->GetRequestFile()) >= MIN_REQUESTTIME)
-				{
-					m_dwLastAskedTime -= (FILEREASKTIME - MIN_REQUESTTIME * 2);
-				}
-			}
-				cur_client->SetLastAskedTime(m_dwLastAskedTime);
-				}
-			}
+#ifdef RSAIC_MAELLA
+void CClientList::TrigReaskForDownload(bool immediate){
+	for(POSITION pos = list.GetHeadPosition(); pos != NULL;){				
+		CUpDownClient* cur_client =	list.GetNext(pos);
+		if(immediate == true){
+			// Compute the next time that the file might be saftly reasked (=> no Ban())
+			cur_client->SetNextTCPAskedTime(0);
+		}
+		else{
+			// Compute the next time that the file might be saftly reasked (=> no Ban())
+			cur_client->TrigNextSafeAskForDownload(cur_client->GetRequestFile());
+		}
+	}	
+}
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]

@@ -257,11 +257,6 @@ void CUpDownClient::Init()
 	for (uint8 i = 0;i < 5; i++) m_iDifferenceQueueRank[i] = 0;
 #endif //AntiFakeRank
 //<==AntiFakeRank [cyrex2001]
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA
- m_bValidSource = false;
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
 	m_bALFprotect = false;
@@ -284,6 +279,24 @@ void CUpDownClient::Init()
 	m_downloadpriority=1;
 #endif //Xman askfordownload priority
 //<==Xman askfordownload priority [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+	// Maella -Spread Request- (idea SlugFiller)
+	// FILEREASKTIME = 29 mins
+	// Remark: a client will be remove from an upload queue after 2*FILEREASKTIME (~1 hour)
+	//         a two small value increases the traffic + causes a banishment if lower than 10 minutes
+	//         srand() is already called a few times..
+	uint32 jitter = rand() * MIN2S(4) / RAND_MAX; // 0..4 minutes, keep in mind integer overflow
+	m_jitteredFileReaskTime = FILEREASKTIME + SEC2MS(jitter) - MIN2MS(2); // -2..+2 minutes, keep the same average overload
+	m_dwLastUDPReaskTime = 0;
+	m_dwNextTCPAskedTime = 0;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_CYREX
+	m_cyrexLastAskedTime = 0;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -345,6 +358,12 @@ CUpDownClient::~CUpDownClient(){
     m_fileReaskTimes.RemoveAll(); // ZZ:DownloadManager (one resk timestamp for each file)
 	if (m_pReqFileAICHHash != NULL)
 		delete m_pReqFileAICHHash;
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+	if (!m_partStatusMap.empty())
+		m_partStatusMap.clear();
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 }
 
 void CUpDownClient::ClearHelloProperties()
@@ -1287,14 +1306,14 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket){
 
 			if (m_cFailed <= 3 && GetUserName()!=NULL) //we now the client, give 3 attemps
 			{
-				SetLastAskedTime(SEC2MS(60)); //wait 60 sec bevore the next try
+				SetNextTCPAskedTime(::GetTickCount()+ MIN2MS(1)); //wait 60 sec bevore the next try
 				SetDownloadState(DS_NONE);
 				bDelete = false; //Delete this socket but not this client
 				break;
 			}
 			else if (m_cFailed <= 2)  //we don't know this clients, only 2 attemps
 			{
-				SetLastAskedTime(SEC2MS(60)); //wait 60 sec bevore the next try
+				SetNextTCPAskedTime(::GetTickCount()+ MIN2MS(1)); //wait 60 sec bevore the next try
 				SetDownloadState(DS_NONE);
 				bDelete = false; //Delete this socket but not this client
 				break;
@@ -2216,6 +2235,12 @@ void CUpDownClient::ResetFileStatusInfo()
 		delete m_pReqFileAICHHash;
 		m_pReqFileAICHHash = NULL;
 	}
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+	m_dwLastUDPReaskTime = 0;			
+	m_dwNextTCPAskedTime = 0;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 }
 
 bool CUpDownClient::IsBanned() const

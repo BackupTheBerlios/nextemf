@@ -61,7 +61,7 @@ CPreferencesDlg::CPreferencesDlg()
 #endif //PROXY
 //<== remove PROXY [shadow2004]
 //==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
-#if defined (RSAIC_SIVKA) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+#if defined (RSAIC_MAELLA) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
 	m_wndNextEMF.m_psp.dwFlags &= ~PSH_HASHELP;
 #endif //Reask sourcen after ip chnage or Quickstart
 //<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
@@ -100,7 +100,7 @@ CPreferencesDlg::CPreferencesDlg()
 	CTreePropSheet::SetPageIcon(&m_wndDebug, _T("Preferences"));
 #endif
 //==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
-#if defined (RSAIC_SIVKA) || defined (QUICKSTART)
+#if defined (RSAIC_MAELLA) || defined (QUICKSTART)
 	CTreePropSheet::SetPageIcon(&m_wndNextEMF, _T("CLIENT_NEXTEMF"));
 #endif //Reask sourcen after ip chnage or Quickstart
 //<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
@@ -131,7 +131,7 @@ CPreferencesDlg::CPreferencesDlg()
 	AddPage(&m_wndWebServer);
 	AddPage(&m_wndTweaks);
 //==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
-#if defined (RSAIC_SIVKA) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+#if defined (RSAIC_MAELLA) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
 	AddPage(&m_wndNextEMF);
 #endif //Reask sourcen after ip chnage or Quickstart
 //<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
@@ -203,7 +203,7 @@ void CPreferencesDlg::Localize()
 #endif //PROXY
 //<== remove PROXY [shadow2004]
 //==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
-#if defined (RSAIC_SIVKA) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+#if defined (RSAIC_MAELLA) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
 	m_wndNextEMF.Localize();
 #endif //Reask sourcen after ip chnage or Quickstart
 //<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
@@ -238,7 +238,7 @@ void CPreferencesDlg::Localize()
 		pTree->SetItemText(GetPageTreeItem(9), RemoveAmbersand(GetResString(IDS_PW_WS)));//12
 		pTree->SetItemText(GetPageTreeItem(10), RemoveAmbersand(GetResString(IDS_PW_TWEAK)));//13
 //==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
-#if defined (RSAIC_SIVKA) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+#if defined (RSAIC_MAELLA) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
 		pTree->SetItemText(GetPageTreeItem(11), RemoveAmbersand(GetResString(IDS_PW_NEXTEMF)/*_T(NextEMF)*/));//14
 #endif //Reask sourcen after ip chnage or Quickstart
 //<==Reask sourcen after ip chnage or Quickstart [cyrex2001]

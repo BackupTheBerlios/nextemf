@@ -140,13 +140,6 @@ private:
 	CUpDownClientPtrList KadList;
 	CCriticalSection m_RequestTCPLock;
 	CUpDownClient* m_pBuddy;
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA //Reask sourcen after ip change
-public:
-	void TrigReaskForDownload();
-	uint32 m_dwLastAskedTime;
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 //==>List Of Dont Ask This IPs [cyrex2001]
 #ifdef DROP
 public:
@@ -160,4 +153,12 @@ private:
 	DWORD m_dwLastCleanUpDontAskThisIP;
 #endif //List Of Dont Ask This IPs
 //<==List Of Dont Ask This IPs [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+public:
+	// Maella -Inform sources of an ID change-
+	void TrigReaskForDownload(bool immediate);
+	// Maella end
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 };

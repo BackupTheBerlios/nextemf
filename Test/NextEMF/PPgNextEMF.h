@@ -1,5 +1,5 @@
 //==>Reask sourcen after ip chnage or Quickstart or Sivka-Ban [cyrex2001]
-#if defined (QUICKSTART) || defined (SIVKA_BAN) || defined (RSAIC_SIVKA) //Reask sourcen after ip chnage or Quickstart or Sivka-Ban
+#if defined (QUICKSTART) || defined (SIVKA_BAN) || defined (RSAIC_MAELLA) //Reask sourcen after ip chnage or Quickstart or Sivka-Ban
 
 #pragma once
 #include "preferences.h"

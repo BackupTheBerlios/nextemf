@@ -230,11 +230,6 @@ bool CUrlClient::Disconnected(LPCTSTR pszReason, bool bFromSocket)
 	// TODO: This is a mess..
 	if (s && (s->GetHttpState() == HttpStateRecvExpected || s->GetHttpState() == HttpStateRecvBody))
         m_fileReaskTimes.RemoveKey(reqfile); // ZZ:DownloadManager (one resk timestamp for each file)
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA
-		//m_dwLastAskedTime = 0;
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 	return CUpDownClient::Disconnected(pszReason, bFromSocket);
 }
 

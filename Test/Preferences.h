@@ -578,8 +578,9 @@ public:
 	static bool		m_bTrustEveryHash;
 
 	static uint8	m_byLogLevel;
+
 //==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA //Reask sourcen after ip change
+#ifdef RSAIC_MAELLA //Reask sourcen after ip change
 	static bool	isreaskSourceAfterIPChange;
 	static bool	m_breaskSourceAfterIPChange;
 #endif //Reask sourcen after ip change
@@ -683,7 +684,7 @@ public:
 //<== remove scheduler [shadow2004]
 	friend class CPPgDebug;
 //==>Reask sourcen after ip change or Quickstart [cyrex2001]
-#if defined (RSAIC_SIVKA) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
+#if defined (RSAIC_MAELLA) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
 	friend class CPPgNextEMF;
 #endif //Reask sourcen after ip change or Quickstart
 //<==Reask sourcen after ip change or Quickstart [cyrex2001]
@@ -1390,7 +1391,7 @@ public:
 	static	bool	IsTrustingEveryHash()				{return m_bTrustEveryHash;} // this is a debug option
 
 //==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA //Reask sourcen after ip change
+#ifdef RSAIC_MAELLA //Reask sourcen after ip change
 	static bool	IsreaskSourceAfterIPChange()   { return isreaskSourceAfterIPChange; } 
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]

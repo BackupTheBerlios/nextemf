@@ -230,7 +230,7 @@ bool CUpDownClient::AskForDownload()
 		if(GetUploadState()==US_ONUPLOADQUEUE)
 			m_downloadpriority++;
 		if(GetLastAskedTime()!=0) //never asked before
-	{
+		{
 			if(::GetTickCount() - GetLastAskedTime() > (1000 * 60 * 40)) //40 min
 				m_downloadpriority++;
 			if(::GetTickCount() - GetLastAskedTime() > (1000 * 60 * 50)) //50 min
@@ -445,6 +445,14 @@ void CUpDownClient::SendFileRequest()
 		}
 	}
     SetLastAskedTime(); // ZZ:DownloadManager
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+	// Maella -Unnecessary Protocol Overload-
+	// Delay the next refresh of the download session initiated from CPartFile::Process() 
+	m_dwNextTCPAskedTime = ::GetTickCount() + GetJitteredFileReaskTime();
+	// Maella end
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 }
 
 void CUpDownClient::SendStartupLoadReq()
@@ -465,6 +473,16 @@ void CUpDownClient::SendStartupLoadReq()
 	socket->SendPacket(packet, true, true);
 	m_fQueueRankPending = 1;
 	m_fUnaskQueueRankRecv = 0;
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+	// Maella -Unnecessary Protocol Overload-
+	// Remark: force a TCP refresh of the download session in 2 hours
+	m_dwNextTCPAskedTime = GetLastAskedTime() + 4 * GetJitteredFileReaskTime(); // ZZ:DownloadManager
+	// Keep a track when this file was asked for the last time to avoid a Ban()
+	m_partStatusMap[reqfile].dwStartUploadReqTime = ::GetTickCount();
+	// Maella end
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 }
 
 void CUpDownClient::ProcessFileInfo(CSafeMemFile* data, CPartFile* file)
@@ -696,6 +714,14 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState){
 		{
 			case DS_CONNECTING:
 	            m_dwLastTriedToConnect = ::GetTickCount();
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+				// Maella -Unnecessary Protocol Overload-
+				// Delay the next refresh of the download session initiated from CPartFile::Process()
+				m_dwNextTCPAskedTime = ::GetTickCount() + GetJitteredFileReaskTime();
+				// Maella end
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 				break;
 			case DS_TOOMANYCONNSKAD:
 				//This client had already been set to DS_CONNECTING.
@@ -1556,7 +1582,13 @@ const bool CUpDownClient::SwapToRightFile(CPartFile* SwapTo, CPartFile* cur_file
 
                 DWORD tempTick = ::GetTickCount();
                 bool rightFileHasHigherPrio = CPartFile::RightFileHasHigherPrio(SwapTo, cur_file);
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+                uint32 allNnpReaskTime = GetJitteredFileReaskTime()*2*(m_OtherNoNeeded_list.GetSize() + (GetDownloadState() == DS_NONEEDEDPARTS)?1:0); // wait two reask interval for each nnp file before reasking an nnp file
+#else
                 uint32 allNnpReaskTime = FILEREASKTIME*2*(m_OtherNoNeeded_list.GetSize() + (GetDownloadState() == DS_NONEEDEDPARTS)?1:0); // wait two reask interval for each nnp file before reasking an nnp file
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
                 if(!SwapToIsNNPFile && (!curFileisNNPFile || GetLastAskedTime(cur_file) == 0 || tempTick-GetLastAskedTime(cur_file) > allNnpReaskTime) && rightFileHasHigherPrio ||
                    SwapToIsNNPFile && curFileisNNPFile &&
                    (
@@ -1972,28 +2004,37 @@ bool CUpDownClient::IsSwapSuspended(const CPartFile* file, const bool allowShort
 }
 uint32 CUpDownClient::GetTimeUntilReask(const CPartFile* file, const bool allowShortReaskTime, const bool useGivenNNP, const bool givenNNP) const {
     DWORD lastAskedTimeTick = GetLastAskedTime(file);
-    if(lastAskedTimeTick != 0) {
-        DWORD tick = ::GetTickCount();
-        DWORD reaskTime;
-        if(allowShortReaskTime) {
-            reaskTime = MIN_REQUESTTIME;
-        } else if(useGivenNNP && givenNNP ||
-                  file == reqfile && GetDownloadState() == DS_NONEEDEDPARTS ||
-                  file != reqfile && IsInNoNeededList(file)) {
-            reaskTime = FILEREASKTIME*2;
+	if(lastAskedTimeTick != 0) {
+		DWORD tick = ::GetTickCount();
+		DWORD reaskTime;
+		if(allowShortReaskTime) {
+			reaskTime = MIN_REQUESTTIME;
+			} else if(useGivenNNP && givenNNP ||
+				file == reqfile && GetDownloadState() == DS_NONEEDEDPARTS ||
+				file != reqfile && IsInNoNeededList(file)) {
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+		// Maella -Spread Request- (idea SlugFiller)
+            reaskTime = GetJitteredFileReaskTime()*2;
         } else {
-            reaskTime = FILEREASKTIME;
-        }
-
-        if(tick-lastAskedTimeTick < reaskTime) {
-            return reaskTime-(tick-lastAskedTimeTick);
-        } else {
-            return 0;
-        }
-    } else {
-        return 0;
-    }
-}
+            reaskTime = GetJitteredFileReaskTime();
+		// Maella -Spread Request- (idea SlugFiller)
+#else
+					reaskTime = FILEREASKTIME*2;
+					} else {
+						reaskTime = FILEREASKTIME;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
+						}
+				if(tick-lastAskedTimeTick < reaskTime) {
+					return reaskTime-(tick-lastAskedTimeTick);
+					} else {
+						return 0;
+						}
+		} else {
+			return 0;
+			}
+	}
 
 uint32 CUpDownClient::GetTimeUntilReask(const CPartFile* file) const {
     return GetTimeUntilReask(file, false);
@@ -2052,6 +2093,14 @@ void CUpDownClient::CleanUp(CPartFile* pDeletedFile){
 			//AddDebugLogLine(false, _T("CleanUp() reports an error with m_OtherNoNeeded_list"));
 		}
 	}
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+	PartStatusMap::iterator it = m_partStatusMap.find(pDeletedFile); 
+	if(it != m_partStatusMap.end()){
+		m_partStatusMap.erase(it);
+	}
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 }
 #endif
 //<==Extended clean-up II by MAELLA [shadow2004]
@@ -2195,7 +2244,7 @@ uint32 CUpDownClient::GetLastAskedTime(const CPartFile* partFile) const
 	}
 
 	DWORD lastChangedTick;
-	return m_fileReaskTimes.Lookup(file, lastChangedTick)?lastChangedTick:0;
+	return 	m_fileReaskTimes.Lookup(file, lastChangedTick)?lastChangedTick:0;
 }
 
 void CUpDownClient::SetReqFileAICHHash(CAICHHash* val){
@@ -2316,3 +2365,36 @@ void CUpDownClient::ProcessAICHFileHash(CSafeMemFile* data, CPartFile* file){
 	else
 		AddDebugLogLine(DLP_HIGH, false, _T("ProcessAICHFileHash(): PartFile not found or Partfile differs from requested file, %s"), DbgGetClientInfo());
 }
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+void CUpDownClient::TrigNextSafeAskForDownload(CPartFile* pFile)
+	{
+	// Check when the specified file has been asked for the last time and
+	// define when the file can be asked again without risking to be banished.
+	if(pFile != NULL)
+		{
+		PartStatusMap::const_iterator it = m_partStatusMap.find(pFile);
+		if(it != m_partStatusMap.end())
+			{
+			// Compute then the next AskForDownload() might be 
+			// performed without risk of Ban() (=> 11 minutes)
+			if(it->second.dwStartUploadReqTime == 0)
+				{
+				// File has never been asked before
+				m_dwNextTCPAskedTime = 0; // Safe immediate reask
+				}
+			else 
+				{
+				m_dwNextTCPAskedTime = it->second.dwStartUploadReqTime + MIN_REQUESTTIME + MIN2MS(1);
+				}
+			}
+		else 
+			{
+			// File has never been asked before
+			m_dwNextTCPAskedTime = 0; // Safe immediate reask
+			}
+		}
+	}
+// Maella end
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
