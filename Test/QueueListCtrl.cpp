@@ -138,7 +138,7 @@ void CQueueListCtrl::SetAllIcons()
 	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);//15
 //==>Modversion [cyrex2001]
 #ifdef MODVERSION
-	imagelist.Add(CTempIconLoader(_T("AAAEMULEAPP")/*CLIENT_NEXTEMF*/));//16
+	imagelist.Add(CTempIconLoader(_T("CLIENT_NEXTEMF")));//16
 #endif //Modversion
 //<==Modversion [cyrex2001]
 }

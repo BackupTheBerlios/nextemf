@@ -1241,6 +1241,53 @@ UINT CUpDownClient::GetAvailablePartCount() const
 }
 
 void CUpDownClient::SetRemoteQueueRank(uint16 nr){
+//==>AntiFakeRank [cyrex2001]
+#ifdef ANTI_FAKE_RANK
+	if (m_nRemoteQueueRank > 0){
+		for (uint8 i = 4;i > 0 ; i--) m_iDifferenceQueueRank[i] = m_iDifferenceQueueRank[i-1];
+		m_iDifferenceQueueRank[0] = m_nRemoteQueueRank;
+
+		uint8 nbrank = 0;
+		
+		for (uint8 i = 0;i < 5 ; i++) if (m_iDifferenceQueueRank[i]==0) nbrank = i; 
+
+		if (nbrank > 2)
+		{
+			bool possible = true;
+
+			if (m_nRemoteQueueRank > 500) possible = false;
+			if (possible == true) for (uint8 i = 0;i < 5 ; i++) if (m_iDifferenceQueueRank[i]>500) possible = false;
+			
+			if (GetTransferedDown() > 3000000) possible = false;
+
+			if (possible) {
+
+				uint8 errorfakerank = 0;
+				bool fakerankv1 = true;				
+
+				
+				for (uint8 i = 0;i < nbrank ; i++)
+					if (m_iDifferenceQueueRank[i] != m_nRemoteQueueRank) fakerankv1 = false;
+				
+
+				if (!fakerankv1)
+				{
+					if (!(((m_nRemoteQueueRank <= m_iDifferenceQueueRank[0]) && (m_iDifferenceQueueRank[0] <= m_iDifferenceQueueRank[1])) ||
+						((m_nRemoteQueueRank >= m_iDifferenceQueueRank[0]) && (m_iDifferenceQueueRank[0] >= m_iDifferenceQueueRank[1])))) errorfakerank = errorfakerank++;
+
+					for (uint8 i = 0;i < (nbrank-2) ; i++)
+						if (!(((m_iDifferenceQueueRank[i] <= m_iDifferenceQueueRank[i+1]) && (m_iDifferenceQueueRank[i+1] <= m_iDifferenceQueueRank[i+2])) ||
+						   ((m_iDifferenceQueueRank[i] >= m_iDifferenceQueueRank[i+1]) && (m_iDifferenceQueueRank[i+1] >= m_iDifferenceQueueRank[i+2])))) errorfakerank = errorfakerank++;
+	}
+				if ((errorfakerank >= 2)||(fakerankv1)) SetIsfakerank(true); else SetIsfakerank(false);
+
+
+	}
+			else SetIsfakerank(false);
+		}
+	}
+#endif //AntiFakeRank
+//<==AntiFakeRank [cyrex2001]
 	m_nRemoteQueueRank = nr;
 	UpdateDisplayedInfo();
 }
@@ -1801,6 +1848,11 @@ bool CUpDownClient::DoSwap(CPartFile* SwapTo, bool bRemoveCompletely, LPCTSTR re
 	SetRequestFile(SwapTo);	
 	pOldRequestFile->UpdatePartsInfo();
 	pOldRequestFile->UpdateAvailablePartsCount();
+//==>AntiFakeRank [cyrex2001]
+#ifdef ANTI_FAKE_RANK
+	m_iDifferenceQueueRank[0]=0;
+#endif //AntiFakeRank
+//<==AntiFakeRank [cyrex2001]
 
 	SwapTo->srclist.AddTail(this);
 	theApp.emuledlg->transferwnd->downloadlistctrl.AddSource(SwapTo,this,false);

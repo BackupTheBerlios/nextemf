@@ -368,6 +368,13 @@ public:
 	void			SetRemoteQueueRank(uint16 nr);
 	bool			IsRemoteQueueFull() const						{ return m_bRemoteQueueFull; }
 	void			SetRemoteQueueFull(bool flag)					{ m_bRemoteQueueFull = flag; }
+//==>AntiFakeRank [cyrex2001]
+#ifdef ANTI_FAKE_RANK
+	uint16			GetDiffQR(uint8 i)								{return m_iDifferenceQueueRank[i];}
+	bool			GetIsfakerank()									{return m_nfakerank;}
+	void			SetIsfakerank(bool fake)						{m_nfakerank = fake;}
+#endif //AntiFakeRank
+//<==AntiFakeRank [cyrex2001]
 	void			DrawStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool  bFlat) const;
 	bool			AskForDownload();
 	virtual void	SendFileRequest();
@@ -501,6 +508,12 @@ public:
 	uint16			m_lastPartAsked;
 	bool			m_bAddNextConnect;  // VQB Fix for LowID slots only on connection
 
+//==>AntiFakeRank [cyrex2001]
+#ifdef ANTI_FAKE_RANK
+	bool            IsLeecherFakeRank();
+#endif //AntiFakeRank
+//<==AntiFakeRank [cyrex2001]
+
     void			SetSlotNumber(uint32 newValue)					{ m_slotNumber = newValue; }
     uint32			GetSlotNumber() const							{ return m_slotNumber; }
     CEMSocket*		GetFileUploadSocket(bool log = false);
@@ -539,6 +552,7 @@ public:
 	bool IsNextEMF() const { return m_bIsNextEMF;}
 #endif //Modversion
 //<==Modversion [cyrex2001]
+
 protected:
 	int		m_iHttpSendState;
 	uint32	m_uPeerCacheDownloadPushId;
@@ -640,6 +654,12 @@ protected:
 	bool	m_bIsNextEMF;
 #endif //Modversion
 //<==Modversion [cyrex2001]
+//==>AntiFakeRank [cyrex2001]
+#ifdef ANTI_FAKE_RANK
+	uint16		m_iDifferenceQueueRank[5];
+	bool		m_nfakerank;
+#endif //AntiFakeRank
+//<==AntiFakeRank [cyrex2001]
 	////////////////////////////////////////////////////////////////////////
 	// Upload
 	//

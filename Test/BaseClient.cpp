@@ -154,11 +154,6 @@ void CUpDownClient::Init()
 	m_nSourceFrom = SF_SERVER;
 	m_bIsHybrid = false;
 	m_bIsML=false;
-//==> IsNextEMF
-#ifdef ISEMF
-	m_bIsNextEMF = false;
-#endif //ISEMF
-//<== IsNextEMF
 	m_Friend = NULL;
 	m_uFileRating=0;
 	(void)m_strFileComment;
@@ -248,6 +243,7 @@ void CUpDownClient::Init()
 //==>Modversion [cyrex2001]
 #ifdef MODVERSION
 	m_strModVersion.Empty();
+	m_bIsNextEMF = false;
 #endif //Modversion
 //<==Modversion [cyrex2001]
 //==>Sivka-Ban [cyrex2001]
@@ -257,6 +253,12 @@ void CUpDownClient::Init()
 	dwThisClientIsKnownSince = ::GetTickCount();
 #endif //Sivka-Ban
 //<==Sivka-Ban [cyrex2001]
+//==>AntiFakeRank [cyrex2001]
+#ifdef ANTI_FAKE_RANK
+	m_nfakerank = false;
+	for (uint8 i = 0;i < 5; i++) m_iDifferenceQueueRank[i] = 0;
+#endif //AntiFakeRank
+//<==AntiFakeRank [cyrex2001]
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -2543,4 +2545,18 @@ EUtf8Str CUpDownClient::GetUnicodeSupport() const
 		return utf8strRaw;
 #endif
 	return utf8strNone;
-}
+}//==>AntiFakeRank [cyrex2001]
+#ifdef ANTI_FAKE_RANK
+bool CUpDownClient::IsLeecherFakeRank(){
+	if (thePrefs.AntiFakeRank)
+		{
+		if (GetIsfakerank()){
+			if (!theApp.clientlist->IsBannedClient(GetIP())){
+				Ban();
+				}
+			}
+		}
+	return true;
+	}
+#endif //AntiFakeRank
+//<==AntiFakeRank [cyrex2001]

@@ -176,7 +176,7 @@ void CDownloadListCtrl::SetAllIcons()
 	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);//16
 //==>Modversion [cyrex2001]
 #ifdef MODVERSION
-	m_ImageList.Add(CTempIconLoader(_T("AAAEMULEAPP")/*CLIENT_NEXTEMF*/));//17
+	m_ImageList.Add(CTempIconLoader(_T("CLIENT_NEXTEMF")));//17
 #endif //Modversion
 //<==Modversion [cyrex2001]
 }
@@ -700,7 +700,7 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 					if ( lpUpDownClient->IsNextEMF() )
 						m_ImageList.Draw(dc, 17, point2, ILD_NORMAL | uOvlImg);
 					else
-					m_ImageList.Draw(dc, 5, point2, ILD_NORMAL | uOvlImg);
+						m_ImageList.Draw(dc, 5, point2, ILD_NORMAL | uOvlImg);
 #else //Modversion
 					m_ImageList.Draw(dc, 5, point2, ILD_NORMAL | uOvlImg);
 #endif //Modversion
@@ -811,13 +811,49 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				}
 				else{
 					if ( lpUpDownClient->GetRemoteQueueRank()){
+//==>AntiFakeRank [cyrex2001]
+#ifdef ANTI_FAKE_RANK
+						COLORREF crOldTxtColor;
+						uint16 nDifference = lpUpDownClient->GetDiffQR(0);
+						uint16 nRemoteQueueRank = lpUpDownClient->GetRemoteQueueRank();
+						if (lpUpDownClient->GetIsfakerank()){
+							crOldTxtColor = dc->SetTextColor((COLORREF)RGB(0,0,211));
+							buffer.Format(_T("Fake Rank QR: %u (0)"),nRemoteQueueRank);
+						}
+						else if (lpUpDownClient->IsBanned()){
+									crOldTxtColor = dc->SetTextColor((COLORREF)RGB(0,0,211));
+									buffer.Format(_T("Banned QR: %u (0)"),nRemoteQueueRank);
+						}
+						else
+						{
+							if ((lpUpDownClient->GetDiffQR(0) == nRemoteQueueRank)||(lpUpDownClient->GetDiffQR(0) == 0))
+							{
+							crOldTxtColor = dc->SetTextColor((COLORREF)RGB(0,0,0));
+								buffer.Format(_T("QR: %u (0)"),nRemoteQueueRank);
+							}
+							else if (lpUpDownClient->GetDiffQR(0) > nRemoteQueueRank)
+							{
+								crOldTxtColor = dc->SetTextColor((COLORREF)RGB(10,160,70));
+								buffer.Format(_T("QR: %u (-%u)"),nRemoteQueueRank,(lpUpDownClient->GetDiffQR(0) - nRemoteQueueRank));
+						}
+							else
+							{
+								crOldTxtColor = dc->SetTextColor((COLORREF)RGB(190,60,60));
+								buffer.Format(_T("QR: %u (+%u)"),nRemoteQueueRank,(nRemoteQueueRank - lpUpDownClient->GetDiffQR(0)));
+						}
+						}
+						dc->DrawText(buffer, buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT | DT_RIGHT);
+						dc->SetTextColor(crOldTxtColor);
+#else //AntiFakeRank
 						buffer.Format(_T("QR: %u"),lpUpDownClient->GetRemoteQueueRank());
 						dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
-					}
+#endif //AntiFakeRank
+//<==AntiFakeRank [cyrex2001]
+						}
 					else{
 						dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
+						}
 					}
-				}
 			} else {
 				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
 			}

@@ -2333,9 +2333,8 @@
 //#endif //Sivka-Ban
 //<==Sivka-Ban [cyrex2001]
 
-//==>EMFSettings [shadow2004]
-#define IDS_PW_NEXTEMF						60100
-//<==EMFSettings [shadow2004]
+#define IDS_PW_NEXTEMF                  61008
+#define IDS_ANTI_FAKE_RANK              61009
 
 // Next default values for new objects
 // 

@@ -2366,8 +2366,7 @@ COPYSELECTED            ICON                    "res\\CopySelected.ico"
 COPYVISIBLE             ICON                    "res\\CopyVisible.ico"
 EXPORTSELECTED          ICON                    "res\\ExportSelected.ico"
 EXPORTALL               ICON                    "res\\ExportAll.ico"
-
-//CLIENT_NEXTEMF          ICON                    "res\\client_nextemf.ico"
+CLIENT_NEXTEMF          ICON                    "res\\client_nextemf.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -4358,8 +4357,13 @@ BEGIN
     IDS_SIVKA_ASK_COUNTER   "Counter for ask, before banned [5-15]"
     IDS_SIVKA_ASK_LOG       "Log banned clients"
 END
-//<==Sivka-Ban [cyrex2001]
-#endif    // English (U.S.) resources
+
+STRINGTABLE 
+BEGIN
+    IDS_ANTI_FAKE_RANK      "Anti-Fake-Rank enable"
+END
+
+#endif    // Englisch (USA) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

@@ -102,7 +102,7 @@ void CClientListCtrl::SetAllIcons()
 	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);//10
 //==>Modversion [cyrex2001]
 #ifdef MODVERSION
-	imagelist.Add(CTempIconLoader(_T("AAAEMULEAPP")/*CLIENT_NEXTEMF*/));//11
+	imagelist.Add(CTempIconLoader(_T("CLIENT_NEXTEMF")));//11
 #endif //Modversion
 //<==Modversion [cyrex2001]
 }

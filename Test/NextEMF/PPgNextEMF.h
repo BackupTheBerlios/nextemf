@@ -28,6 +28,7 @@ protected:
 	int m_iSivkaAskTime;
 	int m_iSivkaAskCounter;
 	int m_bSivkaAskLog;
+	int m_bAntiFakeRank;
 
 	HTREEITEM m_htiSecurity;
 	HTREEITEM m_htiIsreaskSourceAfterIPChange;
@@ -39,6 +40,7 @@ protected:
 	HTREEITEM m_htiSivkaAskTime;
 	HTREEITEM m_htiSivkaAskCounter;
 	HTREEITEM m_htiSivkaAskLog;
+	HTREEITEM m_htiAntiFakeRank;
 
 	CTreeOptionsCtrlEx m_ctrlTreeOptions;
 	bool m_bInitializedTreeOpts;

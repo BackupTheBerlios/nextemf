@@ -603,6 +603,12 @@ public:
 	static bool	SivkaAskLog;
 #endif //Sivka-Ban
 //<==Sivka-Ban [cyrex2001]
+//==>AntiFakeRank [cyrex2001]
+#ifdef ANTI_FAKE_RANK
+	static bool	m_bAntiFakeRank;
+	static bool	AntiFakeRank;
+#endif //AntiFakeRank
+//<==AntiFakeRank [cyrex2001]
 
 	enum Table
 	{
@@ -1363,6 +1369,11 @@ public:
 	static bool	GetSivkaAskLog()				        {return m_bSivkaAskLog;}
 #endif //Sivka-Ban
 //<==Sivka-Ban [cyrex2001]
+//==>AntiFakeRank [cyrex2001]
+#ifdef ANTI_FAKE_RANK
+	static bool	GetAntiFakeRank()				        {return m_bAntiFakeRank;}
+#endif //AntiFakeRank
+//<==AntiFakeRank [cyrex2001]
 
 protected:
 	static	CString appdir;

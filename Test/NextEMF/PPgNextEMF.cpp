@@ -40,6 +40,7 @@ CPPgNextEMF::CPPgNextEMF()
 	m_htiSivkaAskTime = NULL;
 	m_htiSivkaAskCounter = NULL;
 	m_htiSivkaAskLog = NULL;
+	m_htiAntiFakeRank = NULL;
 }
 
 CPPgNextEMF::~CPPgNextEMF()
@@ -57,8 +58,8 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		CImageList* piml = m_ctrlTreeOptions.GetImageList(TVSIL_NORMAL);
 		if (piml)
 		{
-			iImgOpt = piml->Add(CTempIconLoader(_T("PREF_CONNECTION")));
-			iImgSecurity = piml->Add(CTempIconLoader(_T("PREF_SECURITY")));
+			iImgOpt = piml->Add(CTempIconLoader(_T("CONNECTION")));
+			iImgSecurity = piml->Add(CTempIconLoader(_T("SECURITY")));
 		}
 		m_htiIsreaskSourceAfterIPChange = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK ), TVI_ROOT, m_bIsreaskSourceAfterIPChange);
 		m_htiQuickStart = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_QUICK_START), TVI_ROOT, m_bQuickStart);
@@ -76,6 +77,7 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		m_htiSivkaAskCounter = m_ctrlTreeOptions.InsertItem(GetResString(IDS_SIVKA_ASK_COUNTER), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiSecurity);
 		m_ctrlTreeOptions.AddEditBox(m_htiSivkaAskCounter, RUNTIME_CLASS(CNumTreeOptionsEdit));
 		m_htiSivkaAskLog = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_SIVKA_ASK_LOG), m_htiSecurity, m_bSivkaAskLog);
+		m_htiAntiFakeRank = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTI_FAKE_RANK), m_htiSecurity, m_bAntiFakeRank);
         m_ctrlTreeOptions.Expand(m_htiSecurity, TVE_EXPAND);
 
 		m_ctrlTreeOptions.SendMessage(WM_VSCROLL, SB_TOP);
@@ -95,6 +97,7 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiSivkaAskCounter, m_iSivkaAskCounter);
 	DDV_MinMaxInt(pDX, m_iSivkaAskCounter, 5, 15);
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiSivkaAskLog, m_bSivkaAskLog);
+	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiAntiFakeRank, m_bAntiFakeRank);
 }
 
 BOOL CPPgNextEMF::OnInitDialog()
@@ -108,6 +111,7 @@ BOOL CPPgNextEMF::OnInitDialog()
 	m_iSivkaAskTime = (int)(thePrefs.SivkaAskTime);
 	m_iSivkaAskCounter = (int)(thePrefs.SivkaAskCounter);
 	m_bSivkaAskLog = thePrefs.SivkaAskLog;
+	m_bAntiFakeRank = thePrefs.AntiFakeRank;
 
 	CPropertyPage::OnInitDialog();
 	Localize();
@@ -141,6 +145,7 @@ BOOL CPPgNextEMF::OnApply()
 	thePrefs.SivkaAskTime = m_iSivkaAskTime;
 	thePrefs.SivkaAskCounter = m_iSivkaAskCounter;
 	thePrefs.SivkaAskLog = m_bSivkaAskLog;
+	thePrefs.AntiFakeRank = m_bAntiFakeRank;
 
 	SetModified(FALSE);
 	return CPropertyPage::OnApply();
@@ -169,6 +174,7 @@ void CPPgNextEMF::Localize(void)
 		if (m_htiSivkaAskTime) m_ctrlTreeOptions.SetEditLabel(m_htiSivkaAskTime, GetResString(IDS_SIVKA_ASK_TIME));
 		if (m_htiSivkaAskCounter) m_ctrlTreeOptions.SetEditLabel(m_htiSivkaAskCounter, GetResString(IDS_SIVKA_ASK_COUNTER));
 		if (m_htiSivkaAskLog) m_ctrlTreeOptions.SetItemText(m_htiSivkaAskLog, GetResString(IDS_SIVKA_ASK_LOG));
+		if (m_htiAntiFakeRank) m_ctrlTreeOptions.SetItemText(m_htiAntiFakeRank, GetResString(IDS_ANTI_FAKE_RANK));
 	}
 }
 
@@ -187,6 +193,7 @@ void CPPgNextEMF::OnDestroy()
 	m_htiSivkaAskTime = NULL;
 	m_htiSivkaAskCounter = NULL;
 	m_htiSivkaAskLog = NULL;
+	m_htiAntiFakeRank = NULL;
 
 	CPropertyPage::OnDestroy();
 }

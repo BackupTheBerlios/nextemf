@@ -612,6 +612,12 @@ bool	CPreferences::m_bSivkaAskLog;
 bool	CPreferences::SivkaAskLog;
 #endif //Sivka-Ban
 //<==Sivka-Ban [cyrex2001]
+//==>AntiFakeRank [cyrex2001]
+#ifdef ANTI_FAKE_RANK
+bool	CPreferences::m_bAntiFakeRank;
+bool	CPreferences::AntiFakeRank;
+#endif //AntiFakeRank
+//<==AntiFakeRank [cyrex2001]
 
 CPreferences::CPreferences()
 {
@@ -2273,6 +2279,11 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("SivkaAskLog"), SivkaAskLog,_T("NextEMF"));
 #endif //Sivka-Ban
 //<==Sivka-Ban [cyrex2001]
+//==>AntiFakeRank [cyrex2001]
+#ifdef ANTI_FAKE_RANK
+	ini.WriteBool(_T("AntiFakeRank"), AntiFakeRank,_T("NextEMF"));
+#endif //AntiFakeRank
+//<==AntiFakeRank [cyrex2001]
 
 }
 
@@ -2879,6 +2890,11 @@ void CPreferences::LoadPreferences()
 	SivkaAskLog = ini.GetBool(_T("SivkaAskLog"),false, _T("NextEMF"));
 #endif //Sivka-Ban
 //<==Sivka-Ban [cyrex2001]
+//==>AntiFakeRank [cyrex2001]
+#ifdef ANTI_FAKE_RANK
+	AntiFakeRank = ini.GetBool(_T("AntiFakeRank"), false, _T("NextEMF"));
+#endif //AntiFakeRank
+//<==AntiFakeRank [cyrex2001]
 
 	LoadCats();
 	if (GetCatCount()==1)

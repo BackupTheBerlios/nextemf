@@ -93,7 +93,7 @@ CPreferencesDlg::CPreferencesDlg()
 #endif
 //==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
 #if defined (RSAIC) || defined (QUICKSTART)
-	CTreePropSheet::SetPageIcon(&m_wndNextEMF, _T("AAAEMULEAPP")/*CLIENT_NEXTEMF*/);
+	CTreePropSheet::SetPageIcon(&m_wndNextEMF, _T("CLIENT_NEXTEMF"));
 #endif //Reask sourcen after ip chnage or Quickstart
 //<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
 	AddPage(&m_wndGeneral);
@@ -215,12 +215,11 @@ void CPreferencesDlg::Localize()
 		pTree->SetItemText(GetPageTreeItem(11), RemoveAmbersand(GetResString(IDS_PW_TWEAK)));//13
 //==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
 #if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
-		pTree->SetItemText(GetPageTreeItem(12), RemoveAmbersand(GetResString(IDS_PW_NEXTEMF)/*_T(NextEMF)*/));//15
+		pTree->SetItemText(GetPageTreeItem(13), RemoveAmbersand(GetResString(IDS_PW_NEXTEMF)/*_T(NextEMF)*/));//14
 #endif //Reask sourcen after ip chnage or Quickstart
 //<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
-
 	#if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
-		pTree->SetItemText(GetPageTreeItem(13), _T("Debug"));//14
+		pTree->SetItemText(GetPageTreeItem(12), _T("Debug"));//15
 	#endif
 	}
 
