@@ -896,6 +896,17 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 		case 10: // last seen complete
 			{
 				CString tempbuffer;
+//==>better way to show complete Sources [shadow2004]
+#ifdef COMP_SRC
+				if (lpPartFile->m_nCompleteSourcesCountLo == lpPartFile->m_nCompleteSourcesCountHi)
+				{
+					tempbuffer.Format(_T("%u"), lpPartFile->m_nCompleteSourcesCountLo);
+				}
+				else if (lpPartFile->m_nCompleteSourcesCountLo == 0) 
+				{
+					tempbuffer.Format(_T("< %u"), lpPartFile->m_nCompleteSourcesCountHi);
+				}
+#else
 				if (lpPartFile->m_nCompleteSourcesCountLo == 0)
 				{
 					tempbuffer.Format(_T("< %u"), lpPartFile->m_nCompleteSourcesCountHi);
@@ -904,6 +915,8 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 				{
 					tempbuffer.Format(_T("%u"), lpPartFile->m_nCompleteSourcesCountLo);
 				}
+#endif
+//<==better way to show complete Sources [shadow2004]
 				else
 				{
 					tempbuffer.Format(_T("%u - %u"), lpPartFile->m_nCompleteSourcesCountLo, lpPartFile->m_nCompleteSourcesCountHi);

@@ -436,13 +436,23 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					buffer.ReleaseBuffer();
 					break;
 				case 10:
+//==>better way to show complete Sources [shadow2004]
+#ifdef COMP_SRC
+					if (file->m_nCompleteSourcesCountLo == file->m_nCompleteSourcesCountHi) 
+						buffer.Format(_T("%u"), file->m_nCompleteSourcesCountLo); 
+					else if (file->m_nCompleteSourcesCountLo == 0) 
+						buffer.Format(_T("< %u"), file->m_nCompleteSourcesCountHi+1); 
+#else
 					if (file->m_nCompleteSourcesCountLo == 0){
 						buffer.Format(_T("< %u"), file->m_nCompleteSourcesCountHi);
 					}
 					else if (file->m_nCompleteSourcesCountLo == file->m_nCompleteSourcesCountHi)
 						buffer.Format(_T("%u"), file->m_nCompleteSourcesCountLo);
+#endif
+//<==better way to show complete Sources [shadow2004]
 					else
 						buffer.Format(_T("%u - %u"), file->m_nCompleteSourcesCountLo, file->m_nCompleteSourcesCountHi);
+
 					break;
 				case 11:{
 					if(file->GetPublishedED2K())

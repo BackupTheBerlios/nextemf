@@ -19,7 +19,12 @@
 #include "OtherFunctions.h"
 #include "ThrottledSocket.h" // ZZ:UploadBandWithThrottler (UDP)
 
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 class CAsyncProxySocketLayer;
+#endif //PROXY
+//<== remove PROXY [shadow2004]
+
 class Packet;
 
 #define ERR_WRONGHEADER		0x01

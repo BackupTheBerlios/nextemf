@@ -29,6 +29,9 @@
 #include "ServerList.h"
 #include "SharedFileList.h"
 #include "UpDownClient.h"
+//==> Präprozessoren [shadow2004]
+#include ".\NextEMF\PraeProDec.h"
+//<== Präprozessoren [shadow2004]
 
 #ifndef TVM_SETLINECOLOR
 #define TVM_SETLINECOLOR            (TV_FIRST + 40)
@@ -2422,7 +2425,14 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 		cbuffer.Format(_T("%s: %u "), GetResString(IDS_CLIENTLIST), totalclient);
 		stattree.SetItemText(cligen[5], cbuffer);
 
+//==> Better way to show Secure Identification [shadow2004]
+#ifdef SEC_IDENT
+		uint32 otherclient = totalclient-myStats[12]-myStats[13]; //this includes IS_IDNEEDED and clients without credits
+		cbuffer.Format(_T("%s : %u (%.1f%%) : %u (%.1f%%) : %u (%.1f%%)"), GetResString(IDS_STATS_SECUREIDENT), myStats[12], (totalclient)?((double)100*myStats[12]/totalclient):0, myStats[13], (totalclient)?((double)100*myStats[13]/totalclient):0, otherclient, (totalclient)?((double)100*otherclient/totalclient):0);
+#else
 		cbuffer.Format(_T("%s: %u (%.1f%%) : %u (%.1f%%)"), GetResString(IDS_STATS_SECUREIDENT), myStats[12] , (myStats[2]>0)?((double)100*myStats[12] / myStats[2]):0, myStats[13] , (myStats[2]>0)?((double)100*myStats[13] / myStats[2] ):0);
+#endif
+//<== Better way to show Secure Identification [shadow2004]
 		stattree.SetItemText(cligen[3], cbuffer);
 
 		cbuffer.Format(_T("%s: %u (%.1f%%)"), GetResString(IDS_IDLOW), myStats[14] , (totalclient>0)?((double)100*myStats[14] / totalclient):0);

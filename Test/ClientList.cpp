@@ -160,6 +160,11 @@ void CClientList::GetStatistics(uint32 &totalclient, int stats[],
 					break;
 				case IS_IDFAILED:
 				case IS_IDNEEDED:
+//==> Better way to show Secure Identification [shadow2004]
+#ifdef SEC_IDENT
+					break;
+#endif
+//<== Better way to show Secure Identification [shadow2004]
 				case IS_IDBADGUY:
 					stats[13]++;
 					break;
@@ -571,10 +576,10 @@ void CClientList::Process(){
 				RemoveBannedClient(nKey);
 //==>Anti-Leecher [cyrex2001][shadow2004]
 #ifdef ANTI_LEECHER
-				CUpDownClient* cur_client;
-				if (cur_client->m_bLeecher == true) { theStats.leecherclients--; cur_client->m_bLeecher = false; }
-				if (cur_client->m_bBadComunity == true) { theStats.badcomunityclients--; cur_client->m_bBadComunity = false; }
-				if (cur_client->m_bGplBreaker == true) { theStats.gplbreakerclients--; cur_client->m_bGplBreaker = false; }
+//				CUpDownClient* cur_client;
+//                if (cur_client->m_bLeecher == true) { theStats.leecherclients--; cur_client->m_bLeecher = false; }
+//				if (cur_client->m_bBadComunity == true) { theStats.badcomunityclients--; cur_client->m_bBadComunity = false; }
+//				if (cur_client->m_bGplBreaker == true) { theStats.gplbreakerclients--; cur_client->m_bGplBreaker = false; }
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001][shadow2004]
 			}

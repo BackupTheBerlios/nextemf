@@ -3978,7 +3978,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_CUT                 "Cut"
-    IDS_STATS_SECUREIDENT   "Secure Ident (OK : Failed )"
+    IDS_STATS_SECUREIDENT   "Secure Ident (OK : Failed : Other)"
     IDS_ONDISK              "Size on disk: "
     IDS_CLIENTCOL           "Warning: Found matching client, to a currently connected client: %s (%s) and %s (%s)"
     IDS_SEARCH_UNTERMSTRING "Unterminated string"
