@@ -250,6 +250,7 @@ void CUpDownClient::Init()
 //<==AntiFakeRank [cyrex2001]
 //==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_SIVKA
+	m_dwLastAskedTime = 0;
  m_bValidSource = false;
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
@@ -2143,6 +2144,11 @@ void CUpDownClient::ResetFileStatusInfo()
 	m_nPartCount = 0;
 	m_strClientFilename.Empty();
 	m_bCompleteSource = false;
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_SIVKA
+	m_dwLastAskedTime = 0;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 	m_uFileRating = 0;
 	m_strFileComment.Empty();
 	if (m_pReqFileAICHHash != NULL){
@@ -2397,6 +2403,7 @@ void CUpDownClient::AssertValid() const
 //<==Sivka-Ban [cyrex2001]
 //==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_SIVKA
+	(void)m_dwLastAskedTime;
 	CHECK_BOOL(m_bValidSource);
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
@@ -2705,7 +2712,8 @@ bool CUpDownClient::IsLeecherFakeRank(){
 	return true;
 	}
 #endif //AntiFakeRank
-//<==AntiFakeRank [cyrex2001]//==>Anti-Leecher [cyrex2001]
+//<==AntiFakeRank [cyrex2001]
+//==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
 void CUpDownClient::ProcessUnknownHelloTag(CTag *tag)//[SNAFU_V3]
 {

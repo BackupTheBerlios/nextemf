@@ -878,6 +878,8 @@ void CClientList::TrigReaskForDownload(){
     CUpDownClient* cur_client = list.GetNext(pos); 
 		if( cur_client->GetDownloadState() == DS_NONEEDEDPARTS )
 			cur_client->SetLastAskedTime(3000000);
+		else
+			cur_client->SetLastAskedTime(FILEREASKTIME-MIN2MS(10));
 	}	
 }
 #endif //Reask sourcen after ip change

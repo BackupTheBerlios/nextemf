@@ -903,8 +903,6 @@ void CUpDownClient::BanLeecher(LPCTSTR pszReason){
 	if (socket != NULL && socket->IsConnected())
 		socket->ShutDown(SD_RECEIVE); // let the socket timeout, since we dont want to risk to delete the client right now. This isnt acutally perfect, could be changed later
 }
-//MORPH END   - Added by IceCream, Anti-leecher feature
-//cyrex2001 ==>ALF
 void CUpDownClient::BanBadComunity(LPCTSTR pszReason){
 	theApp.clientlist->AddTrackClient(this);
 	if (!m_bBadComunity){

@@ -307,7 +307,11 @@ public:
 	bool			GetPreviewSupport() const						{ return m_fSupportsPreview && GetViewSharedFilesSupport(); }
 	bool			GetViewSharedFilesSupport() const				{ return m_fNoViewSharedFiles==0; }
 	bool			SafeSendPacket(Packet* packet);
+//==>Anti-Leecher [cyrex2001]
+#ifndef ANTI_LEECHER
 	void			CheckForGPLEvilDoer();
+#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 	//upload
 	EUploadState	GetUploadState() const							{ return (EUploadState)m_nUploadState; }
 	void			SetUploadState(EUploadState news);
