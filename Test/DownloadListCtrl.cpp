@@ -1350,6 +1350,16 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct){
 
 	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
 	CFont *pOldFont;
+//==> Bold Download-Status [shadow2004]
+#ifdef BOLDDL
+        if (m_fontBold.m_hObject && thePrefs.GetShowActiveDownloadsBold()){
+		if (content->type == FILE_TYPE){
+			if (((const CPartFile*)content->value)->GetTransferingSrcCount())
+				pOldFont = dc->SelectObject(&m_fontBold);
+			else
+				pOldFont = dc->SelectObject(GetFont());
+		}
+#else //BOLDDL
 	if (m_fontBold.m_hObject){
 		if (content->type == FILE_TYPE){
 			if (((const CPartFile*)content->value)->GetTransferingSrcCount())
@@ -1357,6 +1367,8 @@ void CDownloadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct){
 			else
 				pOldFont = dc->SelectObject(GetFont());
 		}
+#endif //BOLDDL
+//<== Bold Download-Status [shadow2004]		
 		else if (content->type == UNAVAILABLE_SOURCE || content->type == AVAILABLE_SOURCE){
 			if (((const CUpDownClient*)content->value)->GetDownloadState() == DS_DOWNLOADING)
 				pOldFont = dc->SelectObject(&m_fontBold);
