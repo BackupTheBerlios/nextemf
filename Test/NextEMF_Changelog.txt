@@ -1,3 +1,10 @@
+eMule 0.44d [NextEMF v0.x]
+===========================
+
+ADDED  : Chunk Selection Patch by Xman [cyrex2001] 
+
+
+
 eMule 0.44d [NextEMF v0.2]
 ===========================
 

@@ -2453,6 +2453,41 @@ void CPartFile::UpdatePartsInfo()
 	CArray<uint16,uint16> count;
 	if (flag)
 		count.SetSize(0, srclist.GetSize());
+//==>Chunk Selection Patch [cyrex2001]
+#ifdef CSP
+ for (POSITION pos = srclist.GetHeadPosition(); pos != 0; )
+{
+ CUpDownClient* cur_src = srclist.GetNext(pos);
+ 
+ //Xman better chunk selection
+ //use different weight
+ uint8 weight=2;
+ if(cur_src->GetDownloadState()==DS_ONQUEUE && (cur_src->IsBanned() || cur_src->IsRemoteQueueFull() || cur_src->GetRemoteQueueRank()>4000))
+  weight=1;
+ //Xman end
+ 
+ if( cur_src->GetPartStatus() )
+ {  
+  for (int i = 0; i < partcount; i++)
+  {
+   if (cur_src->IsPartAvailable(i))
+    m_SrcpartFrequency[i] +=weight; //Xman better chunk selection
+  }
+  if ( flag )
+  {
+   count.Add(cur_src->GetUpCompleteSourcesCount());
+  }
+ }
+}
+
+//Xman better chunk selection
+//at this point we have double weight -->reduce to normal (division by 2)
+for(uint16 i = 0; i < partcount; i++)
+{
+ m_SrcpartFrequency[i] = m_SrcpartFrequency[i]>>1; //nothing else than  ceil((float)m_SrcpartFrequency[i]/2);
+}
+//Xman end
+#else
 	for (POSITION pos = srclist.GetHeadPosition(); pos != 0; )
 	{
 		CUpDownClient* cur_src = srclist.GetNext(pos);
@@ -2469,6 +2504,9 @@ void CPartFile::UpdatePartsInfo()
 			}
 		}
 	}
+#endif //Chunk Selection Patch
+//<==Chunk Selection Patch [cyrex2001]
+
 
 	if (flag)
 	{
@@ -4732,8 +4770,16 @@ bool CPartFile::GetNextRequestedBlock(CUpDownClient* sender,
 				// more depending on available sources
 				uint8 modif=10;
 				if (GetSourceCount()>800) modif=2; else if (GetSourceCount()>200) modif=5;
+//==>Chunk Selection Patch [cyrex2001]
+#ifdef CSP
+				//Xman better chunk selection
+				uint16 limit= ceil((float)modif*GetSourceCount()/ 100) + 1; //Xman: better if we have very low sources
+#else
 				uint16 limit= modif*GetSourceCount()/ 100;
 				if (limit==0) limit=1;
+#endif //Chunk Selection Patch
+//<==Chunk Selection Patch [cyrex2001]
+
 
 				const uint16 veryRareBound = limit;
 				const uint16 rareBound = 2*limit;
