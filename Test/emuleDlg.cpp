@@ -29,7 +29,11 @@
 #include "SearchDlg.h"
 #include "SharedFilesWnd.h"
 #include "ChatWnd.h"
-#include "IrcWnd.h"
+//==> remove IRC [shadow2004]
+#if defined(IRC)
+  #include "IrcWnd.h"
+#endif //IRC
+//<== remove IRC [shadow2004]
 #include "StatisticsDlg.h"
 #include "CreditsDlg.h"
 #include "PreferencesDlg.h"
@@ -59,7 +63,11 @@
 #include "DropTarget.h"
 #include "LastCommonRouteFinder.h"
 #include "WebServer.h"
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 #include "MMServer.h"
+#endif //MM
+//<== remove MobileMule [shadow2004]
 #include "DownloadQueue.h"
 #include "ClientUDPSocket.h"
 #include "UploadQueue.h"
@@ -111,7 +119,11 @@ CemuleDlg::CemuleDlg(CWnd* pParent /*=NULL*/)
 	sharedfileswnd = new CSharedFilesWnd;
 	searchwnd = new CSearchDlg;
 	chatwnd = new CChatWnd;
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	ircwnd = new CIrcWnd;
+#endif //IRC
+//<== remove IRC [shadow2004]
 	statisticswnd = new CStatisticsDlg;
 	toolbar = new CMuleToolbarCtrl;
 	statusbar = new CMuleStatusBarCtrl;
@@ -182,7 +194,11 @@ CemuleDlg::~CemuleDlg()
 	delete transferwnd;
 	delete sharedfileswnd;
 	delete chatwnd;
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	delete ircwnd;
+#endif //IRC
+//<== remove IRC [shadow2004]
 	delete statisticswnd;
 	delete toolbar;
 	delete statusbar;
@@ -343,7 +359,11 @@ BOOL CemuleDlg::OnInitDialog()
 	transferwnd->Create(IDD_TRANSFER);
 	statisticswnd->Create(IDD_STATISTICS);
 	kademliawnd->Create(IDD_KADEMLIAWND);
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	ircwnd->Create(IDD_IRC);
+#endif //IRC
+//<== remove IRC [shadow2004]
 
 	// optional: restore last used main window dialog
 	if (thePrefs.GetRestoreLastMainWndDlg()){
@@ -369,9 +389,13 @@ BOOL CemuleDlg::OnInitDialog()
 		case IDD_KADEMLIAWND:
 			SetActiveDialog(kademliawnd);
 			break;
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 		case IDD_IRC:
 			SetActiveDialog(ircwnd);
 			break;
+#endif //IRC
+//<== remove IRC [shadow2004
 		}
 	}
 
@@ -405,7 +429,11 @@ BOOL CemuleDlg::OnInitDialog()
 		sharedfileswnd,
 		searchwnd,
 		chatwnd,
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 		ircwnd,
+#endif //IRC
+//<== remove IRC [shadow2004]
 		statisticswnd
 	};
 	for (int i = 0; i < ARRSIZE(apWnds); i++)
@@ -418,7 +446,11 @@ BOOL CemuleDlg::OnInitDialog()
 	AddAnchor(*sharedfileswnd,	TOP_LEFT, BOTTOM_RIGHT);
     AddAnchor(*searchwnd,		TOP_LEFT, BOTTOM_RIGHT);
     AddAnchor(*chatwnd,			TOP_LEFT, BOTTOM_RIGHT);
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	AddAnchor(*ircwnd,			TOP_LEFT, BOTTOM_RIGHT);
+#endif //IRC
+//<== remove IRC [shadow2004]
 	AddAnchor(*statisticswnd,	TOP_LEFT, BOTTOM_RIGHT);
 	AddAnchor(*toolbar,			TOP_LEFT, TOP_RIGHT);
 	AddAnchor(*statusbar,		BOTTOM_LEFT, BOTTOM_RIGHT);
@@ -443,7 +475,11 @@ BOOL CemuleDlg::OnInitDialog()
 
 	if (thePrefs.GetWSIsEnabled())
 		theApp.webserver->StartServer();
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 	theApp.mmserver->Init();
+#endif //MM
+//<== remove MobileMule [shadow2004]
 
 	VERIFY( (m_hTimer = ::SetTimer(NULL, NULL, 300, StartupTimer)) != NULL );
 	if (thePrefs.GetVerbose() && !m_hTimer)
@@ -544,8 +580,23 @@ void CALLBACK CemuleDlg::StartupTimer(HWND hwnd, UINT uiMsg, UINT idEvent, DWORD
 				}
 				
 				if (!bError) // show the success msg, only if we had no serious error
+//==> WINSOCK2 [cyrex2001]
+#ifdef WINSOCK2 //WINSOCK2
+					{
+					AddLogLine(false,_T("Winsock: Version %d.%d [%.40s] %.40s"), HIBYTE( theApp.m_wsaData.wVersion ),LOBYTE(theApp.m_wsaData.wVersion ),
+					(CString)theApp.m_wsaData.szDescription, (CString)theApp.m_wsaData.szSystemStatus);
+					if (theApp.m_wsaData.iMaxSockets!=0)
+						AddLogLine(false,_T("Winsock: max. sockets %d"), theApp.m_wsaData.iMaxSockets);
+					else
+						AddLogLine(false,_T("Winsock: unlimited sockets"));
+#endif //WINSOCK2
+//<== WINSOCK2 [cyrex2001]
 					AddLogLine(true, GetResString(IDS_MAIN_READY),theApp.m_strCurVersionLong);
-
+//==> WINSOCK2 [cyrex2001]
+#ifdef WINSOCK2 //WINSOCK2
+					}
+#endif //WINSOCK2
+//<== WINSOCK2 [cyrex2001]
 				if(thePrefs.DoAutoConnect())
 					theApp.emuledlg->OnBnClickedButton2();
 				theApp.emuledlg->status++;
@@ -1036,9 +1087,13 @@ void CemuleDlg::SetActiveDialog(CWnd* dlg)
 		toolbar->PressMuleButton(IDC_TOOLBARBUTTON+6);
 		chatwnd->chatselector.ShowChat();
 	}
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	else if (dlg == ircwnd){
 		toolbar->PressMuleButton(IDC_TOOLBARBUTTON+7);
 	}
+#endif //IRC
+//<== remove IRC [shadow2004]
 	else if (dlg == sharedfileswnd){
 		toolbar->PressMuleButton(IDC_TOOLBARBUTTON+5);
 	}
@@ -1046,7 +1101,7 @@ void CemuleDlg::SetActiveDialog(CWnd* dlg)
 		toolbar->PressMuleButton(IDC_TOOLBARBUTTON+4);
 	}
 	else if (dlg == statisticswnd){
-		toolbar->PressMuleButton(IDC_TOOLBARBUTTON+8);
+		toolbar->PressMuleButton(IDC_TOOLBARBUTTON+7);//(+8) remove IRC [shadow2004]
 		statisticswnd->ShowStatistics();
 	}
 	else if	(dlg == kademliawnd){
@@ -1331,8 +1386,12 @@ void CemuleDlg::OnClose()
 			thePrefs.SetLastMainWndDlgID(IDD_STATISTICS);
 		else if (activewnd->IsKindOf(RUNTIME_CLASS(CKademliaWnd)))
 			thePrefs.SetLastMainWndDlgID(IDD_KADEMLIAWND);
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 		else if (activewnd->IsKindOf(RUNTIME_CLASS(CIrcWnd)))
 			thePrefs.SetLastMainWndDlgID(IDD_IRC);
+#endif //IRC
+//<== remove IRC [shadow2004]
 		else{
 			ASSERT(0);
 			thePrefs.SetLastMainWndDlgID(0);
@@ -1389,7 +1448,11 @@ void CemuleDlg::OnClose()
     // NOTE: Do not move those dtors into 'CemuleApp::InitInstance' (althought they should be there). The
 	// dtors are indirectly calling functions which access several windows which would not be available 
 	// after we have closed the main window -> crash!
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 	delete theApp.mmserver;			theApp.mmserver = NULL;
+#endif //MM
+//<== remove MobileMule [shadow2004]
 	delete theApp.listensocket;		theApp.listensocket = NULL;
 	delete theApp.clientudp;		theApp.clientudp = NULL;
 	delete theApp.sharedfiles;		theApp.sharedfiles = NULL;
@@ -1966,28 +2029,32 @@ BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 		case MP_HM_MSGS:
 			SetActiveDialog(chatwnd);
 			break;
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 		case IDC_TOOLBARBUTTON + 7:
 		case MP_HM_IRC:
 			SetActiveDialog(ircwnd);
 			break;
-		case IDC_TOOLBARBUTTON + 8:
+#endif //IRC
+//<== remove IRC [shadow2004]
+		case IDC_TOOLBARBUTTON + 7://(8) remove IRC [shadow2004]
 		case MP_HM_STATS:
 			SetActiveDialog(statisticswnd);
 			break;
-		case IDC_TOOLBARBUTTON + 9:
+		case IDC_TOOLBARBUTTON + 8://(9) remove IRC [shadow2004]
 		case MP_HM_PREFS:
-			toolbar->CheckButton(IDC_TOOLBARBUTTON+9,TRUE);
+			toolbar->CheckButton(IDC_TOOLBARBUTTON+8,TRUE);//(9) remove IRC [shadow2004]
 			preferenceswnd->DoModal();
-			toolbar->CheckButton(IDC_TOOLBARBUTTON+9,FALSE);
+			toolbar->CheckButton(IDC_TOOLBARBUTTON+8,FALSE);//(9) remove IRC [shadow2004]
 			break;
-		case IDC_TOOLBARBUTTON + 10:
+		case IDC_TOOLBARBUTTON + 9://(10) remove IRC [shadow2004]
 			ShowToolPopup(true);
 			break;
 		case MP_HM_OPENINC:
 			ShellExecute(NULL, _T("open"), thePrefs.GetIncomingDir(),NULL, NULL, SW_SHOW); 
 			break;
 		case MP_HM_HELP:
-		case IDC_TOOLBARBUTTON + 11:
+		case IDC_TOOLBARBUTTON + 10://(11) remove IRC [shadow2004]
 			wParam = ID_HELP;
 			break;
 		case MP_HM_CON:
@@ -2136,7 +2203,11 @@ void CemuleDlg::ShowToolPopup(bool toolsonly)
 		menu.AppendMenu(MF_STRING,MP_HM_SEARCH, GetResString(IDS_EM_SEARCH));
 		menu.AppendMenu(MF_STRING,MP_HM_FILES, GetResString(IDS_EM_FILES));
 		menu.AppendMenu(MF_STRING,MP_HM_MSGS, GetResString(IDS_EM_MESSAGES));
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 		menu.AppendMenu(MF_STRING,MP_HM_IRC, GetResString(IDS_IRC));
+#endif //IRC
+//<== remove IRC [shadow2004]
 		menu.AppendMenu(MF_STRING,MP_HM_STATS, GetResString(IDS_EM_STATISTIC));
 		menu.AppendMenu(MF_STRING,MP_HM_PREFS, GetResString(IDS_EM_PREFS));
 		menu.AppendMenu(MF_STRING,MP_HM_HELP, GetResString(IDS_EM_HELP));
@@ -2199,7 +2270,11 @@ void CemuleDlg::ApplyHyperTextFont(LPLOGFONT plf)
 		thePrefs.SetHyperTextFont(plf);
 		serverwnd->servermsgbox->SetFont(&m_fontHyperText);
 		chatwnd->chatselector.UpdateFonts(&m_fontHyperText);
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 		ircwnd->UpdateFonts(&m_fontHyperText);
+#endif //IRC
+//<== remove IRC [shadow2004]
 	}
 }
 

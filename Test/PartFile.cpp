@@ -37,7 +37,11 @@
 #include "kademlia/kademlia/prefs.h"
 #include "DownloadQueue.h"
 #include "IPFilter.h"
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 #include "MMServer.h"
+#endif //MM
+//<== remove MobileMule [shadow2004]
 #include "OtherFunctions.h"
 #include "Packets.h"
 #include "Preferences.h"
@@ -2831,7 +2835,11 @@ void CPartFile::PerformFileCompleteEnd(DWORD dwResult)
 	{
 		theApp.knownfiles->SafeAddKFile(this);
 		theApp.downloadqueue->RemoveFile(this);
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 		theApp.mmserver->AddFinishedFile(this);
+#endif //MM
+//<== remove MobileMule [shadow2004]
 		if (thePrefs.GetRemoveFinishedDownloads())
 			theApp.emuledlg->transferwnd->downloadlistctrl.RemoveFile(this);
 		else
@@ -4453,6 +4461,8 @@ uint64 CPartFile::GetRealFileSize() const
 	return ::GetDiskFileSize(GetFilePath());
 }
 
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 uint8* CPartFile::MMCreatePartStatus(){
 	// create partstatus + info in mobilemule protocol specs
 	// result needs to be deleted[] | slow, but not timecritical
@@ -4481,6 +4491,8 @@ uint8* CPartFile::MMCreatePartStatus(){
 	}
 	return result;
 };
+#endif //MM
+//<== remove MobileMule [shadow2004]
 
 uint16 CPartFile::GetSrcStatisticsValue(EDownloadState nDLState) const
 {

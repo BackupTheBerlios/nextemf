@@ -1187,8 +1187,12 @@
 #define IDS_SWAP_A4AF_TO_THIS           1173
 #define IDS_SWAP_A4AF_TO_OTHER          1174
 #define IDS_A4AF                        1175
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 #define IDS_MOBILEMULE                  1176
 #define IDS_ENABLEMM                    1177
+#endif //MM
+//<== remove MobileMule [shadow2004]
 #define IDS_AUTOCAT_LABEL               1178
 #define IDS_SHOWEXTSETTINGS             1179
 #define IDS_TREEOPTIONS_TRUE            1180
@@ -1204,13 +1208,21 @@
 #define IDS_WRN_INCFILE_RESERVED        1190
 #define IDS_WRN_TEMPFILES_RESERVED      1191
 #define IDS_WRN_INCTEMP_SAME            1192
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 #define IDS_MMFAILED                    1193
 #define IDS_MMSTARTED                   1194
+#endif //MM
+//<== remove MobileMule [shadow2004]
 #define IDS_SHOWDWLPERCENTAGE           1195
 #define IDS_TBN_ONNEWDOWNLOAD           1196
 #define IDS_ARTIST                      1197
 #define IDS_ALBUM                       1198
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 #define IDS_MMGUIDELINK                 1199
+#endif //MM
+//<== remove MobileMule [shadow2004]
 #define IDS_CD_UPLOADREQ                1200
 #define IDS_SETTINGCHANGED_RESTART      1201
 #define IDS_CREDITSEXPIRED              1202
@@ -1294,8 +1306,12 @@
 #define IDS_ERR_FAILEDDOWNLOADLANG      1276
 #define IDS_ERR_BADFOLDER               1277
 #define IDS_AUTOREMOVEFD                1278
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 #define IDS_MM_BLOCK                    1279
 #define IDS_MM_NEWUSER                  1280
+#endif //MM
+//<== remove MobileMule [shadow2004]
 #define IDS_RADCLIENTS                  1281
 #define IDS_KADUDPPORTERR               1282
 #define IDS_CONFIRM_FILEDELETE          1283
@@ -1626,7 +1642,11 @@
 #define IDC_INDICATERATINGS             2133
 #define IDC_USESECIDENT                 2134
 #define IDC_RUNASUSER                   2135
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 #define IDC_MMENABLED                   2136
+#endif //MM
+//<== remove MobileMule [shadow2004]
 #define IDC_WIZ_ME_RADIO                2139
 #define IDC_SHOWDWLPERCENT              2140
 #define IDC_TEMPFILES                   2144
@@ -1977,7 +1997,11 @@
 #define IDC_COMMENT                     2554
 #define IDC_WSPASSLOW                   2556
 #define IDC_AUTOCATEXT                  2558
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 #define IDC_MMPORT_FIELD                2559
+#endif //MM
+//<== remove MobileMule [shadow2004]
 #define IDC_WIZ_TRUEUPLOAD_TEXT         2564
 #define IDC_WIZ_OS_FRAME                2566
 #define IDC_WIZ_CONCURENTDOWN_FRAME     2567
@@ -2046,16 +2070,28 @@
 #define IDC_STATIC_CPUMEM               2639
 #define IDC_IBLABEL                     2642
 #define IDC_WSPORT_LBL                  2643
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 #define IDC_MMPORT_LBL                  2644
+#endif //MM
+//<== remove MobileMule [shadow2004]
 #define IDC_WSPASS_LBL                  2645
 #define IDD_PPG_WEBSRV                  2646
 #define IDC_WSPASS_LBL2                 2647
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 #define IDC_MMPASSWORD                  2648
+#endif //MM
+//<== remove MobileMule [shadow2004]
 #define IDC_STATIC_LOWUSER              2649
 #define IDC_STATIC_ADMIN                2650
 #define IDC_STATIC_GENERAL              2651
 #define IDC_DATETIMEPICKER1             2652
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 #define IDC_STATIC_MOBILEMULE           2653
+#endif //MM
+//<== remove MobileMule [shadow2004]
 #define IDC_STATIC_S_TITLE              2654
 #define IDC_STATIC_S_TIME               2655
 #define IDC_STATIC_S_ACTION             2656

@@ -28,7 +28,11 @@
 #include "KnownFileList.h"
 #include "SharedFileList.h"
 #include "UpDownClient.h"
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 #include "MMServer.h"
+#endif //MM
+//<== remove MobileMule [shadow2004]
 #include "ClientList.h"
 #include "opcodes.h"
 #include "ini2.h"
@@ -1938,12 +1942,20 @@ bool CKnownFile::GrabImage(CString strFileName,uint8 nFramesToGrab, double dStar
 void CKnownFile::GrabbingFinished(CxImage** imgResults, uint8 nFramesGrabbed, void* pSender)
 {
 	// continue processing
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 	if (pSender == theApp.mmserver){
 		theApp.mmserver->PreviewFinished(imgResults, nFramesGrabbed);
 	}
 	else if (theApp.clientlist->IsValidClient((CUpDownClient*)pSender)){
 		((CUpDownClient*)pSender)->SendPreviewAnswer(this, imgResults, nFramesGrabbed);
 	}
+#else //MM
+    if (theApp.clientlist->IsValidClient((CUpDownClient*)pSender)){
+		((CUpDownClient*)pSender)->SendPreviewAnswer(this, imgResults, nFramesGrabbed);
+	}
+#endif //MM
+//<== remove MobileMule [shadow2004]
 	else{
 		//probably a client which got deleted while grabbing the frames for some reason
 		if (thePrefs.GetVerbose())

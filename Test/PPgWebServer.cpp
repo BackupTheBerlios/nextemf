@@ -19,7 +19,11 @@
 #include "PPgWebServer.h"
 #include "otherfunctions.h"
 #include "WebServer.h"
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 #include "MMServer.h"
+#endif //MM
+//<== remove MobileMule [shadow2004]
 #include "emuledlg.h"
 #include "Preferences.h"
 #include "ServerWnd.h"
@@ -55,12 +59,24 @@ BEGIN_MESSAGE_MAP(CPPgWebServer, CPropertyPage)
 	ON_EN_CHANGE(IDC_WSPASS, OnDataChange)
 	ON_EN_CHANGE(IDC_WSPASSLOW, OnDataChange)
 	ON_EN_CHANGE(IDC_WSPORT, OnDataChange)
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 	ON_EN_CHANGE(IDC_MMPASSWORDFIELD, OnDataChange)
+#endif //MM
+//<== remove MobileMule [shadow2004]
 	ON_EN_CHANGE(IDC_TMPLPATH, OnDataChange)
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 	ON_EN_CHANGE(IDC_MMPORT_FIELD, OnDataChange)
+#endif //MM
+//<== remove MobileMule [shadow2004]
 	ON_BN_CLICKED(IDC_WSENABLED, OnEnChangeWSEnabled)
 	ON_BN_CLICKED(IDC_WSENABLEDLOW, OnEnChangeWSEnabled)
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 	ON_BN_CLICKED(IDC_MMENABLED, OnEnChangeMMEnabled)
+#endif //MM
+//<== remove MobileMule [shadow2004]
 	ON_BN_CLICKED(IDC_WSRELOADTMPL, OnReloadTemplates)
 	ON_BN_CLICKED(IDC_TMPLBROWSE, OnBnClickedTmplbrowse)
 	ON_BN_CLICKED(IDC_WS_GZIP, OnDataChange)
@@ -80,6 +96,8 @@ BOOL CPPgWebServer::OnInitDialog()
 	Localize();
 
 	OnEnChangeWSEnabled();
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 
 	// note: there are better classes to create a pure hyperlink, however since it is only needed here
 	//		 we rather use an already existing class
@@ -94,6 +112,8 @@ BOOL CPPgWebServer::OnInitDialog()
 		m_wndMobileLink.AppendText(_T("Link: "));
 		m_wndMobileLink.AppendHyperLink(GetResString(IDS_MMGUIDELINK),0,CString(_T("http://mobil.emule-project.net")),0,0);
 	}
+#endif //MM
+//<== remove MobileMule [shadow2004]
 	return TRUE;
 }
 
@@ -103,13 +123,21 @@ void CPPgWebServer::LoadSettings(void)
 
 	GetDlgItem(IDC_WSPASS)->SetWindowText(HIDDEN_PASSWORD);
 	GetDlgItem(IDC_WSPASSLOW)->SetWindowText(HIDDEN_PASSWORD);
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 	GetDlgItem(IDC_MMPASSWORDFIELD)->SetWindowText(HIDDEN_PASSWORD);
+#endif //MM
+//<== remove MobileMule [shadow2004]
 
 	strBuffer.Format(_T("%d"), thePrefs.GetWSPort());
 	GetDlgItem(IDC_WSPORT)->SetWindowText(strBuffer);
 
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 	strBuffer.Format(_T("%d"), thePrefs.GetMMPort());
 	GetDlgItem(IDC_MMPORT_FIELD)->SetWindowText(strBuffer);
+#endif //MM
+//<== remove MobileMule [shadow2004]
 
 	GetDlgItem(IDC_TMPLPATH)->SetWindowText(thePrefs.GetTemplate());
 
@@ -123,14 +151,22 @@ void CPPgWebServer::LoadSettings(void)
 	else
 		CheckDlgButton(IDC_WSENABLEDLOW,0);
 
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 	if(thePrefs.IsMMServerEnabled())
 		CheckDlgButton(IDC_MMENABLED,1);
 	else
 		CheckDlgButton(IDC_MMENABLED,0);
+#endif //MM
+//<== remove MobileMule [shadow2004]
 
 	CheckDlgButton(IDC_WS_GZIP,(thePrefs.GetWebUseGzip())?1:0 );
-	
+
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 	OnEnChangeMMEnabled();
+#endif //MM
+//<== remove MobileMule [shadow2004]
 
 	SetModified(FALSE);	// FoRcHa
 }
@@ -163,6 +199,8 @@ BOOL CPPgWebServer::OnApply()
 		GetDlgItem(IDC_TMPLPATH)->GetWindowText(sBuf);
 		thePrefs.SetTemplate(sBuf);
 
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 		// mobilemule
 		GetDlgItem(IDC_MMPORT_FIELD)->GetWindowText(sBuf);
 		if (_tstoi(sBuf)!= thePrefs.GetMMPort() ) {
@@ -178,6 +216,8 @@ BOOL CPPgWebServer::OnApply()
 		GetDlgItem(IDC_MMPASSWORDFIELD)->GetWindowText(sBuf);
 		if(sBuf != HIDDEN_PASSWORD)
 			thePrefs.SetMMPass(sBuf);
+#endif //MM
+//<== remove MobileMule [shadow2004]
 
 		theApp.emuledlg->serverwnd->UpdateMyInfo();
 		SetModified(FALSE);
@@ -207,10 +247,15 @@ void CPPgWebServer::Localize(void)
 
 		GetDlgItem(IDC_TEMPLATE)->SetWindowText(GetResString(IDS_WS_RELOAD_TMPL));
 
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 		GetDlgItem(IDC_MMENABLED)->SetWindowText(GetResString(IDS_ENABLEMM));
 		GetDlgItem(IDC_STATIC_MOBILEMULE)->SetWindowText(GetResString(IDS_MOBILEMULE));
 		GetDlgItem(IDC_MMPASSWORD)->SetWindowText(GetResString(IDS_WS_PASS));
 		GetDlgItem(IDC_MMPORT_LBL)->SetWindowText(GetResString(IDS_PORT));
+#endif //MM
+//<== remove MobileMule [shadow2004]
+
 	}
 }
 
@@ -229,6 +274,8 @@ void CPPgWebServer::OnEnChangeWSEnabled()
 	SetModified();
 }
 
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 void CPPgWebServer::OnEnChangeMMEnabled()
 {
 	GetDlgItem(IDC_MMPASSWORDFIELD)->EnableWindow(IsDlgButtonChecked(IDC_MMENABLED));	
@@ -236,6 +283,8 @@ void CPPgWebServer::OnEnChangeMMEnabled()
 
 	SetModified();
 }
+#endif //MM
+//<== remove MobileMule [shadow2004]
 
 void CPPgWebServer::OnReloadTemplates()
 {

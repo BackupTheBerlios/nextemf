@@ -504,9 +504,13 @@ bool	CPreferences::m_bShowActiveDownloadsBold;
 int		CPreferences::m_iSearchMethod;
 bool	CPreferences::m_bAdvancedSpamfilter;
 bool	CPreferences::m_bUseSecureIdent;
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 TCHAR	CPreferences::m_sMMPassword[256];
 bool	CPreferences::m_bMMEnabled;
 uint16	CPreferences::m_nMMPort;
+#endif //MM
+//<== remove MobileMule [shadow2004]
 bool	CPreferences::networkkademlia;
 bool	CPreferences::networked2k;
 uint8	CPreferences::m_nToolbarLabels;
@@ -2179,13 +2183,16 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("PageRefreshTime"), m_nWebPageRefresh);
 	ini.WriteBool(_T("UseLowRightsUser"), m_bWebLowEnabled);
 
-
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 	///////////////////////////////////////////////////////////////////////////
 	// Section: "MobileMule"
 	//
 	ini.WriteString(_T("Password"), GetMMPass(), _T("MobileMule"));
 	ini.WriteBool(_T("Enabled"), m_bMMEnabled);
 	ini.WriteInt(_T("Port"), m_nMMPort);
+#endif //MM
+//<== remove MobileMule [shadow2004]
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -2755,12 +2762,16 @@ void CPreferences::LoadPreferences()
 	m_bWebLowEnabled=ini.GetBool(_T("UseLowRightsUser"), false);
 	m_nWebPageRefresh=ini.GetInt(_T("PageRefreshTime"), 120);
 
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 	///////////////////////////////////////////////////////////////////////////
 	// Section: "MobileMule"
 	//
 	_stprintf(m_sMMPassword,_T("%s"),ini.GetString(_T("Password"), _T(""),_T("MobileMule")));
 	m_bMMEnabled = ini.GetBool(_T("Enabled"), false);
 	m_nMMPort = ini.GetInt(_T("Port"), 80);
+#endif //MM
+//<== remove MobileMule [shadow2004]
 
 	///////////////////////////////////////////////////////////////////////////
 	// Section: "PeerCache"
@@ -3062,10 +3073,14 @@ void CPreferences::SetWSLowPass(CString strNewPass)
 	_stprintf(m_sWebLowPassword,_T("%s"),MD5Sum(strNewPass).GetHash().GetBuffer(0));
 }
 
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 void CPreferences::SetMMPass(CString strNewPass)
 {
 	_stprintf(m_sMMPassword,_T("%s"),MD5Sum(strNewPass).GetHash().GetBuffer(0));
 }
+#endif //MM
+//<== remove MobileMule [shadow2004]
 
 void CPreferences::SetMaxUpload(uint16 in)
 {

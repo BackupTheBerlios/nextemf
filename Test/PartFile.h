@@ -270,7 +270,11 @@ public:
 	void	SetCategory(uint8 cat,bool setprio=true);
 	bool	CheckShowItemInGivenCat(int inCategory);
 
+//==> remove MobileMule [shadow2004]
+#if defined(MM)	
 	uint8*	MMCreatePartStatus();
+#endif //MM
+//<== remove MobileMule [shadow2004]
 
 	//preview
 	virtual bool GrabImage(uint8 nFramesToGrab, double dStartTime, bool bReduceColor, uint16 nMaxWidth,void* pSender);

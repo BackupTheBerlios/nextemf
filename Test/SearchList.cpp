@@ -23,7 +23,11 @@
 #include "Preferences.h"
 #include "UpDownClient.h"
 #include "SafeFile.h"
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 #include "MMServer.h"
+#endif //MM
+//<== remove MobileMule [shadow2004]
 #include "SharedFileList.h"
 #include "KnownFileList.h"
 #include "DownloadQueue.h"
@@ -475,9 +479,13 @@ uint16 CSearchList::ProcessSearchanswer(char* in_packet, uint32 size, bool bOptU
 		}
 		AddToList(toadd, false);
 	}
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 	if (m_MobilMuleSearch)
 		theApp.mmserver->SearchFinished(false);
 	m_MobilMuleSearch = false;
+#endif //MM
+//<== remove MobileMule [shadow2004]
 
 	if (pbMoreResultsAvailable)
 		*pbMoreResultsAvailable = false;

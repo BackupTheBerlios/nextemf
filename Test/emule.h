@@ -43,7 +43,11 @@ class CFriendList;
 class CClientUDPSocket;
 class CIPFilter;
 class CWebServer;
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 class CMMServer;
+#endif //MM
+//<== remove MobileMule [shadow2004]
 class CAbstractFile;
 class CUpDownClient;
 class CPeerCacheFinder;
@@ -82,7 +86,12 @@ public:
 	CIPFilter*			ipfilter;
 	CWebServer*			webserver;
 	CScheduler*			scheduler;
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 	CMMServer*			mmserver;
+#endif //MM
+//<== remove MobileMule [shadow2004]
+
 	CPeerCacheFinder*	m_pPeerCache;
 	CFirewallOpener*	m_pFirewallOpener;
 
@@ -181,6 +190,14 @@ protected:
 
 	uint32 m_dwPublicIP;
 	bool m_bAutoStart;
+
+//==> WINSOCK2 [cyrex2001]
+#ifdef WINSOCK2 //WINSOCK2
+public:
+	WSADATA				m_wsaData;
+#endif //WINSOCK2
+//<== WINSOCK2 [cyrex2001]
+
 };
 
 extern CemuleApp theApp;

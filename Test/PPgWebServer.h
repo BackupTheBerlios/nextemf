@@ -17,7 +17,11 @@ public:
 protected:
 	bool m_bModified;
 	bool bCreated;
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 	CHyperTextCtrl m_wndMobileLink;
+#endif //MM
+//<== remove MobileMule [shadow2004]
 
 	void LoadSettings(void);
 
@@ -33,7 +37,11 @@ protected:
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnDataChange()		{SetModified();}
 	afx_msg void OnEnChangeWSEnabled();
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 	afx_msg void OnEnChangeMMEnabled();
+#endif //MM
+//<== remove MobileMule [shadow2004]
 	afx_msg void OnReloadTemplates();
 	afx_msg void OnBnClickedTmplbrowse();
 	afx_msg void OnHelp();

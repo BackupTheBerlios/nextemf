@@ -185,7 +185,11 @@ public:
 	void ReloadTemplates();
 	uint16	GetSessionCount()	{ return m_Params.Sessions.GetCount();}
 	bool IsRunning()	{ return m_bServerWorking;}
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 	CArray<UpDown, UpDown>* GetPointsForWeb()	{return &m_Params.PointsForWeb;} // MobileMule
+#endif //MM
+//<== remove MobileMule [shadow2004]
 protected:
 	static void		ProcessURL(ThreadData);
 	static void		ProcessFileReq(ThreadData);

@@ -487,10 +487,14 @@ public:
 	static	int		m_iSearchMethod;
 	static	bool	m_bAdvancedSpamfilter;
 	static	bool	m_bUseSecureIdent;
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 	// mobilemule
 	static	TCHAR	m_sMMPassword[256];
 	static	bool	m_bMMEnabled;
 	static	uint16	m_nMMPort;
+#endif //MM
+//<== remove MobileMule [shadow2004]
 
 	static	bool	networkkademlia;
 	static	bool	networked2k;
@@ -1155,6 +1159,8 @@ public:
 	static	bool	GetNetworkED2K()						{ return networked2k;}
 	static	void	SetNetworkED2K(bool val)				{ networked2k = val;}
 
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 	// mobileMule
 	static	CString GetMMPass()								{ return CString(m_sMMPassword); }
 	static	void	SetMMPass(CString strNewPass);
@@ -1162,6 +1168,8 @@ public:
 	static	void	SetMMIsEnabled(bool bEnable)			{ m_bMMEnabled=bEnable; }
 	static	uint16	GetMMPort()								{ return m_nMMPort; }
 	static	void	SetMMPort(uint16 uPort)					{ m_nMMPort=uPort; }
+#endif //MM
+//<== remove MobileMule [shadow2004]
 
 //==> remove PROXY [shadow2004]
 #if defined(PROXY)

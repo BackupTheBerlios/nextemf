@@ -44,7 +44,11 @@
 #include "ClientUDPSocket.h"
 #include "DownloadQueue.h"
 #include "IPFilter.h"
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 #include "MMServer.h"
+#endif //MM
+//<== remove MobileMule [shadow2004]
 #include "Statistics.h"
 #include "OtherFunctions.h"
 #include "WebServer.h"
@@ -262,6 +266,46 @@ void __cdecl __AfxSocketTerm()
 #error "You are using an MFC version which may require a special version of the above function!"
 #endif
 
+//==> WINSOCK2 [cyrex2001]
+#ifdef WINSOCK2 //WINSOCK2
+BOOL InitWinsock2(WSADATA *lpwsaData) 
+{  
+_AFX_SOCK_STATE* pState = _afxSockState.GetData();
+if (pState->m_pfnSockTerm == NULL)
+	{
+	// initialize Winsock library
+	WSADATA wsaData;
+	if (lpwsaData == NULL)
+		lpwsaData = &wsaData;
+	WORD wVersionRequested = MAKEWORD(2, 2);
+	int nResult = WSAStartup(wVersionRequested, lpwsaData);
+	if (nResult != 0)
+		return FALSE;
+	if (LOBYTE(lpwsaData->wVersion) != 2 || HIBYTE(lpwsaData->wVersion) != 2)
+		{
+		WSACleanup();
+		return FALSE;
+		}
+	// setup for termination of sockets
+	pState->m_pfnSockTerm = &AfxSocketTerm;
+	}
+#ifndef _AFXDLL
+	//BLOCK: setup maps and lists specific to socket state
+	{
+	_AFX_SOCK_THREAD_STATE* pState = _afxSockThreadState;
+	if (pState->m_pmapSocketHandle == NULL)
+		pState->m_pmapSocketHandle = new CMapPtrToPtr;
+	if (pState->m_pmapDeadSockets == NULL)
+		pState->m_pmapDeadSockets = new CMapPtrToPtr;
+	if (pState->m_plistSocketNotifications == NULL)
+		pState->m_plistSocketNotifications = new CPtrList;
+	}
+#endif
+return TRUE;
+}
+#endif //WINSOCK2
+//<== WINSOCK2 [cyrex2001]
+
 // CemuleApp Initialisierung
 
 BOOL CemuleApp::InitInstance()
@@ -331,11 +375,26 @@ BOOL CemuleApp::InitInstance()
 
 	CWinApp::InitInstance();
 
+//==> WINSOCK2 [cyrex2001]
+#ifdef WINSOCK2 //WINSOCK2
+	memset(&m_wsaData, 0, sizeof(WSADATA));
+	if (!InitWinsock2(&m_wsaData)) //first try it with winsock2
+		{
+		memset(&m_wsaData, 0, sizeof(WSADATA));
+		if (!AfxSocketInit(&m_wsaData)) //then try it with old winsock
+#else //WINSOCK2
 	if (!AfxSocketInit())
+#endif //WINSOCK2
+//<== WINSOCK2 [cyrex2001]
 	{
 		AfxMessageBox(GetResString(IDS_SOCKETS_INIT_FAILED));
 		return FALSE;
 	}
+//==> WINSOCK2 [cyrex2001]
+#ifdef WINSOCK2 //WINSOCK2
+		}
+#endif //WINSOCK2
+//<==WINSOCK2 [cyrex2001]
 #if _MFC_VER==0x0700 || _MFC_VER==0x0710
 	atexit(__AfxSocketTerm);
 #else
@@ -436,7 +495,11 @@ BOOL CemuleApp::InitInstance()
 	uploadqueue = new CUploadQueue();
 	ipfilter 	= new CIPFilter();
 	webserver = new CWebServer(); // Webserver [kuchin]
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 	mmserver = new CMMServer();
+#endif //MM
+//<== remove MobileMule [shadow2004]
 	scheduler = new CScheduler();
 	m_pPeerCache = new CPeerCacheFinder();
 	

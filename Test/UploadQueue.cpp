@@ -29,7 +29,11 @@
 #include "DownloadQueue.h"
 #include "FriendList.h"
 #include "Statistics.h"
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 #include "MMServer.h"
+#endif //MM
+//<== remove MobileMule [shadow2004]
 #include "OtherFunctions.h"
 #include "UpDownClient.h"
 #include "SharedFileList.h"
@@ -925,8 +929,13 @@ VOID CALLBACK CUploadQueue::UploadTimer(HWND hwnd, UINT uMsg,UINT_PTR idEvent,DW
 			}
 			//save rates every second
 			theStats.RecordRate();
+
+//==> remove MobileMule [shadow2004]
+#if defined(MM)
 			// mobilemule sockets
 			theApp.mmserver->Process();
+#endif //MM
+//<== remove MobileMule [shadow2004]
 
 			// ZZ:UploadSpeedSense -->
             theApp.emuledlg->ShowPing();
