@@ -288,8 +288,15 @@ BOOL CMuleSystrayDlg::OnInitDialog()
 	{
 		p->GetWindowRect(r);
 		ScreenToClient(r);
+//==>Fixed some IDC by WiZaRd [shadow2004]
+#ifdef FIX05
+		m_ctrlExit.Create(NULL, NULL, WS_CHILD|WS_VISIBLE, r, this, IDC_TRAY_EXIT);
+		m_ctrlExit.m_nBtnID = IDC_TRAY_EXIT;
+#else
 		m_ctrlExit.Create(NULL, NULL, WS_CHILD|WS_VISIBLE, r, this, IDC_EXIT);
 		m_ctrlExit.m_nBtnID = IDC_EXIT;
+#endif
+//<==Fixed some IDC by WiZaRd [shadow2004]
 		//p->GetWindowText(m_ctrlExit.m_strText);
 		m_ctrlExit.m_strText = GetResString(IDS_EXIT);
 		m_ctrlExit.m_strText.Remove(_T('&'));

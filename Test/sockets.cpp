@@ -37,6 +37,11 @@
 #include "ServerWnd.h"
 #include "TaskbarNotifier.h"
 #include "Log.h"
+//==>reconnect on Kad [shadow2004]
+#ifdef KADRECON
+#include "kademlia/kademlia/kademlia.h"
+#endif
+//<==reconnect on Kad [shadow2004]
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -309,6 +314,11 @@ void CServerConnect::ConnectionFailed(CServerSocket* sender){
 	switch (sender->GetConnectionState()){
 		case CS_FATALERROR:
 			LogError(LOG_STATUSBAR, GetResString(IDS_ERR_FATAL));
+//==>reconnect on Kad [shadow2004]
+#ifdef KADRECON
+			Kademlia::CKademlia::stop();
+#endif
+//<==reconnect on Kad [shadow2004]
 			break;
 		case CS_DISCONNECTED:
 			theApp.sharedfiles->ClearED2KPublishInfo();
@@ -402,6 +412,11 @@ VOID CALLBACK CServerConnect::RetryConnectTimer(HWND hWnd, UINT nMsg, UINT nId, 
 	// NOTE: Always handle all type of MFC exceptions in TimerProcs - otherwise we'll get mem leaks
 	try
 	{
+//==>reconnect on Kad [shadow2004]
+#ifdef KADRECON
+		if( thePrefs.GetNetworkKademlia() ) Kademlia::CKademlia::start();
+#endif
+//==>reconnect on Kad [shadow2004]
 		CServerConnect *_this= theApp.serverconnect; 
 		ASSERT(_this); 
 		_this->StopConnectionTry();

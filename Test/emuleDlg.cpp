@@ -1534,7 +1534,13 @@ void CemuleDlg::OnTrayRButtonUp(CPoint pt)
 			case IDC_DISCONNECT:
 				CloseConnection();
 				break;
+//==>Fixed some IDC by WiZaRd [shadow2004]
+#ifdef FIX05
+			case IDC_TRAY_EXIT:
+#else
 			case IDC_EXIT:
+#endif
+//<==Fixed some IDC by WiZaRd [shadow2004]
 				OnClose();
 				break;
 			case IDC_PREFERENCES:

@@ -281,28 +281,7 @@ BOOL CPreferencesDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 	}
 //==> Save Preferences only if needed by WiZaRd [shadow2004]
 #ifdef FIX04
-	// crack message parameters
-	UINT nID = LOWORD(wParam);
-	HWND hWndCtrl = (HWND)lParam;
-	int nCode = HIWORD(wParam);
-
-	int m_nModalResult = 0;
-	// set m_nModalResult to ID of button, whenever button is clicked
-	if (hWndCtrl && nCode == BN_CLICKED)
-	{	
-		if (::SendMessage(hWndCtrl, WM_GETDLGCODE, 0, 0) &
-			(DLGC_BUTTON|DLGC_DEFPUSHBUTTON))
-		{
-			LONG lStyle = ::GetWindowLong(hWndCtrl, GWL_STYLE) & 0x0F;
-			if (lStyle == BS_PUSHBUTTON || lStyle == BS_DEFPUSHBUTTON ||
-				lStyle == BS_USERBUTTON || lStyle == BS_OWNERDRAW)
-			{
-				m_nModalResult = nID;
-			}
-		}
-	}
-    //Save only if needed...
-	if(m_nModalResult == IDOK || m_nModalResult == ID_APPLY_NOW)
+    if(wParam == ID_APPLY_NOW || wParam == IDOK) 
 		thePrefs.Save();
 #endif
 //<== Save Preferences only if needed by WiZaRd [shadow2004]

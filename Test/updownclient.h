@@ -865,8 +865,6 @@ public:
 	bool        IsNickThief()    {return m_bNickThief;} 
 	CString     CreateAntiNickThiefTag(); 
 	CString     GetAntiNickThiefNick(); 
-//<==AntiNickThief [shadow2004]
-//==>AntiNickThief [shadow2004]
 private:
 	bool        m_bNickThief; 
 	CString     m_sAntiNickThiefTag;

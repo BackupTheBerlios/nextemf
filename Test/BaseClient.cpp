@@ -2210,10 +2210,6 @@ void CUpDownClient::ResetFileStatusInfo()
 	m_nPartCount = 0;
 	m_strClientFilename.Empty();
 	m_bCompleteSource = false;
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 	m_uFileRating = 0;
 	m_strFileComment.Empty();
 	if (m_pReqFileAICHHash != NULL){
