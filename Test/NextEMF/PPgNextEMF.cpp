@@ -49,6 +49,11 @@ CPPgNextEMF::CPPgNextEMF()
         m_htiEnableAntiCreditHack = NULL;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
+//==> Bold Download-Status [shadow2004]
+#ifdef BOLDDL
+	m_htiEnableDownloadInBold = NULL;
+#endif //BOLDDL
+//<== Bold Download-Status [shadow2004]
 }
 
 CPPgNextEMF::~CPPgNextEMF()
@@ -69,6 +74,11 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 			iImgOpt = piml->Add(CTempIconLoader(_T("CONNECTION")));
 			iImgSecurity = piml->Add(CTempIconLoader(_T("SECURITY")));
 		}
+//==> Bold Download-Status [shadow2004]
+#ifdef BOLDDL
+		m_htiEnableDownloadInBold = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_DOWNLOAD_IN_BOLD), TVI_ROOT, m_bEnableDownloadInBold);
+#endif //BOLDDL
+//<== Bold Download-Status [shadow2004]
 		m_htiIsreaskSourceAfterIPChange = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK ), TVI_ROOT, m_bIsreaskSourceAfterIPChange);
 		m_htiQuickStart = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_QUICK_START), TVI_ROOT, m_bQuickStart);
 		m_htiQuickStartMaxTime = m_ctrlTreeOptions.InsertItem(GetResString(IDS_QUICK_START_MAX_TIME), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiQuickStart);
@@ -99,6 +109,11 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.SendMessage(WM_VSCROLL, SB_TOP);
 		m_bInitializedTreeOpts = true;
 	}
+//==> Bold Download-Status [shadow2004]
+#ifdef BOLDDL
+	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableDownloadInBold, m_bEnableDownloadInBold);
+#endif //BOLDDL
+//<== Bold Download-Status [shadow2004]
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiIsreaskSourceAfterIPChange, m_bIsreaskSourceAfterIPChange);
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiQuickStart, m_bQuickStart);
 	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiQuickStartMaxTime, m_iQuickStartMaxTime);
@@ -144,7 +159,11 @@ BOOL CPPgNextEMF::OnInitDialog()
 	m_bEnableAntiCreditHack = thePrefs.enableAntiCreditHack;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
-
+//==> Bold Download-Status [shadow2004]
+#ifdef BOLDDL
+	m_bEnableDownloadInBold = thePrefs.m_bShowActiveDownloadsBold;
+#endif //BOLDDL
+//<== Bold Download-Status [shadow2004]
 	CPropertyPage::OnInitDialog();
 	Localize();
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -186,6 +205,11 @@ BOOL CPPgNextEMF::OnApply()
 	thePrefs.enableAntiCreditHack = m_bEnableAntiCreditHack;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
+//==> Bold Download-Status [shadow2004]
+#ifdef BOLDDL
+	thePrefs.m_bShowActiveDownloadsBold = m_bEnableDownloadInBold;
+#endif //BOLDDL
+//<== Bold Download-Status [shadow2004]
 	SetModified(FALSE);
 	return CPropertyPage::OnApply();
 }

@@ -37,6 +37,11 @@ protected:
 	int m_bEnableAntiCreditHack;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
+//==> Bold Download-Status [shadow2004]
+#ifdef BOLDDL
+    int m_bEnableDownloadInBold;
+#endif //BOLDDL
+//<== Bold Download-Status [shadow2004]
 
 	HTREEITEM m_htiSecurity;
 	HTREEITEM m_htiIsreaskSourceAfterIPChange;
@@ -57,6 +62,12 @@ protected:
 	HTREEITEM m_htiEnableAntiCreditHack;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
+//==> Bold Download-Status [shadow2004]
+#ifdef BOLDDL
+    HTREEITEM m_htiEnableDownloadInBold;
+#endif //BOLDDL
+//<== Bold Download-Status [shadow2004]
+
 
 	CTreeOptionsCtrlEx m_ctrlTreeOptions;
 	bool m_bInitializedTreeOpts;
