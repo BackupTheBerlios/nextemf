@@ -26,7 +26,9 @@
 #include "SharedFileList.h"
 #include "UpDownClient.h"
 #include "Opcodes.h"
-#include "WebServices.h"
+//==>removed WebService [shadow2004]
+//#include "WebServices.h"
+//<==removed WebService [shadow2004]
 #include <shlobj.h>
 #include "emuledlg.h"
 #include "MenuCmds.h"
@@ -41,8 +43,9 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-
-CWebServices theWebServices;
+//==>removed WebService [shadow2004]
+//CWebServices theWebServices;
+//<==removed WebService [shadow2004]
 
 // Base chars for encode an decode functions
 static byte base16Chars[17] = "0123456789ABCDEF";
@@ -774,10 +777,12 @@ uint32 DecodeBase32(LPCTSTR pszInput, CAICHHash& Hash){
 	return DecodeBase32(pszInput, Hash.GetRawHash(), Hash.GetHashSize());
 }
 
-CWebServices::CWebServices()
+//==>removed WebService [shadow2004]
+/*CWebServices::CWebServices()
 {
 	m_tDefServicesFileLastModified = 0;
 }
+
 
 CString CWebServices::GetDefaultServicesFile() const
 {
@@ -906,8 +911,8 @@ bool CWebServices::RunURL(const CAbstractFile* file, UINT uMenuID)
 void CWebServices::Edit()
 {
 	ShellExecute(NULL, _T("open"), thePrefs.GetTxtEditor(), _T("\"") + thePrefs.GetConfigDir() + _T("webservices.dat\""), NULL, SW_SHOW);
-}
-
+}*/
+//<==removed WebService [shadow2004]
 typedef struct
 {
 	LPCTSTR	pszInitialDir;

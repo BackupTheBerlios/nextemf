@@ -34,7 +34,9 @@
 #include "IrcWnd.h"
 #endif //IRC
 //<== remove IRC [shadow2004]
-#include "WebServices.h"
+//==>removed WebService [shadow2004]
+//#include "WebServices.h"
+//<==removed WebService [shadow2004]
 #include "HelpIDs.h"
 #include "StringConversion.h"
 #include "Log.h"
@@ -73,7 +75,9 @@ BEGIN_MESSAGE_MAP(CPPgGeneral, CPropertyPage)
 	ON_BN_CLICKED(IDC_BRINGTOFOREGROUND, OnSettingsChange)
 	ON_CBN_SELCHANGE(IDC_LANGS, OnLangChange)
 	ON_BN_CLICKED(IDC_ED2KFIX, OnBnClickedEd2kfix)
-	ON_BN_CLICKED(IDC_WEBSVEDIT , OnBnClickedEditWebservices)
+//==>removed WebService [shadow2004]
+	//ON_BN_CLICKED(IDC_WEBSVEDIT , OnBnClickedEditWebservices)
+//<==removed WebService [shadow2004]
 	ON_BN_CLICKED(IDC_ONLINESIG, OnSettingsChange)
 	ON_BN_CLICKED(IDC_CHECK4UPDATE, OnBnClickedCheck4Update)
 	ON_WM_HSCROLL()
@@ -260,7 +264,9 @@ void CPPgGeneral::Localize(void)
 		GetDlgItem(IDC_BRINGTOFOREGROUND)->SetWindowText(GetResString(IDS_PW_FRONT));
 		GetDlgItem(IDC_ONLINESIG)->SetWindowText(GetResString(IDS_PREF_ONLINESIG));	
 		GetDlgItem(IDC_STARTMIN)->SetWindowText(GetResString(IDS_PREF_STARTMIN));	
-		GetDlgItem(IDC_WEBSVEDIT)->SetWindowText(GetResString(IDS_WEBSVEDIT));
+//==>removed WebService [shadow2004]
+		//GetDlgItem(IDC_WEBSVEDIT)->SetWindowText(GetResString(IDS_WEBSVEDIT));
+//<==removed WebService [shadow2004]
 		GetDlgItem(IDC_ED2KFIX)->SetWindowText(GetResString(IDS_ED2KLINKFIX));
 		GetDlgItem(IDC_CHECK4UPDATE)->SetWindowText(GetResString(IDS_CHECK4UPDATE));
 		GetDlgItem(IDC_STARTUP)->SetWindowText(GetResString(IDS_STARTUP));
@@ -283,11 +289,12 @@ void CPPgGeneral::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 	CPropertyPage::OnHScroll(nSBCode, nPos, pScrollBar);
 }
 
-void CPPgGeneral::OnBnClickedEditWebservices()
-{
-	theWebServices.Edit();
-}
-
+//==>removed WebService [shadow2004]
+//void CPPgGeneral::OnBnClickedEditWebservices()
+//{
+//	theWebServices.Edit();
+//}
+//<==removed WebService [shadow2004]
 void CPPgGeneral::OnLangChange()
 {
 #define MIRRORS_URL	_T("http://langmirror%i.emule-project.org/lang/%i%i%i%i/")

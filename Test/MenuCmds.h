@@ -67,7 +67,9 @@
 #define MP_HM_1STSWIZARD		10243
 #define MP_OPENFOLDER			10244
 #define	MP_HM_IPFILTER			10245
-#define	MP_WEBSVC_EDIT			10246
+//==>removed WebService [shadow2004]
+//#define	MP_WEBSVC_EDIT			10246
+//<==removed WebService [shadow2004]
 #define	MP_HM_DIRECT_DOWNLOAD	10247
 #define	MP_INSTALL_SKIN			10248
 
@@ -141,8 +143,9 @@
 #define MP_QS_DL				10532
 #define MP_QS_PA				10533
 #define MP_QS_UA				10534
-
-#define MP_WEBURL				10600
+//==>removed WebService [shadow2004]
+//#define MP_WEBURL				10600
+//<==removed WebService [shadow2004]
 // reserve some for weburls!
 #define MP_ASSIGNCAT			10700
 // reserve some for categories!

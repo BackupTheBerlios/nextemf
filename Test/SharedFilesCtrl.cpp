@@ -41,7 +41,9 @@
 #include "SharedFilesWnd.h"
 #include "Opcodes.h"
 #include "InputBox.h"
-#include "WebServices.h"
+//==>removed WebService [shadow2004]
+//#include "WebServices.h"
+//<==removed WebService [shadow2004]
 #include "TransferWnd.h"
 #include "ClientList.h"
 #include "ED2kLinkDlg.h"
@@ -611,20 +613,22 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	m_SharedFilesMenu.EnableMenuItem(Irc_SetSendLink, iSelectedItems == 1 && theApp.emuledlg->ircwnd->IsConnected() ? MF_ENABLED : MF_GRAYED);
 #endif //IRC
 //<== remove IRC [shadow2004]
-	CTitleMenu WebMenu;
+//==>removed WebService [shadow2004]
+/*	CTitleMenu WebMenu;
 	WebMenu.CreateMenu();
 	WebMenu.AddMenuTitle(NULL, true);
 	int iWebMenuEntries = theWebServices.GetFileMenuEntries(&WebMenu);
 	UINT flag2 = (iWebMenuEntries == 0 || iSelectedItems != 1) ? MF_GRAYED : MF_STRING;
-	m_SharedFilesMenu.AppendMenu(flag2 | MF_POPUP, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES), _T("WEB"));
-
+	m_SharedFilesMenu.AppendMenu(flag2 | MF_POPUP, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES), _T("WEB"));*/
+//<==removed WebService [shadow2004]
 	GetPopupMenuPos(*this, point);
 	m_SharedFilesMenu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON,point.x,point.y,this);
-
-	m_SharedFilesMenu.RemoveMenu(m_SharedFilesMenu.GetMenuItemCount()-1,MF_BYPOSITION);
+//==>removed WebService [shadow2004]
+/*	m_SharedFilesMenu.RemoveMenu(m_SharedFilesMenu.GetMenuItemCount()-1,MF_BYPOSITION);
 	VERIFY( WebMenu.DestroyMenu() );
 	if (uInsertedMenuItem)
-		VERIFY( m_SharedFilesMenu.RemoveMenu(uInsertedMenuItem, MF_BYCOMMAND) );
+		VERIFY( m_SharedFilesMenu.RemoveMenu(uInsertedMenuItem, MF_BYCOMMAND) );*/
+//<==removed WebService [shadow2004]
 }
 
 BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
@@ -856,9 +860,12 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					break;
 				}
 			default:
+//==>removed WebService [shadow2004]
+			/*
 				if (wParam>=MP_WEBURL && wParam<=MP_WEBURL+256){
 					theWebServices.RunURL(file, wParam);
-				}
+				}*/
+//<==removed WebService [shadow2004]
 				break;
 		}
 	}
@@ -1111,8 +1118,9 @@ void CSharedFilesCtrl::CreateMenues()
 	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_DETAIL, GetResString(IDS_SHOWDETAILS), _T("FILEINFO"));
 	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_SHOWED2KLINK, GetResString(IDS_DL_SHOWED2KLINK), _T("ED2KLINK") );
 	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_CMT, GetResString(IDS_CMT_ADD), _T("FILECOMMENTS")); 
-	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_SEPARATOR); 
-
+//==>removed WebService [shadow2004]
+//	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_SEPARATOR); 
+//<==removed WebService [shadow2004]
 #if defined(_DEBUG)
 	//JOHNTODO: Not for release as we need kad lowID users in the network to see how well this work work. Also, we do not support these links yet.
 	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_GETKADSOURCELINK, _T("Copy eD2K Links To Clipboard (Kad)"));

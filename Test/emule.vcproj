@@ -1086,9 +1086,6 @@
 				RelativePath="Version.h">
 			</File>
 			<File
-				RelativePath="WebServices.h">
-			</File>
-			<File
 				RelativePath="WebSocket.h">
 			</File>
 			<File

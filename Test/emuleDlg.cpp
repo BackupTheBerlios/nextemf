@@ -91,7 +91,9 @@
 #include "MenuCmds.h"
 #include "MuleSystrayDlg.h"
 #include "IPFilterDlg.h"
-#include "WebServices.h"
+//==>removed WebService [shadow2004]
+//#include "WebServices.h"
+//<==removed WebService [shadow2004]
 #include "DirectDownloadDlg.h"
 #include "PeerCacheFinder.h"
 #include "Statistics.h"
@@ -2111,9 +2113,11 @@ BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 			ShellExecute(NULL, NULL, theUrl, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
 			break;
 		}
-		case MP_WEBSVC_EDIT:
-			theWebServices.Edit();
-			break;
+//==>removed WebService [shadow2004]
+		//case MP_WEBSVC_EDIT:
+		//	theWebServices.Edit();
+		//	break;
+//<==removed WebService [shadow2004]
 		case MP_HM_CONVERTPF:
 			CPartFileConvert::ShowGUI();
 			break;
@@ -2144,9 +2148,11 @@ BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 			break;
 		}
 	}	
-	if (wParam>=MP_WEBURL && wParam<=MP_WEBURL+99) {
-		theWebServices.RunURL(NULL, wParam);
-	}
+//==>removed WebService [shadow2004]
+//	if (wParam>=MP_WEBURL && wParam<=MP_WEBURL+99) {
+//		theWebServices.RunURL(NULL, wParam);
+//	}
+//<==removed WebService [shadow2004]
 //==> remove scheduler [shadow2004]
 #if defined(SCHEDULER)
 	else if (wParam>=MP_SCHACTIONS && wParam<=MP_SCHACTIONS+99) {
@@ -2218,9 +2224,11 @@ void CemuleDlg::ShowToolPopup(bool toolsonly)
 	Links.AppendMenu(MF_STRING, MP_HM_LINK1, GetResString(IDS_HM_LINKHP), _T("WEB"));
 	Links.AppendMenu(MF_STRING, MP_HM_LINK2, GetResString(IDS_HM_LINKFAQ), _T("WEB"));
 	Links.AppendMenu(MF_STRING, MP_HM_LINK3, GetResString(IDS_HM_LINKVC), _T("WEB"));
-	theWebServices.GetGeneralMenuEntries(&Links);
-	Links.InsertMenu(3, MF_BYPOSITION | MF_SEPARATOR);
-	Links.AppendMenu(MF_STRING, MP_WEBSVC_EDIT, GetResString(IDS_WEBSVEDIT));
+//==>removed WebService [shadow2004]
+//	theWebServices.GetGeneralMenuEntries(&Links);
+	//Links.InsertMenu(3, MF_BYPOSITION | MF_SEPARATOR);
+	//Links.AppendMenu(MF_STRING, MP_WEBSVC_EDIT, GetResString(IDS_WEBSVEDIT));
+//<==removed WebService [shadow2004]
 //==> remove scheduler [shadow2004]
 #if defined(SCHEDULER)
 	CMenu scheduler;

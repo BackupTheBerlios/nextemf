@@ -824,8 +824,6 @@
 #define IDS_SP_ICONBAR                  837
 #define IDS_RATINGRECV                  838
 #define IDS_DESCRIPTIONRECV             839
-#define IDS_WEBSERVICES                 840
-#define IDS_WEBSVEDIT                   841
 #define IDC_CHECK4UPDATE                842
 //==> remove IRC [shadow2004]
 #if defined(IRC)
@@ -1884,7 +1882,6 @@
 #define IDC_LOGRESET                    2441
 #define IDC_TAB1                        2442
 #define IDC_TOTAL_LBL                   2443
-#define IDC_WEBSVEDIT                   2444
 #define IDC_SERVMSG                     2446
 #define IDC_ONLINESIG                   2447
 #define IDC_SEARCHLST_ICO               2448

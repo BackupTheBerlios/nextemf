@@ -697,7 +697,9 @@ void CPreferences::Init()
 	if (PathFileExists(appdir + _T("server.met")))			MoveFile(appdir + _T("server.met"), configdir + _T("server.met"));
 	if (PathFileExists(appdir + _T("shareddir.dat")))		MoveFile(appdir + _T("shareddir.dat"), configdir + _T("shareddir.dat"));
 	if (PathFileExists(appdir + _T("staticservers.dat")))	MoveFile(appdir + _T("staticservers.dat"), configdir + _T("staticservers.dat"));
-	if (PathFileExists(appdir + _T("webservices.dat")))		MoveFile(appdir + _T("webservices.dat"), configdir + _T("webservices.dat"));
+//==>removed WebService [shadow2004]
+//	if (PathFileExists(appdir + _T("webservices.dat")))		MoveFile(appdir + _T("webservices.dat"), configdir + _T("webservices.dat"));
+//<==removed WebService [shadow2004]
 
 	///////////////////////////////////////////////////////////////////////////
 	// Create 'logs' directory (and optionally move files from application directory)
@@ -980,7 +982,9 @@ bool CPreferences::IsConfigFile(const CString& rstrDirectory, const CString& rst
 		_T("shareddir.dat"),
 		_T("sharedsubdir.dat"),
 		_T("staticservers.dat"),
-		_T("webservices.dat")
+//==>removed WebService [shadow2004]
+//		_T("webservices.dat")
+//<==removed WebService [shadow2004]
 	};
 	for (int i = 0; i < ARRSIZE(_apszNotSharedFiles); i++){
 		if (rstrName.CompareNoCase(_apszNotSharedFiles[i])==0)

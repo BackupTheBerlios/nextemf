@@ -358,8 +358,6 @@ BEGIN
                     BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,19,157,190,10
     CONTROL         "Start with Windows",IDC_STARTWIN,"Button",
                     BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,19,169,190,10
-    PUSHBUTTON      "Edit Web Services...",IDC_WEBSVEDIT,14,222,100,12,
-                    BS_FLAT
     PUSHBUTTON      "eD2K Links",IDC_ED2KFIX,155,222,62,12,BS_FLAT
     GROUPBOX        "Nick:",IDC_NICK_FRM,7,7,104,33,BS_FLAT
     GROUPBOX        "Misc:",IDC_MISC_FRM,7,47,216,190,BS_FLAT
@@ -3635,8 +3633,6 @@ BEGIN
     IDS_SP_ICONBAR          "Systrayicon Speedbar"
     IDS_RATINGRECV          "Rating for file '%s' received: %i"
     IDS_DESCRIPTIONRECV     "Description for file '%s' received: %s"
-    IDS_WEBSERVICES         "&Web Services"
-    IDS_WEBSVEDIT           "Edit Web Services..."
 //==> remove IRC [shadow2004]
 #if defined(IRC)
     IDS_IRC_EMULEPROTO_IGNORESENDLINK 

@@ -36,7 +36,9 @@
 #include "OtherFunctions.h"
 #include "Opcodes.h"
 #include "Packets.h"
-#include "WebServices.h"
+//==>removed WebService [shadow2004]
+//#include "WebServices.h"
+//<==removed WebService [shadow2004]
 #include "Log.h"
 #include "HighColorTab.hpp"
 
@@ -652,22 +654,28 @@ void CSearchListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	m_SearchFileMenu.EnableMenuItem(MP_REMOVE, theApp.emuledlg->searchwnd->CanDeleteSearch(m_nResultsID) ? MF_ENABLED : MF_GRAYED);
 	m_SearchFileMenu.EnableMenuItem(MP_FIND, GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED);
 
-	CTitleMenu WebMenu;
+//==>removed WebService [shadow2004]
+	/*CTitleMenu WebMenu;
 	WebMenu.CreateMenu();
 	WebMenu.AddMenuTitle(NULL, true);
 	int iWebMenuEntries = theWebServices.GetFileMenuEntries(&WebMenu);
 	UINT flag2 = (iWebMenuEntries == 0 || iSelected != 1) ? MF_GRAYED : MF_STRING;
 	m_SearchFileMenu.AppendMenu(MF_POPUP | flag2, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES), _T("WEB"));
+*/
+//<==removed WebService [shadow2004]
 	
 	if (iToDownload > 0)
 		m_SearchFileMenu.SetDefaultItem( ( !thePrefs.AddNewFilesPaused() || !thePrefs.IsExtControlsEnabled() )?MP_RESUME:MP_RESUMEPAUSED);
-	else
-		m_SearchFileMenu.SetDefaultItem((UINT)-1);
-
+//==>removed WebService [shadow2004]
+//	else
+//		m_SearchFileMenu.SetDefaultItem((UINT)-1);
+//<==removed WebService [shadow2004]
 	GetPopupMenuPos(*this, point);
 	m_SearchFileMenu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON,point.x,point.y,this);
-	m_SearchFileMenu.RemoveMenu(m_SearchFileMenu.GetMenuItemCount()-1,MF_BYPOSITION);
-	VERIFY( WebMenu.DestroyMenu() );
+//==>removed WebService [shadow2004]
+/*	m_SearchFileMenu.RemoveMenu(m_SearchFileMenu.GetMenuItemCount()-1,MF_BYPOSITION);
+	VERIFY( WebMenu.DestroyMenu() );*/
+//<==removed WebService [shadow2004]
 }
 
 
@@ -754,10 +762,12 @@ BOOL CSearchListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 				}
 				return TRUE;
 			default:
-				if (wParam>=MP_WEBURL && wParam<=MP_WEBURL+256){
+//==>removed WebService [shadow2004]
+/*				if (wParam>=MP_WEBURL && wParam<=MP_WEBURL+256){
 					theWebServices.RunURL(file, wParam);
 					return TRUE;
-				}
+				}*/
+//<==removed WebService [shadow2004]
 				break;
 		}
 	}
