@@ -103,7 +103,8 @@ void CSplashScreen::OnPaint()
 			dc.BitBlt(0, 0, BM.bmWidth, BM.bmHeight, &dcMem, 0, 0, SRCCOPY);
 			if (pOldBM)
 				dcMem.SelectObject(pOldBM);
-
+//==>show version on Splashscreen[shadow2004]
+#ifdef OLDLOGO
 			CRect rc(0, BM.bmHeight * 0.73/*0.65*/, BM.bmWidth, BM.bmHeight);
 			dc.FillSolidRect(rc.left+1, rc.top+1, rc.Width()-2, rc.Height()-2, RGB(255,255,255));
 
@@ -136,6 +137,30 @@ void CSplashScreen::OnPaint()
 			if (pOldFont)
 				dc.SelectObject(pOldFont);
 			font.DeleteObject();
+#else //OLDLOGO
+			CRect rc(2, 0, BM.bmWidth, BM.bmHeight);
+			LOGFONT lf = {0};
+			lf.lfHeight = 14;
+			lf.lfWeight = FW_BOLD;
+			lf.lfQuality = afxData.bWin95 ? NONANTIALIASED_QUALITY : ANTIALIASED_QUALITY;
+			_tcscpy(lf.lfFaceName, _T("Arial"));
+			COLORREF oldclr = dc.SetTextColor(RGB(80,80,80));
+			int iOMode = dc.SetBkMode(TRANSPARENT);
+			CFont font;
+			font.CreateFontIndirect(&lf);
+			CFont* pOldFont = dc.SelectObject(&font);
+			CString strAppVersion(_T("eMule ") + theApp.m_strCurVersionLong + _T(" [") + theApp.m_strModLongVersion + _T("]"));
+#ifdef _UNICODE
+			strAppVersion += _T(" Unicode");
+#endif
+			dc.DrawText(strAppVersion, &rc, DT_RIGHT | DT_NOPREFIX | DT_TOP);
+			if (pOldFont)
+				dc.SetBkMode(iOMode);
+			    dc.SetTextColor(oldclr);
+				dc.SelectObject(pOldFont);
+			    font.DeleteObject();
+#endif //OLDLOGO
+//<==show version on Splashscreen[shadow2004]
 		}
 	}
 }
