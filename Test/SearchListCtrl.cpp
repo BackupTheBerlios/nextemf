@@ -402,13 +402,27 @@ CString CSearchListCtrl::GetCompleteSourcesDisplayString(const CSearchFile* pFil
 	{
 		ASSERT( uSources );
 		if (uSources)
+//==> Search Complete Sources XT [shadow2004]
+#ifdef SourceXT
+			str.Format(_T("%u (%u%%)"), uCompleteSources, (uCompleteSources*100)/uSources);
+#else //SourceXT
 			str.Format(_T("%u%%"), (uCompleteSources*100)/uSources);
+#endif //SourcesXT
+//<== Search Complete Sources XT [shadow2004]
+            
 		if (pbComplete)
 			*pbComplete = true;
 	}
 	else						// '= 0' ... we know it's not complete
 	{
-		str = _T("0%");
+//==> Search Complete Sources XT [shadow2004]
+#ifdef SourceXT
+				str = _T("0 (0%)");
+#else //SourceXT
+                str = _T("0%");
+#endif //SourcesXT
+//<== Search Complete Sources XT [shadow2004]
+		
 		if (pbComplete)
 			*pbComplete = false;
 	}
@@ -533,11 +547,24 @@ int CSearchListCtrl::Compare(const CSearchFile* item1, const CSearchFile* item2,
 		case 3: // complete sources asc
 			if (item1->GetIntTagValue(FT_SOURCES) == 0 || item2->GetIntTagValue(FT_SOURCES) == 0 || item1->IsKademlia() || item2->IsKademlia() )
 				return 0; // should never happen, just a sanity check
-			return CompareUnsigned((item1->GetIntTagValue(FT_COMPLETE_SOURCES)*100)/item1->GetIntTagValue(FT_SOURCES), (item2->GetIntTagValue(FT_COMPLETE_SOURCES)*100)/item2->GetIntTagValue(FT_SOURCES));
+//==> Search Complete Sources XT [shadow2004]
+#ifdef SourceXT
+				return CompareUnsigned(item1->GetIntTagValue(FT_COMPLETE_SOURCES), item2->GetIntTagValue(FT_COMPLETE_SOURCES));
+#else //SourceXT
+				return CompareUnsigned((item1->GetIntTagValue(FT_COMPLETE_SOURCES)*100)/item1->GetIntTagValue(FT_SOURCES), (item2->GetIntTagValue(FT_COMPLETE_SOURCES)*100)/item2->GetIntTagValue(FT_SOURCES));
+#endif SourceXT
+//<== Search Complete Sources XT [shadow2004]
+                        
 		case 103: //complete sources desc
 			if (item1->GetIntTagValue(FT_SOURCES) == 0 || item2->GetIntTagValue(FT_SOURCES) == 0 || item1->IsKademlia() || item2->IsKademlia())
 				return 0; // should never happen, just a sanity check
-			return CompareUnsigned((item2->GetIntTagValue(FT_COMPLETE_SOURCES)*100)/item2->GetIntTagValue(FT_SOURCES), (item1->GetIntTagValue(FT_COMPLETE_SOURCES)*100)/item1->GetIntTagValue(FT_SOURCES));
+//==> Search Complete Sources XT [shadow2004]
+#ifdef SourceXT
+                return CompareUnsigned(item2->GetIntTagValue(FT_COMPLETE_SOURCES), item1->GetIntTagValue(FT_COMPLETE_SOURCES));
+#else //SourceXT
+				return CompareUnsigned((item2->GetIntTagValue(FT_COMPLETE_SOURCES)*100)/item2->GetIntTagValue(FT_SOURCES), (item1->GetIntTagValue(FT_COMPLETE_SOURCES)*100)/item1->GetIntTagValue(FT_SOURCES));
+#endif SourceXT
+//<== Search Complete Sources XT [shadow2004]
 
 		case 4: //type asc
 			return item1->GetFileTypeDisplayStr().Compare(item2->GetFileTypeDisplayStr());
