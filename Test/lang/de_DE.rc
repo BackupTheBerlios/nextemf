@@ -984,8 +984,6 @@ BEGIN
     IDS_SP_ICONBAR          "Systrayicon Balken"
     IDS_RATINGRECV          "Datei-Bewertung für '%s' empfangen: %i"
     IDS_DESCRIPTIONRECV     "Datei-Beschreibung für '%s' empfangen: %s"
-    IDS_WEBSERVICES         "Web Dienste"
-    IDS_WEBSVEDIT           "Webdienste ändern"
     IDS_CHECK4UPDATE        "auf neuere Version prüfen"
     IDS_STARTUP             "Programmstart"
     IDS_NEWVERSIONAVL       "Eine neuere Version von eMule ist verfügbar. Besuche die Projekt-Homepage um mehr Informationen zu erhalten."
@@ -1752,6 +1750,8 @@ BEGIN
     IDS_QUICK_START_MAX_CONN_PER_FIVE "max. Verb./5sek:"
     IDS_QUICK_START_AFTER_IP_CHANGE "Schnellstart nach IP-Wechsel"
     IDS_QUICK_START_MAX_TIME "Dauer des Schnellstarts [8-18 min.]"
+    IDS_ANTINICKTHIEF       "Anti-Nick-Thief aktivieren"
+    IDS_ZERO_FILLED_TEST    "Erkenne 0-Daten-Sender"
 END
 
 STRINGTABLE 
@@ -1790,6 +1790,16 @@ BEGIN
     IDS_ANTI_LEECHER        "Anti-Leecher-Kontrolle nutzen"
     IDS_ANTI_CREDITHACK     "Anti-Credit-Diebstahl nutzen"
     IDS_DOWNLOAD_IN_BOLD    "Aktive Downloads fett anzeigen"
+    IDS_DROPS               "Entfernen"
+    IDS_DROPHQSLIMIT        "Entferne Quellen mit Wartepostition höher als :"
+    IDS_DROP_LOWIPTOLOWIP   "Entferne LowID zu LowID Quellen"
+    IDS_DROP_UNKNOW_ERROR_BANNED 
+                            "Entferne unbekannte, fehlerhafte und gebannte Quellen"
+    IDS_DROP_NNS            "Entferne Quellen ohne brauchbare Teile"
+    IDS_DROP_FQS            "Entferne volle Quellen"
+    IDS_DROP_HQS            "Entferne Quellen mit zu hoher Warteposition"
+    IDS_DROP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP 
+                            "Entferne alles (Ein-Klick-Entfernen)"
 END
 
 #endif    // Deutsch (Deutschland) resources
