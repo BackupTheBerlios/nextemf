@@ -132,6 +132,7 @@ BOOL CPPgDisplay::OnInitDialog()
 	CSliderCtrl *slider3D = (CSliderCtrl*)GetDlgItem(IDC_3DDEPTH);
 	slider3D->SetRange(0, 5, true);
 	slider3D->SetPos(thePrefs.Get3DDepth());
+	slider3D->SetTicFreq(1);
 	DrawPreview();
 
 	LoadSettings();
@@ -323,14 +324,14 @@ void CPPgDisplay::OnBnClickedSelectHypertextFont()
 	// get current font description
 	CFont* pFont;
 	if (m_eSelectFont == sfLog)
-		pFont = &theApp.emuledlg->m_fontLog;
+		pFont = &theApp.m_fontLog;
 	else
-		pFont = &theApp.emuledlg->m_fontHyperText;
+		pFont = &theApp.m_fontHyperText;
 	LOGFONT lf;
 	if (pFont != NULL)
 	   pFont->GetObject(sizeof(LOGFONT), &lf);
 	else
-	   ::GetObject(GetStockObject(SYSTEM_FONT), sizeof(LOGFONT), &lf);
+	   ::GetObject(GetStockObject(DEFAULT_GUI_FONT), sizeof(LOGFONT), &lf);
 
 	// Initialize 'CFontDialog'
 	CFontDialog dlg(&lf, CF_SCREENFONTS | CF_INITTOLOGFONTSTRUCT);

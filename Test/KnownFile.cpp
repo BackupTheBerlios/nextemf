@@ -36,8 +36,6 @@
 #include "ClientList.h"
 #include "opcodes.h"
 #include "ini2.h"
-#define NOMD4MACROS
-#include "kademlia/utils/md4.h"
 #include "FrameGrabThread.h"
 #include "CxImage/xImage.h"
 #include "OtherFunctions.h"
@@ -47,6 +45,8 @@
 #include "Kademlia/Kademlia/SearchManager.h"
 #include "SafeFile.h"
 #include "shahashset.h"
+#include "Log.h"
+#include "MD4.h"
 
 // id3lib
 #include <id3/tag.h>
@@ -437,7 +437,7 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 	SetFilePath(strFilePath);
 	FILE* file = _tfsopen(strFilePath, _T("rbS"), _SH_DENYNO); // can not use _SH_DENYWR because we may access a completing part file
 	if (!file){
-		theApp.QueueLogLine(false, GetResString(IDS_ERR_FILEOPEN) + _T(" - %hs"), strFilePath, _T(""), strerror(errno));
+		LogError(GetResString(IDS_ERR_FILEOPEN) + _T(" - %hs"), strFilePath, _T(""), strerror(errno));
 		return false;
 	}
 
@@ -461,7 +461,7 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 		uchar* newhash = new uchar[16];
 		CAICHHashTree* pBlockAICHHashTree = m_pAICHHashSet->m_pHashTree.FindHash(hashcount*PARTSIZE, PARTSIZE);
 		ASSERT( pBlockAICHHashTree != NULL );
-		CreateHashFromFile(file, PARTSIZE, newhash, pBlockAICHHashTree);
+		CreateHash(file, PARTSIZE, newhash, pBlockAICHHashTree);
 		// SLUGFILLER: SafeHash - quick fallback
 		if (theApp.emuledlg==NULL || !theApp.emuledlg->IsRunning()){ // in case of shutdown while still hashing
 			fclose(file);
@@ -492,18 +492,18 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 		ASSERT( pBlockAICHHashTree != NULL );
 	}
 	
-	CreateHashFromFile(file, togo, lasthash, pBlockAICHHashTree);	
+	CreateHash(file, togo, lasthash, pBlockAICHHashTree);	
 	
 	m_pAICHHashSet->ReCalculateHash(false);
 	if ( m_pAICHHashSet->VerifyHashTree(true) ){
 		m_pAICHHashSet->SetStatus(AICH_HASHSETCOMPLETE);
 		if (!m_pAICHHashSet->SaveHashSet()){
-			theApp.QueueLogLine(true, GetResString(IDS_SAVEACFAILED));
+			LogError(LOG_STATUSBAR, GetResString(IDS_SAVEACFAILED));
 		}
 	}
 	else{
 		// now something went pretty wrong
-		theApp.QueueDebugLogLine(true,_T("Failed to calculate AICH Hashset from file %s"), GetFileName());
+		DebugLogError(LOG_STATUSBAR, _T("Failed to calculate AICH Hashset from file %s"), GetFileName());
 	}
 
 
@@ -516,7 +516,7 @@ bool CKnownFile::CreateFromFile(LPCTSTR in_directory, LPCTSTR in_filename, LPVOI
 		uchar* buffer = new uchar[hashlist.GetCount()*16];
 		for (int i = 0; i < hashlist.GetCount(); i++)
 			md4cpy(buffer+(i*16), hashlist[i]);
-		CreateHashFromString(buffer, hashlist.GetCount()*16, m_abyFileHash);
+		CreateHash(buffer, hashlist.GetCount()*16, m_abyFileHash);
 		delete[] buffer;
 	}
 
@@ -551,7 +551,7 @@ bool CKnownFile::CreateAICHHashSetOnly()
 	m_pAICHHashSet->FreeHashSet();
 	FILE* file = _tfsopen(GetFilePath(), _T("rbS"), _SH_DENYNO); // can not use _SH_DENYWR because we may access a completing part file
 	if (!file){
-		theApp.QueueLogLine(false, GetResString(IDS_ERR_FILEOPEN) + _T(" - %hs"), GetFilePath(), _T(""), strerror(errno));
+		LogError(GetResString(IDS_ERR_FILEOPEN) + _T(" - %hs"), GetFilePath(), _T(""), strerror(errno));
 		return false;
 	}
 	// we are reading the file data later in 8K blocks, adjust the internal file stream buffer accordingly
@@ -562,7 +562,7 @@ bool CKnownFile::CreateAICHHashSetOnly()
 	for (uint16 hashcount = 0; togo >= PARTSIZE; ) {
 		CAICHHashTree* pBlockAICHHashTree = m_pAICHHashSet->m_pHashTree.FindHash(hashcount*PARTSIZE, PARTSIZE);
 		ASSERT( pBlockAICHHashTree != NULL );
-		CreateHashFromFile(file, PARTSIZE, NULL, pBlockAICHHashTree);
+		CreateHash(file, PARTSIZE, NULL, pBlockAICHHashTree);
 		// SLUGFILLER: SafeHash - quick fallback
 		if (theApp.emuledlg==NULL || !theApp.emuledlg->IsRunning()){ // in case of shutdown while still hashing
 			fclose(file);
@@ -576,19 +576,19 @@ bool CKnownFile::CreateAICHHashSetOnly()
 	if (togo != 0){
 		CAICHHashTree* pBlockAICHHashTree = m_pAICHHashSet->m_pHashTree.FindHash(hashcount*PARTSIZE, togo);
 		ASSERT( pBlockAICHHashTree != NULL );
-		CreateHashFromFile(file, togo, NULL, pBlockAICHHashTree);
+		CreateHash(file, togo, NULL, pBlockAICHHashTree);
 	}
 	
 	m_pAICHHashSet->ReCalculateHash(false);
 	if ( m_pAICHHashSet->VerifyHashTree(true) ){
 		m_pAICHHashSet->SetStatus(AICH_HASHSETCOMPLETE);
 		if (!m_pAICHHashSet->SaveHashSet()){
-			theApp.QueueLogLine(true, GetResString(IDS_SAVEACFAILED));
+			LogError(LOG_STATUSBAR, GetResString(IDS_SAVEACFAILED));
 		}
 	}
 	else{
 		// now something went pretty wrong
-		theApp.QueueDebugLogLine(true,_T("Failed to calculate AICH Hashset from file %s"), GetFileName());
+		DebugLogError(LOG_STATUSBAR, _T("Failed to calculate AICH Hashset from file %s"), GetFileName());
 	}
 	
 	fclose(file);
@@ -723,7 +723,7 @@ bool CKnownFile::LoadHashsetFromFile(CFileDataIO* file, bool checkhash){
 		uchar* buffer = new uchar[hashlist.GetCount()*16];
 		for (int i = 0; i < hashlist.GetCount(); i++)
 			md4cpy(buffer+(i*16), hashlist[i]);
-		CreateHashFromString(buffer, hashlist.GetCount()*16, checkid);
+		CreateHash(buffer, hashlist.GetCount()*16, checkid);
 		delete[] buffer;
 	}
 	if (!md4cmp(m_abyFileHash, checkid))
@@ -760,7 +760,7 @@ bool CKnownFile::SetHashset(const CArray<uchar*, uchar*>& aHashset)
 	uchar* buffer = new uchar[hashlist.GetCount()*16];
 	for (int i = 0; i < hashlist.GetCount(); i++)
 		md4cpy(buffer+(i*16), hashlist[i]);
-	CreateHashFromString(buffer, hashlist.GetCount()*16, aucHashsetHash);
+	CreateHash(buffer, hashlist.GetCount()*16, aucHashsetHash);
 	delete[] buffer;
 
 	bool bResult = (md4cmp(aucHashsetHash, m_abyFileHash) == 0);
@@ -1030,36 +1030,23 @@ bool CKnownFile::WriteToFile(CFileDataIO* file)
 	return true;
 }
 
-void CKnownFile::CreateHashFromInput(FILE* file,CFile* file2, int Length, uchar* Output, uchar* in_string, CAICHHashTree* pShaHashOut) const
+void CKnownFile::CreateHash(CFile* pFile, UINT Length, uchar* pMd4HashOut, CAICHHashTree* pShaHashOut) const
 {
-	ASSERT( Output != NULL || pShaHashOut != NULL);
-	// time critial
-	bool PaddingStarted = false;
-	uint32 Hash[4];
-	Hash[0] = 0x67452301;
-	Hash[1] = 0xEFCDAB89;
-	Hash[2] = 0x98BADCFE;
-	Hash[3] = 0x10325476;
-	CFile* data = NULL;
-	if (in_string)
-		data = new CMemFile(in_string,Length);
-	uint32 Required = Length;
-	uchar   X[64*128];
+	ASSERT( pFile != NULL );
+	ASSERT( pMd4HashOut != NULL || pShaHashOut != NULL );
 
+	uint32  Required = Length;
+	uchar   X[64*128];
 	uint32	posCurrentEMBlock = 0;
 	uint32	nIACHPos = 0;
 	CAICHHashAlgo* pHashAlg = m_pAICHHashSet->GetNewHashAlgo();
+	CMD4 md4;
 
 	while (Required >= 64){
         uint32 len = Required / 64; 
         if (len > sizeof(X)/(64 * sizeof(X[0]))) 
              len = sizeof(X)/(64 * sizeof(X[0])); 
-		if (in_string)
-			data->Read(&X,len*64);
-		else if (file)
-            fread(&X,len*64,1,file); 
-		else if (file2)
-			file2->Read(&X,len*64);
+		pFile->Read(&X, len*64);
 
 		// SHA hash needs 180KB blocks
 		if (pShaHashOut != NULL){
@@ -1079,23 +1066,15 @@ void CKnownFile::CreateHashFromInput(FILE* file,CFile* file2, int Length, uchar*
 			}
 		}
 
-		if (Output != NULL){
-			for (uint32 i = 0; i < len; i++) 
-			{ 
-				MD4Transform(Hash, (uint32*)(X + i*64)); 
-			}
+		if (pMd4HashOut != NULL){
+			md4.Add(X, len*64);
 		}
 		Required -= len*64;
 	}
-	// bytes to read
+
 	Required = Length % 64;
 	if (Required != 0){
-		if (in_string)
-			data->Read(&X,Required);
-		else if (file)
-			fread(&X,Required,1,file);
-		else if (file2)
-			file2->Read(&X,Required);
+		pFile->Read(&X, Required);
 
 		if (pShaHashOut != NULL){
 			if (nIACHPos + Required >= EMBLOCKSIZE){
@@ -1112,7 +1091,6 @@ void CKnownFile::CreateHashFromInput(FILE* file,CFile* file2, int Length, uchar*
 				pHashAlg->Add(X, Required);
 				nIACHPos += Required;
 			}
-
 		}
 	}
 	if (pShaHashOut != NULL){
@@ -1124,103 +1102,51 @@ void CKnownFile::CreateHashFromInput(FILE* file,CFile* file2, int Length, uchar*
 		VERIFY( pShaHashOut->ReCalculateHash(pHashAlg, false) );
 	}
 
-	if (Output != NULL){
-		// in byte scale 512 = 64, 448 = 56
-		if (Required >= 56){
-			X[Required] = 0x80;
-			PaddingStarted = TRUE;
-			memset(&X[Required + 1], 0, 63 - Required);
-			MD4Transform(Hash, (uint32*)X);
-			Required = 0;
-		}
-		if (!PaddingStarted)
-			X[Required++] = 0x80;
-		memset(&X[Required], 0, 64 - Required);
-		// add size (convert to bits)
-		uint32 Length2 = Length >> 29;
-		Length <<= 3;
-		memcpy(&X[56], &Length, 4);
-		memcpy(&X[60], &Length2, 4);
-		MD4Transform(Hash, (uint32*)X);
-		md4cpy(Output, Hash);
+	if (pMd4HashOut != NULL){
+		md4.Add(X, Required);
+		md4.Finish();
+		md4cpy(pMd4HashOut, md4.GetHash());
 	}
 
 	delete pHashAlg;
-	if (data)
-		delete data;
+}
+
+bool CKnownFile::CreateHash(FILE* fp, UINT uSize, uchar* pucHash, CAICHHashTree* pShaHashOut) const
+{
+	bool bResult = false;
+	CStdioFile file(fp);
+	try
+	{
+		CreateHash(&file, uSize, pucHash, pShaHashOut);
+		bResult = true;
+	}
+	catch(CFileException* ex)
+	{
+		ex->Delete();
+	}
+	return bResult;
+}
+
+bool CKnownFile::CreateHash(const uchar* pucData, UINT uSize, uchar* pucHash, CAICHHashTree* pShaHashOut) const
+{
+	bool bResult = false;
+	CMemFile file(const_cast<uchar*>(pucData), uSize);
+	try
+	{
+		CreateHash(&file, uSize, pucHash, pShaHashOut);
+		bResult = true;
+	}
+	catch(CFileException* ex)
+	{
+		ex->Delete();
+	}
+	return bResult;
 }
 
 uchar* CKnownFile::GetPartHash(uint16 part) const {
 	if (part >= hashlist.GetCount())
 		return 0;
 	return hashlist[part];
-}
-
-static void MD4Transform(uint32 Hash[4], uint32 x[16])
-{
-  uint32 a = Hash[0];
-  uint32 b = Hash[1];
-  uint32 c = Hash[2];
-  uint32 d = Hash[3];
-
-  /* Round 1 */
-  MD4_FF(a, b, c, d, x[ 0], S11); // 01
-  MD4_FF(d, a, b, c, x[ 1], S12); // 02
-  MD4_FF(c, d, a, b, x[ 2], S13); // 03
-  MD4_FF(b, c, d, a, x[ 3], S14); // 04
-  MD4_FF(a, b, c, d, x[ 4], S11); // 05
-  MD4_FF(d, a, b, c, x[ 5], S12); // 06
-  MD4_FF(c, d, a, b, x[ 6], S13); // 07
-  MD4_FF(b, c, d, a, x[ 7], S14); // 08
-  MD4_FF(a, b, c, d, x[ 8], S11); // 09
-  MD4_FF(d, a, b, c, x[ 9], S12); // 10
-  MD4_FF(c, d, a, b, x[10], S13); // 11
-  MD4_FF(b, c, d, a, x[11], S14); // 12
-  MD4_FF(a, b, c, d, x[12], S11); // 13
-  MD4_FF(d, a, b, c, x[13], S12); // 14
-  MD4_FF(c, d, a, b, x[14], S13); // 15
-  MD4_FF(b, c, d, a, x[15], S14); // 16
-
-  /* Round 2 */
-  MD4_GG(a, b, c, d, x[ 0], S21); // 17
-  MD4_GG(d, a, b, c, x[ 4], S22); // 18
-  MD4_GG(c, d, a, b, x[ 8], S23); // 19
-  MD4_GG(b, c, d, a, x[12], S24); // 20
-  MD4_GG(a, b, c, d, x[ 1], S21); // 21
-  MD4_GG(d, a, b, c, x[ 5], S22); // 22
-  MD4_GG(c, d, a, b, x[ 9], S23); // 23
-  MD4_GG(b, c, d, a, x[13], S24); // 24
-  MD4_GG(a, b, c, d, x[ 2], S21); // 25
-  MD4_GG(d, a, b, c, x[ 6], S22); // 26
-  MD4_GG(c, d, a, b, x[10], S23); // 27
-  MD4_GG(b, c, d, a, x[14], S24); // 28
-  MD4_GG(a, b, c, d, x[ 3], S21); // 29
-  MD4_GG(d, a, b, c, x[ 7], S22); // 30
-  MD4_GG(c, d, a, b, x[11], S23); // 31
-  MD4_GG(b, c, d, a, x[15], S24); // 32
-
-  /* Round 3 */
-  MD4_HH(a, b, c, d, x[ 0], S31); // 33
-  MD4_HH(d, a, b, c, x[ 8], S32); // 34
-  MD4_HH(c, d, a, b, x[ 4], S33); // 35
-  MD4_HH(b, c, d, a, x[12], S34); // 36
-  MD4_HH(a, b, c, d, x[ 2], S31); // 37
-  MD4_HH(d, a, b, c, x[10], S32); // 38
-  MD4_HH(c, d, a, b, x[ 6], S33); // 39
-  MD4_HH(b, c, d, a, x[14], S34); // 40
-  MD4_HH(a, b, c, d, x[ 1], S31); // 41
-  MD4_HH(d, a, b, c, x[ 9], S32); // 42
-  MD4_HH(c, d, a, b, x[ 5], S33); // 43
-  MD4_HH(b, c, d, a, x[13], S34); // 44
-  MD4_HH(a, b, c, d, x[ 3], S31); // 45
-  MD4_HH(d, a, b, c, x[11], S32); // 46
-  MD4_HH(c, d, a, b, x[ 7], S33); // 47
-  MD4_HH(b, c, d, a, x[15], S34); // 48
-
-  Hash[0] += a;
-  Hash[1] += b;
-  Hash[2] += c;
-  Hash[3] += d;
 }
 
 void CAbstractFile::SetFileName(LPCTSTR pszFileName, bool bReplaceInvalidFileSystemChars, bool bAutoSetFileType)
@@ -1967,15 +1893,4 @@ void CKnownFile::GrabbingFinished(CxImage** imgResults, uint8 nFramesGrabbed, vo
 			delete imgResults[i];
 	}
 	delete[] imgResults;
-
 }
-
-/*// #zegzav:updcliuplst
-void CKnownFile::UpdateClientUploadList()
-{
-	// remove non-existent clients / add missing clients
-	theApp.clientlist->GetClientListByFileID(&m_ClientUploadList, GetFileHash());
-	m_iQueuedCount = m_ClientUploadList.GetCount();
-	UpdateAutoUpPriority();
-}
-*/

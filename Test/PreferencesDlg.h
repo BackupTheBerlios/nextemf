@@ -8,11 +8,10 @@
 #include "PPgNotify.h"
 //==> remove IRC [shadow2004]
 #if defined(IRC)
-  #include "PPgIRC.h"
+#include "PPgIRC.h"
 #else
   #include "Preferences.h"
 #endif //IRC
-
 //<== remove IRC [shadow2004]
 #include "PPgTweaks.h"
 #include "PPgDisplay.h"
@@ -28,14 +27,9 @@
 #include "PPgDebug.h"
 #endif
 #include "otherfunctions.h"
-#include "ListBoxST.h"
-//==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
-#if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
-#include ".\NextEMF\PPgNextEMF.h"
-#endif //Reask sourcen after ip chnage or Quickstart
-//<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#include "TreePropSheet.h"
 
-class CPreferencesDlg : public CPropertySheet
+class CPreferencesDlg : public CTreePropSheet
 {
 	DECLARE_DYNAMIC(CPreferencesDlg)
 
@@ -69,21 +63,10 @@ public:
 	CPPgDebug		m_wndDebug;
 #endif
 
-//==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
-#if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
-	CPPgNextEMF		m_wndNextEMF;
-#endif //Reask sourcen after ip chnage or Quickstart
-//<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
-
-	CListBoxST		m_listbox;
-	CButton			m_groupbox;
-	CImageList		ImageList;
-	int				m_iPrevPage;
-
 	void Localize();
-	void OpenPage(UINT uResourceID);
 
 protected:
+	int m_iPrevPage;
 	UINT m_nActiveWnd;
 
 	virtual BOOL OnInitDialog();
@@ -91,8 +74,6 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnDestroy();
-	afx_msg void OnSelChanged();
-	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	afx_msg void OnHelp();
 	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
 };

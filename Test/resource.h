@@ -24,7 +24,6 @@
 #define IDS_HTTPDOWNLOAD_PERCENTAGE     119
 #define IDS_HTTPDOWNLOAD_RETREIVEING_FILE 120
 #define IDS_HTTPDOWNLOAD_OF             121
-#define IDS_ED2KLINK                    122
 #define IDS_FILELINK                    122
 #define IDS_LD_BASICOPT                 123
 #define IDS_LD_ADDSOURCE                124
@@ -77,7 +76,7 @@
 #define IDS_SKIN_PROF                   165
 #define IDS_ERR_PART_FNF                166
 #define IDS_ERR_OPENMETFILE             167
-#define IDR_HTTPDOWNLOAD_ANIMATION      168
+#define IDR_HTTPDOWNLOAD_ANI			168
 #define IDS_KADOPEN                     168
 #define IDS_ERR_SAVEMET                 169
 #define IDS_ERR_FOUNDCORRUPTION         170
@@ -1408,7 +1407,6 @@
 #define IDR_WIDECHARLOWERMAP            1362
 #define IDS_INSTALL_SKIN                1363
 #define IDS_INSTALL_SKIN_NODIR          1364
-#define IDI_ICON1                       1364
 #define IDS_INSTALL_SKIN_DIR_ERROR      1365
 #define IDD_ADDSOURCE                   1365
 #define IDS_INSTALL_SKIN_FILE_ERROR     1366
@@ -1491,24 +1489,19 @@
 #define IDS_FAIL                        1439
 #define IDS_META_PREFERENCES            1440
 #define IDS_META_VERSION                1441
-#define IDS_STRING1442                  1442
 #define IDS_META_TEMPFILE               1442
 #define IDS_META_SERVERPORT             1443
 #define IDS_META_SERVERIP               1444
 #define IDS_META_SRCUDPPORT             1445
 #define IDS_META_SRCTCPPORT             1446
 #define IDS_META_SRCIP                  1447
-#define IDS_STRING1448                  1448
 #define IDS_META_SRCTYPE                1448
-#define IDS_STRING1449                  1449
 #define IDS_SEARCH_UNICODE              1449
 #define IDS_PF_ADVANCEDCALC             1450
 #define IDS_PERSEC                      1451
-#define IDR_HTML_ED2KLINKDLG            1452
 #define IDS_LD_ED2KLINK                 1452
 #define IDS_LD_COPYCLIPBOARD            1453
 #define IDS_LD_HOSTNAME                 1454
-#define IDS_STRING1455                  1455
 #define IDS_SAVEACFAILED                1455
 #define IDS_IACHHASH                    1456
 #define IDS_BYTESPERSEC                 1457
@@ -1520,12 +1513,9 @@
 #define IDS_AICH_SYNCTOTAL              1463
 #define IDS_AICH_CALCFILE               1464
 #define IDS_AICH_WARNUSER               1465
-#define IDS_AICH_WORKD                  1466
 #define IDS_AICH_WORKED                 1466
 #define IDS_SOURCECLIENT                1467
-#define IDS_STRING1468                  1468
 #define IDS_USERSIP                     1468
-#define IDS_STRING1469                  1469
 #define IDS_FEATURES                    1469
 //==> remove IRC [shadow2004]
 #if defined(IRC)
@@ -1533,6 +1523,13 @@
 #define IDS_IRC_NEWNICKDESC             1471
 #endif //IRC
 //<== remove IRC [shadow2004]
+#define IDS_SPARSEPARTFILES             1472
+#define IDS_ASPECTRATIO                 1473
+#define IDS_NEGATEFILTER                1474
+#define IDS_SEENCOMPL                   1475
+#define IDS_SELSKINPROFILEDIR           1476
+#define IDS_ASKDLINCOMPLETE             1477
+#define IDS_DEADSOURCES                 1478
 #define IDC_ANIMATE1                    2000
 #define IDC_STATUS                      2001
 #define IDC_FILESTATUS                  2002
@@ -1657,7 +1654,6 @@
 #define IDC_APPLY                       2164
 #define IDC_UPLOAD_CAP                  2166
 #define IDC_SFLIST                      2167
-#define IDC_ICH                         2168
 #define IDC_ADDSERVER                   2169
 #define IDC_DOWNLOAD_CAP                2171
 #define IDC_SEARCHLIST                  2172
@@ -1678,7 +1674,6 @@
 #define IDC_UPDATESERVERCONNECT         2190
 #define IDC_VWIDTH                      2191
 #define IDC_QUEUECOUNT                  2192
-#define IDC_VWIDTH2                     2192
 #define IDC_VASPECT                     2192
 #define IDC_UPDATESERVERCLIENT          2194
 #define IDC_VHEIGHT                     2195
@@ -1748,45 +1743,25 @@
 #define IDC_FD_XI11                     2274
 #define IDC_SLIDER                      2276
 #define IDC_FD_XI13                     2277
-#define IDC_C1                          2279
 #define IDC_FD_XI6                      2280
 #define IDC_FD_XI8                      2282
 #define IDC_FD_XI10                     2284
-#define IDC_C0                          2285
 #define IDC_FD_XI12                     2286
-#define IDC_STATIC_D                    2287
-#define IDC_STATIC_U                    2288
 #define IDC_STATISTICS                  2289
 #define IDC_STATSSCOPE                  2291
-#define IDC_S0                          2292
-#define IDC_S1                          2293
-#define IDC_S3                          2294
 #define IDD_STATISTICS                  2296
-#define IDC_C0_2                        2298
-#define IDC_STATIC_S0                   2299
 #define IDD_SPLASH                      2300
-#define IDC_STATIC_S1                   2301
-#define IDC_STATIC_S2                   2302
 //==> remove IRC [shadow2004]
 #if defined(IRC)
 #define IDD_IRC                         2303
 #endif //IRC
 //<== remove IRC [shadow2004]
 #define IDC_SCOPE_U                     2305
-#define IDC_STATIC_D2                   2306
-#define IDC_STATIC_D3                   2307
 #define IDC_BEEPER                      2308
-#define IDC_STATIC_U2                   2309
-#define IDC_STATIC_U3                   2310
 #define IDC_EXIT                        2311
-#define IDC_C1_2                        2313
 #define IDC_SPLASHON                    2315
-#define IDC_C0_3                        2318
-#define IDC_TIMEAVG1                    2321
 #define IDC_TypeSearch                  2322
-#define IDC_TIMEAVG2                    2325
 #define IDC_FILTER                      2327
-#define IDC_C1_3                        2328
 //==> remove IRC [shadow2004]
 #if defined(IRC)
 #define IDC_IRC_USECHANFILTER           2329
@@ -1924,7 +1899,6 @@
 #define IDC_INCOMING_FRM                2491
 #define IDC_TEMP_FRM                    2492
 #define IDC_SHARED_FRM                  2493
-#define IDC_ICH_FRM                     2494
 #define IDC_SEEMYSHARE_FRM              2495
 #define IDC_MESSAGES_LBL                2496
 #define IDD_PPG_NOTIFY                  2498
@@ -2166,9 +2140,7 @@
 #define IDD_WIZ1_WELCOME                2717
 #define IDD_WIZ1_GENERAL                2718
 #define IDC_STARTNEXTFILECAT2           2718
-#define IDD_WIZ1_DL_PRIO                2719
 #define IDD_WIZ1_PORTS                  2719
-#define IDD_WIZ1_UL_PRIO                2720
 #define IDD_WIZ1_ULDL_PRIO              2720
 #define IDD_WIZ1_UPLOAD                 2721
 #define IDD_WIZ1_SERVER                 2722
@@ -2178,7 +2150,6 @@
 #define IDC_ONND                        2728
 #define IDC_FNC                         2729
 #define IDC_CRATIO                      2730
-#define IDC_STATIC_CONNSTATS            2731
 #define IDC_STATIC_CGRAPHSCALE          2732
 #define IDC_STATIC_CGRAPHRATIO          2733
 #define IDC_CGRAPHSCALE                 2734
@@ -2224,7 +2195,7 @@
 #define IDC_CORRUPTED                   2786
 #define IDD_IPFILTER                    2786
 #define IDC_COMPRESSION                 2787
-#define IDD_ED2KLINK                    2788
+#define IDD_ED2KLINK                    2788 // 7 [shadow2004] - BUG?
 #define IDC_TIMELEFTTEXT                2789
 #define IDC_TRANSFER_RATE_LABEL         2790
 #define IDC_RADIP                       2791
@@ -2250,7 +2221,6 @@
 #define IDC_COPY                        2814
 #define IDC_APPEND                      2815
 #define IDC_FORMAT                      2816
-#define IDC_KADALPHA                    2817
 #define IDC_STATICIPLABEL               2818
 //==> remove IRC [shadow2004]
 #if defined(IRC)
@@ -2303,29 +2273,15 @@
 #define IDC_FRIENDS_DESCARGADO_EDIT     2874
 #define IDC_SPLITTER_FRIEND             2875
 #define IDC_CLIENTDETAIL_KAD            2876
-#define IDC_EDIT1                       2877
 #define IDC_LD_LINKEDI                  2877
 #define IDC_CLIENTDETAIL_KADCON         2878
 #define IDC_SEARCH_UNICODE              2879
 #define IDC_AUTOSTART                   2880
 #define IDC_STARTWIN                    2882
-#define IDC_RADIO1                      2883
 #define IDC_RSRC                        2883
-#define IDC_RADIO2                      2884
-#define IDC_RADIO3                      2885
-#define IDC_RADIO4                      2886
 #define IDC_RURL                        2886
 #define IDC_EDIT3                       2887
-#define IDC_EDIT4                       2888
-#define IDC_EDIT5                       2889
-#define IDC_EDIT6                       2890
-#define IDC_EDIT7                       2891
-#define IDC_EDIT8                       2892
-#define IDC_EDIT9                       2894
 #define IDC_EDIT10                      2895
-#define IDC_RADIO5                      2896
-#define IDC_RADIO6                      2897
-#define IDC_RADIO7                      2898
 #define IDC_BUTTON1                     2899
 #define IDC_LD_LINKGROUP                2900
 #define IDC_LD_BASICGROUP               2901
@@ -2335,39 +2291,15 @@
 #define IDC_LD_HTMLCHE                  2905
 #define IDC_LD_HASHSETCHE               2906
 #define IDC_LD_EMULEHASHCHE             2907
-#define IDC_LD_KADLOWIDCHE              2908
 #define IDC_LD_HOSTNAMECHE              2909
 #define IDC_SOURCE_TYPE                 2909
 #define IDC_UIP                         2910
-
-//==>Window for nextemf-option [cyrex2001]
-#define IDD_PPG_NEXTEMF					60000
-#define IDC_PPG_NEXTEMF_OPTS			60001
-//<==Window for nextemf-option [cyrex2001]
-//==>Reask sourcen after ip change [cyrex2001]
-#define IDC_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK 60002
-#define IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK 60002
-//<==Reask sourcen after ip change [cyrex2001]
-//==>Quickstart [cyrex2001]
-#define IDS_QUICK_START						60003
-#define IDS_QUICK_START_MAX_CONN			60004
-#define IDS_QUICK_START_MAX_CONN_PER_FIVE	60005
-#define IDS_QUICK_START_AFTER_IP_CHANGE		60006
-#define IDS_QUICK_START_MAX_TIME			60008
-//<==Quickstart [cyrex2001]
-//==>Hardlimit [cyrex2001]
-#define IDC_DEFAULT_BUTTON					61000
-#define IDD_HARDLIMITDLG					61001
-#define IDC_HARDLIMIT_TAKEOVER				61002
-#define IDC_HARDLIMIT						61003
-#define IDC_HARDLIMIT_LABEL					61004
-//<==Hardlimit [cyrex2001]
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        1366
+#define _APS_NEXT_RESOURCE_VALUE        1411
 #define _APS_NEXT_COMMAND_VALUE         32771
 #define _APS_NEXT_CONTROL_VALUE         2912
 #define _APS_NEXT_SYMED_VALUE           1453

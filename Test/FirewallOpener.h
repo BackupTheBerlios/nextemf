@@ -20,7 +20,6 @@
 #include <comdef.h>
 #include <initguid.h>
 #include <Netcon.h>
-#include "loggable.h"
 
 typedef _com_ptr_t<_com_IIID<INetSharingEveryConnectionCollection,&IID_INetSharingEveryConnectionCollection>	>	INetSharingEveryConnectionCollectionPtr;
 typedef _com_ptr_t<_com_IIID<INetConnection,&IID_INetConnection>	>												INetConnectionPtr;
@@ -77,7 +76,7 @@ public:
 ///////////////////////////////////////////////////////////////////////////////////////
 /// CFirewallOpener
 
-class CFirewallOpener: public CLoggable
+class CFirewallOpener
 {
 public:
 	CFirewallOpener(void);

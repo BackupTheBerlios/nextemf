@@ -29,7 +29,11 @@
 #include "MemDC.h"
 #include "PartFile.h"
 #include "MenuCmds.h"
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #include "IrcWnd.h"
+#endif //IRC
+//<== remove IRC [shadow2004]
 #include "SharedFilesWnd.h"
 #include "Opcodes.h"
 #include "InputBox.h"
@@ -37,6 +41,7 @@
 #include "TransferWnd.h"
 #include "ClientList.h"
 #include "ED2kLinkDlg.h"
+#include "HighColorTab.hpp"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -88,7 +93,12 @@ CSharedFileDetailsSheet::CSharedFileDetailsSheet(const CTypedPtrList<CPtrList, C
 	m_psh.dwFlags |= PSH_NOAPPLYNOW;
 	
 	m_wndMediaInfo.m_psp.dwFlags &= ~PSP_HASHELP;
+	m_wndMediaInfo.m_psp.dwFlags |= PSP_USEICONID;
+	m_wndMediaInfo.m_psp.pszIcon = _T("MEDIAINFO");
+
 	m_wndMetaData.m_psp.dwFlags &= ~PSP_HASHELP;
+	m_wndMetaData.m_psp.dwFlags |= PSP_USEICONID;
+	m_wndMetaData.m_psp.pszIcon = _T("METADATA");
 
 	m_wndMediaInfo.SetMyfile(&m_aKnownFiles);
 	if (m_aKnownFiles.GetSize() == 1 && thePrefs.IsExtControlsEnabled())
@@ -99,6 +109,8 @@ CSharedFileDetailsSheet::CSharedFileDetailsSheet(const CTypedPtrList<CPtrList, C
 		AddPage(&m_wndMetaData);
 
 	m_wndFileLink.m_psp.dwFlags &= ~PSP_HASHELP;
+	m_wndFileLink.m_psp.dwFlags |= PSP_USEICONID;
+	m_wndFileLink.m_psp.pszIcon = _T("ED2KLINK");
 	m_wndFileLink.SetMyfile(&m_aKnownFiles);
 	AddPage(&m_wndFileLink);
 
@@ -120,6 +132,7 @@ BOOL CSharedFileDetailsSheet::OnInitDialog()
 {		
 	EnableStackedTabs(FALSE);
 	BOOL bResult = CResizableSheet::OnInitDialog();
+	HighColorTab::UpdateImageList(*this);
 	InitWindowStyles(this);
 	EnableSaveRestore(_T("SharedFileDetailsSheet")); // call this after(!) OnInitDialog
 	if (m_aKnownFiles.GetSize() == 1)
@@ -568,13 +581,17 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	else
 		m_SharedFilesMenu.EnableMenuItem(MP_GETKADSOURCELINK, MF_GRAYED);
 	#endif
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	m_SharedFilesMenu.EnableMenuItem(Irc_SetSendLink, iSelectedItems == 1 && theApp.emuledlg->ircwnd->IsConnected() ? MF_ENABLED : MF_GRAYED);
-
-	CMenu WebMenu;
+#endif //IRC
+//<== remove IRC [shadow2004]
+	CTitleMenu WebMenu;
 	WebMenu.CreateMenu();
-	int iWebMenuEntries = theWebServices.GetFileMenuEntries(WebMenu);
+	WebMenu.AddMenuTitle(NULL, true);
+	int iWebMenuEntries = theWebServices.GetFileMenuEntries(&WebMenu);
 	UINT flag2 = (iWebMenuEntries == 0 || iSelectedItems != 1) ? MF_GRAYED : MF_STRING;
-	m_SharedFilesMenu.AppendMenu(flag2 | MF_POPUP, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES));
+	m_SharedFilesMenu.AppendMenu(flag2 | MF_POPUP, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES), _T("WEB"));
 
 	GetPopupMenuPos(*this, point);
 	m_SharedFilesMenu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON,point.x,point.y,this);
@@ -602,10 +619,14 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 			file = selectedList.GetHead();
 
 		switch (wParam){
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 			case Irc_SetSendLink:
 				if (file)
 					theApp.emuledlg->ircwnd->SetSendFileString(CreateED2kLink(file));
 				break;
+#endif //IRC
+//<== remove IRC [shadow2004]
 			case MP_GETED2KLINK:{
 				CString str;
 				POSITION pos = selectedList.GetHeadPosition();
@@ -1045,20 +1066,20 @@ void CSharedFilesCtrl::CreateMenues()
 	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIOAUTO, GetResString(IDS_PRIOAUTO));//UAP
 
 	m_SharedFilesMenu.CreatePopupMenu();
-	m_SharedFilesMenu.AddMenuTitle(GetResString(IDS_SHAREDFILES));
+	m_SharedFilesMenu.AddMenuTitle(GetResString(IDS_SHAREDFILES), true);
 
-	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_OPEN, GetResString(IDS_OPENFILE));
-	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_OPENFOLDER, GetResString(IDS_OPENFOLDER));
-	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_RENAME, GetResString(IDS_RENAME) + _T("..."));
-	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_REMOVE, GetResString(IDS_DELETE));
+	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_OPEN, GetResString(IDS_OPENFILE), _T("OPENFILE"));
+	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_OPENFOLDER, GetResString(IDS_OPENFOLDER), _T("OPENFOLDER"));
+	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_RENAME, GetResString(IDS_RENAME) + _T("..."), _T("FILERENAME"));
+	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_REMOVE, GetResString(IDS_DELETE), _T("DELETE"));
 
 	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_SEPARATOR);
-	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_PrioMenu.m_hMenu, GetResString(IDS_PRIORITY) + _T(" (") + GetResString(IDS_PW_CON_UPLBL) + _T(")"));
+	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_PrioMenu.m_hMenu, GetResString(IDS_PRIORITY) + _T(" (") + GetResString(IDS_PW_CON_UPLBL) + _T(")"), _T("FILEPRIORITY"));
 	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_SEPARATOR);
 	
-	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_DETAIL, GetResString(IDS_SHOWDETAILS));
-	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_SHOWED2KLINK, GetResString(IDS_DL_SHOWED2KLINK) );
-	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_CMT, GetResString(IDS_CMT_ADD)); 
+	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_DETAIL, GetResString(IDS_SHOWDETAILS), _T("FILEINFO"));
+	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_SHOWED2KLINK, GetResString(IDS_DL_SHOWED2KLINK), _T("ED2KLINK") );
+	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_CMT, GetResString(IDS_CMT_ADD), _T("FILECOMMENTS")); 
 	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_SEPARATOR); 
 
 #if defined(_DEBUG)
@@ -1067,9 +1088,12 @@ void CSharedFilesCtrl::CreateMenues()
 	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_SEPARATOR); 	
 #endif
 
-	
-	m_SharedFilesMenu.AppendMenu(MF_STRING,Irc_SetSendLink,GetResString(IDS_IRC_ADDLINKTOIRC));
+//==> remove IRC [shadow2004]
+#if defined(IRC)
+	m_SharedFilesMenu.AppendMenu(MF_STRING,Irc_SetSendLink,GetResString(IDS_IRC_ADDLINKTOIRC), _T("IRCCLIPBOARD"));
 	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_SEPARATOR); 
+#endif //IRC
+//<== remove IRC [shadow2004]
 }
 
 void CSharedFilesCtrl::ShowComments(CKnownFile* file)

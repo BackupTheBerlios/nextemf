@@ -161,7 +161,7 @@ void CPPgWebServer::LoadSettings(void)
 //<== remove MobileMule [shadow2004]
 
 	CheckDlgButton(IDC_WS_GZIP,(thePrefs.GetWebUseGzip())?1:0 );
-
+	
 //==> remove MobileMule [shadow2004]
 #if defined(MM)
 	OnEnChangeMMEnabled();

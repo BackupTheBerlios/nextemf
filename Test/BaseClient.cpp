@@ -58,6 +58,7 @@
 #include "Peercachefinder.h"
 #include "ClientUDPSocket.h"
 #include "shahashset.h"
+#include "Log.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -104,7 +105,7 @@ CUpDownClient::CUpDownClient(CPartFile* in_reqfile, uint16 in_port, uint32 in_us
 void CUpDownClient::Init()
 {
 	credits = 0;
-	sumavgUDR = 0; // by BadWolf - Accurate Speed Measurement
+	m_nSumForAvgUpDataRate = 0;
 	m_bAddNextConnect = false;  // VQB Fix for LowID slots only on connection
 	m_nChatstate = MS_NONE;
 	m_nKadState = KS_NONE;
@@ -114,7 +115,6 @@ void CUpDownClient::Init()
 	m_nTransferedUp = 0;
 	m_cAsked = 0;
 	m_cDownAsked = 0;
-	dataratems = 0;
 	m_nUpDatarate = 0;
 	m_pszUsername = 0;
 	m_nUserIDHybrid = 0;
@@ -219,12 +219,9 @@ void CUpDownClient::Init()
 	m_bPeerCacheDownHit = false;
 	m_bPeerCacheUpHit = false;
 	m_fNeedOurPublicIP = 0;
-
     m_random_update_wait = (uint32)(rand()/(RAND_MAX/1000));
-
     m_bSourceExchangeSwapped = false; // ZZ:DownloadManager
     m_dwLastTriedToConnect = ::GetTickCount()-20*60*1000; // ZZ:DownloadManager
-
 	m_fQueueRankPending = 0;
 	m_fUnaskQueueRankRecv = 0;
 	m_fFailedFileIdReqs = 0;
@@ -233,16 +230,6 @@ void CUpDownClient::Init()
 	m_pReqFileAICHHash = NULL;
 	m_fSupportsAICH = 0;
 	m_fAICHRequested = 0;
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
-	m_bValidSource = false;
-	m_dwLastAskedTime = 0;
-	m_dwLastUDPReaskTime = 0;
-	m_dwNextTCPAskedTime = 0;
-	uint32 jitter = rand() * MIN2S(4) / RAND_MAX; // 0..4 minutes, keep in mind integer overflow
-	m_jitteredFileReaskTime = FILEREASKTIME + SEC2MS(jitter) - MIN2MS(2); // -2..+2 minutes, keep the same average overload
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -990,7 +977,7 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket){
 		//
 		// 2.) The remote client may have already received those blocks from some other client when it gets the next
 		// upload slot.
-        AddDebugLogLine(DLP_LOW, false, _T("***NOTE: Disconnected client with non empty block send queue; %s reqs: %s doneblocks: %s"), DbgGetClientInfo(), m_BlockRequests_queue.GetCount() > 0 ? _T("true") : _T("false"), m_DoneBlocks_list.GetCount() ? _T("true") : _T("false"));
+        DebugLogWarning(_T("Disconnected client with non empty block send queue; %s reqs: %s doneblocks: %s"), DbgGetClientInfo(), m_BlockRequests_queue.GetCount() > 0 ? _T("true") : _T("false"), m_DoneBlocks_list.GetCount() ? _T("true") : _T("false"));
 		ClearUploadBlockRequests();
 	}
 
@@ -999,7 +986,7 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket){
 			theApp.m_pPeerCache->DownloadAttemptFailed();
 	
 		if (thePrefs.GetLogUlDlEvents())
-        	AddDebugLogLine(DLP_VERYLOW, false,_T("Download session ended. User: %s Reason: %s"), GetUserName(), pszReason);
+        	AddDebugLogLine(DLP_VERYLOW, false, _T("Download session ended. User: %s Reason: %s"), GetUserName(), pszReason);
 		SetDownloadState(DS_ONQUEUE);
 	}
 	else{
@@ -1062,7 +1049,7 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket){
 	}
 	socket = 0;
     if (m_iFileListRequested){
-		AddLogLine(true,GetResString(IDS_SHAREDFILES_FAILED),GetUserName());
+		LogWarning(LOG_STATUSBAR, GetResString(IDS_SHAREDFILES_FAILED), GetUserName());
         m_iFileListRequested = 0;
 	}
 	if (m_Friend)
@@ -1505,6 +1492,7 @@ void CUpDownClient::ReGetClientSoft()
 		// 105010	0.50.10
 		// 10501	0.50.1
 		// 1051		0.51.0
+		// 1002		1.0.2
 		// 1000		1.0
 		// 501		0.50.1
 
@@ -1521,6 +1509,12 @@ void CUpDownClient::ReGetClientSoft()
 			UINT uMaj = m_nClientVersion/10000;
 			nClientMajVersion = uMaj - 1;
 			nClientMinVersion = (m_nClientVersion - uMaj*10000) / 10;
+			nClientUpVersion = m_nClientVersion % 10;
+		}
+		else if (m_nClientVersion >= 1000 && m_nClientVersion < 1020){
+			UINT uMaj = m_nClientVersion/1000;
+			nClientMajVersion = uMaj;
+			nClientMinVersion = (m_nClientVersion - uMaj*1000) / 10;
 			nClientUpVersion = m_nClientVersion % 10;
 		}
 		else if (m_nClientVersion > 1000){
@@ -1617,12 +1611,12 @@ void CUpDownClient::SetUserName(LPCTSTR pszNewName)
 void CUpDownClient::RequestSharedFileList()
 {
 	if (m_iFileListRequested == 0){
-		AddLogLine(true,GetResString(IDS_SHAREDFILES_REQUEST),GetUserName());
+		AddLogLine(true, GetResString(IDS_SHAREDFILES_REQUEST), GetUserName());
     	m_iFileListRequested = 1;
 		TryToConnect(true);
 	}
 	else{
-		AddLogLine(true,_T("Requesting shared files from user %s (%u) is already in progress"),GetUserName(),GetUserIDHybrid());
+		LogWarning(LOG_STATUSBAR, _T("Requesting shared files from user %s (%u) is already in progress"), GetUserName(), GetUserIDHybrid());
 	}
 }
 
@@ -1654,7 +1648,6 @@ void CUpDownClient::SetBuddyID(const uchar* pucBuddyID)
 }
 
 void CUpDownClient::SendPublicKeyPacket(){
-	///* delete this line later*/ AddDebugLogLine(false, _T("sending public key to '%s'"), GetUserName()));
 	// send our public key to the client who requested it
 	if (socket == NULL || credits == NULL || m_SecureIdentState != IS_KEYANDSIGNEEDED){
 		ASSERT ( false );
@@ -1684,7 +1677,6 @@ void CUpDownClient::SendSignaturePacket(){
 		return;
 	if (credits->GetSecIDKeyLen() == 0)
 		return; // We don't have his public key yet, will be back here later
-		///* delete this line later*/ AddDebugLogLine(false, _T("sending signature key to '%s'"), GetUserName()));
 	// do we have a challenge value received (actually we should if we are in this function)
 	if (credits->m_dwCryptRndChallengeFrom == 0){
 		if (thePrefs.GetLogSecureIdent())
@@ -1734,7 +1726,6 @@ void CUpDownClient::SendSignaturePacket(){
 void CUpDownClient::ProcessPublicKeyPacket(uchar* pachPacket, uint32 nSize){
 	theApp.clientlist->AddTrackClient(this);
 
-	///* delete this line later*/ AddDebugLogLine(false, _T("recieving public key from '%s'"), GetUserName()));
 	if (socket == NULL || credits == NULL || pachPacket[0] != nSize-1
 		|| nSize == 0 || nSize > 250){
 		ASSERT ( false );
@@ -1763,7 +1754,6 @@ void CUpDownClient::ProcessPublicKeyPacket(uchar* pachPacket, uint32 nSize){
 }
 
 void CUpDownClient::ProcessSignaturePacket(uchar* pachPacket, uint32 nSize){
-	///* delete this line later*/ AddDebugLogLine(false, _T("receiving signature from '%s'"), GetUserName()));
 	// here we spread the good guys from the bad ones ;)
 
 	if (socket == NULL || credits == NULL || nSize == 0 || nSize > 250){
@@ -1889,13 +1879,6 @@ void CUpDownClient::ResetFileStatusInfo()
 		delete[] m_abyPartStatus;
 		m_abyPartStatus = NULL;
 	}
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
-	m_dwLastAskedTime = 0;
-	m_dwLastUDPReaskTime = 0;
-	m_dwNextTCPAskedTime = 0;
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 	m_nRemoteQueueRank = 0;
 	m_nPartCount = 0;
 	m_strClientFilename.Empty();
@@ -1923,8 +1906,7 @@ void CUpDownClient::SendPreviewRequest(const CAbstractFile* pForFile)
 		SafeSendPacket(packet);
 	}
 	else{
-		//to res table - later
-		AddLogLine(true, GetResString(IDS_ERR_PREVIEWALREADY));
+		LogWarning(LOG_STATUSBAR, GetResString(IDS_ERR_PREVIEWALREADY));
 	}
 }
 
@@ -1992,8 +1974,7 @@ void CUpDownClient::ProcessPreviewAnswer(char* pachPacket, uint32 nSize){
 	data.ReadHash16(Hash);
 	uint8 nCount = data.ReadUInt8();
 	if (nCount == 0){
-		// to res table -later
-		AddLogLine(true, GetResString(IDS_ERR_PREVIEWFAILED),GetUserName());
+		LogError(LOG_STATUSBAR, GetResString(IDS_ERR_PREVIEWFAILED), GetUserName());
 		return;
 	}
 	CSearchFile* sfile = theApp.searchlist->GetSearchFileByHash(Hash);
@@ -2067,7 +2048,6 @@ void CUpDownClient::AssertValid() const
 	(void)m_nServerPort;
 	(void)m_nClientVersion;
 	(void)m_nUpDatarate;
-	(void)dataratems;
 	(void)m_byEmuleVersion;
 	(void)m_byDataCompVer;
 	CHECK_BOOL(m_bEmuleProtocol);
@@ -2140,19 +2120,13 @@ void CUpDownClient::AssertValid() const
 	CHECK_BOOL(m_bUnicodeSupport);
 	ASSERT( m_nKadState >= KS_NONE && m_nKadState <= KS_QUEUE_LOWID );
 	m_AvarageDDR_list.AssertValid();
-	(void)sumavgUDR;
+	(void)m_nSumForAvgUpDataRate;
 	m_PendingBlocks_list.AssertValid();
 	m_DownloadBlocks_list.AssertValid();
 	(void)s_StatusBar;
 	ASSERT( m_nChatstate >= MS_NONE && m_nChatstate <= MS_UNABLETOCONNECT );
 	(void)m_strFileComment;
 	(void)m_uFileRating;
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
-	CHECK_BOOL(m_bValidSource);
-	(void)m_dwLastAskedTime;
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 #undef CHECK_PTR
 #undef CHECK_BOOL
 }

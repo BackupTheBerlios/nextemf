@@ -29,7 +29,11 @@
 #include "TransferWnd.h"
 #include "SharedFilesWnd.h"
 #include "ChatWnd.h"
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #include "IrcWnd.h"
+#endif //IRC
+//<== remove IRC [shadow2004]
 #include "StatisticsDlg.h"
 
 #ifdef _DEBUG
@@ -93,7 +97,7 @@ void CMuleToolbarCtrl::Init(void)
 {
 	bitmappaths.RemoveAll();
 
-	ModifyStyle(0, TBSTYLE_FLAT | CCS_ADJUSTABLE | TBSTYLE_TRANSPARENT | CCS_NODIVIDER);
+	ModifyStyle(0, TBSTYLE_FLAT | TBSTYLE_ALTDRAG | CCS_ADJUSTABLE | TBSTYLE_TRANSPARENT | CCS_NODIVIDER);
 	ChangeToolbarBitmap(thePrefs.GetToolbarBitmapSettings(), false);
 	// add button-text:
 	TCHAR cButtonStrings[2000];
@@ -134,10 +138,14 @@ void CMuleToolbarCtrl::Init(void)
 	lLen += lLen2;
 	++m_buttoncount;
 
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	lLen2 = _tcslen(GetResString(IDS_IRC)) + 1;
 	memcpy(cButtonStrings+lLen, GetResString(IDS_IRC), lLen2*sizeof(TCHAR));
 	lLen += lLen2;
 	++m_buttoncount;
+#endif //IRC
+//<== remove IRC [shadow2004]
 
 	lLen2 = _tcslen(GetResString(IDS_EM_STATISTIC)) + 1;
 	memcpy(cButtonStrings+lLen, GetResString(IDS_EM_STATISTIC), lLen2*sizeof(TCHAR));
@@ -248,7 +256,11 @@ void CMuleToolbarCtrl::Localize(void)
 			IDS_EM_SEARCH,
 			IDS_EM_FILES,
 			IDS_EM_MESSAGES,
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 			IDS_IRC,
+#endif //IRC
+//<== remove IRC [shadow2004]
 			IDS_EM_STATISTIC,
 			IDS_EM_PREFS,
 			IDS_TOOLS,
@@ -506,6 +518,8 @@ void CMuleToolbarCtrl::OnTbnGetButtonInfo(NMHDR *pNMHDR, LRESULT *pResult)
 		_tcsncpy(pNMTB->pszText, strText, pNMTB->cchText - 1);
 		pNMTB->pszText[pNMTB->cchText - 1] = _T('\0');
 		pNMTB->tbButton = TBButtons[pNMTB->iItem];
+		if (m_iToolbarLabelSettings == 2)
+			pNMTB->tbButton.fsStyle |= TBSTYLE_AUTOSIZE;
 		*pResult = TRUE;
 	}
 }
@@ -561,20 +575,24 @@ void CMuleToolbarCtrl::ChangeToolbarBitmap(CString path, bool refresh)
 	{
 		// load from icon ressources
 		ImageList.Create(32, 32, theApp.m_iDfltImageListColorFlags | ILC_MASK, 0, 1);
-		ImageList.Add(CTempIconLoader(_T("BN_CONNECT"), 32, 32));
-		ImageList.Add(CTempIconLoader(_T("BN_DISCONNECT"), 32, 32));
-		ImageList.Add(CTempIconLoader(_T("BN_STOPCONNECTING"), 32, 32));
-		ImageList.Add(CTempIconLoader(_T("BN_KADEMLIA"), 32, 32));
-		ImageList.Add(CTempIconLoader(_T("BN_SERVER"), 32, 32));
-		ImageList.Add(CTempIconLoader(_T("BN_DOWNLOAD"), 32, 32));
-		ImageList.Add(CTempIconLoader(_T("BN_SEARCH"), 32, 32));
-		ImageList.Add(CTempIconLoader(_T("BN_FILES"), 32, 32));
-		ImageList.Add(CTempIconLoader(_T("BN_MESSAGES"), 32, 32));
-		ImageList.Add(CTempIconLoader(_T("BN_IRC"), 32, 32));
-		ImageList.Add(CTempIconLoader(_T("BN_STATISTICS"), 32, 32));
-		ImageList.Add(CTempIconLoader(_T("BN_PREFERENCES"), 32, 32));
-		ImageList.Add(CTempIconLoader(_T("BN_TOOLS"), 32, 32));
-		ImageList.Add(CTempIconLoader(_T("BN_HELP"), 32, 32));
+		ImageList.Add(CTempIconLoader(_T("CONNECT"), 32, 32));
+		ImageList.Add(CTempIconLoader(_T("DISCONNECT"), 32, 32));
+		ImageList.Add(CTempIconLoader(_T("STOPCONNECTING"), 32, 32));
+		ImageList.Add(CTempIconLoader(_T("KADEMLIA"), 32, 32));
+		ImageList.Add(CTempIconLoader(_T("SERVER"), 32, 32));
+		ImageList.Add(CTempIconLoader(_T("TRANSFER"), 32, 32));
+		ImageList.Add(CTempIconLoader(_T("SEARCH"), 32, 32));
+		ImageList.Add(CTempIconLoader(_T("SharedFiles"), 32, 32));
+		ImageList.Add(CTempIconLoader(_T("MESSAGES"), 32, 32));
+//==> remove IRC [shadow2004]
+#if defined(IRC)
+		ImageList.Add(CTempIconLoader(_T("IRC"), 32, 32));
+#endif //IRC
+//<== remove IRC [shadow2004]
+		ImageList.Add(CTempIconLoader(_T("STATISTICS"), 32, 32));
+		ImageList.Add(CTempIconLoader(_T("PREFERENCES"), 32, 32));
+		ImageList.Add(CTempIconLoader(_T("TOOLS"), 32, 32));
+		ImageList.Add(CTempIconLoader(_T("HELP"), 32, 32));
 		CImageList* pimlOld = SetImageList(&ImageList);
 		ImageList.Detach();
 		if (pimlOld)
@@ -645,7 +663,7 @@ BOOL CMuleToolbarCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 		case MP_SELECT_SKIN_DIR:{
 			TCHAR buffer[MAX_PATH];
 			_sntprintf(buffer,ARRSIZE(buffer),_T("%s"), thePrefs.GetSkinProfileDir());
-			if(SelectDir(m_hWnd, buffer, _T("Select skin profile directory")))
+			if(SelectDir(m_hWnd, buffer, GetResString(IDS_SELSKINPROFILEDIR)))
 				thePrefs.SetSkinProfileDir(buffer);
 			break;
 		}
@@ -766,7 +784,11 @@ void CMuleToolbarCtrl::Refresh()
 			theApp.emuledlg->sharedfileswnd,
 			theApp.emuledlg->searchwnd,
 			theApp.emuledlg->chatwnd,
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 			theApp.emuledlg->ircwnd,
+#endif //IRC
+//<== remove IRC [shadow2004]
 			theApp.emuledlg->statisticswnd
 		};
 		for (int i = 0; i < ARRSIZE(wnds); i++)

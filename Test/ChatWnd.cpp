@@ -22,11 +22,11 @@
 #include "emuledlg.h"
 #include "UpDownClient.h"
 #include "OtherFunctions.h"
-#include "MenuCmds.h"
 #include "HelpIDs.h"
 #include "Opcodes.h"
 #include "friend.h"
 #include "ClientCredits.h"
+#include "IconStatic.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -77,6 +77,7 @@ void CChatWnd::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_CHATSEL, chatselector);
 	DDX_Control(pDX, IDC_LIST2, m_FriendListCtrl);
 	DDX_Control(pDX, IDC_CMESSAGE, inputtext);
+	DDX_Control(pDX, IDC_FRIENDS_MSG, m_cUserInfo);
 }
 
 void CChatWnd::OnLvnItemActivateFrlist(NMHDR *pNMHDR, LRESULT *pResult)
@@ -217,6 +218,8 @@ BOOL CChatWnd::OnInitDialog()
 	AddAnchor(IDC_FRIENDS_IDENT, BOTTOM_LEFT);
 	AddAnchor(IDC_FRIENDS_UPLOADED, BOTTOM_LEFT);
 	AddAnchor(IDC_FRIENDS_DOWNLOADED, BOTTOM_LEFT);
+
+	m_cUserInfo.Init(_T("Info"));
 
 	Localize();
 	theApp.friendlist->ShowFriends();
@@ -398,6 +401,8 @@ void CChatWnd::Localize()
 	GetDlgItem(IDC_FRIENDS_CLIENT)->SetWindowText(GetResString(IDS_CHAT_CLIENT));
 	GetDlgItem(IDC_FRIENDS_NAME)->SetWindowText(GetResString(IDS_NICKNAME));
 	GetDlgItem(IDC_FRIENDS_MSG)->SetWindowText(GetResString(IDS_INFO));
+	GetDlgItem(IDC_FRIENDS_USERHASH)->SetWindowText(GetResString(IDS_CD_UHASH));	
+
 	chatselector.Localize();
 	m_FriendListCtrl.Localize();
 }
@@ -431,32 +436,6 @@ void CChatWnd::OnSysColorChange()
 {
 	CResizableDialog::OnSysColorChange();
 	SetAllIcons();
-}
-
-BOOL CChatWnd::OnCommand(WPARAM wParam, LPARAM lParam)
-{
-	switch (wParam){ 
-		case MP_REMOVE:{
-			const CChatItem* ci = chatselector.GetCurrentChatItem();
-			if (ci)
-				chatselector.EndSession(ci->client);
-			break;
-		}
-	}
-	return TRUE;
-}
-
-void CChatWnd::OnContextMenu(CWnd* pWnd, CPoint point)
-{ 
-	if (!chatselector.GetCurrentChatItem())
-		return;
-
-	CTitleMenu ChatMenu;
-	ChatMenu.CreatePopupMenu(); 
-	ChatMenu.AddMenuTitle(GetResString(IDS_CW_MESSAGES));
-	ChatMenu.AppendMenu(MF_STRING, MP_REMOVE, GetResString(IDS_FD_CLOSE));
-	ChatMenu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON, point.x, point.y, this);
- 	VERIFY( ChatMenu.DestroyMenu() );
 }
 
 void CChatWnd::UpdateFriendlistCount(uint16 count) {

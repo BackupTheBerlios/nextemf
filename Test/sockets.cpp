@@ -36,6 +36,7 @@
 #include "SearchDlg.h"
 #include "ServerWnd.h"
 #include "TaskbarNotifier.h"
+#include "Log.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -46,25 +47,24 @@ static char THIS_FILE[]=__FILE__;
 
 // CServerConnect
 
-void CServerConnect::TryAnotherConnectionrequest(){
-	if ( connectionattemps.GetCount()<((thePrefs.IsSafeServerConnectEnabled()) ? 1 : 2) ) {
-
-		CServer*  next_server = used_list->GetNextServer();
-
-		if (!next_server)
+void CServerConnect::TryAnotherConnectionrequest()
+{
+	if (connectionattemps.GetCount() < (thePrefs.IsSafeServerConnectEnabled() ? 1 : 2))
+	{
+		CServer* next_server = used_list->GetNextServer();
+		if (next_server == NULL)
 		{
-			if (connectionattemps.GetCount()==0){
-				//AddLogLine(true,GetResString(IDS_OUTOFSERVERS));
-				//ConnectToAnyServer(lastStartAt);
+			if (connectionattemps.GetCount() == 0)
+			{
 				if (m_idRetryTimer == 0)
 				{
 					// 05-Nov-2003: If we have a very short server list, we could put serious load on those few servers
 					// if we start the next connection tries without waiting.
-					AddLogLine(true,GetResString(IDS_OUTOFSERVERS));
-					AddLogLine(false,GetResString(IDS_RECONNECT), CS_RETRYCONNECTTIME);
+					LogWarning(LOG_STATUSBAR, GetResString(IDS_OUTOFSERVERS));
+					AddLogLine(false, GetResString(IDS_RECONNECT), CS_RETRYCONNECTTIME);
 					VERIFY( (m_idRetryTimer = SetTimer(NULL, 0, 1000*CS_RETRYCONNECTTIME, RetryConnectTimer)) != NULL );
 					if (thePrefs.GetVerbose() && !m_idRetryTimer)
-						AddDebugLogLine(true,_T("Failed to create 'server connect retry' timer - %s"),GetErrorMessage(GetLastError()));
+						DebugLogError(_T("Failed to create 'server connect retry' timer - %s"), GetErrorMessage(GetLastError()));
 				}
 			}
 			return;
@@ -74,15 +74,16 @@ void CServerConnect::TryAnotherConnectionrequest(){
 		if (thePrefs.AutoConnectStaticOnly())
 		{
 			if (next_server->IsStaticMember())
-                ConnectToServer(next_server,true);
+                ConnectToServer(next_server, true);
 		}
 		else
-			ConnectToServer(next_server,true);
+			ConnectToServer(next_server, true);
 	}
 }
 
-void CServerConnect::ConnectToAnyServer(uint32 startAt,bool prioSort,bool isAuto){
-	lastStartAt=startAt;
+void CServerConnect::ConnectToAnyServer(uint32 startAt, bool prioSort, bool isAuto)
+{
+	lastStartAt = startAt;
 	StopConnectionTry();
 	Disconnect();
 	connecting = true;
@@ -106,17 +107,18 @@ void CServerConnect::ConnectToAnyServer(uint32 startAt,bool prioSort,bool isAuto
 		if (!anystatic)
 		{
 			connecting = false;
-			AddLogLine(true,GetResString(IDS_ERR_NOVALIDSERVERSFOUND));
+			LogError(LOG_STATUSBAR, GetResString(IDS_ERR_NOVALIDSERVERSFOUND));
 			return;
 		}
 	}
 
-	used_list->SetServerPosition( startAt );
-	if( thePrefs.Score() && prioSort ) used_list->Sort();
+	used_list->SetServerPosition(startAt);
+	if (thePrefs.Score() && prioSort)
+		used_list->Sort();
 
-	if (used_list->GetServerCount()==0 ){
+	if (used_list->GetServerCount() == 0){
 		connecting = false;
-		AddLogLine(true,GetResString(IDS_ERR_NOVALIDSERVERSFOUND));
+		LogError(LOG_STATUSBAR, GetResString(IDS_ERR_NOVALIDSERVERSFOUND));
 		return;
 	}
 	theApp.listensocket->Process();
@@ -124,8 +126,8 @@ void CServerConnect::ConnectToAnyServer(uint32 startAt,bool prioSort,bool isAuto
 	TryAnotherConnectionrequest();
 }
 
-void CServerConnect::ConnectToServer(CServer* server, bool multiconnect){
-	
+void CServerConnect::ConnectToServer(CServer* server, bool multiconnect)
+{
 	if (!multiconnect) {
 		StopConnectionTry();
 		Disconnect();
@@ -138,11 +140,12 @@ void CServerConnect::ConnectToServer(CServer* server, bool multiconnect){
 	m_lstOpenSockets.AddTail((void*&)newsocket);
 	newsocket->Create(0,SOCK_STREAM,FD_READ|FD_WRITE|FD_CLOSE|FD_CONNECT,NULL);
 	newsocket->ConnectToServer(server);
-	ULONG x=GetTickCount();
-	connectionattemps.SetAt(x,newsocket);
+	ULONG x = GetTickCount();
+	connectionattemps.SetAt(x, newsocket);
 }
 
-void CServerConnect::StopConnectionTry(){
+void CServerConnect::StopConnectionTry()
+{
 	connectionattemps.RemoveAll();
 	connecting = false;
 	singleconnecting = false;
@@ -171,7 +174,7 @@ void CServerConnect::ConnectionEstablished(CServerSocket* sender){
 	if (thePrefs.IsProxyASCWOP())
 	{
 		thePrefs.SetUseProxy(true);
-		AddLogLine(false,GetResString(IDS_ASCWOP_PROXYSUPPORT)+GetResString(IDS_ENABLED));
+		AddLogLine(false, GetResString(IDS_ASCWOP_PROXYSUPPORT) + GetResString(IDS_ENABLED));
 	}
 #endif //PROXY
 //<== remove PROXY [shadow2004]
@@ -184,15 +187,17 @@ void CServerConnect::ConnectionEstablished(CServerSocket* sender){
 	}
 	
 	InitLocalIP();
-	if (sender->GetConnectionState() == CS_WAITFORLOGIN){
-		AddLogLine(false,GetResString(IDS_CONNECTEDTOREQ),sender->cur_server->GetListName(),sender->cur_server->GetFullIP(),sender->cur_server->GetPort());
-		//send loginpacket
-		CServer* update = theApp.serverlist->GetServerByAddress( sender->cur_server->GetAddress(), sender->cur_server->GetPort() );
+	if (sender->GetConnectionState() == CS_WAITFORLOGIN)
+	{
+		AddLogLine(false, GetResString(IDS_CONNECTEDTOREQ), sender->cur_server->GetListName(), sender->cur_server->GetFullIP(), sender->cur_server->GetPort());
+
+		CServer* update = theApp.serverlist->GetServerByAddress(sender->cur_server->GetAddress(), sender->cur_server->GetPort());
 		if (update){
 			update->ResetFailedCount();
-			theApp.emuledlg->serverwnd->serverlistctrl.RefreshServer( update );
+			theApp.emuledlg->serverwnd->serverlistctrl.RefreshServer(update);
 		}
 
+		// send loginpacket
 		CSafeMemFile data(256);
 		data.WriteHash16(thePrefs.GetUserHash());
 		data.WriteUInt32(GetClientID());
@@ -232,17 +237,19 @@ void CServerConnect::ConnectionEstablished(CServerSocket* sender){
 		theStats.AddUpDataOverheadServer(packet->size);
 		SendPacket(packet,true,sender);
 	}
-	else if (sender->GetConnectionState() == CS_CONNECTED){	
+	else if (sender->GetConnectionState() == CS_CONNECTED)
+	{
 		theStats.reconnects++;
-		theStats.serverConnectTime=GetTickCount();
+		theStats.serverConnectTime = GetTickCount();
 		connected = true;
-		AddLogLine(true,GetResString(IDS_CONNECTEDTO),sender->cur_server->GetListName());
+		Log(LOG_SUCCESS | LOG_STATUSBAR, GetResString(IDS_CONNECTEDTO), sender->cur_server->GetListName());
 		theApp.emuledlg->ShowConnectionState();
 		connectedsocket = sender;
 		StopConnectionTry();
 		theApp.sharedfiles->ClearED2KPublishInfo();
 		theApp.sharedfiles->SendListToServer();
 		theApp.emuledlg->serverwnd->serverlistctrl.RemoveAllDeadServers();
+
 		// tecxx 1609 2002 - serverlist update
 		if (thePrefs.AddServersFromServer())
 		{
@@ -252,8 +259,8 @@ void CServerConnect::ConnectionEstablished(CServerSocket* sender){
 			theStats.AddUpDataOverheadServer(packet->size);
 			SendPacket(packet,true);
 		}
-		CServer* update = theApp.serverlist->GetServerByAddress( sender->cur_server->GetAddress(), sender->cur_server->GetPort() );
-		theApp.emuledlg->serverwnd->serverlistctrl.RefreshServer( update);
+		CServer* update = theApp.serverlist->GetServerByAddress(sender->cur_server->GetAddress(), sender->cur_server->GetPort());
+		theApp.emuledlg->serverwnd->serverlistctrl.RefreshServer(update);
 	}
 	theApp.emuledlg->ShowConnectionState();
 }
@@ -295,27 +302,26 @@ void CServerConnect::ConnectionFailed(CServerSocket* sender){
 	CServer* update;
 	switch (sender->GetConnectionState()){
 		case CS_FATALERROR:
-			AddLogLine(true,GetResString(IDS_ERR_FATAL));
+			LogError(LOG_STATUSBAR, GetResString(IDS_ERR_FATAL));
 			break;
-		case CS_DISCONNECTED:{
+		case CS_DISCONNECTED:
 			theApp.sharedfiles->ClearED2KPublishInfo();
-			AddLogLine(true,GetResString(IDS_ERR_LOSTC),sender->cur_server->GetListName(),sender->cur_server->GetFullIP(),sender->cur_server->GetPort());
+			LogError(LOG_STATUSBAR, GetResString(IDS_ERR_LOSTC), sender->cur_server->GetListName(), sender->cur_server->GetFullIP(), sender->cur_server->GetPort());
 			break;
-		}
 		case CS_SERVERDEAD:
-			AddLogLine(true,GetResString(IDS_ERR_DEAD),sender->cur_server->GetListName(),sender->cur_server->GetFullIP(),sender->cur_server->GetPort()); //<<--
-			update = theApp.serverlist->GetServerByAddress( sender->cur_server->GetAddress(), sender->cur_server->GetPort() );
-			if(update){
+			LogError(LOG_STATUSBAR, GetResString(IDS_ERR_DEAD), sender->cur_server->GetListName(), sender->cur_server->GetFullIP(), sender->cur_server->GetPort());
+			update = theApp.serverlist->GetServerByAddress(sender->cur_server->GetAddress(), sender->cur_server->GetPort());
+			if (update){
 				update->AddFailedCount();
-				theApp.emuledlg->serverwnd->serverlistctrl.RefreshServer( update );
+				theApp.emuledlg->serverwnd->serverlistctrl.RefreshServer(update);
 			}
 			break;
 		case CS_ERROR:
 			break;
 		case CS_SERVERFULL:
-			AddLogLine(true,GetResString(IDS_ERR_FULL),sender->cur_server->GetListName(),sender->cur_server->GetFullIP(),sender->cur_server->GetPort());
+			LogError(LOG_STATUSBAR, GetResString(IDS_ERR_FULL), sender->cur_server->GetListName(), sender->cur_server->GetFullIP(), sender->cur_server->GetPort());
 			break;
-		case CS_NOTCONNECTED:; 
+		case CS_NOTCONNECTED:
 			break; 
 	}
 
@@ -325,13 +331,13 @@ void CServerConnect::ConnectionFailed(CServerSocket* sender){
 
 	switch (sender->GetConnectionState()){
 		case CS_FATALERROR:{
-			bool autoretry= !singleconnecting;
+			bool autoretry = !singleconnecting;
 			StopConnectionTry();
 			if ((thePrefs.Reconnect()) && (autoretry) && (!m_idRetryTimer)){ 
-				AddLogLine(false,GetResString(IDS_RECONNECT), CS_RETRYCONNECTTIME); 
+				LogWarning(GetResString(IDS_RECONNECT), CS_RETRYCONNECTTIME);
 				VERIFY( (m_idRetryTimer= SetTimer(NULL, 0, 1000*CS_RETRYCONNECTTIME, RetryConnectTimer)) != NULL );
 				if (thePrefs.GetVerbose() && !m_idRetryTimer)
-					AddDebugLogLine(true,_T("Failed to create 'server connect retry' timer - %s"),GetErrorMessage(GetLastError()));
+					DebugLogError(_T("Failed to create 'server connect retry' timer - %s"),GetErrorMessage(GetLastError()));
 			}
 			break;
 		}
@@ -412,14 +418,14 @@ void CServerConnect::CheckForTimeout()
 		connectionattemps.GetNextAssoc(pos,tmpkey,tmpsock);
 		if (!tmpsock){
 			if (thePrefs.GetVerbose())
-				AddDebugLogLine(false, _T("Error: Socket invalid at timeoutcheck"));
+				DebugLogError(_T("Error: Socket invalid at timeoutcheck"));
 			connectionattemps.RemoveKey(tmpkey);
 			return;
 		}
 
 		//if (tmpkey<=maxage) {
 		if (dwCurTick - tmpkey > CONSERVTIMEOUT){
-			AddLogLine(false,GetResString(IDS_ERR_CONTIMEOUT),tmpsock->cur_server->GetListName(), tmpsock->cur_server->GetFullIP(), tmpsock->cur_server->GetPort() );
+			LogWarning(GetResString(IDS_ERR_CONTIMEOUT), tmpsock->cur_server->GetListName(), tmpsock->cur_server->GetFullIP(), tmpsock->cur_server->GetPort());
 			connectionattemps.RemoveKey(tmpkey);
 			TryAnotherConnectionrequest();
 			DestroySocket(tmpsock);
@@ -550,7 +556,7 @@ void CServerConnect::InitLocalIP(){
 	catch(...){
 		// at least two ppl reported crashs when using 'gethostbyname' with third party winsock DLLs
 		if (thePrefs.GetVerbose())
-			AddDebugLogLine(false, _T("Unknown exception in CServerConnect::InitLocalIP"));
+			DebugLogError(_T("Unknown exception in CServerConnect::InitLocalIP"));
 		ASSERT(0);
 	}
 }

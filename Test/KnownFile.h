@@ -15,7 +15,6 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
-#include "Loggable.h"
 #include "BarShader.h"
 #include <list>
 
@@ -82,7 +81,7 @@ CAbstractFile
 		\
 		  CSearchFile
 */
-class CAbstractFile: public CObject, public CLoggable
+class CAbstractFile: public CObject
 {
 	DECLARE_DYNAMIC(CAbstractFile)
 
@@ -258,18 +257,17 @@ protected:
 	bool	GrabImage(CString strFileName, uint8 nFramesToGrab, double dStartTime, bool bReduceColor, uint16 nMaxWidth, void* pSender);
 	bool	LoadTagsFromFile(CFileDataIO* file);
 	bool	LoadDateFromFile(CFileDataIO* file);
-	void	CreateHashFromFile(FILE* file, int Length, uchar* Output, CAICHHashTree* pShaHashOut) const { CreateHashFromInput(file, NULL, Length, Output, NULL, pShaHashOut); }
-	void	CreateHashFromFile(CFile* file, int Length, uchar* Output, CAICHHashTree* pShaHashOut) const { CreateHashFromInput(NULL, file, Length, Output, NULL, pShaHashOut); }
-	void	CreateHashFromString(uchar* in_string, int Length, uchar* Output) const { CreateHashFromInput(NULL, NULL, Length, Output, in_string, NULL); }
+	void	CreateHash(CFile* pFile, UINT uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL) const;
+	bool	CreateHash(FILE* fp, UINT uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL) const;
+	bool	CreateHash(const uchar* pucData, UINT uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL) const;
 	void	LoadComment();
 
 	CArray<uchar*, uchar*>	hashlist;
 	CString					m_strDirectory;
 	CString					m_strFilePath;
-	CAICHHashSet*			m_pAICHHashSet; 
-private:
-	void	CreateHashFromInput(FILE* file, CFile* file2, int Length, uchar* Output, uchar* in_string, CAICHHashTree* pShaHashOut) const;
+	CAICHHashSet*			m_pAICHHashSet;
 
+private:
 	static CBarShader s_ShareStatusBar;
 	uint16	m_iPartCount;
 	uint16	m_iED2KPartCount;
@@ -284,58 +282,3 @@ private:
 	Kademlia::WordList wordlist;
 	UINT	m_uMetaDataVer;
 };
-
-// permission values for shared files
-#define PERM_ALL		0
-#define PERM_FRIENDS	1
-#define PERM_NOONE		2
-
-// constants for MD4Transform
-#define S11 3
-#define S12 7
-#define S13 11
-#define S14 19
-#define S21 3
-#define S22 5
-#define S23 9
-#define S24 13
-#define S31 3
-#define S32 9
-#define S33 11
-#define S34 15
-
-// basic MD4 functions
-#define MD4_F(x, y, z) (((x) & (y)) | ((~x) & (z)))
-#define MD4_G(x, y, z) (((x) & (y)) | ((x) & (z)) | ((y) & (z)))
-#define MD4_H(x, y, z) ((x) ^ (y) ^ (z))
-
-// rotates x left n bits
-// 15-April-2003 Sony: use MSVC intrinsic to save a few cycles
-#ifdef _MSC_VER
-#pragma intrinsic(_rotl)
-#define MD4_ROTATE_LEFT(x, n) _rotl((x), (n))
-#else
-#define MD4_ROTATE_LEFT(x, n) (((x) << (n)) | ((x) >> (32-(n))))
-#endif
-
-// partial transformations
-#define MD4_FF(a, b, c, d, x, s) \
-{ \
-  (a) += MD4_F((b), (c), (d)) + (x); \
-  (a) = MD4_ROTATE_LEFT((a), (s)); \
-}
-
-#define MD4_GG(a, b, c, d, x, s) \
-{ \
-  (a) += MD4_G((b), (c), (d)) + (x) + (uint32)0x5A827999; \
-  (a) = MD4_ROTATE_LEFT((a), (s)); \
-}
-
-#define MD4_HH(a, b, c, d, x, s) \
-{ \
-  (a) += MD4_H((b), (c), (d)) + (x) + (uint32)0x6ED9EBA1; \
-  (a) = MD4_ROTATE_LEFT((a), (s)); \
-}
-
-static void MD4Transform(uint32 Hash[4], uint32 x[16]);
-

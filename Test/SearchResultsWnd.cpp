@@ -87,6 +87,7 @@ BEGIN_MESSAGE_MAP(CSearchResultsWnd, CResizableFormView)
 	ON_BN_CLICKED(IDC_CLEARALL, OnBnClickedClearall)
 	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB1, OnTcnSelchangeTab1)
 	ON_MESSAGE(WM_CLOSETAB, OnCloseTab)
+	ON_MESSAGE(WM_DBLCLICKTAB, OnDblClickTab)
 	ON_WM_DESTROY()
 	ON_WM_SYSCOLORCHANGE()
 	ON_WM_SIZE()
@@ -146,8 +147,8 @@ void CSearchResultsWnd::OnInitialUpdate()
 
 	ShowSearchSelector(false);
 
-	if (theApp.emuledlg->m_fontMarlett.m_hObject){
-		GetDlgItem(IDC_STATIC_DLTOof)->SetFont(&theApp.emuledlg->m_fontMarlett);
+	if (theApp.m_fontSymbol.m_hObject){
+		GetDlgItem(IDC_STATIC_DLTOof)->SetFont(&theApp.m_fontSymbol);
 		GetDlgItem(IDC_STATIC_DLTOof)->SetWindowText(_T("8")); // show a right-arrow
 	}
 }
@@ -409,20 +410,29 @@ void CSearchResultsWnd::DownloadSelected()
 	DownloadSelected(thePrefs.AddNewFilesPaused());
 }
 
-void CSearchResultsWnd::DownloadSelected(bool paused)
+void CSearchResultsWnd::DownloadSelected(bool bPaused)
 {
 	CWaitCursor curWait;
 	POSITION pos = searchlistctrl.GetFirstSelectedItemPosition();
 	while (pos != NULL)
 	{
-		int index = searchlistctrl.GetNextSelectedItem(pos);
-		if (index > -1)
+		int iIndex = searchlistctrl.GetNextSelectedItem(pos);
+		if (iIndex >= 0)
 		{
 			// get selected listview item (may be a child item from an expanded search result)
-			CSearchFile* cur_file = (CSearchFile*)searchlistctrl.GetItemData(index);
-			
+			CSearchFile* cur_file = (CSearchFile*)searchlistctrl.GetItemData(iIndex);
+
+			if (cur_file->IsComplete() == 0 && cur_file->GetSourceCount() >= 50)
+			{
+				CString strMsg;
+				strMsg.Format(GetResString(IDS_ASKDLINCOMPLETE), cur_file->GetFileName());
+				int iAnswer = AfxMessageBox(strMsg, MB_ICONQUESTION | MB_YESNO | MB_DEFBUTTON2);
+				if (iAnswer != IDYES)
+					continue;
+			}
+
 			// use filename of selected listview item
-			theApp.downloadqueue->AddSearchToDownload(cur_file, paused, m_cattabs.GetCurSel());
+			theApp.downloadqueue->AddSearchToDownload(cur_file, bPaused, m_cattabs.GetCurSel());
 
 			// get parent
 			if (cur_file->GetListParent() != NULL)
@@ -438,6 +448,7 @@ void CSearchResultsWnd::OnSysColorChange()
 {
 	CResizableFormView::OnSysColorChange();
 	SetAllIcons();
+	searchlistctrl.CreateMenues();
 }
 
 void CSearchResultsWnd::SetAllIcons()
@@ -1446,7 +1457,8 @@ void CSearchResultsWnd::ShowResults(const SSearchParams* pParams)
 {
 	// restoring the params works and is nice during development/testing but pretty annoying in practice.
 	// TODO: maybe it should be done explicitly via a context menu function or such.
-	//m_pwndParams->SetParameters(pParams);
+	if (GetAsyncKeyState(VK_CONTROL) < 0)
+		m_pwndParams->SetParameters(pParams);
 	searchlistctrl.ShowResults(pParams->dwSearchID);
 }
 
@@ -1466,11 +1478,11 @@ void CSearchResultsWnd::OnTcnSelchangeTab1(NMHDR *pNMHDR, LRESULT *pResult)
 	*pResult = 0;
 }
 
-LRESULT CSearchResultsWnd::OnCloseTab(WPARAM wparam, LPARAM lparam)
+LRESULT CSearchResultsWnd::OnCloseTab(WPARAM wParam, LPARAM lParam)
 {
 	TCITEM item;
 	item.mask = TCIF_PARAM;
-	if (searchselect.GetItem((int)wparam, &item) && item.lParam != NULL)
+	if (searchselect.GetItem((int)wParam, &item) && item.lParam != NULL)
 	{
 		int nSearchID = ((const SSearchParams*)item.lParam)->dwSearchID;
 		if (!canceld && nSearchID == m_nSearchID)
@@ -1480,11 +1492,25 @@ LRESULT CSearchResultsWnd::OnCloseTab(WPARAM wparam, LPARAM lparam)
 	return TRUE;
 }
 
+LRESULT CSearchResultsWnd::OnDblClickTab(WPARAM wParam, LPARAM lParam)
+{
+	TCITEM item;
+	item.mask = TCIF_PARAM;
+	if (searchselect.GetItem((int)wParam, &item) && item.lParam != NULL)
+	{
+		m_pwndParams->SetParameters((const SSearchParams*)item.lParam);
+	}
+	return TRUE;
+}
+
 void CSearchResultsWnd::UpdateCatTabs() {
 	int oldsel=m_cattabs.GetCurSel();
 	m_cattabs.DeleteAllItems();
-	for (int ix=0;ix<thePrefs.GetCatCount();ix++)
-		m_cattabs.InsertItem(ix,(ix==0)?GetResString(IDS_ALL):thePrefs.GetCategory(ix)->title);
+	for (int ix=0;ix<thePrefs.GetCatCount();ix++) {
+		CString label=(ix==0)?GetResString(IDS_ALL):thePrefs.GetCategory(ix)->title;
+		label.Replace(_T("&"),_T("&&"));
+		m_cattabs.InsertItem(ix,label);
+	}
 	if (oldsel>=m_cattabs.GetItemCount() || oldsel==-1)
 		oldsel=0;
 

@@ -19,7 +19,6 @@
 	#error include 'stdafx.h' before including this file for PCH
 #endif
 #include "resource.h"
-#include "loggable.h"
 
 #define	DEFAULT_NICK		thePrefs.GetHomepageBaseURL()
 #define	DEFAULT_TCP_PORT	4662
@@ -61,7 +60,7 @@ enum AppState{
 	APP_STATE_DONE
 };
 
-class CemuleApp : public CWinApp, public CLoggable
+class CemuleApp : public CWinApp
 {
 public:
 	CemuleApp(LPCTSTR lpszAppName = NULL);
@@ -97,6 +96,11 @@ public:
 
 	HANDLE				m_hMutexOneInstance;
 	int					m_iDfltImageListColorFlags;
+	CFont				m_fontHyperText;
+	CFont				m_fontDefaultBold;
+	CFont				m_fontSymbol;
+	CFont				m_fontLog;
+	CBrush				m_brushBackwardDiagonal;
 	DWORD				m_dwProductVersionMS;
 	DWORD				m_dwProductVersionLS;
 	CString				m_strCurVersionLong;
@@ -134,6 +138,8 @@ public:
 	int			GetFileTypeSystemImageIdx(LPCTSTR pszFilePath, int iLength = -1);
 	HIMAGELIST	GetSystemImageList() { return m_hSystemImageList; }
 	CSize		GetSmallSytemIconSize() { return m_sizSmallSystemIcon; }
+	void		CreateBackwardDiagonalBrush();
+	void		CreateAllFonts();
 	bool		IsPortchangeAllowed();
 	bool		IsConnected();
 	bool		IsFirewalled();
@@ -150,16 +156,20 @@ public:
 	bool		LoadSkinColor(LPCTSTR pszKey, COLORREF& crColor);
 	void		ApplySkin(LPCTSTR pszSkinProfile);
 
-	CString		GetLangHelpFilePath();
+	bool		GetLangHelpFilePath(CString& strResult);
 	void		SetHelpFilePath(LPCTSTR pszHelpFilePath);
 	void		ShowHelp(UINT uTopic, UINT uCmd = HELP_CONTEXT);
+	bool		ShowWebHelp();
 
     // Elandal:ThreadSafeLogging -->
     // thread safe log calls
-    void			QueueDebugLogLine(bool addtostatusbar, LPCTSTR line,...);
+    void			QueueDebugLogLine(bool bAddToStatusBar, LPCTSTR line,...);
+    void			QueueDebugLogLineEx(UINT uFlags, LPCTSTR line,...);
     void			HandleDebugLogQueue();
     void			ClearDebugLogQueue(bool bDebugPendingMsgs = false);
-    void			QueueLogLine(bool addtostatusbar, LPCTSTR line,...);
+
+	void			QueueLogLine(bool bAddToStatusBar, LPCTSTR line,...);
+    void			QueueLogLineEx(UINT uFlags, LPCTSTR line,...);
     void			HandleLogQueue();
     void			ClearLogQueue(bool bDebugPendingMsgs = false);
     // Elandal:ThreadSafeLogging <--
@@ -220,6 +230,3 @@ public:
 protected:
 	HICON m_hIcon;
 };
-
-extern CLog theLog;
-extern CLog theVerboseLog;

@@ -31,6 +31,8 @@
 #include "emuledlg.h"
 #include "Preferences.h"
 #include "OtherFunctions.h"
+#include "Log.h"
+#include "StringConversion.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -129,27 +131,28 @@ void CStatisticsTree::DoMenu(CPoint doWhere, UINT nFlags)
 		else myFlags = MF_STRING;
 
 	mnuContext.CreatePopupMenu();
-	mnuContext.AddMenuTitle(GetResString(IDS_STATS_MNUTREETITLE));
-	mnuContext.AppendMenu(MF_STRING, MP_STATTREE_RESET, GetResString(IDS_STATS_BNRESET));
-	mnuContext.AppendMenu(myFlags, MP_STATTREE_RESTORE, GetResString(IDS_STATS_BNRESTORE));
+	mnuContext.AddMenuTitle(GetResString(IDS_STATS_MNUTREETITLE), true);
+	mnuContext.AppendMenu(MF_STRING, MP_STATTREE_RESET, GetResString(IDS_STATS_BNRESET), _T("DELETE"));
+	mnuContext.AppendMenu(myFlags, MP_STATTREE_RESTORE, GetResString(IDS_STATS_BNRESTORE), _T("RESTORE"));
 	mnuContext.AppendMenu(MF_SEPARATOR);
-	mnuContext.AppendMenu(MF_STRING, MP_STATTREE_EXPANDMAIN, GetResString(IDS_STATS_MNUTREEEXPANDMAIN));
-	mnuContext.AppendMenu(MF_STRING, MP_STATTREE_EXPANDALL, GetResString(IDS_STATS_MNUTREEEXPANDALL));
-	mnuContext.AppendMenu(MF_STRING, MP_STATTREE_COLLAPSEALL, GetResString(IDS_STATS_MNUTREECOLLAPSEALL));
+	mnuContext.AppendMenu(MF_STRING, MP_STATTREE_EXPANDMAIN, GetResString(IDS_STATS_MNUTREEEXPANDMAIN), _T("EXPANDMAIN"));
+	mnuContext.AppendMenu(MF_STRING, MP_STATTREE_EXPANDALL, GetResString(IDS_STATS_MNUTREEEXPANDALL), _T("EXPANDALL"));
+	mnuContext.AppendMenu(MF_STRING, MP_STATTREE_COLLAPSEALL, GetResString(IDS_STATS_MNUTREECOLLAPSEALL), _T("COLLAPSE"));
 	mnuContext.AppendMenu(MF_SEPARATOR);
-	mnuContext.AppendMenu(MF_STRING, MP_STATTREE_COPYSEL, GetResString(IDS_STATS_MNUTREECPYSEL));
-	mnuContext.AppendMenu(MF_STRING, MP_STATTREE_COPYVIS, GetResString(IDS_STATS_MNUTREECPYVIS));
-	mnuContext.AppendMenu(MF_STRING, MP_STATTREE_COPYALL, GetResString(IDS_STATS_MNUTREECPYALL));
+	mnuContext.AppendMenu(MF_STRING, MP_STATTREE_COPYSEL, GetResString(IDS_STATS_MNUTREECPYSEL), _T("COPY"));
+	mnuContext.AppendMenu(MF_STRING, MP_STATTREE_COPYVIS, GetResString(IDS_STATS_MNUTREECPYVIS), _T("COPYVISIBLE"));
+	mnuContext.AppendMenu(MF_STRING, MP_STATTREE_COPYALL, GetResString(IDS_STATS_MNUTREECPYALL), _T("COPYSELECTED"));
 	mnuContext.AppendMenu(MF_SEPARATOR);
 
 	mnuHTML.CreateMenu();
-	mnuHTML.AppendMenu(MF_STRING, MP_STATTREE_HTMLCOPYSEL, GetResString(IDS_STATS_MNUTREECPYSEL));
-	mnuHTML.AppendMenu(MF_STRING, MP_STATTREE_HTMLCOPYVIS, GetResString(IDS_STATS_MNUTREECPYVIS));
-	mnuHTML.AppendMenu(MF_STRING, MP_STATTREE_HTMLCOPYALL, GetResString(IDS_STATS_MNUTREECPYALL));
+	mnuHTML.AddMenuTitle(NULL, true);
+	mnuHTML.AppendMenu(MF_STRING, MP_STATTREE_HTMLCOPYSEL, GetResString(IDS_STATS_MNUTREECPYSEL), _T("COPY"));
+	mnuHTML.AppendMenu(MF_STRING, MP_STATTREE_HTMLCOPYVIS, GetResString(IDS_STATS_MNUTREECPYVIS), _T("COPYVISIBLE"));
+	mnuHTML.AppendMenu(MF_STRING, MP_STATTREE_HTMLCOPYALL, GetResString(IDS_STATS_MNUTREECPYALL), _T("COPYSELECTED"));
 	mnuHTML.AppendMenu(MF_SEPARATOR);
-	mnuHTML.AppendMenu(MF_STRING, MP_STATTREE_HTMLEXPVIS, GetResString(IDS_STATS_EXPORTVIS));
-	mnuHTML.AppendMenu(MF_STRING, MP_STATTREE_HTMLEXPORT, GetResString(IDS_STATS_EXPORT2HTML));
-	mnuContext.AppendMenu(MF_STRING | MF_POPUP, (UINT_PTR)mnuHTML.m_hMenu, GetResString(IDS_STATS_MNUTREEHTML));
+	mnuHTML.AppendMenu(MF_STRING, MP_STATTREE_HTMLEXPVIS, GetResString(IDS_STATS_EXPORTVIS), _T("EXPORTSELECTED"));
+	mnuHTML.AppendMenu(MF_STRING, MP_STATTREE_HTMLEXPORT, GetResString(IDS_STATS_EXPORT2HTML), _T("EXPORTALL"));
+	mnuContext.AppendMenu(MF_STRING | MF_POPUP, (UINT_PTR)mnuHTML.m_hMenu, GetResString(IDS_STATS_MNUTREEHTML), _T("WEB"));
 
 	GetPopupMenuPos(*this, doWhere);
 	mnuContext.TrackPopupMenu(nFlags, doWhere.x, doWhere.y, this);
@@ -183,7 +186,7 @@ BOOL CStatisticsTree::OnCommand( WPARAM wParam, LPARAM lParam )
 					break;
 
 				if(!thePrefs.LoadStats(1))
-					AddLogLine(true, GetResString(IDS_ERR_NOSTATBKUP));
+					LogError(LOG_STATUSBAR, GetResString(IDS_ERR_NOSTATBKUP));
 				else {
 					AddLogLine(false, GetResString(IDS_STATS_NFOLOADEDBKUP));
 					CString myBuffer;
@@ -231,8 +234,8 @@ lblSaveExpanded:
 		case MP_STATTREE_HTMLEXPORT:
 		case MP_STATTREE_HTMLEXPVIS:
 			{
-			ExportHTML(wParam==MP_STATTREE_HTMLEXPVIS);
-			break;
+				ExportHTML(wParam==MP_STATTREE_HTMLEXPVIS);
+				break;
 			}
 	}
 
@@ -516,24 +519,33 @@ void CStatisticsTree::ExportHTML(bool onlyvisible)
 {
 	CFile htmlFile;
 	CString htmlFileName;
-	CStringA theHTML;
+	CString theHTML;
 
 	theApp.emuledlg->statisticswnd->ShowStatistics(!onlyvisible);
 
-	CFileDialog saveAsDlg (false, _T("html"), _T("*.html"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_EXPLORER, _T("HTML Files (*.html)|*.html|All Files (*.*)|*.*||"), this, 0);
-	if (saveAsDlg.DoModal() == IDOK) {
-		theHTML.Format("<html>\r\n<header>\r\n<title>eMule v%s %s [%s]</title>\r\n", theApp.m_strCurVersionLong, GetResString(IDS_SF_STATISTICS), thePrefs.GetUserNick());
-		theHTML += "<style type=\"text/css\">\r\n#pghdr { color: #000F80; font: bold 12pt/14pt Verdana, Courier New, Helvetica; }\r\n";
-		theHTML += "#sec { color: #000000; font: bold 11pt/13pt Verdana, Courier New, Helvetica; }\r\n";
-		theHTML += "#item { color: #000000; font: normal 10pt/12pt Verdana, Courier New, Helvetica; }\r\n";
-		theHTML += "#bdy { color: #000000; font: normal 10pt/12pt Verdana, Courier New, Helvetica; background-color: #FFFFFF; }\r\n</style>\r\n</header>\r\n";
-		theHTML += "<body id=\"bdy\">\r\n";
-		theHTML.Format("%s<span id=\"pghdr\">eMule v%s %s [%s]</span>\r\n<br><br>\r\n", theHTML, theApp.m_strCurVersionLong, GetResString(IDS_SF_STATISTICS), thePrefs.GetUserNick());
+	CFileDialog saveAsDlg (false, _T("html"), _T("eMule Statistics.html"), OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_EXPLORER, _T("HTML Files (*.html)|*.html|All Files (*.*)|*.*||"), this, 0);
+	if (saveAsDlg.DoModal() == IDOK)
+	{
+		theHTML.Format(_T("<html>\r\n<head>\r\n<title>eMule v%s %s [%s]</title>\r\n"), theApp.m_strCurVersionLong, GetResString(IDS_SF_STATISTICS), thePrefs.GetUserNick());
+#ifdef _UNICODE
+		theHTML += _T("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\">");
+#endif
+		theHTML += _T("<style type=\"text/css\">\r\n#pghdr { color: #000F80; font: bold 12pt/14pt Verdana, Courier New, Helvetica; }\r\n");
+		theHTML += _T("#sec { color: #000000; font: bold 11pt/13pt Verdana, Courier New, Helvetica; }\r\n");
+		theHTML += _T("#item { color: #000000; font: normal 10pt/12pt Verdana, Courier New, Helvetica; }\r\n");
+		theHTML += _T("#bdy { color: #000000; font: normal 10pt/12pt Verdana, Courier New, Helvetica; background-color: #FFFFFF; }\r\n</style>\r\n</head>\r\n");
+		theHTML += _T("<body id=\"bdy\">\r\n");
+		theHTML.Format(_T("%s<span id=\"pghdr\">eMule v%s %s [%s]</span>\r\n<br><br>\r\n"), theHTML, theApp.m_strCurVersionLong, GetResString(IDS_SF_STATISTICS), thePrefs.GetUserNick());
 		theHTML += GetHTMLForExport(onlyvisible) + _T("</body></html>");
 
 		htmlFileName = saveAsDlg.GetPathName();
 		htmlFile.Open(htmlFileName, CFile::modeCreate | CFile::modeWrite | CFile::shareDenyWrite);
+#ifdef _UNICODE
+		CStringA strHtmlA(wc2utf8(theHTML));
+		htmlFile.Write(strHtmlA, strHtmlA.GetLength());
+#else
 		htmlFile.Write(theHTML.GetString(), strlen(theHTML.GetString()));
+#endif
 		htmlFile.Close();
 	}
 }

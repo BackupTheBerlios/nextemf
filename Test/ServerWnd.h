@@ -17,7 +17,6 @@
 #pragma once
 #include "ResizableLib\ResizableDialog.h"
 #include "ServerListCtrl.h"
-#include "LogEditCtrl.h"
 #include "IconStatic.h"
 #include "RichEditCtrlX.h"
 #include "ClosableTabCtrl.h"
@@ -25,7 +24,7 @@
 class CHTRichEditCtrl;
 class CCustomAutoComplete;
 
-class CServerWnd : public CResizableDialog, public CLoggable
+class CServerWnd : public CResizableDialog
 {
 	DECLARE_DYNAMIC(CServerWnd)
 
@@ -57,8 +56,8 @@ public:
 
 	CServerListCtrl serverlistctrl;
 	CHTRichEditCtrl* servermsgbox;
-	CLogEditCtrl logbox;
-	CLogEditCtrl debuglog;
+	CHTRichEditCtrl* logbox;
+	CHTRichEditCtrl* debuglog;
 	CClosableTabCtrl StatusSelector;
 
 protected:

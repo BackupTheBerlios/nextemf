@@ -21,6 +21,7 @@
 #include "otherfunctions.h"
 #include "Preferences.h"
 #include "emuledlg.h"
+#include "Log.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -190,11 +191,11 @@ int CIPFilter::AddFromFile(LPCTSTR pszFilePath, bool bShowResponse)
 			}
 		}
 
-		theApp.emuledlg->AddLogLine(bShowResponse, GetResString(IDS_IPFILTERLOADED), m_iplist.GetCount());
+		AddLogLine(bShowResponse, GetResString(IDS_IPFILTERLOADED), m_iplist.GetCount());
 		if (thePrefs.GetVerbose())
 		{
-			theApp.emuledlg->AddDebugLogLine(false, _T("Loaded IP filters from \"%s\""), pszFilePath);
-			theApp.emuledlg->AddDebugLogLine(false, _T("Parsed lines:%u  Found IP ranges:%u  Duplicate:%u  Merged:%u"), iLine, iFoundRanges, iDuplicate, iMerged);
+			AddDebugLogLine(false, _T("Loaded IP filters from \"%s\""), pszFilePath);
+			AddDebugLogLine(false, _T("Parsed lines:%u  Found IP ranges:%u  Duplicate:%u  Merged:%u"), iLine, iFoundRanges, iDuplicate, iMerged);
 		}
 	}
 	return m_iplist.GetCount();

@@ -29,10 +29,15 @@
 #include "ChatWnd.h"
 #include "SharedFilesWnd.h"
 #include "KademliaWnd.h"
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #include "IrcWnd.h"
+#endif //IRC
+//<== remove IRC [shadow2004]
 #include "WebServices.h"
 #include "HelpIDs.h"
 #include "StringConversion.h"
+#include "Log.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -194,7 +199,11 @@ BOOL CPPgGeneral::OnApply()
 			theApp.emuledlg->sharedfileswnd->Localize();
 			theApp.emuledlg->chatwnd->Localize();
 			theApp.emuledlg->Localize();
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 			theApp.emuledlg->ircwnd->Localize();
+#endif //IRC
+//<== remove IRC [shadow2004]
 			theApp.emuledlg->kademliawnd->Localize();
 		}
 	}
@@ -311,7 +320,7 @@ void CPPgGeneral::OnLangChange()
 				}
 				CString strErr;
 				strErr.Format(GetResString(IDS_ERR_FAILEDDOWNLOADLANG), strUrl);
-				AddLogLine(true, strErr);
+				LogError(LOG_STATUSBAR, _T("%s"), strErr);
 				AfxMessageBox(strErr, MB_ICONERROR | MB_OK);
 			}
 			// undo change selection

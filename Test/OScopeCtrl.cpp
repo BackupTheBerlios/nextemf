@@ -404,20 +404,18 @@ void COScopeCtrl::InvalidateCtrl(bool deleteGraph)
 	// create some fonts (horizontal and vertical)
 	// use a height of 14 pixels and 300 weight 
 	// (these may need to be adjusted depending on the display)
-	axisFont.CreateFont(14, 0, 0, 0, 300,
-		//FALSE, FALSE, 0, ANSI_CHARSET,
+	axisFont.CreateFont(14, 0, 0, 0, FW_LIGHT,
 		FALSE, FALSE, 0, DEFAULT_CHARSET, // EC
 		OUT_DEFAULT_PRECIS, 
 		CLIP_DEFAULT_PRECIS,
 		DEFAULT_QUALITY, 
-		DEFAULT_PITCH | FF_SWISS, _T("Arial"));
-	yUnitFont.CreateFont(14, 0, 900, 0, 300,
-		//FALSE, FALSE, 0, ANSI_CHARSET,
+		DEFAULT_PITCH | FF_SWISS, _T("MS Shell Dlg"));
+	yUnitFont.CreateFont(14, 0, 900, 0, FW_LIGHT,
 		FALSE, FALSE, 0, DEFAULT_CHARSET, // EC
 		OUT_DEFAULT_PRECIS, 
 		CLIP_DEFAULT_PRECIS,
 		DEFAULT_QUALITY, 
-		DEFAULT_PITCH | FF_SWISS, _T("Arial"));
+		DEFAULT_PITCH | FF_SWISS, _T("MS Shell Dlg"));
 	
 	// grab the horizontal font
 	oldFont = m_dcGrid.SelectObject(&axisFont);
@@ -468,12 +466,12 @@ void COScopeCtrl::InvalidateCtrl(bool deleteGraph)
 		((m_rectPlot.bottom+m_rectPlot.top)/2)-rText.Height()/2, m_str.YUnits) ;
 	m_dcGrid.SelectObject(oldFont);
 	
-	LegendFont.CreateFont(12, 0, 0, 0, 300,
+	LegendFont.CreateFont(12, 0, 0, 0, FW_LIGHT,
 		FALSE, FALSE, 0, DEFAULT_CHARSET, // EC
 		OUT_DEFAULT_PRECIS, 
 		CLIP_DEFAULT_PRECIS,
 		DEFAULT_QUALITY, 
-		DEFAULT_PITCH | FF_SWISS, _T("Arial"));
+		DEFAULT_PITCH | FF_SWISS, _T("MS Shell Dlg"));
 	oldFont = m_dcGrid.SelectObject(&LegendFont);
 	m_dcGrid.SetTextAlign(TA_LEFT | TA_TOP);
 	
@@ -481,7 +479,8 @@ void COScopeCtrl::InvalidateCtrl(bool deleteGraph)
 	xpos = m_rectPlot.left + 2;
 	ypos = m_rectPlot.bottom+2;
 	for (i=0 ; i < m_NTrends; i++){
-		if (xpos+12+6*m_PlotData[i].LegendLabel.GetLength()>m_rectPlot.right){
+		int iLabelPixelSize = m_dcGrid.GetTextExtent(m_PlotData[i].LegendLabel).cx;
+		if (xpos+12+iLabelPixelSize+12>m_rectPlot.right){
 			xpos = m_rectPlot.left + 2;
 			ypos = m_rectPlot.bottom+12;
 		}
@@ -490,7 +489,7 @@ void COScopeCtrl::InvalidateCtrl(bool deleteGraph)
 		m_dcGrid.MoveTo(xpos, ypos+8);
 		m_dcGrid.LineTo(xpos + 8, ypos+4);
 		m_dcGrid.TextOut(xpos + 12 ,ypos, m_PlotData[i].LegendLabel);
-		xpos += 12+6*m_PlotData[i].LegendLabel.GetLength();
+		xpos += 12+iLabelPixelSize+12;
 		m_dcGrid.SelectObject(oldPen);
 	}
 	

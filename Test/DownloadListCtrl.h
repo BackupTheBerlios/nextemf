@@ -19,12 +19,6 @@
 #include "TitleMenu.h"
 #include <map>
 
-//==>Hardlimit [cyrex2001]
-#ifdef HARDLIMIT
-#include ".\NextEMF\HardLimit.h"
-#endif //Hardlimit
-//<==Hardlimit [cyrex2001]
-
 #define COLLAPSE_ONLY	0
 #define EXPAND_ONLY		1
 #define EXPAND_COLLAPSE	2
@@ -80,7 +74,7 @@ public:
 	int		GetCompleteDownloads(int cat,int &total);
 protected:
 	CImageList  m_ImageList;
-	CMenu		m_PrioMenu;
+	CTitleMenu	m_PrioMenu;
 	CTitleMenu	m_FileMenu;
 	CMenu		m_A4AFMenu;
 	bool		m_bRemainSort;
@@ -110,11 +104,4 @@ protected:
 	afx_msg void OnNMDblclkDownloadlist(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnGetDispInfo(NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult);
-
-//==>Hardlimit [cyrex2001]
-#ifdef HARDLIMIT
-	CHardLimit m_SettingsSaver;
-#endif //Hardlimit
-//<==Hardlimit [cyrex2001]
-
 };

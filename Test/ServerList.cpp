@@ -33,6 +33,7 @@
 #include "emuledlg.h"
 #include "HttpDownloadDlg.h"
 #include "ServerWnd.h"
+#include "Log.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -90,7 +91,7 @@ void CServerList::AutoUpdate()
 			bDownloaded=true;
 		}
 		else{
-			AddLogLine(true,GetResString(IDS_ERR_FAILEDDOWNLOADMET), strURLToDownload.GetBuffer());
+			LogError(LOG_STATUSBAR,GetResString(IDS_ERR_FAILEDDOWNLOADMET), strURLToDownload.GetBuffer());
 		}
 	}
 	if (bDownloaded){
@@ -146,7 +147,7 @@ bool CServerList::AddServermetToList(const CString& strFile, bool merge)
 				strError += _T(" - ");
 				strError += szError;
 			}
-			AddLogLine(false, _T("%s"), strError);
+			LogError(LOG_STATUSBAR, _T("%s"), strError);
 		}
 		return false;
 	}
@@ -155,7 +156,7 @@ bool CServerList::AddServermetToList(const CString& strFile, bool merge)
 		version = servermet.ReadUInt8();
 		if (version != 0xE0 && version != MET_HEADER){
 			servermet.Close();
-			AddLogLine(false,GetResString(IDS_ERR_BADSERVERMETVERSION),version);
+			LogError(LOG_STATUSBAR,GetResString(IDS_ERR_BADSERVERMETVERSION),version);
 			return false;
 		}
 		theApp.emuledlg->serverwnd->serverlistctrl.Hide();
@@ -198,16 +199,13 @@ bool CServerList::AddServermetToList(const CString& strFile, bool merge)
 		servermet.Close();
 	}
 	catch(CFileException* error){
-		if (thePrefs.GetVerbose())
-		{
-			if (error->m_cause == CFileException::endOfFile){
-				AddDebugLogLine(true,GetResString(IDS_ERR_BADSERVERLIST));
-			}
-			else{
-				TCHAR buffer[MAX_CFEXP_ERRORMSG];
-				error->GetErrorMessage(buffer, ARRSIZE(buffer));
-				AddDebugLogLine(true,GetResString(IDS_ERR_FILEERROR_SERVERMET),buffer);
-			}
+		if (error->m_cause == CFileException::endOfFile){
+			LogError(LOG_STATUSBAR, GetResString(IDS_ERR_BADSERVERLIST));
+		}
+		else{
+			TCHAR buffer[MAX_CFEXP_ERRORMSG];
+			error->GetErrorMessage(buffer, ARRSIZE(buffer));
+			LogError(LOG_STATUSBAR, GetResString(IDS_ERR_FILEERROR_SERVERMET),buffer);
 		}
 		error->Delete();
 	}
@@ -595,7 +593,7 @@ bool CServerList::SaveServermetToFile()
 			strError += _T(" - ");
 			strError += szError;
 		}
-		AddLogLine(true, _T("%s"), strError);
+		LogError(LOG_STATUSBAR, _T("%s"), strError);
 		return false;
 	}
 	setvbuf(servermet.m_pStream, NULL, _IOFBF, 16384);
@@ -750,7 +748,7 @@ bool CServerList::SaveServermetToFile()
 			strError += _T(" - ");
 			strError += szError;
 		}
-		AddLogLine(false, _T("%s"), strError);
+		LogError(LOG_STATUSBAR, _T("%s"), strError);
 		error->Delete();
 		return false;
 	}

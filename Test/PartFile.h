@@ -16,12 +16,7 @@
 #pragma once
 #include "KnownFile.h"
 #include "DeadSourceList.h"
-
-//==>Hardlimit [cyrex2001]
-#ifdef HARDLIMIT
-#include ".\NextEMF\HardLimit.h"
-#endif //Hardlimit
-//<==Hardlimit [cyrex2001]
+#include "CorruptionBlackBox.h"
 
 enum EPartFileStatus{
 	PS_READY			= 0,
@@ -264,7 +259,7 @@ public:
 	CString GetInfoSummary(CPartFile* partfile) const;
 
 //	int		GetCommonFilePenalty() const;
-	void	UpdateDisplayedInfo(boolean force = false);
+	void	UpdateDisplayedInfo(bool force = false);
 
 	uint8	GetCategory() /*const*/;
 	void	SetCategory(uint8 cat,bool setprio=true);
@@ -324,19 +319,6 @@ public:
 	virtual void Dump(CDumpContext& dc) const;
 #endif
 
-//==>Hardlimit [cyrex2001]
-#ifdef HARDLIMIT
-	void	SetMaxSourcesPerFile(uint16 in){m_MaxSourcesPerFile=in;}
-	uint16	GetMaxSourcesPerFile(){return m_MaxSourcesPerFile;}
-	uint16	GetMaxSourcesLimitSoft(){int tmp = m_MaxSourcesPerFile*0.9 ; return ((tmp>1000) ? 1000 : tmp);}
-	uint16	GetMaxSourcesUDPLimit() {int tmp = m_MaxSourcesPerFile*0.75; return ((tmp>100) ? 100 : tmp);}
-protected:
-	CHardLimit m_SettingsSaver;
-private:
-	uint16	m_MaxSourcesPerFile;
-#endif //Hardlimit
-//<==Hardlimit [cyrex2001]
-
 protected:
 	bool	GetNextEmptyBlockInPart(uint16 partnumber,Requested_Block_Struct* result) const;
 	void	CompleteFile(bool hashingdone);
@@ -344,6 +326,12 @@ protected:
 	void	Init();
 
 private:
+	BOOL 		PerformFileComplete(); // Lord KiRon
+	static UINT CompleteThreadProc(LPVOID pvParams); // Lord KiRon - Used as separate thread to complete file
+	static UINT AFX_CDECL AllocateSpaceThread(LPVOID lpParam);
+	void		CharFillRange(CString* buffer,uint32 start, uint32 end, char color) const;
+
+	CCorruptionBlackBox	m_CorruptionBlackBox;
 	static CBarShader s_LoadBar;
 	static CBarShader s_ChunkBar;
 	uint32	m_iLastPausePurge;
@@ -382,6 +370,7 @@ private:
 	DWORD	m_lastRefreshedDLDisplay;
 	CUpDownClientPtrList m_downloadingSourceList;
 	bool	m_bDeleteAfterAlloc;
+    bool	m_bpreviewprio;
 	// Barry - Buffered data to be written
 	CTypedPtrList<CPtrList, PartFileBufferedData*> m_BufferedData_list;
 	uint32	m_nTotalBufferData;
@@ -392,17 +381,10 @@ private:
 	uint32	m_nDlActiveTime;
 	uint32	m_tLastModified;	// last file modification time (NT's version of UTC), to be used for stats only!
 	uint32	m_tCreated;			// file creation time (NT's version of UTC), to be used for stats only!
+    uint32	m_random_update_wait;	
 	volatile EPartFileOp m_eFileOp;
 	volatile UINT m_uFileOpProgress;
 
-    uint32 m_random_update_wait;
-
-	BOOL 	PerformFileComplete(); // Lord KiRon
-	static UINT CompleteThreadProc(LPVOID pvParams); // Lord KiRon - Used as separate thread to complete file
-	static UINT AFX_CDECL AllocateSpaceThread(LPVOID lpParam);
-
-	void	CharFillRange(CString* buffer,uint32 start, uint32 end, char color) const;
-
     DWORD   lastSwapForSourceExchangeTick; // ZZ:DownloadManaager
-    bool m_bpreviewprio;
+
 };

@@ -50,6 +50,7 @@
 #include "StatisticsDlg.h"
 #include "Kademlia/Kademlia/Kademlia.h"
 #include "Kademlia/Kademlia/Prefs.h"
+#include "Log.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -1107,4 +1108,3 @@ void CUploadQueue::ReSortUploadSlots(bool force) {
         theApp.uploadBandwidthThrottler->Pause(false);
     }
 }
-

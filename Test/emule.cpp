@@ -71,10 +71,10 @@
 #include "enbitmap.h"
 #include "FirewallOpener.h"
 #include "StringConversion.h"
+#include "Log.h"
 
-CLog theLog;
-CLog theVerboseLog;
-extern bool KadInitUnicode(HMODULE hInst);
+CLogFile theLog;
+CLogFile theVerboseLog;
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -163,7 +163,7 @@ static TCHAR _szCrtDebugReportFilePath[MAX_PATH] = APP_CRT_DEBUG_LOG_FILE;
 
 struct SLogItem
 {
-    bool addtostatusbar;
+	UINT uFlags;
     CString line;
 };
 
@@ -172,7 +172,7 @@ void CALLBACK myErrHandler(Kademlia::CKademliaError *error)
 	CString msg;
 	msg.Format(_T("\r\nError 0x%08X : %hs\r\n"), error->m_ErrorCode, error->m_ErrorDescription);
 	if(theApp.emuledlg && theApp.emuledlg->IsRunning())
-		theApp.QueueDebugLogLine(false, msg);
+		theApp.QueueDebugLogLine(false, _T("%s"), msg);
 }
 
 void CALLBACK myDebugAndLogHandler(LPCSTR lpMsg)
@@ -403,13 +403,17 @@ BOOL CemuleApp::InitInstance()
 	AfxEnableControlContainer();
 	if (!AfxInitRichEdit2()){
 		if (!AfxInitRichEdit())
-			AfxMessageBox(_T("No Rich Edit control library found!")); // should never happen..
+			AfxMessageBox(_T("Fatal Error: No Rich Edit control library found!")); // should never happen..
 	}
 
-	if (!KadInitUnicode(AfxGetInstanceHandle())){
-		AfxMessageBox(_T("Failed to load Unicode character tables for Kademlia!")); // should never happen..
+	if (!Kademlia::CKademlia::initUnicode(AfxGetInstanceHandle())){
+		AfxMessageBox(_T("Fatal Error: Failed to load Unicode character tables for Kademlia!")); // should never happen..
 		return FALSE; // DO *NOT* START !!!
 	}
+
+	extern bool SelfTest();
+	if (!SelfTest())
+		return FALSE; // DO *NOT* START !!!
 
 	// create & initalize all the important stuff 
 	thePrefs.Init();
@@ -430,8 +434,8 @@ BOOL CemuleApp::InitInstance()
 #ifdef _DEBUG
 	_sntprintf(_szCrtDebugReportFilePath, ARRSIZE(_szCrtDebugReportFilePath), _T("%s\\%s"), thePrefs.GetAppDir(), APP_CRT_DEBUG_LOG_FILE);
 #endif
-	VERIFY( theLog.SetFilePath(thePrefs.GetAppDir() + _T("eMule.log")) );
-	VERIFY( theVerboseLog.SetFilePath(thePrefs.GetAppDir() + _T("eMule_Verbose.log")) );
+	VERIFY( theLog.SetFilePath(thePrefs.GetLogDir() + _T("eMule.log")) );
+	VERIFY( theVerboseLog.SetFilePath(thePrefs.GetLogDir() + _T("eMule_Verbose.log")) );
 	theLog.SetMaxFileSize(thePrefs.GetMaxLogFileSize());
 	theVerboseLog.SetMaxFileSize(thePrefs.GetMaxLogFileSize());
 	if (thePrefs.GetLog2Disk())
@@ -668,7 +672,7 @@ void CemuleApp::SetTimeOnTransfer() {
 CString CemuleApp::CreateED2kSourceLink(const CAbstractFile* f)
 {
 	if (!IsConnected() || IsFirewalled()){
-		AddLogLine(true,GetResString(IDS_SOURCELINKFAILED));
+		LogWarning(LOG_STATUSBAR, GetResString(IDS_SOURCELINKFAILED));
 		return _T("");
 	}
 	uint32 dwID = GetID();
@@ -888,7 +892,7 @@ void CemuleApp::OnlineSig() // Added By Bouc7
 		fexp.GetErrorMessage(szError, ARRSIZE(szError));
 		strError += _T(" - ");
 		strError += szError;
-		AddLogLine(true, _T("%s"), strError);
+		LogError(LOG_STATUSBAR, _T("%s"), strError);
 		return;
     }
 
@@ -949,16 +953,17 @@ void CemuleApp::OnlineSig() // Added By Bouc7
 		ex->GetErrorMessage(szError, ARRSIZE(szError));
 		strError += _T(" - ");
 		strError += szError;
-		AddLogLine(true, _T("%s"), strError);
+		LogError(LOG_STATUSBAR, _T("%s"), strError);
 		ex->Delete();
 	}
 } //End Added By Bouc7
 
-CString CemuleApp::GetLangHelpFilePath()
+bool CemuleApp::GetLangHelpFilePath(CString& strResult)
 {
 	// Change extension for help file
 	CString strHelpFile = m_pszHelpFilePath;
 	CFileFind ff;
+	bool bFound;
 	if (thePrefs.GetLanguageID() != MAKELANGID(LANG_ENGLISH, SUBLANG_DEFAULT))
 	{
 		int pos = strHelpFile.ReverseFind(_T('.'));
@@ -968,12 +973,24 @@ CString CemuleApp::GetLangHelpFilePath()
 			strHelpFile = temp;
 		
 		// if not exists, use original help (english)
-		if (!ff.FindFile(strHelpFile, 0))
+		if (!ff.FindFile(strHelpFile, 0)){
 			strHelpFile = m_pszHelpFilePath;
+			bFound = false;
+		}
+		else
+			bFound = true;
+		strHelpFile.Replace(_T(".HLP"), _T(".chm"));
+	}
+	else{
+		strHelpFile.Replace(_T(".HLP"), _T(".chm"));
+		if (!ff.FindFile(strHelpFile, 0))
+			bFound = false;
+		else
+			bFound = true;
 	}
 	ff.Close();
-	strHelpFile.Replace(_T(".HLP"), _T(".chm"));
-	return strHelpFile;
+	strResult = strHelpFile;
+	return bFound;
 }
 
 void CemuleApp::SetHelpFilePath(LPCTSTR pszHelpFilePath)
@@ -1001,9 +1018,37 @@ void CemuleApp::OnHelp()
 
 void CemuleApp::ShowHelp(UINT uTopic, UINT uCmd)
 {
-	CString strHelpFilePath = GetLangHelpFilePath();
+	CString strHelpFilePath;
+	bool bResult = GetLangHelpFilePath(strHelpFilePath);
+	if (!bResult){
+		if (ShowWebHelp())
+			return;
+	}
 	SetHelpFilePath(strHelpFilePath);
 	WinHelpInternal(uTopic, uCmd);
+}
+
+bool CemuleApp::ShowWebHelp(){
+	uint16 nWebLanguage;
+	switch(thePrefs.GetLanguageID()){
+		// languages for we have a onlinehelp
+		case 1031: nWebLanguage = 2; break;
+        case 1036: nWebLanguage = 13; break;
+        case 1033: nWebLanguage = 1; break;
+		case 1028: nWebLanguage = 16; break;
+        case 1034: nWebLanguage = 17; break;
+        case 1040: nWebLanguage = 18; break;
+        case 1043: nWebLanguage = 29; break;
+        case 1046: nWebLanguage = 30; break;
+		default:
+			return false;
+	}
+	// onlinehelp unfortunatly doesnt supports context based help yet, since the topic IDs
+	// differ for each language, maybe improved in later versions
+	CString strHelpURL;
+	strHelpURL.Format(_T("%s/home/perl/help.cgi?l=%u"), thePrefs.GetHomepageBaseURL(), nWebLanguage); 
+	ShellExecute(NULL, NULL, strHelpURL, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
+	return true;
 }
 
 int CemuleApp::GetFileTypeSystemImageIdx(LPCTSTR pszFilePath, int iLength /* = -1 */)
@@ -1413,7 +1458,7 @@ void CemuleApp::AddEd2kLinksToDownload(CString strlink, uint8 cat)
 		{
 			TCHAR szBuffer[200];
 			_sntprintf(szBuffer, ARRSIZE(szBuffer), GetResString(IDS_ERR_INVALIDLINK), error);
-			AddLogLine(true, GetResString(IDS_ERR_LINKERROR), szBuffer);
+			LogError(LOG_STATUSBAR, GetResString(IDS_ERR_LINKERROR), szBuffer);
 		}
 		resToken = strlink.Tokenize(_T("\t\n\r"), curPos);
 	}
@@ -1506,7 +1551,7 @@ void CemuleApp::QueueDebugLogLine(bool addtostatusbar, LPCTSTR line, ...)
 	va_end(argptr);
 
 	SLogItem* newItem = new SLogItem;
-	newItem->addtostatusbar = addtostatusbar;
+	newItem->uFlags = LOG_DEBUG | LOG_STATUSBAR;
 	newItem->line = bufferline;
 	m_QueueDebugLog.AddTail(newItem);
 
@@ -1515,6 +1560,27 @@ void CemuleApp::QueueDebugLogLine(bool addtostatusbar, LPCTSTR line, ...)
 
 void CemuleApp::QueueLogLine(bool addtostatusbar, LPCTSTR line,...)
 {
+	m_queueLock.Lock();
+
+	TCHAR bufferline[1000];
+
+	va_list argptr;
+	va_start(argptr, line);
+	_vsntprintf(bufferline, ARRSIZE(bufferline), line, argptr);
+	va_end(argptr);
+
+	SLogItem* newItem = new SLogItem;
+	newItem->uFlags = LOG_STATUSBAR;
+	newItem->line = bufferline;
+	m_QueueLog.AddTail(newItem);
+
+	m_queueLock.Unlock();
+}
+
+void CemuleApp::QueueDebugLogLineEx(UINT uFlags, LPCTSTR line, ...)
+{
+	if (!thePrefs.GetVerbose())
+		return;
 
 	m_queueLock.Lock();
 
@@ -1526,7 +1592,26 @@ void CemuleApp::QueueLogLine(bool addtostatusbar, LPCTSTR line,...)
 	va_end(argptr);
 
 	SLogItem* newItem = new SLogItem;
-	newItem->addtostatusbar = addtostatusbar;
+	newItem->uFlags = uFlags | LOG_DEBUG;
+	newItem->line = bufferline;
+	m_QueueDebugLog.AddTail(newItem);
+
+	m_queueLock.Unlock();
+}
+
+void CemuleApp::QueueLogLineEx(UINT uFlags, LPCTSTR line, ...)
+{
+	m_queueLock.Lock();
+
+	TCHAR bufferline[1000];
+
+	va_list argptr;
+	va_start(argptr, line);
+	_vsntprintf(bufferline, ARRSIZE(bufferline), line, argptr);
+	va_end(argptr);
+
+	SLogItem* newItem = new SLogItem;
+	newItem->uFlags = uFlags;
 	newItem->line = bufferline;
 	m_QueueLog.AddTail(newItem);
 
@@ -1536,10 +1621,11 @@ void CemuleApp::QueueLogLine(bool addtostatusbar, LPCTSTR line,...)
 void CemuleApp::HandleDebugLogQueue()
 {
 	m_queueLock.Lock();
-	while(!m_QueueDebugLog.IsEmpty()) {
+	while (!m_QueueDebugLog.IsEmpty())
+	{
 		const SLogItem* newItem = m_QueueDebugLog.RemoveHead();
 		if (thePrefs.GetVerbose())
-			AddDebugLogLine(newItem->addtostatusbar, newItem->line);
+			Log(newItem->uFlags, _T("%s"), newItem->line);
 		delete newItem;
 	}
 	m_queueLock.Unlock();
@@ -1548,9 +1634,10 @@ void CemuleApp::HandleDebugLogQueue()
 void CemuleApp::HandleLogQueue()
 {
 	m_queueLock.Lock();
-	while(!m_QueueLog.IsEmpty()) {
+	while (!m_QueueLog.IsEmpty())
+	{
 		const SLogItem* newItem = m_QueueLog.RemoveHead();
-		AddLogLine(newItem->addtostatusbar, newItem->line);
+		Log(newItem->uFlags, _T("%s"), newItem->line);
 		delete newItem;
 	}
 	m_queueLock.Unlock();
@@ -1580,3 +1667,54 @@ void CemuleApp::ClearLogQueue(bool bDebugPendingMsgs)
 	m_queueLock.Unlock();
 }
 // Elandal:ThreadSafeLogging <--
+
+void CemuleApp::CreateAllFonts()
+{
+	///////////////////////////////////////////////////////////////////////////
+	// Symbol font
+	//
+	VERIFY( m_fontSymbol.CreatePointFont(10 * 10, _T("Marlett")) );
+
+
+	///////////////////////////////////////////////////////////////////////////
+	// Log-, Message- and IRC-Window fonts
+	//
+	LPLOGFONT plfHyperText = thePrefs.GetHyperTextLogFont();
+	if (plfHyperText==NULL || plfHyperText->lfFaceName[0]==_T('\0') || !m_fontHyperText.CreateFontIndirect(plfHyperText))
+		m_fontHyperText.CreatePointFont(10 * 10, _T("MS Shell Dlg"));
+
+	LPLOGFONT plfLog = thePrefs.GetLogFont();
+	if (plfLog!=NULL && plfLog->lfFaceName[0]!=_T('\0'))
+		m_fontLog.CreateFontIndirect(plfLog);
+
+	// Why can't this font set via the font dialog??
+//	HFONT hFontMono = CreateFont(10, 0, 0, 0, FW_DONTCARE, FALSE, FALSE, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, _T("Lucida Console"));
+//	m_fontLog.Attach(hFontMono);
+
+
+	///////////////////////////////////////////////////////////////////////////
+	// Default GUI Font (Bold)
+	//
+	CFont* pFont = CFont::FromHandle((HFONT)GetStockObject(DEFAULT_GUI_FONT));
+	if (pFont)
+	{
+		LOGFONT lf;
+		pFont->GetLogFont(&lf);
+		lf.lfWeight = FW_BOLD;
+		VERIFY( m_fontDefaultBold.CreateFontIndirect(&lf) );
+	}
+}
+
+void CemuleApp::CreateBackwardDiagonalBrush()
+{
+	static const WORD awBackwardDiagonalBrushPattern[8] = { 0x0f, 0x1e, 0x3c, 0x78, 0xf0, 0xe1, 0xc3, 0x87 };
+	CBitmap bm;
+	if (bm.CreateBitmap(8, 8, 1, 1, awBackwardDiagonalBrushPattern))
+	{
+		LOGBRUSH logBrush = {0};
+		logBrush.lbStyle = BS_PATTERN;
+		logBrush.lbHatch = (int)bm.GetSafeHandle();
+		logBrush.lbColor = RGB(0, 0, 0);
+		VERIFY( m_brushBackwardDiagonal.CreateBrushIndirect(&logBrush) );
+	}
+}

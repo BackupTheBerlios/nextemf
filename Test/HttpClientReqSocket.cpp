@@ -23,6 +23,7 @@
 #include "HttpClientReqSocket.h"
 #include "Preferences.h"
 #include "Statistics.h"
+#include "Log.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -90,7 +91,7 @@ void CHttpClientReqSocket::DataReceived(const BYTE* pucData, UINT uSize)
 	{
 		strError.Format(_T("Error: HTTP socket: Memory exception; %s"), DbgGetClientInfo());
 		if (thePrefs.GetVerbose())
-			theApp.AddDebugLogLine(false, _T("%s"), strError);
+			AddDebugLogLine(false, _T("%s"), strError);
 		ex->Delete();
 	}
 	catch(CFileException* ex)
@@ -99,7 +100,7 @@ void CHttpClientReqSocket::DataReceived(const BYTE* pucData, UINT uSize)
 		ex->GetErrorMessage(szError, ARRSIZE(szError));
 		strError.Format(_T("Error: HTTP socket: File exception - %s"), szError);
 		if (thePrefs.GetVerbose())
-			theApp.AddDebugLogLine(false, _T("%s"), strError);
+			AddDebugLogLine(false, _T("%s"), strError);
 		ex->Delete();
 	}
 	catch(CString ex)
@@ -110,7 +111,7 @@ void CHttpClientReqSocket::DataReceived(const BYTE* pucData, UINT uSize)
 		strError.Format(_T("Error: HTTP socket: %s"), ex);
 #endif
 		if (thePrefs.GetVerbose())
-			theApp.AddDebugLogLine(false, _T("%s"), strError);
+			AddDebugLogLine(false, _T("%s"), strError);
 	}
 
 	if (!bResult && !deletethis)
@@ -118,7 +119,7 @@ void CHttpClientReqSocket::DataReceived(const BYTE* pucData, UINT uSize)
 		if (thePrefs.GetVerbose() && thePrefs.GetDebugClientTCPLevel() <= 0)
 		{
 			for (int i = 0; i < m_astrHttpHeaders.GetCount(); i++)
-				theApp.AddDebugLogLine(false, _T("<%s"), m_astrHttpHeaders.GetAt(i));
+				AddDebugLogLine(false, _T("<%hs"), m_astrHttpHeaders.GetAt(i));
 		}
 
 		// In case this socket is attached to an CUrlClient, we are dealing with the real CUpDownClient here

@@ -47,6 +47,7 @@
 #include "Exceptions.h"
 #include "Opcodes.h"
 #include "StringConversion.h"
+#include "Log.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -112,7 +113,7 @@ void CWebServer::ReloadTemplates()
 		if(lVersion < WEB_SERVER_TEMPLATES_VERSION)
 		{
 			if(m_bServerWorking)
-				AddLogLine(true,GetResString(IDS_WS_ERR_LOADTEMPLATE),sFile);
+				LogError(LOG_STATUSBAR,GetResString(IDS_WS_ERR_LOADTEMPLATE),sFile);
 		}
 		else
 		{
@@ -168,7 +169,7 @@ void CWebServer::ReloadTemplates()
 	}
 	else
         if(m_bServerWorking)
-			AddLogLine(true,GetResString(IDS_WEB_ERR_CANTLOAD), sFile);
+			LogError(LOG_STATUSBAR,GetResString(IDS_WEB_ERR_CANTLOAD), sFile);
 
 }
 
@@ -188,7 +189,7 @@ CString CWebServer::_LoadTemplate(CString sAll, CString sTemplateName)
 		sRet = sAll.Mid(nStart, nEnd - nStart - 1);
 	} else{
 		if (sTemplateName==_T("TMPL_VERSION"))
-			AddLogLine(true,GetResString(IDS_WS_ERR_LOADTEMPLATE),sTemplateName);
+			LogError(LOG_STATUSBAR,GetResString(IDS_WS_ERR_LOADTEMPLATE),sTemplateName);
 		if (thePrefs.GetVerbose() && nStart==-1)
 			AddDebugLogLine(false,GetResString(IDS_WEB_ERR_CANTLOAD),sTemplateName);
 	}
@@ -391,7 +392,7 @@ void CWebServer::ProcessURL(ThreadData Data)
 				AddLogLine(true,GetResString(IDS_WEB_GUESTLOGIN)+_T(" (%s)"),ip);
 				login=true;
 			} else {
-				AddLogLine(true,GetResString(IDS_WEB_BADLOGINATTEMPT)+_T(" (%s)"),ip);
+				LogWarning(LOG_STATUSBAR,GetResString(IDS_WEB_BADLOGINATTEMPT)+_T(" (%s)"),ip);
 
 				BadLogin newban={inet_addr(T2CA(ip)), ::GetTickCount()};	// save failed attempt (ip,time)
 				pThis->m_Params.badlogins.Add(newban);
@@ -2852,7 +2853,7 @@ int CWebServer::UpdateSessionCount() {
 	for(int i = 0; i < m_Params.Sessions.GetSize();)
 	{
 		CTimeSpan ts = CTime::GetCurrentTime() - m_Params.Sessions[i].startTime;
-		if(ts.GetTotalSeconds() > SESSION_TIMEOUT_SECS) {
+		if(ts.GetTotalSeconds() > thePrefs.GetWebTimeoutMins()*60 ) {
 			m_Params.Sessions.RemoveAt(i);
 			theApp.emuledlg->serverwnd->UpdateMyInfo();
 			AddLogLine(true,GetResString(IDS_WEB_SESSIONEND));

@@ -34,6 +34,7 @@
 #include "kademlia/net/KademliaUDPListener.h"
 #include "kademlia/io/IOException.h"
 #include "IPFilter.h"
+#include "Log.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -67,7 +68,7 @@ void CClientUDPSocket::OnReceive(int nErrorCode)
 	if (nErrorCode)
 	{
 		if (thePrefs.GetVerbose())
-			AddDebugLogLine(false, _T("Error: Client UDP socket, error on receive event: %s"), GetErrorMessage(nErrorCode, 1));
+			DebugLogError(_T("Error: Client UDP socket, error on receive event: %s"), GetErrorMessage(nErrorCode, 1));
 	}
 
 	BYTE buffer[5000];
@@ -159,6 +160,11 @@ void CClientUDPSocket::OnReceive(int nErrorCode)
 			error->Delete();
 			strError = _T("Invalid packet received");
 		}
+		catch(CException* error)
+		{
+			error->Delete();
+			strError = _T("General packet error");
+		}
 		catch(...)
 		{
 			strError = _T("Unknown exception");
@@ -178,32 +184,29 @@ void CClientUDPSocket::OnReceive(int nErrorCode)
 			else
 				strClientInfo.Format(_T("%s:%u"), ipstr(sockAddr.sin_addr), ntohs(sockAddr.sin_port));
 
-			AddDebugLogLine(false, _T("Client UDP socket: prot=%02x  opcode=%02x  %s: %s"), buffer[0], buffer[1], strError, strClientInfo);
+			DebugLogWarning(_T("Client UDP socket: prot=%02x  opcode=%02x  %s: %s"), buffer[0], buffer[1], strError, strClientInfo);
 		}
     }
 	else if (length == SOCKET_ERROR)
 	{
-		if (thePrefs.GetVerbose())
+		DWORD dwError = WSAGetLastError();
+		if (dwError == WSAECONNRESET)
 		{
-			DWORD dwError = WSAGetLastError();
-			if (dwError == WSAECONNRESET)
-			{
-				// Depending on local and remote OS and depending on used local (remote?) router we may receive
-				// WSAECONNRESET errors. According some KB articels, this is a special way of winsock to report 
-				// that a sent UDP packet was not received by the remote host because it was not listening on 
-				// the specified port -> no eMule running there.
-				//
-				// TODO: So, actually we should to something with this information and drop the related Kad node 
-				// or eMule client...
-				;
-			}
-			else
-			{
-				CString strClientInfo;
-				if (iSockAddrLen > 0 && sockAddr.sin_addr.S_un.S_addr != 0 && sockAddr.sin_addr.S_un.S_addr != INADDR_NONE)
-					strClientInfo.Format(_T(" from %s:%u"), ipstr(sockAddr.sin_addr), ntohs(sockAddr.sin_port));
-				AddDebugLogLine(false, _T("Error: Client UDP socket, failed to receive data%s: %s"), strClientInfo, GetErrorMessage(dwError, 1));
-			}
+			// Depending on local and remote OS and depending on used local (remote?) router we may receive
+			// WSAECONNRESET errors. According some KB articels, this is a special way of winsock to report 
+			// that a sent UDP packet was not received by the remote host because it was not listening on 
+			// the specified port -> no eMule running there.
+			//
+			// TODO: So, actually we should to something with this information and drop the related Kad node 
+			// or eMule client...
+			;
+		}
+		if (thePrefs.GetVerbose() && dwError != WSAECONNRESET)
+		{
+			CString strClientInfo;
+			if (iSockAddrLen > 0 && sockAddr.sin_addr.S_un.S_addr != 0 && sockAddr.sin_addr.S_un.S_addr != INADDR_NONE)
+				strClientInfo.Format(_T(" from %s:%u"), ipstr(sockAddr.sin_addr), ntohs(sockAddr.sin_port));
+			DebugLogError(_T("Error: Client UDP socket, failed to receive data%s: %s"), strClientInfo, GetErrorMessage(dwError, 1));
 		}
 	}
 }
@@ -220,12 +223,10 @@ bool CClientUDPSocket::ProcessPacket(BYTE* packet, uint16 size, uint8 opcode, ui
 			{
 				if( size < 17 || buddy->socket == NULL )
 					break;
-				//AddDebugLogLine(false, _T("Found buddy in OP_REASKCALLBACKUDP"));
 				uchar check[16];
 				memcpy(&check, packet, 16);
 				if( !memcmp(&check, buddy->GetBuddyID(), 16) )
 				{
-					//AddDebugLogLine(false, _T("Match Hash - buddy in OP_REASKCALLBACKUDP"));
 					memcpy(packet+10, &ip, 4);
 					memcpy(packet+14, &port, 2);
 					Packet* response = new Packet(OP_EMULEPROT);
@@ -235,8 +236,6 @@ bool CClientUDPSocket::ProcessPacket(BYTE* packet, uint16 size, uint8 opcode, ui
 					response->size = size-10;
 					buddy->socket->SendPacket(response);
 				}
-//				else
-//					AddDebugLogLine(false, _T("No Matched Hash - buddy in OP_REASKCALLBACKUDP"));
 			}
 			break;
 		}
@@ -310,7 +309,7 @@ bool CClientUDPSocket::ProcessPacket(BYTE* packet, uint16 size, uint8 opcode, ui
 				}
 				else
 				{
-					AddDebugLogLine(false, _T("Client UDP socket; ReaskFilePing; reqfile does not match"));
+					DebugLogError(_T("Client UDP socket; ReaskFilePing; reqfile does not match"));
 					TRACE(_T("reqfile:         %s\n"), DbgGetFileInfo(reqfile->GetFileHash()));
 					TRACE(_T("sender->GetRequestFile(): %s\n"), sender->GetRequestFile() ? DbgGetFileInfo(sender->GetRequestFile()->GetFileHash()) : _T("(null)"));
 				}
@@ -377,11 +376,12 @@ bool CClientUDPSocket::ProcessPacket(BYTE* packet, uint16 size, uint8 opcode, ui
 		case OP_PORTTEST:
 		{
 			theStats.AddDownDataOverheadOther(size);
-			if (size==1)
-				if (packet[0]==0x12) {
-					bool ret=theApp.listensocket->SendPortTestReply('1',true);
-					theApp.AddDebugLogLine(true,_T("UDP Portcheck packet arrived - ACK sent back (status=%i)"),ret );
+			if (size == 1){
+				if (packet[0] == 0x12){
+					bool ret = theApp.listensocket->SendPortTestReply('1', true);
+					AddDebugLogLine(true, _T("UDP Portcheck packet arrived - ACK sent back (status=%i)"), ret);
 				}
+			}
 			break;
 		}
 		default:
@@ -399,7 +399,7 @@ bool CClientUDPSocket::ProcessPacket(BYTE* packet, uint16 size, uint8 opcode, ui
 void CClientUDPSocket::OnSend(int nErrorCode){
 	if (nErrorCode){
 		if (thePrefs.GetVerbose())
-			AddDebugLogLine(false, _T("Error: Client UDP socket, error on send event: %s"), GetErrorMessage(nErrorCode, 1));
+			DebugLogError(_T("Error: Client UDP socket, error on send event: %s"), GetErrorMessage(nErrorCode, 1));
 		return;
 	}
 

@@ -35,7 +35,7 @@
 
 //==> remove IRC [shadow2004]
 #if defined(IRC)
-  #define MP_HM_IRC				10215
+#define MP_HM_IRC				10215
 #endif //IRC
 //<== remove IRC [shadow2004]
 
@@ -187,8 +187,4 @@
 #define Irc_DeProtect			10257
 */
 #endif //IRC
-//<== remove IRC [shadow2004]//==>Hardlimit [cyrex2001]
-#ifdef HARDLIMIT
-#define MP_HARD_LIMIT			17000
-#endif //Hardlimit
-//<==Hardlimit [cyrex2001]
+//<== remove IRC [shadow2004]

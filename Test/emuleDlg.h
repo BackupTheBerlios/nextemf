@@ -27,7 +27,11 @@ namespace Kademlia {
 };
 
 class CChatWnd;
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 class CIrcWnd;
+#endif //IRC
+//<== remove IRC [shadow2004]
 class CKademliaWnd;
 class CKnownFileList; 
 class CMainFrameDropTarget;
@@ -51,7 +55,7 @@ class CMuleSystrayDlg;
 #define	EMULE_HOTMENU_ACCEL		'x'
 #define	EMULSKIN_BASEEXT		_T("eMuleSkin")
 
-class CemuleDlg : public CTrayDialog, public CLoggable
+class CemuleDlg : public CTrayDialog
 {
 	friend class CMuleToolbarCtrl;
 // Konstruktion
@@ -73,7 +77,7 @@ public:
 	void			Localize();
 
 	// Logging
-	void			AddLogText(bool addtostatusbar,const CString& txt, bool bDebug);
+	void			AddLogText(UINT uFlags, LPCTSTR pszText);
 	void			ResetLog();
 	void			ResetDebugLog();
 	CString			GetLastLogEntry();
@@ -101,15 +105,16 @@ public:
 	CChatWnd*		chatwnd;
 	CMuleStatusBarCtrl* statusbar;
 	CStatisticsDlg*  statisticswnd;
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	CIrcWnd*		ircwnd;
+#endif //IRC
+//<== remove IRC [shadow2004]
 	CTaskbarNotifier* m_wndTaskbarNotifier;
 	CMuleToolbarCtrl* toolbar;
 	CKademliaWnd*	kademliawnd;
 	CWnd*			activewnd;
 	uint8			status;
-	CFont			m_fontHyperText;
-	CFont			m_fontMarlett;
-	CFont			m_fontLog;
 
 protected:
 	HICON m_hIcon;
@@ -191,7 +196,6 @@ private:
 	HICON			sourceTrayIconLow;	// do not use those icons for anything else than the traybar!!!
 	int				m_iMsgIcon;
 	uint8			m_lasticoninfo;
-
 	uint32			lastuprate;
 	uint32			lastdownrate;
 	CImageList		imagelist;
@@ -201,6 +205,7 @@ private:
 	CMenu			m_SysMenuOptions;
 	CMenu			m_menuUploadCtrl;
 	CMenu			m_menuDownloadCtrl;
+	char			m_acVCDNSBuffer[MAXGETHOSTSTRUCT];
 
 	UINT_PTR m_hTimer;
 	static void CALLBACK StartupTimer(HWND hwnd, UINT uiMsg, UINT idEvent, DWORD dwTime);
@@ -218,9 +223,6 @@ private:
 	bool notifierenabled;					  //<<-- enkeyDEV(kei-kun) -Quick disable/enable notifier-
 	void ShowToolPopup(bool toolsonly=false);
 	void SetAllIcons();
-
-	char m_acVCDNSBuffer[MAXGETHOSTSTRUCT];
-
 };
 
 

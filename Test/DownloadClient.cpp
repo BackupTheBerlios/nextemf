@@ -39,6 +39,7 @@
 #include "Kademlia/Kademlia/Search.h"
 #include "SHAHashSet.h"
 #include "SharedFileList.h"
+#include "Log.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -217,11 +218,6 @@ bool CUpDownClient::AskForDownload()
 		theApp.downloadqueue->AddFailedUDPFileReasks();
 	}
 	m_bUDPPending = false;
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
-	m_dwNextTCPAskedTime = GetLastAskedTime() + GetJitteredFileReaskTime();
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
     SwapToAnotherFile(_T("A4AF check before tcp file reask. CUpDownClient::AskForDownload()"), true, false, false, NULL, true, true); // ZZ:DownloadManager
 	SetDownloadState(DS_CONNECTING);
 	return TryToConnect();
@@ -255,13 +251,7 @@ bool CUpDownClient::IsSourceRequestAllowed(CPartFile* partfile, bool sourceExcha
 	         //if client has the correct extended protocol
 	         ExtProtocolAvailable() && GetSourceExchangeVersion() > 1 &&
 	         //AND if we need more sources
-//==>Hardlimit [cyrex2001]
-#ifdef HARDLIMIT
-	         reqfile->GetMaxSourcesLimitSoft() > uSources &&
-#else //Hardlimit
 	         thePrefs.GetMaxSourcePerFileSoft() > uSources &&
-#endif //Hardlimit
-//<==Hardlimit [cyrex2001]
 	         //AND if...
 	         (
 	           //source is not complete and file is very rare
@@ -323,11 +313,10 @@ void CUpDownClient::SendFileRequest()
 				AddDebugLogLine(false, _T("SXSend: Client source request; %s, File=\"%s\""), DbgGetClientInfo(), reqfile->GetFileName());
         }
 		if (IsSupportingAICH()){
-			///*toremove*/ AddDebugLogLine(false, _T("Send OP_AICHFILEHASHREQ, %s"), DbgGetClientInfo());
+			if (thePrefs.GetDebugClientTCPLevel() > 0)
+				DebugSend("OP__MPAichFileHashReq", this, (char*)reqfile->GetFileHash());
 			dataFileReq.WriteUInt8(OP_AICHFILEHASHREQ);
 		}
-		/*else
-		AddDebugLogLine(false, _T("Did not Send OP_AICHFILEHASHREQ, %s"), DbgGetClientInfo());*/
 
 		if (thePrefs.GetDebugClientTCPLevel() > 0)
 			DebugSend("OP__MultiPacket", this, (char*)reqfile->GetFileHash());
@@ -366,12 +355,7 @@ void CUpDownClient::SendFileRequest()
 		    theStats.AddUpDataOverheadFileRequest(packet->size);
 		    socket->SendPacket(packet, true);
 		}
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
-    SetLastAskedTime();
-	m_dwNextTCPAskedTime = ::GetTickCount() + GetJitteredFileReaskTime();
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
+	
 		if( IsEmuleClient() )
 		{
 			SetRemoteQueueFull( true );
@@ -422,11 +406,6 @@ void CUpDownClient::SendStartupLoadReq()
 	socket->SendPacket(packet, true, true);
 	m_fQueueRankPending = 1;
 	m_fUnaskQueueRankRecv = 0;
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
-	m_dwNextTCPAskedTime = GetLastAskedTime() + 4 * GetJitteredFileReaskTime();
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 }
 
 void CUpDownClient::ProcessFileInfo(CSafeMemFile* data, CPartFile* file)
@@ -658,11 +637,6 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState){
 		{
 			case DS_CONNECTING:
 	            m_dwLastTriedToConnect = ::GetTickCount();
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
-				m_dwNextTCPAskedTime = ::GetTickCount() + GetJitteredFileReaskTime();
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 				break;
 			case DS_TOOMANYCONNSKAD:
 				//This client had already been set to DS_CONNECTING.
@@ -709,6 +683,9 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState){
 			ClearDownloadBlockRequests();
 				
 			m_nDownDatarate = 0;
+			m_AvarageDDR_list.RemoveAll();
+			m_nSumForAvgDownDataRate = 0;
+
 			if (nNewState == DS_NONE){
 				if (m_abyPartStatus)
 					delete[] m_abyPartStatus;
@@ -964,7 +941,7 @@ void CUpDownClient::ProcessBlockPacket(char *packet, uint32 size, bool packed)
 
 						if (nStartPos > cur_block->block->EndOffset || nEndPos > cur_block->block->EndOffset){
 							if (thePrefs.GetVerbose())
-								AddDebugLogLine(false, _T("PrcBlkPkt: ") + GetResString(IDS_ERR_CORRUPTCOMPRPKG),reqfile->GetFileName(),666);
+								DebugLogError(_T("PrcBlkPkt: ") + GetResString(IDS_ERR_CORRUPTCOMPRPKG),reqfile->GetFileName(),666);
 							reqfile->RemoveBlockFromList(cur_block->block->StartOffset, cur_block->block->EndOffset);
 							// There is no chance to recover from this error
 						}
@@ -990,7 +967,7 @@ void CUpDownClient::ProcessBlockPacket(char *packet, uint32 size, bool packed)
 							ASSERT(0);
 							strZipError.AppendFormat(_T("; Z_OK,lenUnzipped=%d"), lenUnzipped);
 						}
-						AddDebugLogLine(false, _T("PrcBlkPkt: ") + GetResString(IDS_ERR_CORRUPTCOMPRPKG) + strZipError, reqfile->GetFileName(), result);
+						DebugLogError(_T("PrcBlkPkt: ") + GetResString(IDS_ERR_CORRUPTCOMPRPKG) + strZipError, reqfile->GetFileName(), result);
 					}
 					reqfile->RemoveBlockFromList(cur_block->block->StartOffset, cur_block->block->EndOffset);
 
@@ -1157,7 +1134,7 @@ int CUpDownClient::unzip(Pending_Block_Struct* block, BYTE* zipped, uint32 lenZi
 				else if (err != Z_OK)
 					strZipError.Format(_T(" %d"), err);
 				TRACE_UNZIP("; Error: %s\n", strZipError);
-				AddDebugLogLine(false, _T("Unexpected zip error%s in file \"%s\""), strZipError, reqfile ? reqfile->GetFileName() : NULL);
+				DebugLogError(_T("Unexpected zip error%s in file \"%s\""), strZipError, reqfile ? reqfile->GetFileName() : NULL);
 			}
 	    }
     
@@ -1166,7 +1143,7 @@ int CUpDownClient::unzip(Pending_Block_Struct* block, BYTE* zipped, uint32 lenZi
   	}
   	catch (...){
 		if (thePrefs.GetVerbose())
-			AddDebugLogLine(false, _T("Unknown exception in %hs: file \"%s\""), __FUNCTION__, reqfile ? reqfile->GetFileName() : NULL);
+			DebugLogError(_T("Unknown exception in %hs: file \"%s\""), __FUNCTION__, reqfile ? reqfile->GetFileName() : NULL);
 		err = Z_DATA_ERROR;
 		ASSERT(0);
 	}
@@ -1252,7 +1229,7 @@ void CUpDownClient::UDPReaskFNF(){
 	m_bUDPPending = false;
 	if (GetDownloadState() != DS_DOWNLOADING){ // avoid premature deletion of 'this' client
 		if (thePrefs.GetVerbose())
-			AddDebugLogLine(DLP_LOW, false, _T("UDP ANSWER FNF : %s - %s"),DbgGetClientInfo(), DbgGetFileInfo(reqfile ? reqfile->GetFileHash() : NULL));
+			AddDebugLogLine(DLP_LOW, false, _T("UDP FNF-Answer: %s - %s"),DbgGetClientInfo(), DbgGetFileInfo(reqfile ? reqfile->GetFileHash() : NULL));
 		if (reqfile)
 			reqfile->m_DeadSourceList.AddDeadSource(this);
 		switch (GetDownloadState()) {
@@ -1273,7 +1250,7 @@ void CUpDownClient::UDPReaskFNF(){
 	else
 	{
 		if (thePrefs.GetVerbose())
-			AddDebugLogLine(false,_T("UDP ANSWER FNF : %s - did not remove client because of current download state"),GetUserName());
+			DebugLogWarning(_T("UDP FNF-Answer: %s - did not remove client because of current download state"),GetUserName());
 	}
 }
 
@@ -1285,16 +1262,7 @@ void CUpDownClient::UDPReaskForDownload()
 	
 	if( m_nTotalUDPPackets > 3 && ((float)(m_nFailedUDPPackets/m_nTotalUDPPackets) > .3))
 		return;
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
-	if((reqfile == NULL) || // No file to ping
-	   (m_abyPartStatus == NULL) || // File status unknown yet
-	   (GetTickCount() - m_dwLastUDPReaskTime < 30000)) // Every 30 seconds only
-		return;
-	// Time stamp
-	m_dwLastUDPReaskTime = GetTickCount();
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
+
 	//the line "m_bUDPPending = true;" use to be here
 //==> remove PROXY [shadow2004]
 #if defined(PROXY)
@@ -1429,13 +1397,7 @@ const bool CUpDownClient::SwapToRightFile(CPartFile* SwapTo, CPartFile* cur_file
 
                 DWORD tempTick = ::GetTickCount();
                 bool rightFileHasHigherPrio = CPartFile::RightFileHasHigherPrio(SwapTo, cur_file);
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
-                uint32 allNnpReaskTime = GetJitteredFileReaskTime()*2*(m_OtherNoNeeded_list.GetSize() + (GetDownloadState() == DS_NONEEDEDPARTS)?1:0); // wait two reask interval for each nnp file before reasking an nnp file
-#else //Reask sourcen after ip change
                 uint32 allNnpReaskTime = FILEREASKTIME*2*(m_OtherNoNeeded_list.GetSize() + (GetDownloadState() == DS_NONEEDEDPARTS)?1:0); // wait two reask interval for each nnp file before reasking an nnp file
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
                 if(!SwapToIsNNPFile && (!curFileisNNPFile || GetLastAskedTime(cur_file) == 0 || tempTick-GetLastAskedTime(cur_file) > allNnpReaskTime) && rightFileHasHigherPrio ||
                    SwapToIsNNPFile && curFileisNNPFile &&
                    (
@@ -1856,21 +1818,9 @@ uint32 CUpDownClient::GetTimeUntilReask(const CPartFile* file, const bool allowS
         } else if(useGivenNNP && givenNNP ||
                   file == reqfile && GetDownloadState() == DS_NONEEDEDPARTS ||
                   file != reqfile && IsInNoNeededList(file)) {
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
-            reaskTime = GetJitteredFileReaskTime()*2;
-#else //Reask sourcen after ip change
             reaskTime = FILEREASKTIME*2;
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
         } else {
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
-            reaskTime = GetJitteredFileReaskTime();
-#else //Reask sourcen after ip change
             reaskTime = FILEREASKTIME;
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
         }
 
         if(tick-lastAskedTimeTick < reaskTime) {
@@ -1890,13 +1840,8 @@ uint32 CUpDownClient::GetTimeUntilReask(const CPartFile* file) const {
 uint32 CUpDownClient::GetTimeUntilReask() const {
     return GetTimeUntilReask(reqfile);
 }
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
-bool CUpDownClient::IsValidSource2() const
-#else //Reask sourcen after ip change
+
 bool CUpDownClient::IsValidSource() const
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 {
 	bool valid = false;
 	switch(GetDownloadState())

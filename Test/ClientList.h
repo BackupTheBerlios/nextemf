@@ -15,7 +15,6 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
-#include "Loggable.h"
 #include "DeadSourceList.h"
 
 class CClientReqSocket;
@@ -47,7 +46,7 @@ public:
 };
 
 // ----------------------CClientList Class---------------
-class CClientList: public CLoggable
+class CClientList
 {
 	friend class CClientListCtrl;
 
@@ -121,10 +120,4 @@ private:
 	CUpDownClientPtrList KadList;
 	CCriticalSection m_RequestTCPLock;
 	CUpDownClient* m_pBuddy;
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC //Reask sourcen after ip change
-public:
-	void TrigReaskForDownload(bool immediate);
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
 };

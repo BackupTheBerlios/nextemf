@@ -16,7 +16,6 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
 #include "MapKey.h"
-#include "Loggable.h"
 #pragma warning(disable:4516) // access-declarations are deprecated; member using-declarations provide a better alternative
 #include <crypto51/rsa.h>
 #pragma warning(default:4516)
@@ -58,7 +57,7 @@ enum EIdentState{
 	IS_IDBADGUY,
 };
 
-class CClientCredits: public CLoggable
+class CClientCredits
 {
 	friend class CClientCreditsList;
 public:
@@ -98,7 +97,7 @@ private:
 	uint32			m_dwWaitTimeIP;			   // client IP assigned to the waittime
 };
 
-class CClientCreditsList: public CLoggable
+class CClientCreditsList
 {
 public:
 	CClientCreditsList();

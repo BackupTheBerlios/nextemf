@@ -37,6 +37,7 @@
 #include "DownloadQueue.h"
 #include "emuledlg.h"
 #include "TransferWnd.h"
+#include "Log.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -115,10 +116,22 @@ void CUpDownClient::DrawUpStatusBar(CDC* dc, RECT* rect, bool onlygreyrect, bool
     }
 } 
 
-void CUpDownClient::SetUploadState(EUploadState news){
-	// don't add any final cleanups for US_NONE here
-	m_nUploadState = news;
-	theApp.emuledlg->transferwnd->clientlistctrl.RefreshClient(this);
+void CUpDownClient::SetUploadState(EUploadState eNewState)
+{
+	if (eNewState != m_nUploadState)
+	{
+		if (m_nUploadState == US_UPLOADING)
+		{
+			// Reset upload data rate computation
+			m_nUpDatarate = 0;
+			m_nSumForAvgUpDataRate = 0;
+			m_AvarageUDR_list.RemoveAll();
+		}
+
+		// don't add any final cleanups for US_NONE here
+		m_nUploadState = eNewState;
+		theApp.emuledlg->transferwnd->clientlistctrl.RefreshClient(this);
+	}
 }
 
 /**
@@ -357,10 +370,9 @@ void CUpDownClient::CreateNextBlockPackage(){
 	catch(CString error)
 	{
 		if (thePrefs.GetVerbose())
-			AddDebugLogLine(false,GetResString(IDS_ERR_CLIENTERRORED),GetUserName(),error.GetBuffer());
+			DebugLogWarning(GetResString(IDS_ERR_CLIENTERRORED), GetUserName(), error);
 		theApp.uploadqueue->RemoveFromUploadQueue(this, _T("Client error: ") + error);
-		if (filedata)
-			delete[] filedata;
+		delete[] filedata;
 		return;
 	}
 	catch(CFileException* e)
@@ -368,18 +380,12 @@ void CUpDownClient::CreateNextBlockPackage(){
 		TCHAR szError[MAX_CFEXP_ERRORMSG];
 		e->GetErrorMessage(szError, ARRSIZE(szError));
 		if (thePrefs.GetVerbose())
-		{
-			AddDebugLogLine(false,_T("Failed to create upload package for %s - %s"),GetUserName(),szError);
-		}
+			DebugLogWarning(_T("Failed to create upload package for %s - %s"), GetUserName(), szError);
 		theApp.uploadqueue->RemoveFromUploadQueue(this, ((CString)_T("Failed to create upload package.")) + szError);
-		if (filedata)
-			delete[] filedata;
+		delete[] filedata;
 		e->Delete();
 		return;
 	}
-	//if (thePrefs.GetVerbose())
-	//	AddDebugLogLine(false,"Debug: Packet done. Size: %i",blockpack->GetLength());
-	//return true;
 }
 
 void CUpDownClient::ProcessExtendedInfo(CSafeMemFile* data, CKnownFile* tempreqfile)
@@ -455,6 +461,12 @@ void CUpDownClient::CreateStandartPackets(byte* data,uint32 togo, Requested_Bloc
 		uint32 endpos = (currentblock->EndOffset - togo);
 		if (IsUploadingToPeerCache())
 		{
+			if (m_pPCUpSocket == NULL){
+				ASSERT(0);
+				CString strError;
+				strError.Format(_T("Failed to upload to PeerCache - missing socket; %s"), DbgGetClientInfo());
+				throw strError;
+			}
 			USES_CONVERSION;
 			CSafeMemFile dataHttp(10240);
 			if (m_iHttpSendState == 0)
@@ -681,18 +693,18 @@ uint32 CUpDownClient::SendBlockData(){
         // keep sum of all values in list up to date
         TransferredData newitem = {sentBytesCompleteFile + sentBytesPartFile, curTick};
         m_AvarageUDR_list.AddTail(newitem);
-        sumavgUDR += sentBytesCompleteFile + sentBytesPartFile;
+        m_nSumForAvgUpDataRate += sentBytesCompleteFile + sentBytesPartFile;
     }
 
     // remove to old values in list
     while (m_AvarageUDR_list.GetCount() > 0 && (curTick - m_AvarageUDR_list.GetHead().timestamp) > 10*1000) {
         // keep sum of all values in list up to date
-        sumavgUDR -= m_AvarageUDR_list.RemoveHead().datalen;
+        m_nSumForAvgUpDataRate -= m_AvarageUDR_list.RemoveHead().datalen;
     }
 
     // Calculate average speed for this slot
     if(m_AvarageUDR_list.GetCount() > 0 && (curTick - m_AvarageUDR_list.GetHead().timestamp) > 0 && GetUpStartTimeDelay() > 2*1000) {
-        m_nUpDatarate = ((ULONGLONG)sumavgUDR*1000) / (curTick-m_AvarageUDR_list.GetHead().timestamp);
+        m_nUpDatarate = ((ULONGLONG)m_nSumForAvgUpDataRate*1000) / (curTick-m_AvarageUDR_list.GetHead().timestamp);
     } else {
         // not enough values to calculate trustworthy speed. Use -1 to tell this
         m_nUpDatarate = 0; //-1;

@@ -14,7 +14,6 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
-#include "Loggable.h"
 
 class CSafeMemFile;
 class CSearchFile;
@@ -57,7 +56,7 @@ private:
 };
 
 
-class CDownloadQueue: public CLoggable
+class CDownloadQueue
 {
 	friend class CAddFileThread;
 	friend class CServerSocket;
@@ -105,7 +104,7 @@ public:
 
 	// statistics
 	typedef struct{
-		int	a[22];
+		int	a[23];
 	} SDownloadStats;
 	void	GetDownloadStats(SDownloadStats& results);
 	void	GetDownloadStats(int results[],uint64& pui64TotFileSize,uint64& pui64TotBytesLeftToTransfer,uint64& pui64TotNeededSpace);
@@ -146,13 +145,6 @@ public:
 	void	OnConnectionState(bool bConnected);
 
 	void	AddToResolved( CPartFile* pFile, SUnresolvedHostname* pUH );
-
-//==>Hardlimit [cyrex2001]
-#ifdef HARDLIMIT
-	void InitTempVariables(CPartFile* file);
-	void UpdateFileSettings(CPartFile* file);
-#endif //Hardlimit
-//<==Hardlimit [cyrex2001]
 
 	CServer* cur_udpserver;
 
@@ -199,10 +191,4 @@ private:
 	CSourceHostnameResolveWnd m_srcwnd;
 
     DWORD       m_dwLastA4AFtime; // ZZ:DownloadManager
-//==>Quickstart [cyrex2001]
-#ifdef QUICKSTART //Quickstart
-	int quickflag;
-	int quickflags;
-#endif //Quickstart
-//<==Quickstart [cyrex2001]
 };

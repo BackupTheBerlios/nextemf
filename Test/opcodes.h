@@ -81,11 +81,6 @@
 // MOD Note: end
 
 #define CONFIGFOLDER			_T("config\\")
-//==>Hardlimit [cyrex2001]
-#ifdef HARDLIMIT
-#define EMFFOLDER			_T("Extra Lists\\")
-#endif //Hardlimit
-//<==Hardlimit [cyrex2001]
 #define MAXCONPER5SEC			20	
 #define MAXCON5WIN9X			10
 #define	UPLOAD_CHECK_CLIENT_DR	2048
@@ -215,7 +210,7 @@
 #define	MAX_CLIENT_MSG_LEN		450		// using 200 is just too short
 //==> remove IRC [shadow2004]
 #if defined(IRC)
-  #define	MAX_IRC_MSG_LEN			450		// 450 = same as in mIRC
+#define	MAX_IRC_MSG_LEN			450		// 450 = same as in mIRC
 #endif //IRC
 //<== remove IRC [shadow2004]
 

@@ -319,6 +319,13 @@ CString MakeStringEscaped(CString in)
 	return in;
 }
 
+CString RemoveAmbersand(const CString& rstr)
+{
+	CString str(rstr);
+	str.Remove(_T('&'));
+	return str;
+}
+
 bool HaveEd2kRegAccess()
 {
 	CRegKey regkey;
@@ -516,6 +523,24 @@ WORD DetectWinVersion()
 	}
 	
 	return _WINVER_95_;		// there should'nt be anything lower than this
+}
+
+int IsRunningXPSP2(){
+	OSVERSIONINFOEX osvi;
+	ZeroMemory(&osvi, sizeof(OSVERSIONINFOEX));
+	osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+	if(!GetVersionEx((OSVERSIONINFO*)&osvi))
+	{
+		osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+		if(!GetVersionEx((OSVERSIONINFO*)&osvi)) 
+			return -1;
+	}
+
+	if (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT && osvi.dwMajorVersion == 5 && osvi.dwMinorVersion == 1){
+		if (osvi.wServicePackMajor >= 2)
+			return 1;
+	}
+	return 0;
 }
 
 uint64 GetFreeDiskSpaceX(LPCTSTR pDirectory)
@@ -815,7 +840,7 @@ int CWebServices::ReadAllServices()
 	return m_aServices.GetCount();
 }
 
-int CWebServices::GetAllMenuEntries(CMenu& rMenu, DWORD dwFlags)
+int CWebServices::GetAllMenuEntries(CTitleMenu* pMenu, DWORD dwFlags)
 {
 	if (m_aServices.GetCount() == 0)
 	{
@@ -836,7 +861,7 @@ int CWebServices::GetAllMenuEntries(CMenu& rMenu, DWORD dwFlags)
 			continue;
 		if ((dwFlags & WEBSVC_FILE_URLS) && !rSvc.bFileMacros)
 			continue;
-		if (rMenu.AppendMenu(MF_STRING, MP_WEBURL + i, rSvc.strMenuLabel))
+		if (pMenu->AppendMenu(MF_STRING, MP_WEBURL + i, rSvc.strMenuLabel, _T("WEB")))
 			iMenuEntries++;
 	}
 	return iMenuEntries;
@@ -1027,6 +1052,15 @@ bool strmd4(const CString& rstr, uchar* hash)
 		hash[i] = b;
 	}
 	return true;
+}
+
+void StripTrailingCollon(CString& rstr)
+{
+	if (!rstr.IsEmpty())
+	{
+		if (rstr[rstr.GetLength() - 1] == _T(':'))
+			rstr = rstr.Left(rstr.GetLength() - 1);
+	}
 }
 
 CString CleanupFilename(CString filename)
@@ -1519,9 +1553,9 @@ CString GetErrorMessage(DWORD dwError, DWORD dwFlags)
 
 int GetAppImageListColorFlag()
 {
-	HDC hdcScreen = ::GetDC(NULL);
+	HDC hdcScreen = ::GetDC(HWND_DESKTOP);
 	int iColorBits = GetDeviceCaps(hdcScreen, BITSPIXEL) * GetDeviceCaps(hdcScreen, PLANES);
-	::ReleaseDC(NULL, hdcScreen);
+	::ReleaseDC(HWND_DESKTOP, hdcScreen);
 	int iIlcFlag;
 	if (iColorBits >= 32)
 		iIlcFlag = ILC_COLOR32;

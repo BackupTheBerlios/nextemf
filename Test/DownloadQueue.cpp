@@ -38,6 +38,7 @@
 #include "TransferWnd.h"
 #include "TaskbarNotifier.h"
 #include "MenuCmds.h"
+#include "Log.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -45,13 +46,6 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
-//==>Quickstart [cyrex2001]
-#ifdef QUICKSTART //Quickstart
-uint32 MaxconnPerFiveBack;
-uint32 MaxconBack;
-DWORD quicktime;
-#endif //Quickstart
-//<==Quickstart [cyrex2001]
 
 CDownloadQueue::CDownloadQueue(CSharedFileList* in_sharedfilelist)
 {
@@ -73,13 +67,6 @@ CDownloadQueue::CDownloadQueue(CSharedFileList* in_sharedfilelist)
 	m_cRequestsSentToServer = 0;
 
     m_dwLastA4AFtime = 0; // ZZ:DownloadManager
-
-//==>Quickstart [cyrex2001]
-#ifdef QUICKSTART //Quickstart
-	quickflag = 0;
-	quickflags = 0;
-#endif //Quickstart
-//<==Quickstart [cyrex2001]
 }
 
 void CDownloadQueue::AddPartFilesToShare()
@@ -323,7 +310,7 @@ void CDownloadQueue::AddDownload(CPartFile* newfile,bool paused) {
 	SortByPriority();
 	CheckDiskspace();	// SLUGFILLER: checkDiskspace
 	theApp.emuledlg->transferwnd->downloadlistctrl.AddFile(newfile);
-	AddLogLine(true,GetResString(IDS_NEWDOWNLOAD),newfile->GetFileName());
+	AddLogLine(true, GetResString(IDS_NEWDOWNLOAD), newfile->GetFileName());
 	CString msgTemp;
 	msgTemp.Format(GetResString(IDS_NEWDOWNLOAD) + _T("\n"), newfile->GetFileName());
 	theApp.emuledlg->ShowNotifier(msgTemp, TBN_DLOADADDED);
@@ -336,15 +323,15 @@ bool CDownloadQueue::IsFileExisting(const uchar* fileid, bool bLogWarnings)
 	if (file){
 		if (bLogWarnings){
 			if (file->IsPartFile())
-				AddLogLine(true, GetResString(IDS_ERR_ALREADY_DOWNLOADING), file->GetFileName());
+				LogWarning(LOG_STATUSBAR, GetResString(IDS_ERR_ALREADY_DOWNLOADING), file->GetFileName());
 			else
-				AddLogLine(true, GetResString(IDS_ERR_ALREADY_DOWNLOADED), file->GetFileName());
+				LogWarning(LOG_STATUSBAR, GetResString(IDS_ERR_ALREADY_DOWNLOADED), file->GetFileName());
 		}
 		return true;
 	}
 	else if ((file = GetFileByID(fileid)) != NULL){
 		if (bLogWarnings)
-			AddLogLine(true, GetResString(IDS_ERR_ALREADY_DOWNLOADING), file->GetFileName());
+			LogWarning(LOG_STATUSBAR, GetResString(IDS_ERR_ALREADY_DOWNLOADING), file->GetFileName());
 		return true;
 	}
 	return false;
@@ -354,48 +341,9 @@ void CDownloadQueue::Process(){
 	
 	ProcessLocalRequests(); // send src requests to local server
 
-//==>Quickstart [cyrex2001]
-#ifdef QUICKSTART //Quickstart
-	static DWORD QuickStartEndTime=0;
-	if(thePrefs.GetQuickStart() && theApp.serverconnect->IsConnected() && quickflag == 0)
-	{
-		if(quickflags == 0)
-		{
-				quicktime = ::GetTickCount();
-				MaxconnPerFiveBack = thePrefs.GetMaxConperFive();
-				MaxconBack = thePrefs.GetMaxCon();
-			if (MaxconnPerFiveBack < thePrefs.GetQuickStartMaxConnPerFive())
-				thePrefs.SetMaxConsPerFive(thePrefs.GetQuickStartMaxConnPerFive());
-			if (MaxconBack < thePrefs.GetQuickStartMaxConn())
-				thePrefs.SetMaxCon(thePrefs.GetQuickStartMaxConn());
-				quickflags = 1;
-				AddLogLine(true, _T("***** Quick Start actived for %u min. *****"), thePrefs.QuickStartMaxTime);
-				AddLogLine(false, _T("***** Max.Con.: %i *****"), thePrefs.GetMaxCon());
-				AddLogLine(false, _T("***** Max.Con./5sec: %i *****"), thePrefs.GetMaxConperFive());
-
-				DWORD QuickStartTime = MIN2MS(thePrefs.QuickStartMaxTime);
-                QuickStartEndTime = quicktime + QuickStartTime;
-			for(POSITION pos = theApp.downloadqueue->filelist.GetHeadPosition(); pos != NULL;) 
-			{ 
-					CPartFile* cur_file = theApp.downloadqueue->filelist.GetNext(pos); 
-					}
-		}
-		if (QuickStartEndTime <= ::GetTickCount())
-			{
-				thePrefs.SetMaxConsPerFive(MaxconnPerFiveBack);
-				thePrefs.SetMaxCon(MaxconBack);
-				quickflag = 1;
-				AddLogLine(true, _T("***** Quick Start ended *****"));
-				AddLogLine(false, _T("***** Max.Con.: %i *****"), thePrefs.GetMaxCon());
-				AddLogLine(false, _T("***** Max.Con./5sec: %i *****"), thePrefs.GetMaxConperFive());
-			}
-	}
-#endif //Quickstart
-//<==Quickstart [cyrex2001]
-
 	uint32 downspeed = 0;
     uint64 maxDownload = thePrefs.GetMaxDownloadInBytesPerSec(true);
-	if (maxDownload != UNLIMITED && datarate > 1500){
+	if (maxDownload != UNLIMITED*1024 && datarate > 1500){
 		downspeed = (maxDownload*100)/(datarate+1);
 		if (downspeed < 50)
 			downspeed = 50;
@@ -893,13 +841,8 @@ bool CDownloadQueue::SendNextUDPPacket()
 				}
 			}
 		}
-//==>Hardlimit [cyrex2001]
-#ifdef HARDLIMIT
-		if (!bSentPacket && nextfile && nextfile->GetSourceCount() < nextfile->GetMaxSourcesUDPLimit())//cyrex2001 =>hardlimit
-#else //Hardlimit
+
 		if (!bSentPacket && nextfile && nextfile->GetSourceCount() < thePrefs.GetMaxSourcePerFileUDP())
-#endif //Hardlimit
-//<==Hardlimit [cyrex2001]
 		{
 			dataGlobGetSources.WriteHash16(nextfile->GetFileHash());
 			iFiles++;
@@ -1133,6 +1076,7 @@ void CDownloadQueue::GetDownloadStats(SDownloadStats& results)
 		results.a[19] += cur_file->net_stats[0];
 		results.a[20] += cur_file->net_stats[1];
 		results.a[21] += cur_file->net_stats[2];
+		results.a[22] += cur_file->m_DeadSourceList.GetDeadSourcesCount();
 	}
 }
 
@@ -1702,7 +1646,7 @@ void CDownloadQueue::ExportPartMetFilesOverview() const
 			strError += _T(" - ");
 			strError += szError;
 		}
-		AddLogLine(false, _T("Failed to create part.met file list%s"), strError);
+		LogError(_T("Failed to create part.met file list%s"), strError);
 		return;
 	}
 
@@ -1756,7 +1700,7 @@ void CDownloadQueue::ExportPartMetFilesOverview() const
 			strError += _T(" - ");
 			strError += szError;
 		}
-		AddLogLine(false, _T("Failed to write part.met file list%s"), strError);
+		LogError(_T("Failed to write part.met file list%s"), strError);
 		e->Delete();
 		file.Abort();
 		(void)_tremove(file.GetFilePath());
@@ -1772,20 +1716,3 @@ void CDownloadQueue::OnConnectionState(bool bConnected)
 			pPartFile->SetActive(bConnected);
 	}
 }
-
-//==>Hardlimit [cyrex2001]
-#ifdef HARDLIMIT
-void CDownloadQueue::InitTempVariables(CPartFile* file)
-{
-	thePrefs.SetTakeOverFileSettings(false);
-
-	thePrefs.SetMaxSourcesPerFileTemp(file->GetMaxSourcesPerFile());
-}
-
-void CDownloadQueue::UpdateFileSettings(CPartFile* file)
-{
-	if(thePrefs.GetMaxSourcesPerFileTakeOver())
-		file->SetMaxSourcesPerFile(thePrefs.GetMaxSourcesPerFileTemp());
-}
-#endif //Hardlimit
-//<==Hardlimit [cyrex2001]
