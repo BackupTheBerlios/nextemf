@@ -144,6 +144,7 @@ private:
 #ifdef RSAIC_SIVKA //Reask sourcen after ip change
 public:
 	void TrigReaskForDownload();
+	uint32 m_dwLastAskedTime;
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
 //==>List Of Dont Ask This IPs [cyrex2001]

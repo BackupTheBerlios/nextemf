@@ -209,13 +209,63 @@ bool CUpDownClient::Compare(const CUpDownClient* tocomp, bool bIgnoreUserhash) c
 // true = client was not deleted!
 bool CUpDownClient::AskForDownload()
 {
+//==>Xman askfordownload priority [cyrex2001]
+#ifdef ASK_FOR_PRIO
+  //Xman askfordownload priority
+  if(!(socket && socket->IsConnected())) 
+  {
+	if(m_downloadpriority>theApp.downloadqueue->GetMaxDownPrioNew())
+		theApp.downloadqueue->SetMaxDownPrioNew(m_downloadpriority);
+	
+	if(theApp.downloadqueue->GetTooManyConnections() > (thePrefs.GetMaxConperFive()+20))
+	{
+		m_downloadpriority=1;
+		if(GetRemoteQueueRank()!=0)
+		{
+			if(GetRemoteQueueRank()<120)
+				m_downloadpriority++;
+			if(GetRemoteQueueRank()<=25)
+				m_downloadpriority++;
+		}
+		if(GetUploadState()==US_ONUPLOADQUEUE)
+			m_downloadpriority++;
+		if(GetLastAskedTime()!=0) //never asked before
+		{
+			if(::GetTickCount() - GetLastAskedTime() > (1000 * 60 * 40)) //40 min
+				m_downloadpriority++;
+			if(::GetTickCount() - GetLastAskedTime() > (1000 * 60 * 50)) //50 min
+				m_downloadpriority++;
+		}
+		m_downloadpriority-=m_cFailed;
+		if(m_downloadpriority<0) m_downloadpriority=0;
+
+		if(m_downloadpriority<theApp.downloadqueue->GetMaxDownPrio())
+		{
+			//we don't allow, first take the clients with higher prio
+			if (GetDownloadState() != DS_TOOMANYCONNS)
+				SetDownloadState(DS_TOOMANYCONNS);
+			return true;
+		}
+	}
+	if (theApp.listensocket->TooManySockets() ){
+		if (GetDownloadState() != DS_TOOMANYCONNS)
+			SetDownloadState(DS_TOOMANYCONNS);
+		return true;
+	}
+
+  }
+  //finaly we allow to connect the highest prios
+  m_downloadpriority=1;
+  //Xman end
+#else
 	if (theApp.listensocket->TooManySockets() && !(socket && socket->IsConnected()) )
 	{
 		if (GetDownloadState() != DS_TOOMANYCONNS)
 			SetDownloadState(DS_TOOMANYCONNS);
 		return true;
 	}
-
+#endif //Xman askfordownload priority
+//<==Xman askfordownload priority [cyrex2001]
 	if (m_bUDPPending)
 	{
 		m_nFailedUDPPackets++;

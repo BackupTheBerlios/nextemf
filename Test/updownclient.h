@@ -427,13 +427,13 @@ public:
 	void			UDPReaskForDownload();
 	bool			IsSourceRequestAllowed() const;
     bool            IsSourceRequestAllowed(CPartFile* partfile, bool sourceExchangeCheck = false) const; // ZZ:DownloadManager
-//==>//Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_SIVKA //Reask sourcen after ip change
+//==>Drop [cyrex2001]
+#ifdef DROP
 	bool			IsValidSource2() const;
-#else //Reask sourcen after ip change
+#else
 	bool			IsValidSource() const;
-#endif //Reask sourcen after ip change
-//<==//Reask sourcen after ip change [cyrex2001]
+#endif //Drop 
+//<==Drop [cyrex2001]
 	ESourceFrom		GetSourceFrom() const							{ return (ESourceFrom)m_nSourceFrom; }
 	void			SetSourceFrom(ESourceFrom val)					{ m_nSourceFrom = val; }
 
@@ -657,12 +657,15 @@ protected:
 	bool	m_bIsML;
 	//--group to aligned int32
 //==>Anti-Leecher [cyrex2001]
-#ifdef ANTI_LEECHER
-	//nope
-#else //Anti-Leecher
+#ifndef ANTI_LEECHER
 	bool	m_bGPLEvildoer;
 #endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
+//==>Xman askfordownload priority [cyrex2001]
+#ifdef ASK_FOR_PRIO
+	uint8	m_cFailed;
+#endif //Xman askfordownload priority
+//<==Xman askfordownload priority [cyrex2001]
 	bool	m_bHelloAnswerPending;
 	uint8	m_byInfopacketsReceived;	// have we received the edonkeyprot and emuleprot packet already (see InfoPacketsReceived() )
 	uint8	m_bySupportSecIdent;
@@ -846,15 +849,21 @@ protected:
 //==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_SIVKA
 protected:
-	uint32		m_dwLastAskedTime;
+
 public:
-	void SetLastAskedTime(DWORD in) { if(m_dwLastAskedTime>in) m_dwLastAskedTime-=in; else m_dwLastAskedTime=0; }
+	uint32		m_dwLastAskedTime;
+	void			SetLastAskedTime(uint32 in)			{m_fileReaskTimes.SetAt(reqfile, in);}
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
+//==>Drop [cyrex2001]
+#ifdef DROP
+public:
 	bool IsValidSource() const {return m_bValidSource;};
 	void SetValidSource(bool in){m_bValidSource = in;};
 private:
 	bool m_bValidSource;
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
+#endif //Drop 
+//<==Drop [cyrex2001]
 //==>AntiNickThief [shadow2004]
 public:
 	bool        IsNickThief()    {return m_bNickThief;} 
@@ -883,6 +892,30 @@ public:
 	uint32 m_transferedthissession;
 #endif //Filter failed downloads
 //<==Xman filter clients with failed downloads [cyrex2001]
+//==>Xman askfordownload priority [cyrex2001]
+#ifdef ASK_FOR_PRIO
+	//Xman askfordownload priority
+		sint8 m_downloadpriority;
+#endif //Xman askfordownload priority
+//<==Xman askfordownload priority [cyrex2001]
+
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+public:
+	uint32 GetJitteredFileReaskTime() const {return m_jitteredFileReaskTime;} // range 27..31 min 
+
+private:
+	uint32 m_jitteredFileReaskTime;
+public:
+	uint32 GetNextTCPAskedTime() const {return m_dwNextTCPAskedTime;}
+	void   SetNextTCPAskedTime(uint32 time) {m_dwNextTCPAskedTime = time;}
+   // uint32 GetLastTCPAskedTime(CPartFile* pFile) {if (!pFile) return 0; return m_partStatusMap[pFile].dwStartUploadReqTime;}
+private:
+	uint32 m_dwLastUDPReaskTime;  // Last attempt to refresh the download session with UDP
+	uint32 m_dwNextTCPAskedTime;  // Time of the next refresh for the download session with TCP
+// Maella end
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 };
 //#pragma pack()
 //==>Anti-Leecher [cyrex2001]

@@ -2202,7 +2202,8 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 #endif //List Of Dont Ask This IPs
 //<==List Of Dont Ask This IPs [cyrex2001]
 
-		if( thePrefs.GetMaxSourcePerFileUDP() > GetSourceCount()){
+		if( thePrefs.GetMaxSourcePerFileUDP() > GetSourceCount())
+			{
 			if (theApp.downloadqueue->DoKademliaFileRequest() && (Kademlia::CKademlia::getTotalFile() < KADEMLIATOTALFILE) && (!lastsearchtimeKad || (dwCurTick - lastsearchtimeKad) > KADEMLIAREASKTIME) &&  Kademlia::CKademlia::isConnected() && theApp.IsConnected() && !stopped){ //Once we can handle lowID users in Kad, we remove the second IsConnected
 				//Kademlia
 				theApp.downloadqueue->SetLastKademliaFileRequest();
@@ -2221,7 +2222,8 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 				}
 			}
 		}
-		else{
+		else
+			{
 			if(GetKadFileSearchID())
 			{
 				Kademlia::CSearchManager::stopSearch(GetKadFileSearchID(), true);
@@ -2238,7 +2240,8 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 		}
 
 		count++;
-		if (count == 3){
+		if (count == 3)
+			{
 			count = 0;
 			UpdateAutoDownPriority();
 			UpdateDisplayedInfo();

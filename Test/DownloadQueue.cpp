@@ -39,7 +39,11 @@
 #include "TaskbarNotifier.h"
 #include "MenuCmds.h"
 #include "Log.h"
-
+//==>Xman askfordownload priority [cyrex2001]
+#ifdef ASK_FOR_PRIO
+#include "ListenSocket.h"
+#endif //Xman askfordownload priority
+//<==Xman askfordownload priority [cyrex2001]
 #ifdef _DEBUG
 #undef THIS_FILE
 static char THIS_FILE[]=__FILE__;
@@ -87,6 +91,15 @@ CDownloadQueue::CDownloadQueue(CSharedFileList* in_sharedfilelist)
 	DownloadSourcesCounterTemp = 0;
 #endif //List Of Dont Ask This IPs
 //<==List Of Dont Ask This IPs [cyrex2001]
+//==>Xman askfordownload priority [cyrex2001]
+#ifdef ASK_FOR_PRIO
+	//Xman askfordownload priority
+	m_toomanytimestamp=0;
+	m_maxdownprio=0;
+	m_maxdownprionew=0;
+	//Xman end
+#endif //Xman askfordownload priority
+//<==Xman askfordownload priority [cyrex2001]
 }
 
 void CDownloadQueue::AddPartFilesToShare()
@@ -426,7 +439,15 @@ void CDownloadQueue::Process(){
 //<==List Of Dont Ask This IPs [cyrex2001]
 	uint32 datarateX=0;
 	udcounter++;
-
+//==>Xman askfordownload priority [cyrex2001]
+#ifdef ASK_FOR_PRIO
+		if(udcounter == 0)
+		{
+			m_maxdownprio=m_maxdownprionew;
+			m_maxdownprionew=0;
+		}
+#endif //Xman askfordownload priority
+//<==Xman askfordownload priority [cyrex2001]
 	//filelist is already sorted by prio, therefore I removed all the extra loops..
 	for (POSITION pos = filelist.GetHeadPosition();pos != 0;){
 		CPartFile* cur_file = filelist.GetNext(pos);
@@ -444,7 +465,14 @@ void CDownloadQueue::Process(){
 			cur_file->StopPausedFile();
 		}
 	}
-
+//==>Xman askfordownload priority [cyrex2001]
+#ifdef ASK_FOR_PRIO
+		//Xman askfordownload priority
+		if(udcounter == 0 && !(theApp.listensocket->TooManySockets()) && m_maxdownprionew>0)
+			m_maxdownprionew--;
+		//Xman end
+#endif //Xman askfordownload priority
+//<==Xman askfordownload priority [cyrex2001]
 //==>List Of Dont Ask This IPs [cyrex2001]
 #ifdef DROP
 	theApp.emuledlg->transferwnd->downloadlistctrl.ValidSourcesCounter = ValidSourcesCounterTemp;
@@ -1173,7 +1201,28 @@ void CDownloadQueue::CheckDiskspace(bool bNotEnoughSpaceLeft)
 	}
 }
 // SLUGFILLER: checkDiskspace
+//==>Xman askfordownload priority [cyrex2001]
+#ifdef ASK_FOR_PRIO
+//Xman askfordownload priority
+int CDownloadQueue::GetTooManyConnections()
+{
+	//only every 5 seconds allowed
+	if(m_toomanytimestamp==0 || (::GetTickCount()-m_toomanytimestamp>5000))
+	{
+		m_toomanytimestamp=::GetTickCount();
+		m_toomanyconnections=0;
+		for (POSITION pos =theApp.downloadqueue->filelist.GetHeadPosition();pos != 0;theApp.downloadqueue->filelist.GetNext(pos))
+		{
+			CPartFile* cur_file = filelist.GetAt(pos);
+			m_toomanyconnections += cur_file->GetSrcStatisticsValue(DS_TOOMANYCONNS);
+		}
 
+	}
+
+	return m_toomanyconnections;
+}
+#endif //Xman askfordownload priority
+//<==Xman askfordownload priority [cyrex2001]
 void CDownloadQueue::GetDownloadStats(SDownloadStats& results)
 {
 //==>optimizer added [shadow2004]

@@ -971,14 +971,32 @@ bool CClientList::DontAskThisIP(uint32 dwIP){
 
 //==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_SIVKA
-void CClientList::TrigReaskForDownload(){
+void CClientList::TrigReaskForDownload()
+	{
 	const DWORD dwCurTick = ::GetTickCount();
-	for(POSITION pos = list.GetHeadPosition(); pos;){
+	for(POSITION pos = list.GetHeadPosition(); pos;)
+		{
     CUpDownClient* cur_client = list.GetNext(pos); 
 		if( cur_client->GetDownloadState() == DS_NONEEDEDPARTS )
-			cur_client->SetLastAskedTime(3000000);
+			{
+			m_dwLastAskedTime = MIN2MS(50);
+			cur_client->SetLastAskedTime(m_dwLastAskedTime);
+				//AddLogLine(false,_T("Letzte Nachfrage: %s "),CastSecondsToHM(cur_client->GetTimeUntilReask(cur_client->GetRequestFile())/1000));
+				//AddLogLine(false,_T("Client-Info: %s m_dwLastAskedTime: %i"), cur_client->DbgGetClientInfo(),m_dwLastAskedTime);
+			}
 		else
-			cur_client->SetLastAskedTime(FILEREASKTIME-MIN2MS(10));
+			{
+			if (cur_client->GetTimeUntilReask(cur_client->GetRequestFile()) >= MIN2MS(10))
+				{
+				//m_dwLastAskedTime = 0;
+				m_dwLastAskedTime = cur_client->GetTimeUntilReask(cur_client->GetRequestFile())- (FILEREASKTIME-MIN2MS(10));
+				cur_client->SetLastAskedTime(m_dwLastAskedTime);
+				//AddLogLine(false,_T("Letzte Nachfrage: %s"),CastSecondsToHM(cur_client->GetTimeUntilReask(cur_client->GetRequestFile())/1000));
+				//AddLogLine(false,_T("Client-Info: %s m_dwLastAskedTime: %i"), cur_client->DbgGetClientInfo(),m_dwLastAskedTime);
+				}
+			}
+		m_dwLastAskedTime = cur_client->GetTimeUntilReask(cur_client->GetRequestFile());
+		cur_client->SetLastAskedTime(m_dwLastAskedTime);
 	}	
 }
 #endif //Reask sourcen after ip change

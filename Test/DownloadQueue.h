@@ -112,7 +112,16 @@ public:
 	bool	RemoveSource(CUpDownClient* toremove, bool bDoStatsUpdate = true);
 #endif //List Of Dont Ask This IPs
 //<==List Of Dont Ask This IPs [cyrex2001]
-
+//==>Xman askfordownload priority [cyrex2001]
+#ifdef ASK_FOR_PRIO
+	//Xman askfordownload priority
+	int		GetTooManyConnections(void);
+	uint8	GetMaxDownPrio(void) const {return m_maxdownprio;}
+	void	SetMaxDownPrioNew(uint8 newprio) {m_maxdownprionew=newprio;}
+	uint8	GetMaxDownPrioNew(void) const {return m_maxdownprionew;}
+	//Xman end
+#endif //Xman askfordownload priority
+//<==Xman askfordownload priority [cyrex2001]
 
 	// statistics
 	typedef struct{
@@ -225,5 +234,16 @@ private:
 	uint32 DownloadSourcesCounterTemp;
 #endif //List Of Dont Ask This IPs
 //<==List Of Dont Ask This IPs [cyrex2001]
+//==>Xman askfordownload priority [cyrex2001]
+#ifdef ASK_FOR_PRIO
+private:
+	//Xman askfordownload priority
+	int		m_toomanyconnections;
+	uint32	m_toomanytimestamp;
+	uint8 m_maxdownprio;
+	uint8 m_maxdownprionew;
+	//Xman end
+#endif //Xman askfordownload priority
+//<==Xman askfordownload priority [cyrex2001]
 
 };

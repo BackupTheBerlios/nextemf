@@ -286,6 +286,12 @@ void CUpDownClient::Init()
 	m_transferedthissession=0;
 #endif //Filter failed downloads
 //<==Xman filter clients with failed downloads [cyrex2001]
+//==>Xman askfordownload priority [cyrex2001]
+#ifdef ASK_FOR_PRIO //Xman askfordownload priority
+	m_cFailed = 0;
+	m_downloadpriority=1;
+#endif //Xman askfordownload priority
+//<==Xman askfordownload priority [cyrex2001]
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -1275,6 +1281,35 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket){
 	};
 	switch(m_nDownloadState){
 		case DS_CONNECTING:
+//==>Xman askfordownload priority [cyrex2001]
+#ifdef ASK_FOR_PRIO
+		{
+			m_cFailed++;
+			//Xman  b5 spread reasks after timeout
+			//why we should immediately reask the source ? 
+			//either the source are buisy -->let`s wait
+			//or the source are gone, in this case, we shouldn't waste the socket, 
+			//but ask other sources (too many connections)
+			//TryToConnect(); is called indirect later
+
+			if (m_cFailed <= 3 && GetUserName()!=NULL) //we now the client, give 3 attemps
+			{
+				SetLastAskedTime(SEC2MS(60)); //wait 60 sec bevore the next try
+				SetDownloadState(DS_NONE);
+				bDelete = false; //Delete this socket but not this client
+				break;
+			}
+			else if (m_cFailed <= 2)  //we don't know this clients, only 2 attemps
+			{
+				SetLastAskedTime(SEC2MS(60)); //wait 60 sec bevore the next try
+				SetDownloadState(DS_NONE);
+				bDelete = false; //Delete this socket but not this client
+				break;
+			}
+			//Xman end
+		}
+#endif //Xman askfordownload priority
+//<==Xman askfordownload priority [cyrex2001]
 		case DS_WAITCALLBACK:
 		case DS_ERROR:
 			theApp.clientlist->m_globDeadSourceList.AddDeadSource(this);
@@ -1575,6 +1610,11 @@ bool CUpDownClient::Connect()
 
 void CUpDownClient::ConnectionEstablished()
 {
+//==>Xman askfordownload priority [cyrex2001]
+#ifdef ASK_FOR_PRIO
+	m_cFailed = 0;
+#endif //Xman askfordownload priority
+//<==Xman askfordownload priority [cyrex2001]
 	// ok we have a connection, lets see if we want anything from this client
 	
 	// check if we should use this client to retrieve our public IP
