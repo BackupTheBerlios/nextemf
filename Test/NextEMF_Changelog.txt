@@ -3,6 +3,7 @@ eMule 0.44d [NextEMF v0.x]
 
 ADDED  : Chunk Selection Patch by Xman [cyrex2001] 
 ADDED  : Timestamp is now available for Chatwindow [shadow2004]
+FIXED  : Drop menue for debug version [cyrex2001]
 FIXED  : Modstring wasn't shown in Title, if "show Transfer" is off [shadow2004]
 FIXED  : Bold Download-Settings in Preferences [shadow2004]
 

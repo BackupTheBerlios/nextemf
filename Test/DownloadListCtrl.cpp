@@ -80,12 +80,12 @@ CDownloadListCtrl::CDownloadListCtrl() {
 CDownloadListCtrl::~CDownloadListCtrl(){
 	if (m_PrioMenu) VERIFY( m_PrioMenu.DestroyMenu() );
     if (m_A4AFMenu) VERIFY( m_A4AFMenu.DestroyMenu() );
-	if (m_FileMenu) VERIFY( m_FileMenu.DestroyMenu() );
 //==>Drop maunal [cyrex2001]
 #ifdef DROP_MANUAL
 	if (m_DropMenu) VERIFY( m_DropMenu.DestroyMenu() );
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
+	if (m_FileMenu) VERIFY( m_FileMenu.DestroyMenu() );
 	while(m_ListItems.empty() == false){
 		delete m_ListItems.begin()->second; // second = CtrlItem_Struct*
 		m_ListItems.erase(m_ListItems.begin());
@@ -2783,12 +2783,13 @@ void CDownloadListCtrl::OnNMDblclkDownloadlist(NMHDR *pNMHDR, LRESULT *pResult) 
 void CDownloadListCtrl::CreateMenues() {
 	if (m_PrioMenu) VERIFY( m_PrioMenu.DestroyMenu() );
 	if (m_A4AFMenu) VERIFY( m_A4AFMenu.DestroyMenu() );
-	if (m_FileMenu) VERIFY( m_FileMenu.DestroyMenu() );
 //==>Drop maunal [cyrex2001]
 #ifdef DROP_MANUAL
 	if (m_DropMenu) VERIFY( m_DropMenu.DestroyMenu() );
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
+	if (m_FileMenu) VERIFY( m_FileMenu.DestroyMenu() );
+
 
 	m_PrioMenu.CreateMenu();
 	m_PrioMenu.AddMenuTitle(NULL, true);
@@ -2797,8 +2798,6 @@ void CDownloadListCtrl::CreateMenues() {
 	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIOHIGH, GetResString(IDS_PRIOHIGH));
 	m_PrioMenu.AppendMenu(MF_STRING,MP_PRIOAUTO, GetResString(IDS_PRIOAUTO));
 
-
-
 	m_A4AFMenu.CreateMenu();
 // ZZ:DownloadManager -->
 	//m_A4AFMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_TO_THIS, GetResString(IDS_ALL_A4AF_TO_THIS)); // sivka [Tarod]
@@ -2806,23 +2805,25 @@ void CDownloadListCtrl::CreateMenues() {
 // <-- ZZ:DownloadManager
 	m_A4AFMenu.AppendMenu(MF_STRING, MP_ALL_A4AF_AUTO, GetResString(IDS_ALL_A4AF_AUTO)); // sivka [Tarod]
 
-	m_FileMenu.CreatePopupMenu();
-	m_FileMenu.AddMenuTitle(GetResString(IDS_DOWNLOADMENUTITLE), true);
-	m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_PrioMenu.m_hMenu, GetResString(IDS_PRIORITY) + _T(" (") + GetResString(IDS_DOWNLOAD) + _T(")"), _T("FILEPRIORITY"));
-
 //==>Drop maunal [cyrex2001]
 #ifdef DROP_MANUAL
 //START adding by sivka
 	m_DropMenu.CreateMenu();
-	m_DropMenu.AppendMenu(MF_STRING,MP_DROPLOWTOLOWIPSRCS, GetResString(IDS_DROP_LOWIPTOLOWIP));
-	m_DropMenu.AppendMenu(MF_STRING,MP_DROPUNKNOWNERRORBANNEDSRCS, GetResString(IDS_DROP_UNKNOW_ERROR_BANNED));
-	m_DropMenu.AppendMenu(MF_STRING,MP_DROPNONEEDEDSRCS, GetResString(IDS_DROP_NNS));
-	m_DropMenu.AppendMenu(MF_STRING,MP_DROPFULLQSRCS, GetResString(IDS_DROP_FQS));
-	m_DropMenu.AppendMenu(MF_STRING,MP_DROPHIGHQRSRCS, GetResString(IDS_DROP_HQS));
-	m_DropMenu.AppendMenu(MF_STRING,MP_CLEANUP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP, GetResString(IDS_DROP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP));
+	m_DropMenu.AddMenuTitle(_T("DROP"), true);
+	m_DropMenu.AppendMenu(MF_STRING,MP_DROPLOWTOLOWIPSRCS, GetResString(IDS_DROP_LOWIPTOLOWIP), _T("DROP"));
+	m_DropMenu.AppendMenu(MF_STRING,MP_DROPUNKNOWNERRORBANNEDSRCS, GetResString(IDS_DROP_UNKNOW_ERROR_BANNED), _T("DROP"));
+	m_DropMenu.AppendMenu(MF_STRING,MP_DROPNONEEDEDSRCS, GetResString(IDS_DROP_NNS), _T("DROP"));
+	m_DropMenu.AppendMenu(MF_STRING,MP_DROPFULLQSRCS, GetResString(IDS_DROP_FQS), _T("DROP"));
+	m_DropMenu.AppendMenu(MF_STRING,MP_DROPHIGHQRSRCS, GetResString(IDS_DROP_HQS), _T("DROP"));
+	m_DropMenu.AppendMenu(MF_STRING,MP_CLEANUP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP, GetResString(IDS_DROP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP), _T("DROP"));
 //END adding by sivka
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
+
+	m_FileMenu.CreatePopupMenu();
+	m_FileMenu.AddMenuTitle(GetResString(IDS_DOWNLOADMENUTITLE), true);
+	m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_PrioMenu.m_hMenu, GetResString(IDS_PRIORITY) + _T(" (") + GetResString(IDS_DOWNLOAD) + _T(")"), _T("FILEPRIORITY"));
+
 //==>Hardlimit [cyrex2001]
 #ifdef HARDLIMIT
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
@@ -2832,8 +2833,11 @@ void CDownloadListCtrl::CreateMenues() {
 //<==Hardlimit [cyrex2001]
 //==>Drop maunal [cyrex2001]
 #ifdef DROP_MANUAL
-	m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_DropMenu.m_hMenu, _T("Sources Handling (DROP)"), _T("DROP") );
+	if (thePrefs.IsExtControlsEnabled())
+		{
+		m_FileMenu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)m_DropMenu.m_hMenu, GetResString(IDS_DROP_MENUE), _T("DROP") );
 	m_FileMenu.AppendMenu(MF_SEPARATOR);
+		}
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
 

@@ -2406,6 +2406,7 @@
 #define IDS_DROP_FQS					61035
 #define IDS_DROP_HQS					61036
 #define IDS_DROP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP		61037
+#define IDS_DROP_MENUE					61038
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

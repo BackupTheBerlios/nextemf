@@ -128,7 +128,7 @@ public:
 //==>Drop maunal [cyrex2001]
 #ifdef DROP_MANUAL
 protected:
-	CMenu m_DropMenu;
+	CTitleMenu m_DropMenu;
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
 };

@@ -4457,7 +4457,9 @@ BEGIN
     IDS_DROP_NNS	    "Drop Not Needed Sources"
     IDS_DROP_FQS	    "Drop Full Queue Sources"
     IDS_DROP_HQS	    "Drop High Queue Rating Sources"
-    IDS_DROP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP	    "Drop NNS, FQS, HQRS, ERR, BAN & L2L"
+    IDS_DROP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP 
+                            "Drop NNS, FQS, HQRS, ERR, BAN & L2L"
+    IDS_DROP_MENUE          "Sources Handling (DROP)"
 END
 //#endif //Anti-Leecher
 //<==Anti-Leecher [cyrex2001]
