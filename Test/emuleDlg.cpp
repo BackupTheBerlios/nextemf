@@ -2065,9 +2065,9 @@ BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 			break;
 		case IDC_TOOLBARBUTTON + 8:
 		case MP_HM_PREFS:
-			toolbar->CheckButton(IDC_TOOLBARBUTTON+9,TRUE);
+			toolbar->CheckButton(IDC_TOOLBARBUTTON+8,TRUE);
 			preferenceswnd->DoModal();
-			toolbar->CheckButton(IDC_TOOLBARBUTTON+9,FALSE);
+			toolbar->CheckButton(IDC_TOOLBARBUTTON+8,FALSE);
 			break;
 		case IDC_TOOLBARBUTTON + 9:
 			ShowToolPopup(true);

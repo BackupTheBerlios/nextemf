@@ -124,14 +124,12 @@ void CUploadListCtrl::SetAllIcons()
 	imagelist.Add(CTempIconLoader(_T("ClientAMulePlus")));
 	imagelist.Add(CTempIconLoader(_T("ClientLPhant")));
 	imagelist.Add(CTempIconLoader(_T("ClientLPhantPlus")));
-	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
 //==>Modversion [cyrex2001]
 #ifdef MODVERSION
 	imagelist.Add(CTempIconLoader(_T("AAAEMULEAPP")/*CLIENT_NEXTEMF*/));//16
 #endif //Modversion
 //<==Modversion [cyrex2001]
-
-
+	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
 }
 
 void CUploadListCtrl::Localize()
