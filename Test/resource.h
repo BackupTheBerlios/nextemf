@@ -318,7 +318,11 @@
 #define IDS_SW_LINK                     397
 #define IDS_SW_START                    398
 #define IDS_SCHEDULER                   399
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDS_IRC                         400
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDS_SW_RESULT                   401
 #define IDS_SW_DOWNLOAD                 402
 #define IDS_SV_SERVERLIST               403
@@ -520,10 +524,18 @@
 #define IDS_RECONNECT                   599
 #define IDS_SERVERADDED                 600
 #define IDB_UP2X                        601
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDS_IRC_IGNOREJOINMESSAGE       601
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDS_STATS_SUCCUPCOUNT           602
 #define IDB_DOWN2X                      603
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDS_IRC_IGNOREPARTMESSAGE       603
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDS_STATS_FAILUPCOUNT           604
 #define IDS_STATS_AVEUPTIME             605
 #define IDS_SEARCHMINSIZE               606
@@ -541,10 +553,18 @@
 #define IDS_STATS_AVGLABEL              618
 #define IDS_GRAPHS                      619
 #define IDS_STREE                       620
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDS_IRC_IGNOREQUITMESSAGE       621
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDS_STATSSETUPINFO              622
 #define IDD_PPG_STATS                   623
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDS_IRC_SOUNDEVENTS             623
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDS_HARDLIMIT                   624
 #define IDS_COL_MORECOLORS              625
 #define IDS_KBYTESEC                    626
@@ -562,16 +582,22 @@
 #define IDS_PW_TBN_OPTIONS              638
 #define IDS_TBN_NEWCHATMSG              639
 #define IDS_PW_CON_CAPFRM               640
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDS_IRC_STATUSLOG               641
 #define IDS_IRC_STATUS                  642
 #define IDS_IRC_PRIVATECHANSTART        643
 #define IDS_IRC_SLAPMSG                 644
 #define IDS_IRC_PRIVMESSAGE             645
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDS_WEB_REMOTE_LINK_ADDED       646
 #define IDS_WEB_REMOTE_LINK_NOT_ADDED   647
 #define IDS_SOURCEEXCHANGESWAP          648
 #define IDS_DL_TRY_TO_GET_PREVIEW_PARTS 649
 #define IDS_PR_SHORT_LOW                650
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDS_IRC_KICK                    651
 #define IDS_IRC_SLAP                    652
 #define IDS_IRC_JOIN                    653
@@ -582,7 +608,11 @@
 #define IDS_IRC_HASPARTED               658
 #define IDS_IRC_WASKICKEDBY             659
 #define IDS_IRC_NICKUSED                660
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDS_DOWNLOAD_ALPHABETICAL       661
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDS_IRC_HASQUIT                 662
 #define IDS_IRC_NOWKNOWNAS              663
 #define IDS_IRC_SETSMODE                664
@@ -599,14 +629,20 @@
 #define IDS_IRC_ADDTOFRIENDLIST         675
 #define IDS_IRC_LOADCHANNELLISTONCON    676
 #define IDS_IRC_ADDASFRIEND             677
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDS_PW_WARNING                  678
 #define IDS_TAKEOVER                    679
 #define IDS_CLEANUP                     680
 #define IDS_RENAME                      681
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDS_IRC_ADDLINKTOIRC            682
 #define IDS_IRC_SENDLINK                683
 #define IDS_IRC_RECIEVEDLINK            684
 #define IDS_IRC_ACCEPTLINKS             685
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDS_SHARED                      686
 #define IDS_DOWNLOADED                  687
 #define IDS_SOURCENAMES                 688
@@ -630,7 +666,11 @@
 #define IDS_PW_MINREC                   706
 #define IDS_PW_UA                       707
 #define IDS_PW_PA                       708
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDS_IRC_IGNOREINFOMESSAGE       709
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDS_CONNECTIONLOST              710
 #define IDS_WIZ_OS_FRAME                711
 #define IDS_WIZ_CONCURENTDOWN_FRAME     712
@@ -664,7 +704,11 @@
 #define IDS_VIEWFILES                   739
 #define IDS_FRIENDSLOT                  740
 #define IDS_FRIENDDETAIL                741
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 #define IDS_ASCWOP_PROXYSUPPORT         742
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 #define IDS_UDPDISABLED                 743
 #define IDS_CTINFO                      744
 #define IDS_WIZ_CTFRAME                 745
@@ -677,7 +721,11 @@
 #define IDS_USS_MIN                     751
 #define IDS_STATS_MAXDL                 752
 #define IDD_COMMENTLST                  753
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDS_IRC_EMULEPROTO_IGNOREADDFRIEND 753
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDS_PW_FASTSRVCON               754
 #define IDS_SOURCELINKFAILED            755
 #define IDS_CREATESOURCELINK            756
@@ -735,7 +783,11 @@
 #define IDS_MEGA                        807
 #define IDS_GIGA                        808
 #define IDS_TERRA                       809
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDS_IRC_EMULEPROTO_IGNOREINFOMESSAGE 810
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDS_SMARTLOWIDCHECK             811
 #define IDS_SF_SRVOCC                   812
 #define IDS_3DDEP                       813
@@ -768,7 +820,11 @@
 #define IDS_WEBSERVICES                 840
 #define IDS_WEBSVEDIT                   841
 #define IDC_CHECK4UPDATE                842
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDS_IRC_EMULEPROTO_IGNORESENDLINK 842
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDS_CHECK4UPDATE                843
 #define IDS_STARTUP                     844
 #define IDS_NEWVERSIONAVL               845
@@ -954,14 +1010,26 @@
 #define IDC_UPTXT                       1012
 #define IDS_GLOBALSEARCH2               1013
 #define IDC_SIDEBAR                     1013
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 #define IDS_PW_PROXY                    1014
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 #define IDC_TRAYDOWN                    1014
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 #define IDS_PROXY_ENABLE                1015
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 #define IDC_TRAYUP                      1015
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 #define IDS_PROXY_TYPE                  1016
 #define IDS_PROXY_HOST                  1017
 #define IDS_PROXY_PORT                  1018
 #define IDS_PROXY_AUTH                  1019
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 #define IDS_AUTH                        1020
 #define IDS_SHOWCATINFO                 1021
 #define IDS_SW_SEARCHINGINFO            1022
@@ -1153,9 +1221,13 @@
 #define IDS_FD_TIMEDATE                 1207
 #define IDS_FILEINFORMATION             1208
 #define IDS_STATS_FREESPACE             1209
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDS_IRC_HELPCHANNEL             1210
 #define IDS_IRC_HELPCHANNELPERFORM      1211
 #define IDS_IRC_ACCEPTLINKSFRIENDS      1212
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDS_COMPLSOURCES                1213
 #define IDS_CHECKNOENDTIME              1214
 #define IDS_FD_DOWNLOADSTARTED          1215
@@ -1288,9 +1360,17 @@
 #define IDS_IP_HITS                     1342
 #define IDS_IP_RULES                    1343
 #define IDS_ERR_NOTCONNECTEDKAD         1344
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDS_IRC_NOSFS                   1345
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDS_RESETLABEL                  1346
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDS_IRC_IGNOREMISCMESSAGE       1347
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDD_DIRECT_DOWNLOAD             1347
 #define IDS_KNOWN                       1348
 #define IDD_SEARCH_PARAMS               1348
@@ -1334,7 +1414,11 @@
 #define IDS_PREF_STARTNEXTFILECATONLY   1382
 #define IDS_LOG_ULDL_EVENTS             1383
 #define IDS_PEERCACHE_ENABLED           1384
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDS_IRC_EMULEPROTO_ALLOWADDFRIEND 1385
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDS_SOURCESWAPBLOCKED           1386
 #define IDS_TRICKLING                   1387
 #define IDS_A4AF_CHECK_THIS_NOW         1388
@@ -1427,8 +1511,12 @@
 #define IDS_USERSIP                     1468
 #define IDS_STRING1469                  1469
 #define IDS_FEATURES                    1469
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDS_IRC_NEWNICK                 1470
 #define IDS_IRC_NEWNICKDESC             1471
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDC_ANIMATE1                    2000
 #define IDC_STATUS                      2001
 #define IDC_FILESTATUS                  2002
@@ -1436,13 +1524,25 @@
 #define IDC_TRANSFER_RATE               2004
 #define IDC_MAXSOURCEPERFILE            2005
 #define IDC_INPUTWINDOW                 2007
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDC_IRC_SERVER_BOX              2008
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDC_ELINK                       2010
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDC_IRC_NAME_BOX                2011
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDC_NICK                        2012
 #define IDC_LOGBOX                      2013
 #define IDC_TITLEWINDOW                 2015
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDC_IRC_NICK_BOX                2016
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDC_WIZ_TRUEDOWNLOAD_BOX        2018
 #define IDC_VIDEOPLAYER                 2020
 #define IDC_MAXCON                      2023
@@ -1457,7 +1557,11 @@
 #define IDC_INCFILES                    2035
 #define IDC_UPLOADLIST                  2036
 #define IDC_NICKLIST                    2037
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDC_IRC_PERFORM_BOX             2038
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDC_MYINFOLIST                  2041
 #define IDC_TAGS                        2042
 #define IDC_CONTACTLIST                 2043
@@ -1496,7 +1600,11 @@
 #define IDC_SPORT                       2104
 #define IDC_SERVERRETRIES               2105
 #define IDC_STATUSWINDOW                2107
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDC_IRC_MINUSER_BOX             2108
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDC_SHOWCATINFO                 2110
 #define IDC_ADVSPAMFILTER               2112
 #define IDC_CB_TBN_ONNEWDOWNLOAD        2113
@@ -1508,7 +1616,11 @@
 #define IDC_WSENABLEDLOW                2125
 #define IDC_S_ENABLE                    2126
 #define IDC_SCORE                       2128
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDC_IRC_USEPERFORM              2130
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDC_FULLCHUNKTRANS              2131
 #define IDC_SHOWOVERHEAD                2132
 #define IDC_INDICATERATINGS             2133
@@ -1635,7 +1747,11 @@
 #define IDD_SPLASH                      2300
 #define IDC_STATIC_S1                   2301
 #define IDC_STATIC_S2                   2302
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDD_IRC                         2303
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDC_SCOPE_U                     2305
 #define IDC_STATIC_D2                   2306
 #define IDC_STATIC_D3                   2307
@@ -1651,7 +1767,11 @@
 #define IDC_TIMEAVG2                    2325
 #define IDC_FILTER                      2327
 #define IDC_C1_3                        2328
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDC_IRC_USECHANFILTER           2329
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDC_UDPDISABLE                  2330
 #define IDC_PREVIEWPRIO                 2332
 #define IDC_DISABLEKNOWNLIST            2333
@@ -1691,7 +1811,11 @@
 #define IDC_SERVERCHANNELLIST           2372
 #define IDC_LISTCTRLFILENAMES           2373
 #define IDC_S_TITLE                     2374
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDC_IRC_MISC_FRM                2375
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDC_UDPPORTLABEL                2376
 #define IDC_CMSTATUS                    2377
 #define IDC_LANG_FRM                    2379
@@ -1750,7 +1874,11 @@
 #define IDC_DOWNLOAD_TEXT               2455
 #define IDC_METH                        2456
 #define IDC_UPLOAD_ICO                  2457
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDC_BN_IRCCONNECT               2459
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDC_TBN_OPTIONS                 2461
 #define IDC_FULL_FILE_INFO              2462
 #define IDC_SLIDERINFO                  2463
@@ -1782,7 +1910,11 @@
 #define IDD_PPG_NOTIFY                  2498
 #define IDC_SLIDERINFO3                 2499
 #define IDC_EDIT_TBN_WAVFILE            2500
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDD_PPG_IRC                     2501
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDC_GRAPHS                      2502
 #define IDC_CB_TBN_ONLOG                2503
 #define IDD_WIZARD                      2504
@@ -1797,15 +1929,31 @@
 #define IDC_KBS4                        2513
 #define IDD_PPG_DEBUG                   2514
 #define IDC_CB_TBN_ONDOWNLOAD           2515
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDC_IRC_SERVER_FRM              2516
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDC_CB_TBN_ONCHAT               2517
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDC_IRC_NICK_FRM                2518
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDC_CB_TBN_USESOUND             2519
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDC_IRC_FILTER_FRM              2520
 #define IDC_IRC_NAME_TEXT               2521
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDC_CB_TBN_IMPORTATNT           2522
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDC_IRC_MINUSER_TEXT            2523
 #define IDC_IRC_PERFORM_FRM             2524
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDC_CB_TBN_ONNEWVERSION         2525
 #define IDC_TAB2                        2526
 #define IDC_FILENAME                    2528
@@ -1937,21 +2085,33 @@
 #define IDC_EDIT2                       2681
 #define IDC_TMPLPATH                    2682
 #define IDC_TEMPLATE                    2683
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 #define IDD_PPG_PROXY                   2684
 #define IDC_ENABLEPROXY                 2685
 #define IDC_ENABLEAUTH                  2686
 #define IDC_PROXYTYPE                   2687
 #define IDC_PROXYNAME                   2688
 #define IDC_PROXYPORT                   2689
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 #define IDC_USERNAME_A                  2690
 #define IDC_PASSWORD                    2691
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 #define IDC_PROXYTYPE_LBL               2692
 #define IDC_PROXYNAME_LBL               2693
 #define IDC_PROXYPORT_LBL               2694
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 #define IDC_USERNAME_LBL                2695
 #define IDC_PASSWORD_LBL                2696
 #define IDC_AUTH_LBL                    2697
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 #define IDC_ASCWOP                      2698
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 #define IDC_LISTVIEW_SEARCH_COLUMN      2700
 #define IDC_LISTVIEW_SEARCH_TEXT        2702
 #define IDC_AUTH_LBL2                   2703
@@ -2056,7 +2216,11 @@
 #define IDC_FORMAT                      2816
 #define IDC_KADALPHA                    2817
 #define IDC_STATICIPLABEL               2818
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDC_MISC_IRC                    2819
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDC_DL_ACTIVE_TIME_LBL          2820
 #define IDC_SEARCH_OPTS                 2833
 #define IDC_DISABLEHIST                 2834
@@ -2080,7 +2244,11 @@
 #define IDC_KAD_HISTOGRAM               2854
 #define IDC_NETWORK_INFO                2856
 #define IDC_NETWORK_INFO_LABEL          2857
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 #define IDC_SPLITTER_IRC                2858
+#endif //IRC
+//<== remove IRC [shadow2004]
 #define IDC_SPLITTER_STAT               2859
 #define IDC_SPLITTER_STAT_HR            2860
 #define IDC_SPLITTER_STAT_HL            2861

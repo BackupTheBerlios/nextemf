@@ -269,6 +269,8 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
 END
 
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 IDD_PPG_PROXY DIALOGEX 0, 0, 228, 239
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Dialog"
@@ -295,6 +297,8 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,12,169,
                     201,9
 END
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 
 IDD_PPG_SERVER DIALOGEX 0, 0, 225, 225
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
@@ -1642,11 +1646,15 @@ BEGIN
         BOTTOMMARGIN, 170
     END
 
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
     IDD_PPG_PROXY, DIALOG
     BEGIN
         RIGHTMARGIN, 213
         BOTTOMMARGIN, 200
     END
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 
     IDD_PPG_SERVER, DIALOG
     BEGIN
@@ -2213,7 +2221,11 @@ PREF_IRC                ICON                    "res\\Prefs_IRC.ico"
 #endif //IRC
 //<== remove IRC [shadow2004]
 PREF_STATISTICS         ICON                    "res\\Prefs_Statistics.ico"
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 PREF_PROXY              ICON                    "res\\Prefs_Proxy.ico"
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 SEARCHPARAMS            ICON                    "res\\NormalSearch.ico"
 SEARCHMETHOD_SERVER     ICON                    "res\\SeverSearch.ico"
 SEARCHMETHOD_FILEDONKEY ICON                    "res\\Filedonkey.ico"
@@ -2365,6 +2377,8 @@ IDR_WIDECHARLOWERMAP    WIDECHARMAP             "res\\WideCharLowerMap.bin"
 // Dialog Info
 //
 
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 IDD_PPG_PROXY DLGINIT
 BEGIN
     IDC_PROXYTYPE, 0x403, 9, 0
@@ -2379,7 +2393,8 @@ BEGIN
 0x5448, 0x5054, 0x3120, 0x312e, "\000" 
     0
 END
-
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -3152,9 +3167,17 @@ BEGIN
     IDS_ED2KLINKFIX         "eD2K Links"
     IDS_RECONNECT           "Automatic connection to server will retry in %d seconds"
     IDS_SERVERADDED         "Server added: %s"
+//==> remove IRC [shadow2004]
+#if defined(IRC)
     IDS_IRC_IGNOREJOINMESSAGE "Ignore Join info messages"
+#endif //IRC
+//<== remove IRC [shadow2004]
     IDS_STATS_SUCCUPCOUNT   "Total successful upload sessions: %i (%.2f%%)"
+//==> remove IRC [shadow2004]
+#if defined(IRC)
     IDS_IRC_IGNOREPARTMESSAGE "Ignore Part info messages"
+#endif //IRC
+//<== remove IRC [shadow2004]
     IDS_STATS_FAILUPCOUNT   "Total failed upload sessions: %i (%.2f%%)"
     IDS_STATS_AVEUPTIME     "Average upload time: %s"
     IDS_SEARCHMINSIZE       "Min. Size [MB]"
@@ -3288,7 +3311,11 @@ BEGIN
     IDS_PREF_STARTNEXTFILECATONLY "only in same category"
     IDS_LOG_ULDL_EVENTS     "Log upload/download events"
     IDS_PEERCACHE_ENABLED   "Your ISP supports the PeerCache technology, enabling cache downloads!"
+//==> remove IRC [shadow2004]
+#if defined(IRC)
     IDS_IRC_EMULEPROTO_ALLOWADDFRIEND "Allow user to add you as a friend."
+#endif //IRC
+//<== remove IRC [shadow2004]
     IDS_SOURCESWAPBLOCKED   "Swap blocked"
     IDS_TRICKLING           "Standby"
     IDS_A4AF_CHECK_THIS_NOW "Check this source now (debug)"
@@ -3297,6 +3324,8 @@ BEGIN
     IDS_STATS_UDATA_FRIENDS "Uploaded data to friend slots (Session): %s"
 END
 
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 STRINGTABLE 
 BEGIN
     IDS_IRC_DISCONNECT      "Disconnect"
@@ -3317,8 +3346,6 @@ BEGIN
     IDS_IRC_ADDTIMESTAMP    "Add timestamp to messages"
 END
 
-//==> remove IRC [shadow2004]
-#if defined(IRC)
 STRINGTABLE 
 BEGIN
     IDS_IRC_USEFILTER       "Use channel list filter"
@@ -3368,7 +3395,11 @@ BEGIN
     IDS_PW_MINREC           "Minimum Recommended\t%i "
     IDS_PW_UA               "Set Full Up/Down-Speed"
     IDS_PW_PA               "Throttle Up/Down-Speed"
+//==> remove IRC [shadow2004]
+#if defined(IRC)
     IDS_IRC_IGNOREINFOMESSAGE "Ignore info messages"
+#endif //IRC
+//<== remove IRC [shadow2004]
     IDS_CONNECTIONLOST      "Connection lost"
     IDS_WIZ_OS_FRAME        "Operating System"
     IDS_WIZ_CONCURENTDOWN_FRAME 
@@ -3410,7 +3441,11 @@ BEGIN
     IDS_VIEWFILES           "&View Shared Files"
     IDS_FRIENDSLOT          "Establish Friend Slot"
     IDS_FRIENDDETAIL        "(Friend Slot)"
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
     IDS_ASCWOP_PROXYSUPPORT "Automatic server connect without proxy"
+#endif //PROXY
+//<== remove PROXY [shadow2004]
     IDS_UDPDISABLED         "disable"
     IDS_CTINFO              "Select your connection type here:"
     IDS_WIZ_CTFRAME         "Connection Type"
@@ -3499,7 +3534,11 @@ BEGIN
     IDS_MEGA                "M"
     IDS_GIGA                "G"
     IDS_TERRA               "T"
+//==> remove IRC [shadow2004]
+#if defined(IRC)
     IDS_IRC_EMULEPROTO_IGNOREINFOMESSAGE "Ignore eMule protocol messages"
+#endif //IRC
+//<== remove IRC [shadow2004]
     IDS_SMARTLOWIDCHECK     "Use smart LowID check on connect"
     IDS_SF_SRVOCC           "Server Occupation: %.2f%%"
     IDS_3DDEP               "Progressbar style"
@@ -3519,8 +3558,12 @@ BEGIN
     IDS_DESCRIPTIONRECV     "Description for file '%s' received: %s"
     IDS_WEBSERVICES         "&Web Services"
     IDS_WEBSVEDIT           "Edit Web Services..."
+//==> remove IRC [shadow2004]
+#if defined(IRC)
     IDS_IRC_EMULEPROTO_IGNORESENDLINK 
                             "Ignore eMule send link protocol messages"
+#endif //IRC
+//<== remove IRC [shadow2004]
     IDS_CHECK4UPDATE        "Check for new version"
     IDS_STARTUP             "Startup"
     IDS_NEWVERSIONAVL       "A new version of eMule is available! Check the project-homepage for more information."
@@ -3661,12 +3704,16 @@ BEGIN
     IDS_SW_REFETCHRES       "Refetch Results"
     IDS_FILEHASH            "File Hash"
     IDS_GLOBALSEARCH2       "Global Search"
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
     IDS_PW_PROXY            "Proxy"
     IDS_PROXY_ENABLE        "Enable proxy"
     IDS_PROXY_TYPE          "Proxy type:"
     IDS_PROXY_HOST          "Proxy host:"
     IDS_PROXY_PORT          "Proxy port:"
     IDS_PROXY_AUTH          "Enable authentication"
+#endif //PROXY
+//<== remove PROXY [shadow2004]
     IDS_AUTH                "Authentication"
     IDS_SHOWCATINFO         "Show download info on category tabs"
     IDS_SW_SEARCHINGINFO    "Search in progress. Refetch results in a moment!"

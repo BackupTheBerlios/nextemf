@@ -166,11 +166,15 @@ void CServerConnect::StopConnectionTry(){
 }
 
 void CServerConnect::ConnectionEstablished(CServerSocket* sender){
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	if (thePrefs.IsProxyASCWOP())
 	{
 		thePrefs.SetUseProxy(true);
 		AddLogLine(false,GetResString(IDS_ASCWOP_PROXYSUPPORT)+GetResString(IDS_ENABLED));
 	}
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 
 	if (connecting == false)
 	{

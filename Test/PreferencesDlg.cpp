@@ -53,20 +53,28 @@ CPreferencesDlg::CPreferencesDlg()
 	m_wndTweaks.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndSecurity.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndScheduler.m_psp.dwFlags &= ~PSH_HASHELP;
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	m_wndProxy.m_psp.dwFlags &= ~PSH_HASHELP; // deadlake PROXYSUPPORT
-#if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
-	m_wndDebug.m_psp.dwFlags &= ~PSH_HASHELP;
-#endif
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 //==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
 #if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
 	m_wndNextEMF.m_psp.dwFlags &= ~PSH_HASHELP;
 #endif //Reask sourcen after ip chnage or Quickstart
 //<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
+	m_wndDebug.m_psp.dwFlags &= ~PSH_HASHELP;
+#endif
 
 	AddPage(&m_wndGeneral);
 	AddPage(&m_wndDisplay);
 	AddPage(&m_wndConnection);
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	AddPage(&m_wndProxy);
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 	AddPage(&m_wndServer);
 	AddPage(&m_wndDirectories);
 	AddPage(&m_wndFiles);
@@ -81,15 +89,15 @@ CPreferencesDlg::CPreferencesDlg()
 	AddPage(&m_wndScheduler);
 	AddPage(&m_wndWebServer);
 	AddPage(&m_wndTweaks);
-#if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
-	AddPage(&m_wndDebug);
-#endif
-
 //==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
 #if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
 	AddPage(&m_wndNextEMF);
 #endif //Reask sourcen after ip chnage or Quickstart
 //<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
+#if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
+	AddPage(&m_wndDebug);
+#endif
+
 
 	m_nActiveWnd = 0;
 	m_iPrevPage = -1;
@@ -151,7 +159,11 @@ void CPreferencesDlg::Localize()
 	ImageList.Add(CTempIconLoader(_T("PREF_GENERAL")));
 	ImageList.Add(CTempIconLoader(_T("PREF_DISPLAY")));
 	ImageList.Add(CTempIconLoader(_T("PREF_CONNECTION")));
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	ImageList.Add(CTempIconLoader(_T("PREF_PROXY")));
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 	ImageList.Add(CTempIconLoader(_T("PREF_SERVER")));
 	ImageList.Add(CTempIconLoader(_T("PREF_FOLDERS")));
 	ImageList.Add(CTempIconLoader(_T("PREF_FILES")));
@@ -194,7 +206,12 @@ void CPreferencesDlg::Localize()
 	m_wndTweaks.Localize();
 	m_wndWebServer.Localize();
 	m_wndScheduler.Localize();
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	m_wndProxy.Localize();
+#endif //PROXY
+//<== remove PROXY [shadow2004]
+
 //==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
 #if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
 	m_wndNextEMF.Localize();
@@ -208,7 +225,11 @@ void CPreferencesDlg::Localize()
 	buffer.Add(GetResString(IDS_PW_GENERAL)); 
 	buffer.Add(GetResString(IDS_PW_DISPLAY)); 
 	buffer.Add(GetResString(IDS_PW_CONNECTION)); 
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	buffer.Add(GetResString(IDS_PW_PROXY)); 
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 	buffer.Add(GetResString(IDS_PW_SERVER)); 
 	buffer.Add(GetResString(IDS_PW_DIR)); 
 	buffer.Add(GetResString(IDS_PW_FILES)); 
@@ -223,14 +244,15 @@ void CPreferencesDlg::Localize()
 	buffer.Add(GetResString(IDS_SCHEDULER));
 	buffer.Add(GetResString(IDS_PW_WS));
 	buffer.Add(GetResString(IDS_PW_TWEAK)); 
-#if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
-	buffer.Add(_T("Debug"));
-#endif
 //==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
 #if defined (RSAIC) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
 	buffer.Add(_T("NextEMF"));
 #endif //Reask sourcen after ip chnage or Quickstart
 //<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
+
+#if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
+	buffer.Add(_T("Debug"));
+#endif
 	for (int i = 0; i < buffer.GetCount(); i++)
 		buffer[i].Remove(_T('&'));
 

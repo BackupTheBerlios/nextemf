@@ -750,12 +750,24 @@ CString CWebServer::_GetHeader(ThreadData Data, long lSession)
 	else if (Kademlia::CKademlia::isFirewalled()) {
 		buffer.Append(GetResString(IDS_FIREWALLED));
 		if (IsSessionAdmin(Data,sSession)) 
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 			buffer+=_T(" (<small><a href=\"?ses=") + sSession + _T("&w=kad&c=disconnect\">")+_GetPlainResString(IDS_IRC_DISCONNECT)+_T("</a></small>)");
+#else  //IRC
+			buffer+=_T(" (<small><a href=\"?ses=") + sSession + _T("&w=kad&c=disconnect\">")+_T("</a></small>)");
+#endif //IRC
+//<== remove IRC [shadow2004]
 	}
 	else if (Kademlia::CKademlia::isConnected()) {
 		buffer.Append(GetResString(IDS_CONNECTED));
 		if (IsSessionAdmin(Data,sSession)) 
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 			buffer+=_T(" (<small><a href=\"?ses=") + sSession + _T("&w=kad&c=disconnect\">")+_GetPlainResString(IDS_IRC_DISCONNECT)+_T("</a></small>)");
+#else  //IRC
+			buffer+=_T(" (<small><a href=\"?ses=") + sSession + _T("&w=kad&c=disconnect\">")+_T("</a></small>)");
+#endif //IRC
+//<== remove IRC [shadow2004]
 	}
 
 	Out.Replace(_T("[KademliaInfo]"),buffer);
@@ -866,13 +878,21 @@ CString CWebServer::_GetServerList(ThreadData Data)
 	Out.Replace(_T("[Servername]"), _GetPlainResString(IDS_SL_SERVERNAME)+CString((pThis->m_Params.ServerSort==SERVER_SORT_NAME)?sortimg:_T("")));
 	Out.Replace(_T("[Description]"), _GetPlainResString(IDS_DESCRIPTION)+CString((pThis->m_Params.ServerSort==SERVER_SORT_DESCRIPTION)?sortimg:_T("")));
 	Out.Replace(_T("[Address]"), _GetPlainResString(IDS_IP)+CString((pThis->m_Params.ServerSort==SERVER_SORT_IP)?sortimg:_T("")));
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	Out.Replace(_T("[Connect]"), _GetPlainResString(IDS_IRC_CONNECT));
+#endif //IRC
+//<== remove IRC [shadow2004]
 	Out.Replace(_T("[Users]"), _GetPlainResString(IDS_LUSERS)+CString((pThis->m_Params.ServerSort==SERVER_SORT_USERS)?sortimg:_T("")));
 	Out.Replace(_T("[Files]"), _GetPlainResString(IDS_LFILES)+CString((pThis->m_Params.ServerSort==SERVER_SORT_FILES)?sortimg:_T("")));
 	Out.Replace(_T("[Actions]"), _GetPlainResString(IDS_WEB_ACTIONS));
 
 	CString OutE = pThis->m_Templates.sServerLine;
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	OutE.Replace(_T("[Connect]"), _GetPlainResString(IDS_IRC_CONNECT));
+#endif //IRC
+//<== remove IRC [shadow2004]
 	OutE.Replace(_T("[RemoveServer]"), _GetPlainResString(IDS_REMOVETHIS));
 	OutE.Replace(_T("[ConfirmRemove]"), _GetPlainResString(IDS_WEB_CONFIRM_REMOVE_SERVER));
 
@@ -2372,7 +2392,11 @@ CString CWebServer::_GetConnectedServer(ThreadData Data)
 	OutS.Replace(_T("[Action]"), _GetPlainResString(IDS_CONNECTING));
 	OutS.Replace(_T("[URL_Disconnect]"), IsSessionAdmin(Data,sSession)?CString(_T("?ses=") + sSession + _T("&w=server&c=disconnect")):GetPermissionDenied());
 	OutS.Replace(_T("[URL_Connect]"), IsSessionAdmin(Data,sSession)?CString(_T("?ses=") + sSession + _T("&w=server&c=connect")):GetPermissionDenied());
+//==> remove IRC [shadow2004]
+#if defined(IRC)
 	OutS.Replace(_T("[Disconnect]"), _GetPlainResString(IDS_IRC_DISCONNECT));
+#endif //IRC
+//<== remove IRC [shadow2004]
 	OutS.Replace(_T("[Connect]"), _GetPlainResString(IDS_CONNECTTOANYSERVER));
 	OutS.Replace(_T("[URL_ServerOptions]"), IsSessionAdmin(Data,sSession)?CString(_T("?ses=") + sSession + _T("&w=server&c=options")):GetPermissionDenied());
 	OutS.Replace(_T("[ServerOptions]"), CString(_GetPlainResString(IDS_SERVER)+_GetPlainResString(IDS_EM_PREFS)));

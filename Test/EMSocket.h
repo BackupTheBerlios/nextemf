@@ -60,7 +60,11 @@ public:
 	// By Maverick: Connection necessary initalizing calls are done by class itself and not anymore by the Owner
 	virtual BOOL Connect(LPCTSTR lpszHostAddress, UINT nHostPort);
 	virtual BOOL Connect(SOCKADDR* pSockAddr, int iSockAddrLen);
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	void InitProxySupport();
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 	// Reset Layer Chain
 	virtual void RemoveAllLayers();
 

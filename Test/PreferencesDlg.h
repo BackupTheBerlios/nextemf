@@ -9,14 +9,21 @@
 //==> remove IRC [shadow2004]
 #if defined(IRC)
   #include "PPgIRC.h"
+#else
+  #include "Preferences.h"
 #endif //IRC
+
 //<== remove IRC [shadow2004]
 #include "PPgTweaks.h"
 #include "PPgDisplay.h"
 #include "PPgSecurity.h"
 #include "PPgWebServer.h"
 #include "PPgScheduler.h"
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 #include "PPgProxy.h"
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 #include "PPgDebug.h"
 #endif
@@ -53,7 +60,11 @@ public:
 	CPPgSecurity	m_wndSecurity;
 	CPPgWebServer	m_wndWebServer;
 	CPPgScheduler	m_wndScheduler;
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	CPPgProxy		m_wndProxy;
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	CPPgDebug		m_wndDebug;
 #endif

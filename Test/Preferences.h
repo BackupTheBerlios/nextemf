@@ -36,6 +36,8 @@ struct Preferences_Ext_Struct{
 };
 #pragma pack()
 
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 // deadlake PROXYSUPPORT
 struct ProxySettings{
 	uint16 type;
@@ -46,6 +48,8 @@ struct ProxySettings{
 	bool EnablePassword;
 	bool UseProxy;
 };
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 
 #pragma pack(1)
 struct Category_Struct{
@@ -461,9 +465,13 @@ public:
 	static	TCHAR	m_sWebResDir[MAX_PATH];
 
 	static	TCHAR	m_sTemplateFile[MAX_PATH];
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	static	ProxySettings proxy; // deadlake PROXYSUPPORT
-	static	bool	m_bIsASCWOP;
+	static	bool	m_bIsASCWOP; //->false
 	static	bool	m_bShowProxyErrors;
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 
 	static	bool	showCatTabInfos;
 	static	bool	resumeSameCat;
@@ -1155,6 +1163,8 @@ public:
 	static	uint16	GetMMPort()								{ return m_nMMPort; }
 	static	void	SetMMPort(uint16 uPort)					{ m_nMMPort=uPort; }
 
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	// deadlake PROXYSUPPORT
 	static	const ProxySettings& GetProxy()					{ return proxy; }
 	static	void	SetProxySettings(const ProxySettings& proxysettings) { proxy = proxysettings; }
@@ -1167,6 +1177,8 @@ public:
 
 	static	bool	IsProxyASCWOP()							{ return m_bIsASCWOP;}
 	static	void	SetProxyASCWOP(bool in)					{ m_bIsASCWOP=in;}
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 
 	static	bool	ShowCatTabInfos()						{ return showCatTabInfos;}
 	static	void	ShowCatTabInfos(bool in)				{ showCatTabInfos=in;}
@@ -1297,8 +1309,12 @@ protected:
 	static	CString m_strFileCommentsFilePath;
 	static	Preferences_Ext_Struct* prefsExt;
 	static	WORD m_wWinVer;
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	static	bool m_UseProxyListenPort;
 	static	uint16	ListenPort;
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 	static	CArray<Category_Struct*,Category_Struct*> catMap;
 
 	static void	CreateUserHash();

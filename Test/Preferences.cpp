@@ -484,9 +484,13 @@ int		CPreferences::m_nWebPageRefresh;
 bool	CPreferences::m_bWebLowEnabled;
 TCHAR	CPreferences::m_sWebResDir[MAX_PATH];
 TCHAR	CPreferences::m_sTemplateFile[MAX_PATH];
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 ProxySettings CPreferences::proxy;
 bool	CPreferences::m_bIsASCWOP;
 bool	CPreferences::m_bShowProxyErrors;
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 bool	CPreferences::showCatTabInfos;
 bool	CPreferences::resumeSameCat;
 bool	CPreferences::dontRecreateGraphs;
@@ -531,8 +535,12 @@ CString CPreferences::m_strLangDir;
 CString CPreferences::m_strFileCommentsFilePath;
 Preferences_Ext_Struct* CPreferences::prefsExt;
 WORD	CPreferences::m_wWinVer;
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 bool	CPreferences::m_UseProxyListenPort;
 uint16	CPreferences::ListenPort;
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 CArray<Category_Struct*,Category_Struct*> CPreferences::catMap;
 uint8	CPreferences::m_nWebMirrorAlertLevel;
 bool	CPreferences::m_bRunAsUser;
@@ -739,9 +747,13 @@ void CPreferences::Init()
 	userhash[5] = 14;
 	userhash[14] = 111;
 
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	// deadlake PROXYSUPPORT
 	m_UseProxyListenPort = false;
 	ListenPort = 0;
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 
 	// Explicitly inform the user about errors with incoming/temp folders!
 	if (!PathFileExists(GetIncomingDir()) && !::CreateDirectory(GetIncomingDir(),0)) {
@@ -2126,6 +2138,8 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("DebugLogLevel"), m_byLogLevel);
 
 
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	///////////////////////////////////////////////////////////////////////////
 	// Section: "Proxy"
 	//
@@ -2138,7 +2152,8 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("ProxyType"),proxy.type,_T("Proxy"));
 	ini.WriteBool(_T("ConnectWithoutProxy"),m_bIsASCWOP,_T("Proxy"));
 	ini.WriteBool(_T("ShowErrors"),m_bShowProxyErrors,_T("Proxy"));
-
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 
 	///////////////////////////////////////////////////////////////////////////
 	// Section: "Statistics"
@@ -2691,7 +2706,8 @@ void CPreferences::LoadPreferences()
 	m_byLogLevel = ini.GetInt(_T("DebugLogLevel"), DLP_VERYLOW);
 	m_bTrustEveryHash = ini.GetBool(_T("AICHTrustEveryHash"), false);
 
-
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	///////////////////////////////////////////////////////////////////////////
 	// Section: "Proxy"
 	//
@@ -2704,7 +2720,8 @@ void CPreferences::LoadPreferences()
 	proxy.type = ini.GetInt(_T("ProxyType"),PROXYTYPE_NOPROXY,_T("Proxy"));
 	m_bIsASCWOP = ini.GetBool(_T("ConnectWithoutProxy"),false,_T("Proxy"));
 	m_bShowProxyErrors = ini.GetBool(_T("ShowErrors"),false,_T("Proxy"));
-
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 
 	///////////////////////////////////////////////////////////////////////////
 	// Section: "Statistics"

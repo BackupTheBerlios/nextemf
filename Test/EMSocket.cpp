@@ -158,7 +158,11 @@ CEMSocket::~CEMSocket(){
 // By Maverick: Connection initialisition is done by class itself
 BOOL CEMSocket::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
 {
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	InitProxySupport();
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 	return CAsyncSocketEx::Connect(lpszHostAddress, nHostPort);
 }
 // end deadlake
@@ -168,11 +172,17 @@ BOOL CEMSocket::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
 //BOOL CEMSocket::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
 BOOL CEMSocket::Connect(SOCKADDR* pSockAddr, int iSockAddrLen)
 {
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	InitProxySupport();
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 	return CAsyncSocketEx::Connect(pSockAddr, iSockAddrLen);
 }
 // end deadlake
 
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 void CEMSocket::InitProxySupport()
 {
 	// ProxyInitialisation
@@ -212,6 +222,8 @@ void CEMSocket::InitProxySupport()
 		AsyncSelect(FD_READ | FD_WRITE | FD_OOB | FD_ACCEPT | FD_CONNECT | FD_CLOSE);
 	}
 }
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 
 void CEMSocket::ClearQueues(){
 	EMTrace("CEMSocket::ClearQueues on %d",(SOCKET)this);
@@ -980,6 +992,8 @@ int CEMSocket::OnLayerCallback(const CAsyncSocketExLayer *pLayer, int nType, int
 			//AddLogLine(false,logline);
 		return 1;
 	}
+//==> remove PROXY [shadow2004]
+#if defined(PROXY)
 	else if (nType==LAYERCALLBACK_LAYERSPECIFIC)
 	{
 		if (pLayer==m_pProxyLayer)
@@ -1031,6 +1045,8 @@ int CEMSocket::OnLayerCallback(const CAsyncSocketExLayer *pLayer, int nType, int
 			}
 		}
 	}
+#endif //PROXY
+//<== remove PROXY [shadow2004]
 	return 1;
 }
 // end deadlake
