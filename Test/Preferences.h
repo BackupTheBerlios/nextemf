@@ -450,7 +450,11 @@ public:
 	static	bool	debug2disk;
 	static	int		iMaxLogBuff;
 	static	UINT	uMaxLogFileSize;
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 	static	bool	scheduler;
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 	static	bool	dontcompressavi;
 	static	bool	msgonlyfriends;
 	static	bool	msgsecure;
@@ -638,7 +642,11 @@ public:
 	friend class CPPgTweaks;
 	friend class CPPgDisplay;
 	friend class CPPgSecurity;
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 	friend class CPPgScheduler;
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 	friend class CPPgDebug;
 //==>Reask sourcen after ip change or Quickstart [cyrex2001]
 #if defined (RSAIC_SIVKA) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
@@ -1195,8 +1203,12 @@ public:
 	static	void	SetMaxSourcesPerFile(uint16 in)			{ maxsourceperfile=in;}
 	static	void	SetMaxConnections(uint16 in)			{ maxconnections =in;}
 	static	void	SetMaxHalfConnections(uint16 in)		{ maxhalfconnections =in;}
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 	static	bool	IsSchedulerEnabled()					{ return scheduler;}
 	static	void	SetSchedulerEnabled(bool in)			{ scheduler=in;}
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 	static	bool	GetDontCompressAvi()					{ return dontcompressavi;}
 
 	static	bool	MsgOnlyFriends()						{ return msgonlyfriends;}

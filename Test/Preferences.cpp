@@ -467,7 +467,11 @@ bool	CPreferences::log2disk;
 bool	CPreferences::debug2disk;
 int		CPreferences::iMaxLogBuff;
 UINT	CPreferences::uMaxLogFileSize;
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 bool	CPreferences::scheduler;
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 bool	CPreferences::dontcompressavi;
 bool	CPreferences::msgonlyfriends;
 bool	CPreferences::msgsecure;
@@ -2078,7 +2082,11 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("UseCreditSystem"),m_bCreditSystem);
 	ini.WriteBool(_T("SaveLogToDisk"),log2disk);
 	ini.WriteBool(_T("SaveDebugToDisk"),debug2disk);
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 	ini.WriteBool(_T("EnableScheduler"),scheduler);
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 	ini.WriteBool(_T("MessagesFromFriendsOnly"),msgonlyfriends);
 	ini.WriteBool(_T("MessageFromValidSourcesOnly"),msgsecure);
 	ini.WriteBool(_T("ShowInfoOnCatTabs"),showCatTabInfos);
@@ -2643,7 +2651,11 @@ void CPreferences::LoadPreferences()
 	m_bDisableKnownClientList=ini.GetInt(_T("DisableKnownClientList"),false);
 	m_bDisableQueueList=ini.GetInt(_T("DisableQueueList"),false);
 	m_bCreditSystem=ini.GetInt(_T("UseCreditSystem"),true);
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 	scheduler=ini.GetBool(_T("EnableScheduler"),false);
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 	msgonlyfriends=ini.GetBool(_T("MessagesFromFriendsOnly"),false);
 	msgsecure=ini.GetBool(_T("MessageFromValidSourcesOnly"),true);
 	autofilenamecleanup=ini.GetBool(_T("AutoFilenameCleanup"),false);

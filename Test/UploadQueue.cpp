@@ -21,7 +21,11 @@
 #include "KnownFile.h"
 #include "ListenSocket.h"
 #include "Exceptions.h"
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 #include "Scheduler.h"
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 #include "PerfLog.h"
 #include "UploadBandwidthThrottler.h"
 #include "ClientList.h"
@@ -1018,10 +1022,12 @@ VOID CALLBACK CUploadQueue::UploadTimer(HWND hwnd, UINT uMsg,UINT_PTR idEvent,DW
 					theApp.emuledlg->activewnd == theApp.emuledlg->transferwnd && 
 					theApp.emuledlg->IsWindowVisible()) 
 						theApp.emuledlg->transferwnd->UpdateCatTabTitles(false);
-				
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)				
 				if (thePrefs.IsSchedulerEnabled())
 					theApp.scheduler->Check();
-
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
                 theApp.emuledlg->transferwnd->UpdateListCount(1, -1);
 			}
 

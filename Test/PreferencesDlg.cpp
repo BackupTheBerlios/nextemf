@@ -50,7 +50,11 @@ CPreferencesDlg::CPreferencesDlg()
 	m_wndWebServer.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndTweaks.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndSecurity.m_psp.dwFlags &= ~PSH_HASHELP;
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 	m_wndScheduler.m_psp.dwFlags &= ~PSH_HASHELP;
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 //==> remove PROXY [shadow2004]
 #if defined(PROXY)
 	m_wndProxy.m_psp.dwFlags &= ~PSH_HASHELP;
@@ -85,7 +89,11 @@ CPreferencesDlg::CPreferencesDlg()
 #endif //IRC
 //<== remove IRC [shadow2004]
 	CTreePropSheet::SetPageIcon(&m_wndSecurity, _T("SECURITY"));
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 	CTreePropSheet::SetPageIcon(&m_wndScheduler, _T("SCHEDULER"));
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 	CTreePropSheet::SetPageIcon(&m_wndWebServer, _T("WEB"));
 	CTreePropSheet::SetPageIcon(&m_wndTweaks, _T("TWEAK"));
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
@@ -115,7 +123,11 @@ CPreferencesDlg::CPreferencesDlg()
 #endif //IRC
 //<== remove IRC [shadow2004]
 	AddPage(&m_wndSecurity);
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 	AddPage(&m_wndScheduler);
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 	AddPage(&m_wndWebServer);
 	AddPage(&m_wndTweaks);
 //==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
@@ -176,7 +188,11 @@ void CPreferencesDlg::Localize()
 	m_wndSecurity.Localize();
 	m_wndTweaks.Localize();
 	m_wndWebServer.Localize();
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 	m_wndScheduler.Localize();
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 //==> remove PROXY [shadow2004]
 #if defined(PROXY)
 	m_wndProxy.Localize();
@@ -210,12 +226,16 @@ void CPreferencesDlg::Localize()
 #endif //IRC
 //<== remove IRC [shadow2004]
 		pTree->SetItemText(GetPageTreeItem(8), RemoveAmbersand(GetResString(IDS_SECURITY))); //10
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 		pTree->SetItemText(GetPageTreeItem(9), RemoveAmbersand(GetResString(IDS_SCHEDULER)));//11
-		pTree->SetItemText(GetPageTreeItem(10), RemoveAmbersand(GetResString(IDS_PW_WS)));//12
-		pTree->SetItemText(GetPageTreeItem(11), RemoveAmbersand(GetResString(IDS_PW_TWEAK)));//13
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
+		pTree->SetItemText(GetPageTreeItem(9), RemoveAmbersand(GetResString(IDS_PW_WS)));//12
+		pTree->SetItemText(GetPageTreeItem(10), RemoveAmbersand(GetResString(IDS_PW_TWEAK)));//13
 //==>Reask sourcen after ip chnage or Quickstart [cyrex2001]
 #if defined (RSAIC_SIVKA) || defined (QUICKSTART) //Reask sourcen after ip chnage or Quickstart
-		pTree->SetItemText(GetPageTreeItem(13), RemoveAmbersand(GetResString(IDS_PW_NEXTEMF)/*_T(NextEMF)*/));//14
+		pTree->SetItemText(GetPageTreeItem(11), RemoveAmbersand(GetResString(IDS_PW_NEXTEMF)/*_T(NextEMF)*/));//14
 #endif //Reask sourcen after ip chnage or Quickstart
 //<==Reask sourcen after ip chnage or Quickstart [cyrex2001]
 	#if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)

@@ -19,7 +19,11 @@
 #include "emule.h"
 #include "PPgConnection.h"
 #include "wizard.h"
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 #include "Scheduler.h"
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 #include "OtherFunctions.h"
 #include "emuledlg.h"
 #include "Preferences.h"
@@ -375,7 +379,11 @@ BOOL CPPgConnection::OnApply()
 		}
 	}
 	thePrefs.maxconnections = tempcon;
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 	theApp.scheduler->SaveOriginals();
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 
 	SetModified(FALSE);
 	LoadSettings();

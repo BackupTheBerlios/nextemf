@@ -975,6 +975,8 @@ BEGIN
 //<== remove MobileMule [shadow2004]
 END
 
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 IDD_PPG_SCHEDULER DIALOGEX 0, 0, 230, 241
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Scheduler"
@@ -1008,6 +1010,8 @@ BEGIN
     LTEXT           "Action:",IDC_STATIC_S_ACTION,14,150,40,8
     CTEXT           "-",IDC_STATIC,97,142,8,8
 END
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 
 IDD_WIZ1_WELCOME DIALOGEX 0, 0, 317, 193
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
@@ -1949,6 +1953,8 @@ BEGIN
         HORZGUIDE, 220
     END
 
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
     IDD_PPG_SCHEDULER, DIALOG
     BEGIN
         LEFTMARGIN, 7
@@ -1971,6 +1977,8 @@ BEGIN
         HORZGUIDE, 197
         HORZGUIDE, 209
     END
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 
     IDD_WIZ1_WELCOME, DIALOG
     BEGIN
@@ -2350,7 +2358,11 @@ DELETEFRIEND            ICON                    "res\\UserDelete.ico"
 CLIENTDETAILS           ICON                    "res\\UserDetails.ico"
 VIEWFILES               ICON                    "res\\UserFiles.ico"
 SENDMESSAGE             ICON                    "res\\UserMessage.ico"
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 SCHEDULER               ICON                    "res\\Scheduler.ico"
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 WIZZARD                 ICON                    "res\\Wizzard.ico"
 LISTADD                 ICON                    "res\\ListAdd.ico"
 LISTREMOVE              ICON                    "res\\ListRemove.ico"
@@ -2915,7 +2927,11 @@ BEGIN
     IDS_SW_DIRECTDOWNLOAD   "Paste eD2K Links"
     IDS_SW_LINK             "eD2K Links"
     IDS_SW_START            "Start"
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
     IDS_SCHEDULER           "Scheduler"
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 END
 
 STRINGTABLE 
@@ -3729,6 +3745,8 @@ BEGIN
     IDS_ERR_TOOLARGEFILE    "File larger than the supported size of the edonkey protocol (>=4GB)"
     IDS_MSGONLYFRIENDS      "Accept from friends only"
     IDS_MSGONLYSEC          "Accept from valid clients only"
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
     IDS_DAY_MO_SA           "Mon-Sat"
     IDS_LIMITSOURCES        "Limit sources"
     IDS_LIMITCONS5SEC       "Limit connections/5secs"
@@ -3740,6 +3758,8 @@ BEGIN
     IDS_SCHED_ENTERDATARATELIMIT "Enter the datarate limit:"
     IDS_SCHED_ENTERVAL      "Please enter the new value:"
     IDS_SCHED_ACTCONFIG     "Configure Action"
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
     IDS_SELECTCAT           "Select category"
 END
 
@@ -3793,8 +3813,12 @@ BEGIN
     IDS_HARDFILES           "Hard File Limit"
     IDS_FILTER              "Filter"
     IDS_LINKS               "Links"
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
     IDS_HM_SCHED_ON         "Switch Scheduler On"
     IDS_HM_SCHED_OFF        "Switch Scheduler Off"
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
     IDS_HM_LINKHP           "eMule Homepage"
     IDS_HM_LINKFAQ          "eMule FAQ"
     IDS_HM_LINKVC           "eMule Versioncheck"

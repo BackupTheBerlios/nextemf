@@ -316,7 +316,11 @@
 #define IDS_SW_DIRECTDOWNLOAD           396
 #define IDS_SW_LINK                     397
 #define IDS_SW_START                    398
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 #define IDS_SCHEDULER                   399
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 //==> remove IRC [shadow2004]
 #if defined(IRC)
 #define IDS_IRC                         400
@@ -957,7 +961,11 @@
 #define IDS_NOTHING                     971
 #define IDS_SETUPSPEED                  972
 #define IDS_SETDOWNSPEED                973
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 #define IDD_PPG_SCHEDULER               974
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 #define IDS_UNDO                        974
 #define IDS_DAYLY                       975
 #define IDS_DAY_MO_FR                   976

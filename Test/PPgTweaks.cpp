@@ -18,7 +18,11 @@
 #include "emule.h"
 #include "SearchDlg.h"
 #include "PPgTweaks.h"
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 #include "Scheduler.h"
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 #include "DownloadQueue.h"
 #include "Preferences.h"
 #include "OtherFunctions.h"
@@ -420,7 +424,11 @@ BOOL CPPgTweaks::OnApply()
 		return FALSE;
 
 	thePrefs.SetMaxConsPerFive(m_iMaxConnPerFive ? m_iMaxConnPerFive : DFLT_MAXCONPERFIVE);
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 	theApp.scheduler->original_cons5s = thePrefs.GetMaxConperFive();
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 	thePrefs.SetMaxHalfConnections(m_iMaxHalfOpen ? m_iMaxHalfOpen : DFLT_MAXHALFOPEN);
 
 	if (HaveEd2kRegAccess() && thePrefs.AutoTakeED2KLinks() != (bool)m_iAutoTakeEd2kLinks)

@@ -17,7 +17,11 @@
 #include "PPgDisplay.h"
 #include "PPgSecurity.h"
 #include "PPgWebServer.h"
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 #include "PPgScheduler.h"
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 //==> remove PROXY [shadow2004]
 #if defined(PROXY)
 #include "PPgProxy.h"
@@ -59,7 +63,11 @@ public:
 	CPPgDisplay		m_wndDisplay;
 	CPPgSecurity	m_wndSecurity;
 	CPPgWebServer	m_wndWebServer;
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 	CPPgScheduler	m_wndScheduler;
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 //==> remove PROXY [shadow2004]
 #if defined(PROXY)
 	CPPgProxy		m_wndProxy;

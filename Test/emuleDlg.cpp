@@ -82,7 +82,11 @@
 #include "ListenSocket.h"
 #include "Server.h"
 #include "PartFile.h"
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 #include "Scheduler.h"
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 #include "ClientCredits.h"
 #include "MenuCmds.h"
 #include "MuleSystrayDlg.h"
@@ -1421,7 +1425,11 @@ void CemuleDlg::OnClose()
 	kademliawnd->SaveAllSettings();
 
 	theApp.m_pPeerCache->Save();
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 	theApp.scheduler->RestoreOriginals();
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 	thePrefs.Save();
 	thePerfLog.Shutdown();
 
@@ -1468,7 +1476,11 @@ void CemuleDlg::OnClose()
 	delete theApp.uploadqueue;		theApp.uploadqueue = NULL;
 	delete theApp.clientlist;		theApp.clientlist = NULL;
 	delete theApp.friendlist;		theApp.friendlist = NULL;
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 	delete theApp.scheduler;		theApp.scheduler = NULL;
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 	delete theApp.ipfilter;			theApp.ipfilter = NULL;
 	delete theApp.webserver;		theApp.webserver = NULL;
 	delete theApp.m_pPeerCache;		theApp.m_pPeerCache = NULL;
@@ -2105,10 +2117,14 @@ BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 		case MP_HM_CONVERTPF:
 			CPartFileConvert::ShowGUI();
 			break;
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 		case MP_HM_SCHEDONOFF:
 			thePrefs.SetSchedulerEnabled(!thePrefs.IsSchedulerEnabled());
 			theApp.scheduler->Check(true);
 			break;
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 		case MP_HM_1STSWIZARD:
 			extern BOOL FirstTimeWizard();
 			if (FirstTimeWizard()){
@@ -2131,10 +2147,14 @@ BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 	if (wParam>=MP_WEBURL && wParam<=MP_WEBURL+99) {
 		theWebServices.RunURL(NULL, wParam);
 	}
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 	else if (wParam>=MP_SCHACTIONS && wParam<=MP_SCHACTIONS+99) {
 		theApp.scheduler->ActivateSchedule(wParam-MP_SCHACTIONS);
 		theApp.scheduler->SaveOriginals(); // use the new settings as original
 	}
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 
 	return CTrayDialog::OnCommand(wParam, lParam);
 }
@@ -2201,7 +2221,8 @@ void CemuleDlg::ShowToolPopup(bool toolsonly)
 	theWebServices.GetGeneralMenuEntries(&Links);
 	Links.InsertMenu(3, MF_BYPOSITION | MF_SEPARATOR);
 	Links.AppendMenu(MF_STRING, MP_WEBSVC_EDIT, GetResString(IDS_WEBSVEDIT));
-
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 	CMenu scheduler;
 	scheduler.CreateMenu();
 	CString schedonoff= (!thePrefs.IsSchedulerEnabled())?GetResString(IDS_HM_SCHED_ON):GetResString(IDS_HM_SCHED_OFF);
@@ -2212,7 +2233,8 @@ void CemuleDlg::ShowToolPopup(bool toolsonly)
 		for (int i=0; i<theApp.scheduler->GetCount();i++)
 			scheduler.AppendMenu(MF_STRING,MP_SCHACTIONS+i, theApp.scheduler->GetSchedule(i)->title );
 	}
-
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 	if (!toolsonly) {
 		if (theApp.serverconnect->IsConnected())
 			menu.AppendMenu(MF_STRING,MP_HM_CON,GetResString(IDS_MAIN_BTN_DISCONNECT), _T("DISCONNECT"));
@@ -2246,7 +2268,11 @@ void CemuleDlg::ShowToolPopup(bool toolsonly)
 
 	menu.AppendMenu(MF_SEPARATOR);
 	menu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)Links.m_hMenu, GetResString(IDS_LINKS), _T("WEB") );
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 	menu.AppendMenu(MF_STRING|MF_POPUP,(UINT_PTR)scheduler.m_hMenu, GetResString(IDS_SCHEDULER), _T("SCHEDULER") );
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 
 	if (!toolsonly) {
 		menu.AppendMenu(MF_SEPARATOR);
@@ -2254,7 +2280,11 @@ void CemuleDlg::ShowToolPopup(bool toolsonly)
 	}
 	menu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON, point.x, point.y, this);
 	VERIFY( Links.DestroyMenu() );
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 	VERIFY( scheduler.DestroyMenu() );
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 	VERIFY( menu.DestroyMenu() );
 }
 

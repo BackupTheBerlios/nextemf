@@ -28,7 +28,11 @@
 #ifdef _DUMP
 #include "mdump.h"
 #endif
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 #include "Scheduler.h"
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 #include "SearchList.h"
 #include "kademlia/kademlia/Kademlia.h"
 #include "kademlia/kademlia/Prefs.h"
@@ -514,7 +518,11 @@ BOOL CemuleApp::InitInstance()
 	mmserver = new CMMServer();
 #endif //MM
 //<== remove MobileMule [shadow2004]
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 	scheduler = new CScheduler();
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 	m_pPeerCache = new CPeerCacheFinder();
 	
 	thePerfLog.Startup();

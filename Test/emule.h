@@ -35,7 +35,11 @@ class CSearchList;
 class CUploadQueue;
 class CListenSocket;
 class CDownloadQueue;
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 class CScheduler;
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 class UploadBandwidthThrottler;
 class LastCommonRouteFinder;
 class CemuleDlg;
@@ -91,7 +95,11 @@ public:
 	CClientUDPSocket*	clientudp;
 	CIPFilter*			ipfilter;
 	CWebServer*			webserver;
+//==> remove scheduler [shadow2004]
+#if defined(SCHEDULER)
 	CScheduler*			scheduler;
+#endif //SCHEDULER
+//<== remove scheduler [shadow2004]
 //==> remove MobileMule [shadow2004]
 #if defined(MM)
 	CMMServer*			mmserver;
