@@ -702,7 +702,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ADDED2SSF           "wurde zur Liste der festen Server hinzugefügt"
-    IDS_STATICSERVER        "fest"
     IDS_ERROR_SSF           "Fehler beim Öffnen der staticservers.dat"
     IDS_ERR_PACKAGEERROR    "Kritischer Fehler bei der Verarbeitung eines Datenpaketes für %s (falsche Größe) - Datenblock verloren"
     IDS_SF_ACTIVECON        "aktive Verbindungen (geschätzt)"
@@ -1194,12 +1193,10 @@ BEGIN
     IDS_STARTPRIO           "Priorität dieser Kategorie"
     IDS_PREF_STARTNEXTFILECAT "gleiche Kategorie bevorzugen"
     IDS_REPAINTGRAPHS       "Statistikgraphen bei Fensteränderung nicht neu berechnen"
-    IDS_SOFTFILES           "Soft File Limit"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_HARDFILES           "Hard File Limit"
     IDS_FILTER              "Filter"
     IDS_LINKS               "Links"
     IDS_HM_SCHED_ON         "Zeitplaner einschalten"
@@ -1360,7 +1357,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_VERSION             "Version"
     IDS_ALL_A4AF_TO_THIS    "alle Quellen zu dieser Datei"
     IDS_PASTE               "Einfügen"
     IDS_ALL_A4AF_TO_OTHER   "alle Quellen zu einer anderen Datei"
@@ -1711,7 +1707,6 @@ BEGIN
     IDS_META_SRCIP          "Quelle IP"
     IDS_META_SRCTYPE        "Quellentyp"
     IDS_SEARCH_UNICODE      "Suche mit Unicode"
-    IDS_PF_ADVANCEDCALC     "nutze fortgeschrittene Methode für Restzeitbestimmung"
     IDS_PERSEC              "/s"
     IDS_LD_ED2KLINK         "ED2K Link"
     IDS_LD_COPYCLIPBOARD    "in Zwischenablage kopieren"
@@ -1785,12 +1780,16 @@ BEGIN
     IDS_ANTIGPLBREAKERLOG   "[Anti-GPL-Verletzer] Client %s mit MOD %s wurde temporär gebannt. Vedacht auf GPL-Verletzung"
     IDS_UPSTOPPEDLEECHER    "Uploadsession nicht erlaubt. Client scheint ein Leecher zu sein."
     IDS_ANTILEECHERLOG      "[Anti-Leechermods] Client %s mit MOD %s wurde temporär gebannt. Vedacht auf Leech-Versuch"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_LEECHERDETREM       "Leecher wurde entdeckt und aus der Upload-Warteschlange entfernt."
     IDS_LEECHERPUTBACK      "Leecher wurde in der Warteliste zurückgesetzt."
     IDS_STATS_LEECHERCLIENTS "Leechers: %u"
     IDS_ANTI_LEECHER        "Anti-Leecher-Kontrolle nutzen"
     IDS_ANTI_CREDITHACK     "Anti-Credit-Diebstahl nutzen"
-
+    IDS_DOWNLOAD_IN_BOLD    "Aktive Downloads fett anzeigen"
 END
 
 #endif    // Deutsch (Deutschland) resources
