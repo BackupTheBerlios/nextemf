@@ -24,9 +24,21 @@
 
 //==> remove IRC [shadow2004]
 #if defined(IRC)
-const CString strDefaultToolbar = _T("0099010203040506070899091011");
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+const CString strDefaultToolbar = _T("009901020304050607080910991112");
+#else
+const CString strDefaultToolbar = _T("0099010203040506070809991011");
+#endif
+//<== RSS-Window [shadow2004]
 #else //IRC
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+const CString strDefaultToolbar = _T("0099010203040506070809991011");
+#else
 const CString strDefaultToolbar = _T("00990102030405060708990910");
+#endif
+//<== RSS-Window [shadow2004]
 #endif //IRC
 //<== remove IRC [shadow2004]
 
@@ -663,6 +675,13 @@ public:
     static	bool	m_bCheckCon;
 #endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
 //<== Spooky Mode ConChecker [cyrex2001]
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+	static	bool	m_bAdvancedRel;
+	static	CString	m_RelURL;
+	static	bool	m_bRelAutoConnect;
+#endif
+//<== RSS-Window [shadow2004]
 
 	enum Table
 	{
@@ -1491,6 +1510,12 @@ public:
     void     SetCheckCon(const bool &b)						{m_bCheckCon = b;}
 #endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
 //<== Spooky Mode ConChecker [cyrex2001]
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+	static	CString	GetReleaseURL()						{return m_RelURL;}
+	static	bool	GetReleaseAutoConnect()				{return m_bRelAutoConnect;}
+#endif
+//<== RSS-Window [shadow2004]
 
 protected:
 	static	CString appdir;

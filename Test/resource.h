@@ -2411,6 +2411,40 @@
 #define IDS_CRASHRPT_AV					61056
 #define IDS_CRASHRPT_NOTAV				61057
 
+//==> RSS-Window [shadow2004]
+#define IDS_RELEASES                    61100
+#define IDC_RELEASE                     61101
+#define IDC_RELEASE_BOX                 61102
+#define IDD_RELEASE                     61103
+#define IDS_URL                         61104
+#define IDS_RELURL                      61105
+#define IDS_RELAUTOCONNECT              61106
+#define IDC_NEWWIN                      61107
+#define IDS_EM_RELEASE                  61108
+#define IDC_BN_ADDSITE                  61109
+#define IDC_BN_THISSITE                 61110
+#define IDC_BN_ADVANCED                 61111
+#define IDS_REL_SITE                    61112
+#define IDS_REL_NAME                    61113
+#define IDS_REL_LINK                    61114
+#define IDS_REL_WARNING1                61115
+#define IDS_REL_WARNING2                61116
+#define IDS_REL_WARNING3                61117
+#define IDS_REL_WARNING4                61118
+#define IDS_REL_WARNING5                61119
+#define IDS_REL_DESC                    61120
+#define IDS_BN_GETRELEASES              61121
+#define IDS_NEWWIN                      61122
+#define IDS_BN_THISSITE                 61123
+#define IDS_BN_DELETESITE               61124
+#define IDS_BN_ADDSITE                  61125
+#define IDC_BN_GETRELEASES              61126
+#define IDC_RELURL                      61127
+#define IDC_BN_DELETESITE               61128
+#define IDC_EXPLORER                    61129
+#define IDC_REL_TREE                    61130
+//<== RSS-Window [shadow2004]
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

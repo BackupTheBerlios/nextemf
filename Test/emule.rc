@@ -1554,6 +1554,35 @@ BEGIN
 END
 //#endif //Hardlimit
 //<==Hardlimit [cyrex2001]
+//==> RSS-Window [shadow2004]
+IDD_RELEASE DIALOGEX 0, 35, 511, 290
+STYLE DS_LOCALEDIT | DS_SETFONT | DS_FIXEDSYS | DS_CONTROL | WS_CHILD | 
+    WS_SYSMENU
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    PUSHBUTTON      "Get New Releases",IDC_BN_GETRELEASES,81,27,80,12,
+                    BS_FLAT
+    COMBOBOX        IDC_RELURL,10,10,487,14,CBS_DROPDOWN | CBS_SORT | NOT 
+                    WS_VISIBLE | WS_VSCROLL | WS_TABSTOP
+    PUSHBUTTON      "Get From This Site Only",IDC_BN_THISSITE,259,27,80,12,
+                    BS_FLAT | NOT WS_VISIBLE
+    PUSHBUTTON      "Delete This Site",IDC_BN_DELETESITE,170,27,80,12,
+                    BS_FLAT | NOT WS_VISIBLE
+    PUSHBUTTON      "Add This Site",IDC_BN_ADDSITE,347,27,80,12,BS_FLAT | 
+                    NOT WS_VISIBLE
+    CONTROL         "New Window",IDC_NEWWIN,"Button",BS_AUTOCHECKBOX | 
+                    BS_FLAT | NOT WS_VISIBLE | WS_TABSTOP,433,26,64,13
+    CONTROL         "",IDC_EXPLORER,"{8856F961-340A-11D0-A96B-00C04FD705A2}",
+                    WS_TABSTOP,134,47,369,238
+    CONTROL         "",IDC_REL_TREE,"SysTreeView32",TVS_HASBUTTONS | 
+                    TVS_HASLINES | TVS_LINESATROOT | WS_TABSTOP,3,47,126,238,
+                    WS_EX_STATICEDGE
+    PUSHBUTTON      "Advanced >>",IDC_BN_ADVANCED,10,27,65,12,BS_FLAT
+    GROUPBOX        "Retrive New Release Information:",IDC_RELEASE_BOX,3,1,
+                    500,44,BS_FLAT
+END
+//<== RSS-Window [shadow2004]
+
 /////////////////////////////////////////////////////////////////////////////
 //
 // DESIGNINFO
@@ -2189,6 +2218,17 @@ BEGIN
         TOPMARGIN, 7
         BOTTOMMARGIN, 231
     END
+//==> RSS-Window [shadow2004]
+    IDD_RELEASE, DIALOG
+    BEGIN
+        LEFTMARGIN, 3
+        RIGHTMARGIN, 503
+        VERTGUIDE, 10
+        VERTGUIDE, 497
+        TOPMARGIN, 1
+        BOTTOMMARGIN, 285
+    END
+//<== RSS-Window [shadow2004]
 END
 //#endif
 //<==Reask sourcen after ip change or Quickstart [cyrex2001]
@@ -2390,6 +2430,9 @@ HARDLIMIT               ICON                    "res\\HL.ico"
 DROP                    ICON                    "res\\DROP.ico"
 IDI_CANCEL              ICON                    "res\\cancel.ico"
 IDI_SPOOKY              ICON                    "res\\spooky.ico"
+//==> RSS-Window [shadow2004]
+BN_RELEASE              ICON                    "res\\release.ico"
+//<== RSS-Window [shadow2004]
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2464,6 +2507,22 @@ BEGIN
 END
 #endif //PROXY
 //<== remove PROXY [shadow2004]
+//==> RSS-Window [shadow2004]
+IDD_RELEASE DLGINIT
+BEGIN
+    IDC_EXPLORER, 0x376, 160, 0
+0x0000, 0x0000, 0x004c, 0x0000, 0x3942, 0x0000, 0x27ff, 0x0000, 0x0000, 
+0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+0x0000, 0x0000, 0x004c, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0001, 
+0x0000, 0xd0e0, 0x0057, 0x3573, 0x11cf, 0x69ae, 0x0008, 0x2e2b, 0x6212, 
+0x0000, 0x0000, 0x0000, 0x0000, 0x004c, 0x0000, 0x1401, 0x0002, 0x0000, 
+0x0000, 0x00c0, 0x0000, 0x0000, 0x4600, 0x0080, 0x0000, 0x0000, 0x0000, 
+0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0001, 0x0000, 
+0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 0x0000, 
+    0
+END
+//<== RSS-Window [shadow2004]
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -4497,6 +4556,33 @@ BEGIN
     IDS_PING_TLL            "Ping TLL (8-64)"
 END
 
+//==> RSS-Window [shadow2004]
+STRINGTABLE 
+BEGIN
+    IDS_REL_WARNING5        "The clicked URL is invalid."
+    IDS_REL_DESC            "Description"
+    IDS_BN_GETRELEASES      "Get New Releases"
+    IDS_NEWWIN              "New Window"
+    IDS_BN_THISSITE         "Get From This Site Only"
+    IDS_BN_DELETESITE       "Delete This Site"
+    IDS_BN_ADDSITE          "Add This Site"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_URL                 "http://www.emulefuture.de/koobi4/rss/?rss=news&pp=15&area=1"
+    IDS_RELURL              "Release Homepage URL"
+    IDS_RELAUTOCONNECT      "Autoconnect On Startup"
+    IDS_EM_RELEASE          "Release"
+    IDS_REL_SITE            "Site"
+    IDS_REL_NAME            "Release"
+    IDS_REL_LINK            "Link"
+    IDS_REL_WARNING1        "If you leave the URL blank, it will default to Geeklog Net!!"
+    IDS_REL_WARNING2        "If you add a url, you must add http:// or ftp:// at the begining or else it wont work"
+    IDS_REL_WARNING3        "Please don't hammer the sites with Get New Releases requests every few minutes, use it wisely."
+    IDS_REL_WARNING4        """New Window"" will open a new browser each click (Will work only with Internet Explorer)."
+END
+//<== RSS-Window [shadow2004]
 #endif    // Englisch (USA) resources
 /////////////////////////////////////////////////////////////////////////////
 

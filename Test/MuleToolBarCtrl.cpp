@@ -35,6 +35,11 @@
 #endif //IRC
 //<== remove IRC [shadow2004]
 #include "StatisticsDlg.h"
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+#include ".\NextEMF\ReleaseWnd.h"
+#endif
+//<== RSS-Window [shadow2004]
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -159,6 +164,15 @@ void CMuleToolbarCtrl::Init(void)
 	lLen += lLen2;
 	++m_buttoncount;
 
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+	lLen2 = _tcslen(GetResString(IDS_EM_RELEASE)) + 1;
+	memcpy(cButtonStrings+lLen, GetResString(IDS_EM_RELEASE), lLen2*sizeof(TCHAR));
+	lLen += lLen2;
+	++m_buttoncount;
+#endif
+//<== RSS-Window [shadow2004]
+
 	lLen2 = _tcslen(GetResString(IDS_EM_PREFS)) + 1;
 	memcpy(cButtonStrings+lLen, GetResString(IDS_EM_PREFS), lLen2*sizeof(TCHAR));
 	lLen += lLen2;
@@ -269,6 +283,11 @@ void CMuleToolbarCtrl::Localize(void)
 #endif //IRC
 //<== remove IRC [shadow2004]
 			IDS_EM_STATISTIC,
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+			IDS_EM_RELEASE,
+#endif
+//<== RSS-Window [shadow2004]
 			IDS_EM_PREFS,
 			IDS_TOOLS,
 			IDS_EM_HELP
@@ -597,6 +616,11 @@ void CMuleToolbarCtrl::ChangeToolbarBitmap(CString path, bool refresh)
 #endif //IRC
 //<== remove IRC [shadow2004]
 		ImageList.Add(CTempIconLoader(_T("STATISTICS"), 32, 32));
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+		ImageList.Add(CTempIconLoader(_T("BN_RELEASE"), 32, 32));
+#endif
+//<== RSS-Window [shadow2004]
 		ImageList.Add(CTempIconLoader(_T("PREFERENCES"), 32, 32));
 		ImageList.Add(CTempIconLoader(_T("TOOLS"), 32, 32));
 		ImageList.Add(CTempIconLoader(_T("HELP"), 32, 32));
@@ -796,7 +820,12 @@ void CMuleToolbarCtrl::Refresh()
 			theApp.emuledlg->ircwnd,
 #endif //IRC
 //<== remove IRC [shadow2004]
-			theApp.emuledlg->statisticswnd
+			theApp.emuledlg->statisticswnd,
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+			theApp.emuledlg->releasewnd 
+#endif
+//<== RSS-Window [shadow2004]
 		};
 		for (int i = 0; i < ARRSIZE(wnds); i++)
 		{

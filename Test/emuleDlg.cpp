@@ -101,6 +101,11 @@
 #include "StringConversion.h"
 #include "aichsyncthread.h"
 #include "Log.h"
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+#include ".\NextEMF\ReleaseWnd.h"
+#endif
+//<== RSS-Window [shadow2004]
 
 #ifdef _DEBUG
 #undef THIS_FILE
@@ -134,6 +139,11 @@ CemuleDlg::CemuleDlg(CWnd* pParent /*=NULL*/)
 #endif //IRC
 //<== remove IRC [shadow2004]
 	statisticswnd = new CStatisticsDlg;
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+	releasewnd = new CReleaseWnd;
+#endif
+//<== RSS-Window [shadow2004]
 	toolbar = new CMuleToolbarCtrl;
 	statusbar = new CMuleStatusBarCtrl;
 	m_wndTaskbarNotifier = new CTaskbarNotifier;
@@ -209,6 +219,11 @@ CemuleDlg::~CemuleDlg()
 #endif //IRC
 //<== remove IRC [shadow2004]
 	delete statisticswnd;
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+	delete releasewnd;
+#endif
+//<== RSS-Window [shadow2004]
 	delete toolbar;
 	delete statusbar;
 	delete m_wndTaskbarNotifier;
@@ -370,6 +385,11 @@ BOOL CemuleDlg::OnInitDialog()
 	chatwnd->Create(IDD_CHAT);
 	transferwnd->Create(IDD_TRANSFER);
 	statisticswnd->Create(IDD_STATISTICS);
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+	releasewnd->Create(IDD_RELEASE);
+#endif
+//<== RSS-Window [shadow2004]
 	kademliawnd->Create(IDD_KADEMLIAWND);
 //==> remove IRC [shadow2004]
 #if defined(IRC)
@@ -408,6 +428,13 @@ BOOL CemuleDlg::OnInitDialog()
 			break;
 #endif //IRC
 //<== remove IRC [shadow2004
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+		case IDD_RELEASE:
+			SetActiveDialog(releasewnd);
+			break;
+#endif
+//<== RSS-Window [shadow2004]
 		}
 	}
 
@@ -446,7 +473,12 @@ BOOL CemuleDlg::OnInitDialog()
 		ircwnd,
 #endif //IRC
 //<== remove IRC [shadow2004]
-		statisticswnd
+		statisticswnd,
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+		releasewnd
+#endif
+//<== RSS-Window [shadow2004]
 	};
 	for (int i = 0; i < ARRSIZE(apWnds); i++)
 		apWnds[i]->SetWindowPos(NULL, rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height(), SWP_NOZORDER);
@@ -464,6 +496,11 @@ BOOL CemuleDlg::OnInitDialog()
 #endif //IRC
 //<== remove IRC [shadow2004]
 	AddAnchor(*statisticswnd,	TOP_LEFT, BOTTOM_RIGHT);
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+	AddAnchor(*releasewnd, TOP_LEFT, BOTTOM_RIGHT);
+#endif
+//<== RSS-Window [shadow2004]
 	AddAnchor(*toolbar,			TOP_LEFT, TOP_RIGHT);
 	AddAnchor(*statusbar,		BOTTOM_LEFT, BOTTOM_RIGHT);
 
@@ -1116,6 +1153,21 @@ void CemuleDlg::SetActiveDialog(CWnd* dlg)
 //<== remove IRC [shadow2004]
 		statisticswnd->ShowStatistics();
 	}
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+//==> remove IRC [shadow2004]
+#if defined(IRC)
+	else if	(dlg == releasewnd){
+		toolbar->PressMuleButton(IDC_TOOLBARBUTTON+9);
+	}
+#else
+	else if	(dlg == releasewnd){
+		toolbar->PressMuleButton(IDC_TOOLBARBUTTON+8);
+	}
+#endif //IRC
+//<== remove IRC [shadow2004]
+#endif
+//<== RSS-Window [shadow2004]
 	else if	(dlg == kademliawnd){
 		toolbar->PressMuleButton(IDC_TOOLBARBUTTON+1);
 	}
@@ -1411,6 +1463,12 @@ void CemuleDlg::OnClose()
 			thePrefs.SetLastMainWndDlgID(IDD_IRC);
 #endif //IRC
 //<== remove IRC [shadow2004]
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+		else if (activewnd->IsKindOf(RUNTIME_CLASS(CReleaseWnd)))
+			thePrefs.SetLastMainWndDlgID(IDD_RELEASE);
+#endif
+//<== RSS-Window [shadow2004]
 		else{
 			ASSERT(0);
 			thePrefs.SetLastMainWndDlgID(0);
@@ -2076,6 +2134,29 @@ BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 		case MP_HM_STATS:
 			SetActiveDialog(statisticswnd);
 			break;
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+		case IDC_TOOLBARBUTTON + 9:
+		case MP_HM_RELEASE:
+			SetActiveDialog(releasewnd);
+			break;
+		case IDC_TOOLBARBUTTON + 10:
+		case MP_HM_PREFS:
+			toolbar->CheckButton(IDC_TOOLBARBUTTON+10,TRUE);
+			preferenceswnd->DoModal();
+			toolbar->CheckButton(IDC_TOOLBARBUTTON+10,FALSE);
+			break;
+		case IDC_TOOLBARBUTTON + 11:
+			ShowToolPopup(true);
+			break;
+		case MP_HM_OPENINC:
+			ShellExecute(NULL, _T("open"), thePrefs.GetIncomingDir(),NULL, NULL, SW_SHOW); 
+			break;
+		case MP_HM_HELP:
+		case IDC_TOOLBARBUTTON + 12:
+			wParam = ID_HELP;
+			break;
+#else
 		case IDC_TOOLBARBUTTON + 9:
 		case MP_HM_PREFS:
 			toolbar->CheckButton(IDC_TOOLBARBUTTON+9,TRUE);
@@ -2092,11 +2173,36 @@ BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 		case IDC_TOOLBARBUTTON + 11:
 			wParam = ID_HELP;
 			break;
+#endif
+//<== RSS-Window [shadow2004]
 #else //IRC
 		case IDC_TOOLBARBUTTON + 7:
 		case MP_HM_STATS:
 			SetActiveDialog(statisticswnd);
 			break;
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+		case IDC_TOOLBARBUTTON + 8:
+		case MP_HM_RELEASE:
+			SetActiveDialog(releasewnd);
+			break;
+		case IDC_TOOLBARBUTTON + 9:
+		case MP_HM_PREFS:
+			toolbar->CheckButton(IDC_TOOLBARBUTTON+9,TRUE);
+			preferenceswnd->DoModal();
+			toolbar->CheckButton(IDC_TOOLBARBUTTON+9,FALSE);
+			break;
+		case IDC_TOOLBARBUTTON + 10:
+			ShowToolPopup(true);
+			break;
+		case MP_HM_OPENINC:
+			ShellExecute(NULL, _T("open"), thePrefs.GetIncomingDir(),NULL, NULL, SW_SHOW); 
+			break;
+		case MP_HM_HELP:
+		case IDC_TOOLBARBUTTON + 11:
+			wParam = ID_HELP;
+			break;
+#else
 		case IDC_TOOLBARBUTTON + 8:
 		case MP_HM_PREFS:
 			toolbar->CheckButton(IDC_TOOLBARBUTTON+8,TRUE);
@@ -2113,6 +2219,8 @@ BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 		case IDC_TOOLBARBUTTON + 10:
 			wParam = ID_HELP;
 			break;
+#endif
+//<== RSS-Window [shadow2004]
 #endif //IRC
 //<== remove IRC [shadow2004]
 		case MP_HM_CON:
@@ -2283,6 +2391,11 @@ void CemuleDlg::ShowToolPopup(bool toolsonly)
 #endif //IRC
 //<== remove IRC [shadow2004]
 		menu.AppendMenu(MF_STRING,MP_HM_STATS, GetResString(IDS_EM_STATISTIC), _T("STATISTICS"));
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+		menu.AppendMenu(MF_STRING,MP_HM_RELEASE, GetResString(IDS_EM_RELEASE), _T("BN_RELEASE"));
+#endif
+//<== RSS-Window [shadow2004]
 		menu.AppendMenu(MF_STRING,MP_HM_PREFS, GetResString(IDS_EM_PREFS), _T("PREFERENCES"));
 		menu.AppendMenu(MF_STRING,MP_HM_HELP, GetResString(IDS_EM_HELP), _T("HELP"));
 		menu.AppendMenu(MF_SEPARATOR);

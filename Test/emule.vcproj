@@ -294,7 +294,7 @@
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;WINSOCK2;RSAIC_MAELLA;MODVERSION;SIVKA_BAN;DROP;OPTIM;ANTI_LEECHER;HARDLIMIT;ANTI_FAKE_RANK;ASK_FOR_PRIO;LOWID;SPOOKY;CONCHECKER"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;WINSOCK2;RSAIC_MAELLA;MODVERSION;SIVKA_BAN;DROP;OPTIM;ANTI_LEECHER;HARDLIMIT;ANTI_FAKE_RANK;ASK_FOR_PRIO;LOWID;SPOOKY;CONCHECKER;RELWND"
 				StringPooling="TRUE"
 				MinimalRebuild="FALSE"
 				BasicRuntimeChecks="0"
@@ -2433,6 +2433,38 @@
 			<File
 				RelativePath=".\NextEMF\PraeProDec.h">
 			</File>
+			<Filter
+				Name="RSS-Browser"
+				Filter="">
+				<File
+					RelativePath=".\NextEMF\Ie.cpp">
+				</File>
+				<File
+					RelativePath=".\NextEMF\Ie.h">
+				</File>
+				<File
+					RelativePath=".\NextEMF\ReleaseWnd.cpp">
+				</File>
+				<File
+					RelativePath=".\NextEMF\ReleaseWnd.h">
+				</File>
+			</Filter>
+			<Filter
+				Name="Spooky"
+				Filter="">
+				<File
+					RelativePath=".\NextEMF\ConChecker.cpp">
+				</File>
+				<File
+					RelativePath=".\NextEMF\ConChecker.h">
+				</File>
+				<File
+					RelativePath=".\NextEMF\Ping.cpp">
+				</File>
+				<File
+					RelativePath=".\NextEMF\Ping.h">
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Optimizer"

@@ -210,3 +210,8 @@
 #define MP_CLEANUP_NNS_FQS_HQRS_NONE_ERROR_BANNED_LOWTOLOWIP	17006
 #endif //Drop maunal
 //<==Drop maunal [cyrex2001]
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+#define MP_HM_RELEASE			17100
+#endif
+//<== RSS-Window [shadow2004]

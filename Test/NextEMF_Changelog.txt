@@ -11,15 +11,10 @@ ADDED  : Chunk Selection Patch by Xman [cyrex2001]
 ADDED  : Timestamp is now available for Chatwindow [shadow2004]
 ADDED  : show hardlimit to sourcelist [cyrex2001] 
 ADDED  : Extended Clean-Up by Maella [shadow2004]
-<<<<<<< NextEMF_Changelog.txt
 FIXED  : Reask source after ip change by Maella [cyrex2001]
-=======
 ADDED  : Reconnect on Kad by Pawcio [shadow2004]
-<<<<<<< NextEMF_Changelog.txt
->>>>>>> 1.18
-=======
 ADDED  : Crashreport by Maella [shadow2004]
->>>>>>> 1.19
+ADDED  : RSS-News-Browser by Stormit. Thx to bobo [shadow2004]
 FIXED  : Drop menue for debug version [cyrex2001]
 FIXED  : Modstring wasn't shown in Title, if "show Transfer" is off [shadow2004]
 FIXED  : Bold Download-Settings in Preferences [shadow2004]

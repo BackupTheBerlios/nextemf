@@ -669,6 +669,13 @@ uint8   CPreferences::m_uiPingTTL;
 bool    CPreferences::m_bCheckCon;
 #endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
 //<== Spooky Mode ConChecker [cyrex2001]
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+bool	CPreferences::m_bAdvancedRel;
+CString CPreferences::m_RelURL;
+bool	CPreferences::m_bRelAutoConnect; 
+#endif
+//<== RSS-Window [shadow2004]
 
 CPreferences::CPreferences()
 {
@@ -2416,6 +2423,13 @@ void CPreferences::SavePreferences()
     ini.WriteInt(_T("PingTTL"), m_uiPingTTL,_T("NextEMF"));
 #endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
 //<== Spooky Mode ConChecker [cyrex2001]
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+	ini.WriteBool(_T("AdvancedRel"),m_bAdvancedRel, _T("NextEMF"));
+	ini.WriteString(_T("RelURL"),m_RelURL, _T("NextEMF"));
+	ini.WriteBool(_T("RelAutoConnect"),m_bRelAutoConnect, _T("NextEMF"));
+#endif
+//<== RSS-Window [shadow2004]
 }
 
 void CPreferences::SaveCats(){
@@ -3093,6 +3107,14 @@ void CPreferences::LoadPreferences()
     m_uiPingTTL = ini.GetInt(_T("PingTTL"), 10, _T("NextEMF")); 
 #endif //<<<WiZaRd: Spooky Mode ConChecker [eWombat] 
 //<== Spooky Mode ConChecker [cyrex2001]
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+	m_bAdvancedRel=ini.GetBool(_T("AdvancedRel"), false, _T("NextEMF"));
+	m_RelURL=ini.GetString(_T("RelURL"), GetResString(IDS_URL), _T("NextEMF"));
+	m_bRelAutoConnect=ini.GetBool(_T("RelAutoConnect"), false, _T("NextEMF"));
+#endif
+//<== RSS-Window [shadow2004]
+
 
 	LoadCats();
 	if (GetCatCount()==1)

@@ -42,6 +42,11 @@ class CSearchDlg;
 class CServerWnd;
 class CSharedFilesWnd;
 class CStatisticsDlg;
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+class CReleaseWnd; 
+#endif
+//<== RSS-Window [shadow2004]
 class CTaskbarNotifier;
 class CTransferWnd;
 struct Status;
@@ -105,6 +110,11 @@ public:
 	CChatWnd*		chatwnd;
 	CMuleStatusBarCtrl* statusbar;
 	CStatisticsDlg*  statisticswnd;
+//==> RSS-Window [shadow2004]
+#ifdef RELWND
+	CReleaseWnd* releasewnd;
+#endif
+//<== RSS-Window [shadow2004]
 //==> remove IRC [shadow2004]
 #if defined(IRC)
 	CIrcWnd*		ircwnd;
