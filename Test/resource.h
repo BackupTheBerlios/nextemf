@@ -49,7 +49,11 @@
 #define IDS_MAIN_READY                  141
 #define IDD_SEARCH                      142
 #define IDS_WIZARD_ED2K                 142
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 #define IDS_SEL_SKIN                    143
+#endif
+//<== remove Skinsupport [shadow2004]
 #define IDS_MAIN_SOCKETERROR            144
 #define IDS_MAIN_BTN_DISCONNECT         145
 #define IDS_MAIN_BTN_DISCONNECT_TOOLTIP 146
@@ -70,7 +74,11 @@
 #define IDS_ERR_FILEERROR               161
 #define IDS_ERR_FILEOPEN                162
 #define IDD_HTTPDOWNLOAD                163
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 #define IDS_SEL_SKINDIR                 163
+#endif
+//<== remove Skinsupport [shadow2004]
 #define IDS_ERR_REHASH                  164
 #define IDD_CHAT                        165
 #define IDS_SKIN_PROF                   165
@@ -1338,8 +1346,12 @@
 #define IDS_EM_KADEMLIA                 1289
 #define IDS_VIAKAD                      1290
 #define IDS_VIASE                       1291
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 #define IDS_SELECTTOOLBARBITMAP         1292
 #define IDS_SELECTTOOLBARBITMAPDIR      1293
+#endif
+//<== remove Skinsupport [shadow2004]
 #define IDS_TOOLBARSKINS                1294
 #define IDS_NOTEXTLABELS                1295
 #define IDS_TEXTLABELSONRIGHT           1296
@@ -2143,11 +2155,11 @@
 //==> remove PROXY [shadow2004]
 #if defined(PROXY)
 #define IDC_ASCWOP                      2698
+#define IDC_AUTH_LBL2                   2703
 #endif //PROXY
 //<== remove PROXY [shadow2004]
 #define IDC_LISTVIEW_SEARCH_COLUMN      2700
 #define IDC_LISTVIEW_SEARCH_TEXT        2702
-#define IDC_AUTH_LBL2                   2703
 #define IDC_WIZ1_TITLE                  2704
 #define IDC_WIZ1_ACTIONS                2705
 #define IDC_WIZ1_BTN_HINT               2706

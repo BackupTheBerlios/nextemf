@@ -42,7 +42,9 @@
 #include "Log.h"
 
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 #include "IPFilter.h"
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 
 #ifdef _DEBUG
@@ -1017,6 +1019,7 @@ void CUpDownClient::ProcessBlockPacket(char *packet, uint32 size, bool packed)
 				if (result == Z_OK && (int)lenUnzipped >= 0)
 				{
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 					if((thePrefs.GetEnableZeroFilledTest() == true) && (reqfile->IsCDImage() == false) && (reqfile->IsArchive() == false) && (reqfile->IsDocument() == false)){
 						if(lenUnzipped > 25*nBlockSize 
 							&& (reqfile->GetFileSize()/EMBLOCKSIZE) > (cur_block->block->StartOffset/EMBLOCKSIZE + 3)){
@@ -1046,6 +1049,7 @@ void CUpDownClient::ProcessBlockPacket(char *packet, uint32 size, bool packed)
 							AddLogLine(false, _T("Block dropped"));
 						}
 					}
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 
 
@@ -1104,6 +1108,7 @@ void CUpDownClient::ProcessBlockPacket(char *packet, uint32 size, bool packed)
 					cur_block->totalUnzipped = 0;
 
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 					if(thePrefs.GetEnableZeroFilledTest() == true) {
 						CString userHash;
 						for(int  i=0; i<16; i++){
@@ -1116,6 +1121,7 @@ void CUpDownClient::ProcessBlockPacket(char *packet, uint32 size, bool packed)
 						theApp.ipfilter->AddIP(GetIP(), 1, _T("Temporary"));
 						SetDownloadState(DS_ERROR);
 					}
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 				}
 				delete [] unzipped;
@@ -1126,12 +1132,6 @@ void CUpDownClient::ProcessBlockPacket(char *packet, uint32 size, bool packed)
 			{
 				m_nTransferedDown += lenWritten;
 
-//==>Xman filter clients with failed downloads [cyrex2001]
-#ifdef FILTER_FAILED_DOWNLOADS
-				m_transferedthissession += lenWritten;
-#endif //Filter failed downloads
-//<==Xman filter clients with failed downloads [cyrex2001]
-				
 				SetTransferredDownMini(); // Sets boolean m_bTransferredDownMini to true // -khaos--+++> For determining whether the current download session was a success or not.
 
 				// If finished reserved block

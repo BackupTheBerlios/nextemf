@@ -2485,6 +2485,8 @@ HWND ReplaceRichEditCtrl(CWnd* pwndRE, CWnd* pwndParent, CFont* pFont)
 	return hwndNewRE;
 }
 
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 void InstallSkin(LPCTSTR pszSkinPackage)
 {
 	CZIPFile zip;
@@ -2559,7 +2561,8 @@ void InstallSkin(LPCTSTR pszSkinPackage)
 		zip.Close();
 	}
 }
-
+#endif
+//<== remove Skinsupport [shadow2004]
 void TriggerPortTest(uint16 tcp, uint16 udp) {
 	CString m_sTestURL;
 

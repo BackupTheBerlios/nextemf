@@ -47,6 +47,8 @@ static char THIS_FILE[]=__FILE__;
 #define new DEBUG_NEW
 #endif
 
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 #if (_WIN32_IE < 0x0500)
 #define TBN_INITCUSTOMIZE       (TBN_FIRST - 23)
 #define    TBNRF_HIDEHELP       0x00000001
@@ -65,7 +67,8 @@ static const LPCTSTR _apszSkinFiles[] =
 {
 	_T("*.") EMULSKIN_BASEEXT _T(".ini"),
 };
-
+#endif
+//<== remove Skinsupport [shadow2004]
 static int _iPreviousHeight = 0;
 
 // CMuleToolbarCtrl
@@ -84,14 +87,19 @@ CMuleToolbarCtrl::CMuleToolbarCtrl()
 	memset(TBStrings, 0, sizeof(TBStrings));
 #endif //OPTIM
 //<==optimizer added [shadow2004]
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 	m_iToolbarLabelSettings = 0;
+#endif
+//<== remove Skinsupport [shadow2004]
 }
 
 CMuleToolbarCtrl::~CMuleToolbarCtrl()
 {
 }
 
-
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 BEGIN_MESSAGE_MAP(CMuleToolbarCtrl, CToolBarCtrl)
 	ON_WM_SIZE()
 	ON_NOTIFY_REFLECT(NM_RCLICK, OnNMRclick)
@@ -103,14 +111,24 @@ BEGIN_MESSAGE_MAP(CMuleToolbarCtrl, CToolBarCtrl)
 	ON_NOTIFY_REFLECT(TBN_INITCUSTOMIZE, OnTbnInitCustomize)
 	ON_WM_SYSCOLORCHANGE()
 END_MESSAGE_MAP()
-
+#endif
+//<==> remove Skinsupport [shadow2004]
 
 void CMuleToolbarCtrl::Init(void)
 {
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 	bitmappaths.RemoveAll();
-
+#endif
+//<== remove Skinsupport [shadow2004]
 	ModifyStyle(0, TBSTYLE_FLAT | TBSTYLE_ALTDRAG | CCS_ADJUSTABLE | TBSTYLE_TRANSPARENT | CCS_NODIVIDER);
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 	ChangeToolbarBitmap(thePrefs.GetToolbarBitmapSettings(), false);
+#else
+        LoadToolbarIcons();
+#endif
+//<== remove Skinsupport [shadow2004]
 	// add button-text:
 	TCHAR cButtonStrings[2000];
 	int lLen, lLen2;
@@ -231,10 +249,18 @@ void CMuleToolbarCtrl::Init(void)
 	sepButton.iBitmap = -1;
 	
 	int iAddedButtons = 0;
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 	CString config = thePrefs.GetToolbarSettings();
 	for(i=0;i<config.GetLength();i+=2)
 	{
 		int index = _tstoi(config.Mid(i,2));
+#else
+	for(i=0;i<strDefaultToolbar.GetLength();i+=2)
+	{
+		int index = _tstoi(strDefaultToolbar.Mid(i,2));
+#endif
+//<== remove Skinsupport [shadow2004]
 		if(index==99)
 		{
 			AddButtons(1,&sepButton);
@@ -246,11 +272,19 @@ void CMuleToolbarCtrl::Init(void)
 
 	// recalc toolbar-size:	
 	Localize();		// at first we have to localize the button-text!!!
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 	m_iToolbarLabelSettings=4;
 	ChangeTextLabelStyle(thePrefs.GetToolbarLabelSettings(), false);
+#else
+	SetStyle(GetStyle() & ~TBSTYLE_LIST);
+	SetMaxTextRows(1);
+#endif
+//<== remove Skinsupport [shadow2004]
 	SetBtnWidth();		// then calc and set the button width
 	AutoSize();		// and finally call the original (but maybe obsolete) function
-	
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 	// add speed-meter to upper-right corner
 	CRect rClient;
 	GetClientRect(&rClient);
@@ -264,6 +298,8 @@ void CMuleToolbarCtrl::Init(void)
 	OnSize(0, rcWnd.Width(), rcWnd.Height());
 	GetWindowRect(&rcWnd);
 	_iPreviousHeight = rcWnd.Height();
+#endif
+//<== remove Skinsupport [shadow2004]
 }
 
 void CMuleToolbarCtrl::Localize(void)
@@ -321,6 +357,8 @@ void CMuleToolbarCtrl::Localize(void)
 	}
 }
 
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 void CMuleToolbarCtrl::OnSize(UINT nType, int cx, int cy)
 {
 	CToolBarCtrl::OnSize(nType, cx, cy);
@@ -328,11 +366,16 @@ void CMuleToolbarCtrl::OnSize(UINT nType, int cx, int cy)
 	SetBtnWidth();
 	AutoSize();
 }
-
+#endif
+//<== remove Skinsupport [shadow2004]
 void CMuleToolbarCtrl::SetBtnWidth()
 {
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 	if(m_iToolbarLabelSettings==1)
 	{
+#endif
+//<==> remove Skinsupport [shadow2004]
 		CDC *pDC = GetDC();
 		CFont *pFnt = GetFont();
 		CFont *pOldFnt = pDC->SelectObject(pFnt);
@@ -364,6 +407,8 @@ void CMuleToolbarCtrl::SetBtnWidth()
 
 		SetButtonWidth(iCalcSize, iCalcSize);
 	}
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 	else
 	{
 		SetButtonSize(CSize(0,0));
@@ -575,9 +620,19 @@ void CMuleToolbarCtrl::OnTbnToolbarChange(NMHDR *pNMHDR, LRESULT *pResult)
 }
 
 void CMuleToolbarCtrl::ChangeToolbarBitmap(CString path, bool refresh)
+#else
+void CMuleToolbarCtrl::LoadToolbarIcons()
+#endif
+//<== remove Skinsupport [shadow2004]
 {
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 	bool bResult = false;
+#endif
+//<== remove Skinsupport [shadow2004]
 	CImageList ImageList;
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 	CEnBitmap Bitmap;
 	if (!path.IsEmpty() && Bitmap.LoadImage(path))
 	{
@@ -599,6 +654,8 @@ void CMuleToolbarCtrl::ChangeToolbarBitmap(CString path, bool refresh)
 	// if image file loading or image list creation failed, create default image list.
 	if (!bResult)
 	{
+#endif
+//<== remove Skinsupport [shadow2004]
 		// load from icon ressources
 		ImageList.Create(32, 32, theApp.m_iDfltImageListColorFlags | ILC_MASK, 0, 1);
 		ImageList.Add(CTempIconLoader(_T("CONNECT"), 32, 32));
@@ -629,6 +686,8 @@ void CMuleToolbarCtrl::ChangeToolbarBitmap(CString path, bool refresh)
 		if (pimlOld)
 			pimlOld->DeleteImageList();
 	}
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 
 	if (refresh)
 		Refresh();
@@ -907,3 +966,5 @@ void CMuleToolbarCtrl::ReloadConfig(){
 		DeleteButton(0);
 	Init();
 }
+#endif
+//<== remove Skinsupport [shadow2004]

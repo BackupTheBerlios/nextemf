@@ -587,6 +587,8 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	bool bSingleCompleteFileSelected = (iSelectedItems == 1 && iCompleteFileSelected == 1);
 	m_SharedFilesMenu.EnableMenuItem(MP_OPEN, bSingleCompleteFileSelected ? MF_ENABLED : MF_GRAYED);
 	UINT uInsertedMenuItem = 0;
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 	static const TCHAR _szSkinPkgSuffix[] = _T(".") EMULSKIN_BASEEXT _T(".zip");
 	if (bSingleCompleteFileSelected 
 		&& pSingleSelFile 
@@ -603,6 +605,8 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 		if (::InsertMenuItem(m_SharedFilesMenu, MP_OPENFOLDER, FALSE, &mii))
 			uInsertedMenuItem = mii.wID;
 	}
+#endif
+//<== remove Skinsupport [shadow2004]
 	m_SharedFilesMenu.EnableMenuItem(MP_OPENFOLDER, bSingleCompleteFileSelected ? MF_ENABLED : MF_GRAYED);
 	m_SharedFilesMenu.EnableMenuItem(MP_RENAME, bSingleCompleteFileSelected ? MF_ENABLED : MF_GRAYED);
 	m_SharedFilesMenu.EnableMenuItem(MP_REMOVE, iCompleteFileSelected > 0 ? MF_ENABLED : MF_GRAYED);
@@ -700,10 +704,14 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 				if (file && !file->IsPartFile())
 					OpenFile(file);
 				break; 
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 			case MP_INSTALL_SKIN:
 				if (file && !file->IsPartFile())
 					InstallSkin(file->GetFilePath());
 				break;
+#endif
+//<== remove Skinsupport [shadow2004]
 			case MP_OPENFOLDER:
 				if (file && !file->IsPartFile()){
 					CString path = file->GetPath();

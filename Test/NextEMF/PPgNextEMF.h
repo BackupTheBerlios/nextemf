@@ -34,7 +34,9 @@ protected:
 	int m_bEnableAntiNickThief;
 //<==AntiNickThief [shadow2004]
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 	int m_bEnableZeroFilledTest;
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Anti-Leecher [cyrex2001]
 #ifdef ANTI_LEECHER
@@ -106,7 +108,9 @@ protected:
 	HTREEITEM m_htiEnableAntiNickThief;
 //<==AntiNickThief [shadow2004]
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 	HTREEITEM m_htiEnableZeroFilledTest;
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
 #ifdef DROP

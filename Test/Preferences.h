@@ -645,7 +645,9 @@ public:
 	static bool		m_bAntiNickThief;
 //<==AntiNickThief [shadow2004]
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 	static bool	enableZeroFilledTest;
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
 #ifdef DROP
@@ -731,7 +733,9 @@ public:
 	static bool GetAntiNickThief()		{return m_bAntiNickThief;} 
 //<==AntiNickThief [shadow2004]
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 	static	bool	GetEnableZeroFilledTest() { return enableZeroFilledTest; }
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 
 

@@ -60,7 +60,9 @@ CPPgNextEMF::CPPgNextEMF()
 	m_htiEnableAntiNickThief = NULL;
 //<==AntiNickThief [shadow2004]
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 	m_htiEnableZeroFilledTest = NULL;
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
 #ifdef DROP
@@ -204,7 +206,9 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		m_htiEnableAntiNickThief = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTINICKTHIEF), m_htiSecurity, m_bEnableAntiNickThief);
 //<==AntiNickThief [shadow2004]
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 		m_htiEnableZeroFilledTest = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ZERO_FILLED_TEST), m_htiSecurity, m_bEnableZeroFilledTest);
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 
 //==>Drop maunal [cyrex2001]
@@ -282,7 +286,9 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableAntiNickThief, m_bEnableAntiNickThief);
 //<==AntiNickThief [shadow2004]
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableZeroFilledTest, m_bEnableZeroFilledTest);
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
 #ifdef DROP
@@ -329,7 +335,9 @@ BOOL CPPgNextEMF::OnInitDialog()
 	m_bEnableAntiNickThief = thePrefs.m_bAntiNickThief;
 //<==AntiNickThief [shadow2004]
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 	m_bEnableZeroFilledTest = thePrefs.enableZeroFilledTest;
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
 #ifdef DROP
@@ -413,7 +421,9 @@ BOOL CPPgNextEMF::OnApply()
 	thePrefs.m_bAntiNickThief = m_bEnableAntiNickThief;
 //<==AntiNickThief [shadow2004]
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 	thePrefs.enableZeroFilledTest = m_bEnableZeroFilledTest;
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
 #ifdef DROP
@@ -513,7 +523,9 @@ void CPPgNextEMF::Localize(void)
 	    if (m_htiEnableAntiNickThief) m_ctrlTreeOptions.SetItemText(m_htiEnableAntiNickThief, GetResString(IDS_ANTINICKTHIEF));
 //<==AntiNickThief [shadow2004]
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 	    if (m_htiEnableZeroFilledTest) m_ctrlTreeOptions.SetItemText(m_htiEnableZeroFilledTest, GetResString(IDS_ZERO_FILLED_TEST));
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
 #ifdef DROP
@@ -562,7 +574,9 @@ void CPPgNextEMF::OnDestroy()
 	m_htiEnableAntiNickThief = NULL;
 //<==AntiNickThief [shadow2004]
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 	m_htiEnableZeroFilledTest = NULL;
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
 #ifdef DROP

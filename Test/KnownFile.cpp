@@ -1849,6 +1849,7 @@ bool CKnownFile::IsMovie() const
 }
 
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 bool CKnownFile::IsCDImage() const
 {
 	return (ED2KFT_CDIMAGE == GetED2KFileTypeID(GetFileName()) );
@@ -1858,6 +1859,7 @@ bool CKnownFile::IsDocument() const
 {
 	return (ED2KFT_DOCUMENT == GetED2KFileTypeID(GetFileName()) );
 }
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 
 

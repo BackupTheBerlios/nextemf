@@ -229,8 +229,10 @@ public:
 	// preview
 	bool	IsMovie() const;
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 	bool	IsCDImage() const; 
 	bool	IsDocument() const;
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 
 	virtual bool GrabImage(uint8 nFramesToGrab, double dStartTime, bool bReduceColor, uint16 nMaxWidth, void* pSender);

@@ -2629,7 +2629,11 @@ BEGIN
     IDS_WIZARD_NETWORK      "Choose which network(s) you want to use."
     IDS_MAIN_READY          "eMule Version %s ready"
     IDS_WIZARD_ED2K         "eD2K Settings"
-    IDS_SEL_SKIN            "Select Skin..."
+//==> remove Skinsupport [shadow2004]
+//#ifdef SKINSP
+//    IDS_SEL_SKIN            "Select Skin..."
+//#endif
+//<== remove Skinsupport [shadow2004]
 END
 
 STRINGTABLE 
@@ -2965,9 +2969,13 @@ BEGIN
     IDS_ERR_METCORRUPT      "Error: %s (%s) is corrupt, unable to load file"
     IDS_ERR_FILEERROR       "Unexpected file error while reading %s (%s): %s"
     IDS_ERR_FILEOPEN        "Failed to open %s (%s)"
-    IDS_SEL_SKINDIR         "Select Skin Directory..."
+//==> remove Skinsupport [shadow2004]
+//#ifdef SKINSP
+//    IDS_SEL_SKINDIR         "Select Skin Directory..."
+//    IDS_SKIN_PROF           "Skin Profiles"
+//#endif
+//<== remove Skinsupport [shadow2004]
     IDS_ERR_REHASH          "Warning: %s might be corrupted, performing rehash of completed parts"
-    IDS_SKIN_PROF           "Skin Profiles"
     IDS_ERR_PART_FNF        ".part file not found"
     IDS_ERR_OPENMETFILE     "Failed to open part.met file"
     IDS_KADOPEN             "Open"
@@ -4270,18 +4278,26 @@ BEGIN
     IDS_EM_KADEMLIA         "&Kad"
     IDS_VIAKAD              "via Kad"
     IDS_VIASE               "via Source Exchange"
-    IDS_SELECTTOOLBARBITMAP "Select Toolbar Bitmap..."
-    IDS_SELECTTOOLBARBITMAPDIR "Select Toolbar Bitmap Directory..."
-    IDS_TOOLBARSKINS        "Toolbar Skins"
-    IDS_NOTEXTLABELS        "No Labels"
+//==> remove Skinsupport [shadow2004]
+//#ifdef SKINSP
+//    IDS_SELECTTOOLBARBITMAP "Select Toolbar Bitmap..."
+//    IDS_SELECTTOOLBARBITMAPDIR "Select Toolbar Bitmap Directory..."
+//    IDS_TOOLBARSKINS        "Toolbar Skins"
+//    IDS_NOTEXTLABELS        "No Labels"
+//#endif
+//<== remove Skinsupport [shadow2004]
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_TEXTLABELSONRIGHT   "Right of Icon"
-    IDS_TEXTLABELS          "Text Labels"
-    IDS_ENABLETEXTLABELS    "Below Icon"
-    IDS_CUSTOMIZETOOLBAR    "Customize Toolbar..."
+//==> remove Skinsupport [shadow2004]
+//#ifdef SKINSP
+//    IDS_TEXTLABELSONRIGHT   "Right of Icon"
+//    IDS_TEXTLABELS          "Text Labels"
+//    IDS_ENABLETEXTLABELS    "Below Icon"
+//    IDS_CUSTOMIZETOOLBAR    "Customize Toolbar..."
+//#endif
+//<== remove Skinsupport [shadow2004]
     IDS_MINBITRATE          "Min. Bitrate [kBit/s]"
     IDS_KAD_RECHECKFW       "Recheck Firewall"
     IDS_SHAREDTITLE         "Shared eD2K|Kad"
@@ -4321,13 +4337,17 @@ BEGIN
     IDS_LOG_A4AF            "Log A4AF actions"
     IDS_A4AF_SAVE_CPU       "Disable A4AF checks to save CPU"
     IDS_SEARCH_DOC          "Document"
-    IDS_INSTALL_SKIN        "Install eMule Skin"
-    IDS_INSTALL_SKIN_NODIR  "No eMule Skin profile directory selected or directory is not accessible!"
-    IDS_INSTALL_SKIN_DIR_ERROR 
-                            "Failed to create directory ""%s"" for eMule Skin - %s"
-    IDS_INSTALL_SKIN_FILE_ERROR 
-                            "Failed to extract file ""%s"" from eMule Skin to local file ""%s"" - %s"
-    IDS_INSTALL_SKIN_PKG_ERROR "This is not a valid eMule Skin package file."
+//==> remove Skinsupport [shadow2004]
+//#ifdef SKINSP
+//    IDS_INSTALL_SKIN        "Install eMule Skin"
+//    IDS_INSTALL_SKIN_NODIR  "No eMule Skin profile directory selected or directory is not accessible!"
+//    IDS_INSTALL_SKIN_DIR_ERROR 
+//                            "Failed to create directory ""%s"" for eMule Skin - %s"
+//    IDS_INSTALL_SKIN_FILE_ERROR 
+//                            "Failed to extract file ""%s"" from eMule Skin to local file ""%s"" - %s"
+//    IDS_INSTALL_SKIN_PKG_ERROR "This is not a valid eMule Skin package file."
+//#endif
+//<== remove Skinsupport [shadow2004]
     IDS_NEXT_REASK          "Next ask to this client"
     IDS_A4AF_FILES          "A4AF files"
     IDS_FO_TEMPTCP_S        "Opened port %u (TCP) on internal WinXP firewall for this eMule session"
@@ -4454,7 +4474,11 @@ BEGIN
     IDS_ASPECTRATIO         "Aspect Ratio"
     IDS_NEGATEFILTER        "negate filter"
     IDS_SEENCOMPL           "Ever seen complete"
-    IDS_SELSKINPROFILEDIR   "Select skin profile directory"
+//==> remove Skinsupport [shadow2004]
+//#ifdef SKINSP
+//    IDS_SELSKINPROFILEDIR   "Select skin profile directory"
+//#endif
+//<== remove Skinsupport [shadow2004]
     IDS_ASKDLINCOMPLETE     "Potentially incomplete file:\r\n\r\n%s\r\n\r\nThis file is supposed to be incomplete in the network and can therefore most likely not downloaded successfully! Do you really want to download this file?"
     IDS_DEADSOURCES         "Dead Sources"
 END

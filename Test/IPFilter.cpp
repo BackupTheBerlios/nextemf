@@ -62,6 +62,7 @@ static int __cdecl CmpSIPFilterByStartAddr(const void* p1, const void* p2)
 }
 
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 void CIPFilter::AddIP(uint32 IP, UINT level, const CString& desc)
 {
 	uint32 ip1;
@@ -74,6 +75,7 @@ void CIPFilter::AddIP(uint32 IP, UINT level, const CString& desc)
 	qsort(m_iplist.GetData(), m_iplist.GetCount(), sizeof(m_iplist[0]), CmpSIPFilterByStartAddr);
 
 }
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 
 CString CIPFilter::GetDefaultFilePath() const

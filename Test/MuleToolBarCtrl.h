@@ -13,7 +13,11 @@ public:
 
 	void Init(void);
 	void Localize(void);
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 	void ReloadConfig();
+#endif
+//<== remove Skinsupport [shadow2004]
 
 	// Customization might splits up the button-group, so we have to (un-)press them on our own
 	void PressMuleButton(int nID)
@@ -50,6 +54,8 @@ protected:
 //<== RSS-Window [shadow2004]
 #endif //IRC
 //<== remove IRC [shadow2004]
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 	CStringArray bitmappaths;
 	int			m_iToolbarLabelSettings;
 	CStringArray aSkinPaths;
@@ -66,11 +72,19 @@ protected:
 	afx_msg void OnTbnToolbarChange(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnTbnReset(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnTbnInitCustomize(NMHDR *pNMHDR, LRESULT *pResult);
+#endif
+//<== remove Skinsupport [shadow2004]
 
 	void SetBtnWidth();
 
 	// [FoRcHa]
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 	void ChangeToolbarBitmap(CString path, bool refresh);
 	void ChangeTextLabelStyle(int settings, bool refresh);
 	void Refresh();
+#else
+	void LoadToolbarIcons();
+#endif
+//<== remove Skinsupport [shadow2004]
 };

@@ -42,7 +42,9 @@ public:
 
 	void AddIPRange(uint32 IPfrom, uint32 IPto, UINT level, const CString& desc);
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 	void AddIP(uint32 IP, UINT level, const CString& desc);
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 	void RemoveAllIPFilters();
 	bool RemoveIPFilter(const SIPFilter* pFilter);

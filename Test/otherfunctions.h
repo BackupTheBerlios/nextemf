@@ -97,7 +97,11 @@ void StripTrailingCollon(CString& rstr);
 ///////////////////////////////////////////////////////////////////////////////
 // GUI helpers
 //
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 void InstallSkin(LPCTSTR pszSkinPackage);
+#endif
+//<== remove Skinsupport [shadow2004]
 void ShellOpenFile(CString name);
 void ShellOpenFile(CString name, LPCTSTR pszVerb);
 bool SelectDir(HWND hWnd, LPTSTR pszPath, LPCTSTR pszTitle = NULL, LPCTSTR pszDlgTitle = NULL);

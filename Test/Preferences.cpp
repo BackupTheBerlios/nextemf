@@ -639,7 +639,9 @@ bool	CPreferences::enableAntiCreditHack;
 bool	CPreferences::m_bAntiNickThief;
 //<==AntiNickThief [shadow2004]
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 bool	CPreferences::enableZeroFilledTest;
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
 #ifdef DROP
@@ -2356,7 +2358,9 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("AntiNickThief"),m_bAntiNickThief ,_T("NextEMF"));
 //<==AntiNickThief [shadow2004]
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 	ini.WriteBool(_T("EnableZeroFilledTest"), enableZeroFilledTest,_T("NextEMF"));
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA //Reask sourcen after ip change
@@ -3078,7 +3082,9 @@ void CPreferences::LoadPreferences()
 	m_bAntiNickThief=ini.GetBool(_T("AntiNickThief"), true, _T("NextEMF"));  
 //<==AntiNickThief [shadow2004]
 //==>defeat 0-filled partsenders [shadow2004]
+#ifdef NULLFILLED
 	enableZeroFilledTest = ini.GetBool(_T("EnableZeroFilledTest"), true, _T("NextEMF"));
+#endif
 //<==defeat 0-filled partsenders [shadow2004]
 //==>Drop maunal [cyrex2001]
 #ifdef DROP

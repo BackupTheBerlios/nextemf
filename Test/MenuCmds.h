@@ -58,7 +58,9 @@
 #define MP_HM_LINK1				10230
 #define MP_HM_LINK2				10231
 #define MP_HM_LINK3				10232
-#define MP_HM_SCHEDONOFF		10233
+//#define MP_HM_SCHEDONOFF		10233
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 #define MP_SELECTTOOLBARBITMAPDIR 10234
 #define MP_SELECTTOOLBARBITMAP	10235
 #define MP_NOTEXTLABELS			10236
@@ -67,6 +69,8 @@
 #define	MP_CUSTOMIZETOOLBAR		10239
 #define	MP_SELECT_SKIN_FILE		10240
 #define	MP_SELECT_SKIN_DIR		10241
+#endif
+//<== remove Skinsupport [shadow2004]
 #define MP_HM_HELP				10242
 #define MP_HM_1STSWIZARD		10243
 #define MP_OPENFOLDER			10244
@@ -75,7 +79,11 @@
 //#define	MP_WEBSVC_EDIT			10246
 //<==removed WebService [shadow2004]
 #define	MP_HM_DIRECT_DOWNLOAD	10247
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 #define	MP_INSTALL_SKIN			10248
+#endif
+//==> remove Skinsupport [shadow2004]
 
 #define MP_PRIOVERYLOW			10300
 #define MP_PRIOLOW				10301
@@ -156,10 +164,14 @@
 #define MP_SCHACTIONS			10800
 // reserve some for schedules
 #define MP_CAT_SET0				10900
+//==> remove Skinsupport [shadow2004]
+#ifdef SKINSP
 // reserve some for change all-cats (about 20)
 #define MP_TOOLBARBITMAP		10950
 // reserve max 50
 #define	MP_SKIN_PROFILE			11000
+#endif
+//<== remove Skinsupport [shadow2004]
 // reserve max 50
 #define	MP_PREVIEW_APP_MIN		11050
 #define	MP_PREVIEW_APP_MAX		(MP_PREVIEW_APP_MIN+49)
