@@ -1522,7 +1522,7 @@ BEGIN
 END
 
 //==>Reask sourcen after ip change or Quickstart [cyrex2001]
-//#if defined (RSAIC) || defined (QUICKSTART)
+//#if defined (RSAIC_SIVKA) || defined (QUICKSTART)
 IDD_PPG_NEXTEMF DIALOGEX 0, 0, 227, 246
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
     WS_SYSMENU
@@ -3991,11 +3991,11 @@ END
 
 STRINGTABLE 
 BEGIN
-//==> simplify Serverwindow [shadow2004]
-#if defined(SRVWND1)
+//==> simplify Serverwindow or Userhash in status window [shadow2004][cyrex2001]
+#if defined(SRVWND1) || defined (USERHASH)
     IDS_VERSION             "Version"
-#endif //SRVWND1
-//<== simplify Serverwindow [shadow2004]
+#endif //SRVWND1 or USERHASH
+//<== simplify Serverwindow or Userhash in status window [shadow2004][cyrex2001]
     IDS_ALL_A4AF_TO_THIS    "Swap All Sources To This File Now"
     IDS_PASTE               "Paste"
     IDS_ALL_A4AF_TO_OTHER   "Swap All Sources To Any Other File Now"
@@ -4386,7 +4386,7 @@ BEGIN
 END
 
 //==>Reask sourcen after ip change or Quickstart [cyrex2001]
-//#if defined (RSAIC) || defined (QUICKSTART)
+//#if defined (RSAIC_SIVKA) || defined (QUICKSTART)
 STRINGTABLE 
 BEGIN
     IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK	"Reask sources after reconnection of modem (IP change)"
@@ -4399,18 +4399,25 @@ END
 //#endif
 //<==Reask sourcen after ip change or Quickstart [cyrex2001]
 //==>Sivka-Ban [cyrex2001]
+//#if defined (SIVKA_BAN)
 STRINGTABLE 
 BEGIN
     IDS_SIVKA_ASK_TIME      "Time for ask, before banned [5-12 min.]"
     IDS_SIVKA_ASK_COUNTER   "Counter for ask, before banned [5-15]"
     IDS_SIVKA_ASK_LOG       "Log banned clients"
 END
-
+//#endif //Sivka-Ban
+//<==Sivka-Ban [cyrex2001]
+//==>Anti-Fake-Rank [cyrex2001]
+//#if defined (ANTI_FAKE_RANK)
 STRINGTABLE 
 BEGIN
     IDS_ANTI_FAKE_RANK      "Anti-Fake-Rank enable"
 END
-
+//#endif //Anti-Fake-Rank
+//<==Anti-Fake-Rank [cyrex2001]
+//==>Anti-Leecher [cyrex2001]
+//#if defined (ANTI_LEECHER)
 STRINGTABLE
 BEGIN
     IDS_ANTI_BADCOMUNITY    "Enable anti-bad community control"
@@ -4424,16 +4431,18 @@ BEGIN
     IDS_UPSTOPPEDBADCOMUNITY 
                             "Upload session not allowed to start. Client seems to be a bad community user."
     IDS_UPSTOPPEDGPLBREAKER "Upload session not allowed to start. Client seems to be a GPL breaker."
-    IDS_ANTIBADCOMUNITYLOG  "[Anti-Community] Client %s with mod %s has been temporary banned because of suspicious community-leech action"
-    IDS_ANTIGPLBREAKERLOG   "[Anti-GPL-Breaker] Client %s with mod %s has been temporary banned because of suspicious GPL-Breaker action"
+    IDS_ANTIBADCOMUNITYLOG  "[Anti-Community] Client %s has been temporary banned because of suspicious community-leech action, reason"
+    IDS_ANTIGPLBREAKERLOG   "[Anti-GPL-Breaker] Client %s has been temporary banned because of suspicious GPL-Breaker action, reason"
     IDS_UPSTOPPEDLEECHER    "Upload session not allowed to start. Client seems to be a leecher."
-    IDS_ANTILEECHERLOG      "[Anti-Leechermods] Client %s with mod %s has been temporary banned because of suspicious leech action"
+    IDS_ANTILEECHERLOG      "[Anti-Leechermods] Client %s has been temporary banned because of suspicious leech action, reason"
     IDS_LEECHERDETREM       "Leecher detected and removed from the uploadqueue."
     IDS_LEECHERPUTBACK      "Leecher put back in the waiting queue."
     IDS_STATS_LEECHERCLIENTS "Leechers: %u"
     IDS_ANTI_LEECHER        "Enable anti-leechers control"
     IDS_ANTI_CREDITHACK     "Enable anti-credit hack control"
 END
+//#endif //Anti-Leecher
+//<==Anti-Leecher [cyrex2001]
 
 #endif    // Englisch (USA) resources
 /////////////////////////////////////////////////////////////////////////////
