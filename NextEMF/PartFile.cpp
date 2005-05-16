@@ -41,7 +41,6 @@
 #include "kademlia/kademlia/Entry.h"
 #include "DownloadQueue.h"
 #include "IPFilter.h"
-#include "MMServer.h"
 #include "OtherFunctions.h"
 #include "Packets.h"
 #include "Preferences.h"
@@ -1663,11 +1662,11 @@ void CPartFile::UpdateCompletedInfos(uint32 uTotalGaps)
 	}
 }
 
-void CPartFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool bFlat) const
+void CPartFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect) const
 {
 	if( !IsPartFile() )
 	{
-		CKnownFile::DrawShareStatusBar( dc, rect, onlygreyrect, bFlat );
+		CKnownFile::DrawShareStatusBar( dc, rect, onlygreyrect);
 		return;
 	}
 
@@ -1681,15 +1680,9 @@ void CPartFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, boo
 		COLORREF crProgress;
 		COLORREF crHave;
 		COLORREF crPending;
-		if(bFlat) { 
-			crProgress = RGB(0, 150, 0);
-			crHave = RGB(0, 0, 0);
-			crPending = RGB(255,208,0);
-		} else { 
-			crProgress = RGB(0, 224, 0);
-			crHave = RGB(104, 104, 104);
-			crPending = RGB(255, 208, 0);
-		} 
+		crProgress = RGB(0, 224, 0);
+		crHave = RGB(104, 104, 104);
+		crPending = RGB(255, 208, 0);
 		for (int i = 0; i < GetPartCount(); i++){
 			if(m_SrcpartFrequency[i] > 0 ){
 				COLORREF color = RGB(0, (210-(22*(m_SrcpartFrequency[i]-1)) < 0) ? 0 : 210-(22*(m_SrcpartFrequency[i]-1)), 255);
@@ -1697,10 +1690,10 @@ void CPartFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, boo
 			}
 		}
 	}
-   	s_ChunkBar.Draw(dc, rect->left, rect->top, bFlat); 
+   	s_ChunkBar.Draw(dc, rect->left, rect->top); 
 } 
 
-void CPartFile::DrawStatusBar(CDC* dc, LPCRECT rect, bool bFlat) /*const*/
+void CPartFile::DrawStatusBar(CDC* dc, LPCRECT rect) /*const*/
 {
 	COLORREF crProgress;
 	COLORREF crHave;
@@ -1710,29 +1703,16 @@ void CPartFile::DrawStatusBar(CDC* dc, LPCRECT rect, bool bFlat) /*const*/
 	bool notgray = eVirtualState == PS_EMPTY || eVirtualState == PS_READY; // SLUGFILLER: grayPause - only test once
 
 	// SLUGFILLER: grayPause - Colors by status
-	if(bFlat)
-		crProgress = RGB(0, 150, 0);
-	else
-		crProgress = RGB(0, 224, 0);
+	crProgress = RGB(0, 224, 0);
 	if(notgray) {
-		crMissing = RGB(255, 0, 0);
-	    if(bFlat) {
-		    crHave = RGB(0, 0, 0);
-		    crPending = RGB(255,208,0);
-	    } else {
+	            crMissing = RGB(255, 0, 0);
 		    crHave = RGB(104, 104, 104);
 		    crPending = RGB(255, 208, 0);
-	    }
 	} else {
 		crMissing = RGB(191, 64, 64);
-		if(bFlat) {
-			crHave = RGB(64, 64, 64);
-			crPending = RGB(191,168,64);
-		} else {
 			crHave = RGB(116, 116, 116);
 			crPending = RGB(191, 168, 64);
 		}
-	}
 	// SLUGFILLER: grayPause
 
 	s_ChunkBar.SetHeight(rect->bottom - rect->top);
@@ -1743,7 +1723,7 @@ void CPartFile::DrawStatusBar(CDC* dc, LPCRECT rect, bool bFlat) /*const*/
 	if (status == PS_COMPLETE || status == PS_COMPLETING)
 	{
 		s_ChunkBar.FillRange(0, m_nFileSize, crProgress);
-		s_ChunkBar.Draw(dc, rect->left, rect->top, bFlat);
+		s_ChunkBar.Draw(dc, rect->left, rect->top);
 		percentcompleted = 100.0F;
 		completedsize = m_nFileSize;
 	}
@@ -1808,7 +1788,7 @@ void CPartFile::DrawStatusBar(CDC* dc, LPCRECT rect, bool bFlat) /*const*/
 		    s_ChunkBar.FillRange(block->StartOffset + block->transferred, block->EndOffset + 1, crPending);
 	    }
     
-	    s_ChunkBar.Draw(dc, rect->left, rect->top, bFlat);
+	    s_ChunkBar.Draw(dc, rect->left, rect->top);
     
 	    // green progress
 	    float blockpixel = (float)(rect->right - rect->left)/(float)m_nFileSize;
@@ -1817,18 +1797,12 @@ void CPartFile::DrawStatusBar(CDC* dc, LPCRECT rect, bool bFlat) /*const*/
 	    gaprect.bottom = gaprect.top + PROGRESS_HEIGHT; // Barry - was 4
 	    gaprect.left = rect->left;
     
-	    if(!bFlat) {
-		    s_LoadBar.SetWidth((int)((m_nFileSize - allgaps)*blockpixel + 0.5F));
-		    s_LoadBar.Fill(crProgress);
-		    s_LoadBar.Draw(dc, gaprect.left, gaprect.top, false);
-	    } else {
 		    gaprect.right = rect->left + (uint32)((m_nFileSize - allgaps)*blockpixel + 0.5F);
 		    dc->FillRect(&gaprect, &CBrush(crProgress));
 		    //draw gray progress only if flat
 		    gaprect.left = gaprect.right;
 		    gaprect.right = rect->right;
 		    dc->FillRect(&gaprect, &CBrush(RGB(224,224,224)));
-	    }
     
 	    UpdateCompletedInfos(allgaps);
     }
@@ -1841,14 +1815,6 @@ void CPartFile::DrawStatusBar(CDC* dc, LPCRECT rect, bool bFlat) /*const*/
 		rcFileOpProgress.top = rect->top;
 		rcFileOpProgress.bottom = rcFileOpProgress.top + PROGRESS_HEIGHT;
 		rcFileOpProgress.left = rect->left;
-		if (!bFlat)
-		{
-			s_LoadBar.SetWidth((int)(GetFileOpProgress()*blockpixel + 0.5F));
-			s_LoadBar.Fill(RGB(255,208,0));
-			s_LoadBar.Draw(dc, rcFileOpProgress.left, rcFileOpProgress.top, false);
-		}
-		else
-		{
 			rcFileOpProgress.right = rcFileOpProgress.left + (UINT)(GetFileOpProgress()*blockpixel + 0.5F);
 			dc->FillRect(&rcFileOpProgress, &CBrush(RGB(255,208,0)));
 			rcFileOpProgress.left = rcFileOpProgress.right;
@@ -1856,7 +1822,6 @@ void CPartFile::DrawStatusBar(CDC* dc, LPCRECT rect, bool bFlat) /*const*/
 			dc->FillRect(&rcFileOpProgress, &CBrush(RGB(224,224,224)));
 		}
 	}
-}
 
 void CPartFile::WritePartStatus(CSafeMemFile* file) const
 {
@@ -2839,7 +2804,6 @@ void CPartFile::PerformFileCompleteEnd(DWORD dwResult)
 		SetStatus(PS_COMPLETE); // (set status and) update status-modification related GUI elements
 		theApp.knownfiles->SafeAddKFile(this);
 		theApp.downloadqueue->RemoveFile(this);
-		theApp.mmserver->AddFinishedFile(this);
 		if (thePrefs.GetRemoveFinishedDownloads())
 			theApp.emuledlg->transferwnd->downloadlistctrl.RemoveFile(this);
 		else
@@ -4496,35 +4460,6 @@ uint64 CPartFile::GetRealFileSize() const
 {
 	return ::GetDiskFileSize(GetFilePath());
 }
-
-uint8* CPartFile::MMCreatePartStatus(){
-	// create partstatus + info in mobilemule protocol specs
-	// result needs to be deleted[] | slow, but not timecritical
-	uint8* result = new uint8[GetPartCount()+1];
-	for (int i = 0; i != GetPartCount(); i++){
-		result[i] = 0;
-		if (IsComplete(i*PARTSIZE,((i+1)*PARTSIZE)-1, false)){
-			result[i] = 1;
-			continue;
-		}
-		else{
-			if (IsComplete(i*PARTSIZE + (0*(PARTSIZE/3)), ((i*PARTSIZE)+(1*(PARTSIZE/3)))-1, false))
-				result[i] += 2;
-			if (IsComplete(i*PARTSIZE+ (1*(PARTSIZE/3)), ((i*PARTSIZE)+(2*(PARTSIZE/3)))-1, false))
-				result[i] += 4;
-			if (IsComplete(i*PARTSIZE+ (2*(PARTSIZE/3)), ((i*PARTSIZE)+(3*(PARTSIZE/3)))-1, false))
-				result[i] += 8;
-			uint8 freq = (uint8)m_SrcpartFrequency[i];
-			if (freq > 44)
-				freq = 44;
-			freq = (uint8)ceilf((float)freq/3);
-			freq <<= 4;
-			result[i] += freq;
-		}
-
-	}
-	return result;
-};
 
 uint16 CPartFile::GetSrcStatisticsValue(EDownloadState nDLState) const
 {

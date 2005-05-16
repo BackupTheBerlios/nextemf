@@ -92,18 +92,6 @@ void CServerSocket::OnConnect(int nErrorCode){
 			SetConnectionState(CS_SERVERDEAD);
 			serverconnect->DestroySocket(this);
 			return;
-		// deadlake PROXYSUPPORT
-		case WSAECONNABORTED:
-			if (m_ProxyConnectFailed)
-			{
-				if (thePrefs.GetVerbose())
-					DebugLogError(_T("Failed to connect to server %s; %s"), cur_server->GetAddress(), GetErrorMessage(nErrorCode, 1));
-				m_ProxyConnectFailed = false;
-				m_bIsDeleting = true;
-				SetConnectionState(CS_SERVERDEAD);
-				serverconnect->DestroySocket(this);
-				return;
-			}
 		default:	
 			if (thePrefs.GetVerbose())
 				DebugLogError(_T("Failed to connect to server %s; %s"), cur_server->GetAddress(), GetErrorMessage(nErrorCode, 1));
@@ -544,18 +532,6 @@ void CServerSocket::ConnectToServer(CServer* server){
 
 	cur_server = new CServer(server);
 	Log(GetResString(IDS_CONNECTINGTO), cur_server->GetListName(), cur_server->GetFullIP(), cur_server->GetPort());
-
-	if (thePrefs.IsProxyASCWOP() )
-	{
-		if (thePrefs.GetProxy().UseProxy == true)
-		{
-			thePrefs.SetProxyASCWOP(true);
-			thePrefs.SetUseProxy(false);
-			AddLogLine(false, GetResString(IDS_ASCWOP_PROXYSUPPORT) + GetResString(IDS_DISABLED));
-		}
-		else
-			thePrefs.SetProxyASCWOP(false);
-	}
 
 	SetConnectionState(CS_CONNECTING);
 	if (!Connect(server->GetAddress(),server->GetPort())){

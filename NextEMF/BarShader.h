@@ -4,7 +4,6 @@ class CBarShader
 {
 public:
 	CBarShader(uint32 height = 1, uint32 width = 1);
-	~CBarShader(void);
 
 	//set the width of the bar
 	void SetWidth(int width);
@@ -35,23 +34,17 @@ public:
 	void Fill(COLORREF color);
 
 	//draws the bar
-	void Draw(CDC* dc, int iLeft, int iTop, bool bFlat);
-	void DrawPreview(CDC* dc, int iLeft, int iTop, uint8 previewLevel);		//Cax2 aqua bar
+	void Draw(CDC* dc, int iLeft, int iTop);
 
 protected:
-	void BuildModifiers();
-	void FillRect(CDC *dc, LPRECT rectSpan, float fRed, float fGreen, float fBlue, bool bFlat);
-	void FillRect(CDC *dc, LPRECT rectSpan, COLORREF color, bool bFlat);
-
+	void FillRect(CDC *dc, LPRECT rectSpan, float fRed, float fGreen, float fBlue);
+	void FillRect(CDC *dc, LPRECT rectSpan, COLORREF color);
 	int    m_iWidth;
 	int    m_iHeight;
 	double m_dPixelsPerByte;
 	double m_dBytesPerPixel;
 	uint32 m_uFileSize;
-	bool	m_bIsPreview;
 
 private:
 	CRBMap<uint32, COLORREF> m_Spans;	// SLUGFILLER: speedBarShader
-	float *m_Modifiers;
-	uint16 m_used3dlevel;
 };

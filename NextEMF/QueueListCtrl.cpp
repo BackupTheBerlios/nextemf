@@ -405,7 +405,7 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					if( client->GetUpPartCount()){
 						cur_rec.bottom--;
 						cur_rec.top++;
-						client->DrawUpStatusBar(dc,&cur_rec,false,thePrefs.UseFlatBar());
+						client->DrawUpStatusBar(dc,&cur_rec,false);
 						cur_rec.bottom++;
 						cur_rec.top--;
 					}

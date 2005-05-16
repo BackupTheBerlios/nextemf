@@ -20,7 +20,6 @@
 #endif
 #include "emule.h"
 #include "emsocket.h"
-#include "AsyncProxySocketLayer.h"
 #include "Packets.h"
 #include "OtherFunctions.h"
 #include "UploadBandwidthThrottler.h"
@@ -106,10 +105,6 @@ CEMSocket::CEMSocket(void){
 	sent = 0;
 	//m_bLinkedPackets = false;
 
-	// deadlake PROXYSUPPORT
-	m_pProxyLayer = NULL;
-	m_ProxyConnectFailed = false;
-
     //m_startSendTick = 0;
     //m_lastSendLatency = 0;
     //m_latency_sum = 0;
@@ -151,67 +146,8 @@ CEMSocket::~CEMSocket(){
     theApp.uploadBandwidthThrottler->RemoveFromAllQueues(this);
 
     ClearQueues();
-	RemoveAllLayers(); // deadlake PROXYSUPPORT
+	CAsyncSocketEx::RemoveAllLayers();
 	AsyncSelect(0);
-}
-
-// deadlake PROXYSUPPORT
-// By Maverick: Connection initialisition is done by class itself
-BOOL CEMSocket::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
-{
-	InitProxySupport();
-	return CAsyncSocketEx::Connect(lpszHostAddress, nHostPort);
-}
-// end deadlake
-
-// deadlake PROXYSUPPORT
-// By Maverick: Connection initialisition is done by class itself
-//BOOL CEMSocket::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
-BOOL CEMSocket::Connect(SOCKADDR* pSockAddr, int iSockAddrLen)
-{
-	InitProxySupport();
-	return CAsyncSocketEx::Connect(pSockAddr, iSockAddrLen);
-}
-// end deadlake
-
-void CEMSocket::InitProxySupport()
-{
-	// ProxyInitialisation
-	const ProxySettings& settings = thePrefs.GetProxy();
-	m_ProxyConnectFailed = false;
-	if (settings.UseProxy && settings.type != PROXYTYPE_NOPROXY)
-	{
-		Close();
-
-		m_pProxyLayer=new CAsyncProxySocketLayer;
-		switch (settings.type)
-		{
-			case PROXYTYPE_SOCKS4:
-				m_pProxyLayer->SetProxy(PROXYTYPE_SOCKS4,settings.name,settings.port);
-				break;
-			case PROXYTYPE_SOCKS4A:
-				m_pProxyLayer->SetProxy(PROXYTYPE_SOCKS4A,settings.name,settings.port);
-				break;
-			case PROXYTYPE_SOCKS5:
-				if (settings.EnablePassword)
-					m_pProxyLayer->SetProxy(PROXYTYPE_SOCKS5,settings.name, settings.port, settings.user, settings.password);
-				else
-					m_pProxyLayer->SetProxy(PROXYTYPE_SOCKS5,settings.name,settings.port);
-				break;
-			case PROXYTYPE_HTTP11:
-				if (settings.EnablePassword)
-					m_pProxyLayer->SetProxy(PROXYTYPE_HTTP11,settings.name,settings.port, settings.user, settings.password);
-				else
-					m_pProxyLayer->SetProxy(PROXYTYPE_HTTP11,settings.name,settings.port);
-				break;
-			default: ASSERT(FALSE);
-		}
-		AddLayer(m_pProxyLayer);
-
-		// Connection Initialisation
-		Create();
-		AsyncSelect(FD_READ | FD_WRITE | FD_OOB | FD_ACCEPT | FD_CONNECT | FD_CLOSE);
-	}
 }
 
 void CEMSocket::ClearQueues(){
@@ -261,7 +197,7 @@ void CEMSocket::OnClose(int nErrorCode){
     theApp.uploadBandwidthThrottler->RemoveFromAllQueues(this);
 
 	CAsyncSocketEx::OnClose(nErrorCode); // deadlake changed socket to PROXYSUPPORT ( AsyncSocketEx )
-	RemoveAllLayers(); // deadlake PROXYSUPPORT
+	CAsyncSocketEx::RemoveAllLayers();
 	ClearQueues();
 };
 
@@ -952,89 +888,6 @@ int CEMSocket::Receive(void* lpBuf, int nBufLen, int nFlags)
 	return SOCKET_ERROR;
 }
 
-
-// deadlake PROXYSUPPORT ( RESETS LAYER CHAIN BY MAVERICK )
-void CEMSocket::RemoveAllLayers()
-{
-	CAsyncSocketEx::RemoveAllLayers();
-	
-	// ProxyLayer Destruction
-	if (m_pProxyLayer) 
-	{
-		delete m_pProxyLayer;
-		m_pProxyLayer = NULL;
-	}
-}
-
-int CEMSocket::OnLayerCallback(const CAsyncSocketExLayer *pLayer, int nType, int nParam1, int nParam2)
-{
-	ASSERT(pLayer);
-	if (nType==LAYERCALLBACK_STATECHANGE)
-	{
-		CString logline;
-		if (pLayer==m_pProxyLayer)
-		{
-			//logline.Format(_T("ProxyLayer changed state from %d to %d"), nParam2, nParam1);
-			//AddLogLine(false,logline);
-		}else
-			//logline.Format(_T("Layer @ %d changed state from %d to %d"), pLayer, nParam2, nParam1);
-			//AddLogLine(false,logline);
-		return 1;
-	}
-	else if (nType==LAYERCALLBACK_LAYERSPECIFIC)
-	{
-		if (pLayer==m_pProxyLayer)
-		{
-			switch (nParam1)
-			{
-				// changed by deadlake -> errormessages could be ignored -> there's not a problem with the connection - 
-				// only the proxyserver handles the connections to low ( small bandwidth? )
-				case PROXYERROR_NOCONN:{
-					//TODO: This error message(s) should be outputed only during startup - otherwise we'll see a lot of
-					//them in the log window which would be of no use.
-					if (thePrefs.GetShowProxyErrors()){
-						CString strError(_T("Can't connect to proxy"));
-						CString strErrInf;
-						if (nParam2 && GetErrorMessage(nParam2, strErrInf))
-							strError += _T(" - ") + strErrInf;
-						LogWarning(false, _T("%s"), strError);
-					}
-					break;
-				}
-				case PROXYERROR_REQUESTFAILED:{
-					//TODO: This error message(s) should be outputed only during startup - otherwise we'll see a lot of
-					//them in the log window which would be of no use.
-					if (thePrefs.GetShowProxyErrors()){
-						CString strError(_T("Proxy request failed"));
-						if (nParam2){
-							strError += _T(" - ");
-							strError += (LPCSTR)nParam2;
-						}
-						LogWarning(false, _T("%s"), strError);
-					}
-					break;
-				}
-				case PROXYERROR_AUTHTYPEUNKNOWN:
-					LogWarning(false,_T("Required authtype reported by proxy server is unknown or unsupported"));
-					break;
-				case PROXYERROR_AUTHFAILED:
-					LogWarning(false,_T("Authentification failed"));
-					break;
-				case PROXYERROR_AUTHNOLOGON:
-					LogWarning(false,_T("Proxy requires authentification"));
-					break;
-				case PROXYERROR_CANTRESOLVEHOST:
-					LogWarning(false,_T("Can't resolve host of proxy"));
-					break;
-				default:{
-					LogWarning(false,_T("Proxy error - %s"), GetProxyError(nParam1));
-				}
-			}
-		}
-	}
-	return 1;
-}
-// end deadlake
 
 /**
  * Removes all packets from the standard queue that don't have to be sent for the socket to be able to send a control packet.

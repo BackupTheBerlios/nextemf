@@ -150,8 +150,8 @@ public:
 
 	void	AddGap(uint32 start, uint32 end);
 	void	FillGap(uint32 start, uint32 end);
-	void	DrawStatusBar(CDC* dc, LPCRECT rect, bool bFlat) /*const*/;
-	virtual void	DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool	 bFlat) const;
+	void	DrawStatusBar(CDC* dc, LPCRECT rect) /*const*/;
+	virtual void	DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect) const;
 	bool	IsComplete(uint32 start, uint32 end, bool bIgnoreBufferedData) const;
 	bool	IsPureGap(uint32 start, uint32 end) const;
 	bool	IsAlreadyRequested(uint32 start, uint32 end) const;
@@ -266,8 +266,6 @@ public:
 	uint8	GetCategory() /*const*/;
 	void	SetCategory(uint8 cat,bool setprio=true);
 	bool	CheckShowItemInGivenCat(int inCategory) /*const*/;
-
-	uint8*	MMCreatePartStatus();
 
 	//preview
 	virtual bool GrabImage(uint8 nFramesToGrab, double dStartTime, bool bReduceColor, uint16 nMaxWidth,void* pSender);

@@ -16,7 +16,6 @@ public:
 protected:
 	BOOL m_bModified;
 	bool bCreated;
-	CHyperTextCtrl m_wndMobileLink;
 
 	void LoadSettings(void);
 
@@ -31,7 +30,6 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnEnChangeWSEnabled();
-	afx_msg void OnEnChangeMMEnabled();
 	afx_msg void OnReloadTemplates();
 	afx_msg void OnBnClickedTmplbrowse();
 	afx_msg void OnHelp();

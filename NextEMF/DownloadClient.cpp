@@ -50,14 +50,10 @@ static char THIS_FILE[] = __FILE__;
 //	members of CUpDownClient
 //	which are mainly used for downloading functions 
 CBarShader CUpDownClient::s_StatusBar(16);
-void CUpDownClient::DrawStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool  bFlat) const
+void CUpDownClient::DrawStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect) const
 {
 	COLORREF crNeither;
-	if(bFlat) {
-		crNeither = RGB(224, 224, 224);
-	} else {
 		crNeither = RGB(240, 240, 240);
-	}
 
 	ASSERT(reqfile);
 	s_StatusBar.SetFileSize(reqfile->GetFileSize());
@@ -70,19 +66,11 @@ void CUpDownClient::DrawStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool
 		COLORREF crClientOnly;
 		COLORREF crPending;
 		COLORREF crNextPending;
-		if(bFlat) {
-			crBoth = RGB(0, 0, 0);
-			crNeither = RGB(224, 224, 224);
-			crClientOnly = RGB(0, 100, 255);
-			crPending = RGB(0,150,0);
-			crNextPending = RGB(255,208,0);
-		} else {
-			crBoth = RGB(104, 104, 104);
-			crNeither = RGB(240, 240, 240);
-			crClientOnly = RGB(0, 100, 255);
-			crPending = RGB(0, 150, 0);
-			crNextPending = RGB(255,208,0);
-		}
+		crBoth = RGB(104, 104, 104);
+		crNeither = RGB(240, 240, 240);
+		crClientOnly = RGB(0, 100, 255);
+		crPending = RGB(0, 150, 0);
+		crNextPending = RGB(255,208,0);
 
 		char* pcNextPendingBlks = NULL;
 		if (m_nDownloadState == DS_DOWNLOADING){
@@ -115,7 +103,7 @@ void CUpDownClient::DrawStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool
 		}
 		delete[] pcNextPendingBlks;
 	}
-	s_StatusBar.Draw(dc, rect->left, rect->top, bFlat);
+	s_StatusBar.Draw(dc, rect->left, rect->top);
 } 
 
 bool CUpDownClient::Compare(const CUpDownClient* tocomp, bool bIgnoreUserhash) const
@@ -1312,10 +1300,8 @@ void CUpDownClient::UDPReaskForDownload()
 		return;
 
 	//the line "m_bUDPPending = true;" use to be here
-	// deadlake PROXYSUPPORT
-	const ProxySettings& proxy = thePrefs.GetProxy();
 	if(m_nUDPPort != 0 && thePrefs.GetUDPPort() != 0 &&
-		!theApp.IsFirewalled() && !(socket && socket->IsConnected())&& (!proxy.UseProxy))
+		!theApp.IsFirewalled() && !(socket && socket->IsConnected())) 
 	{ 
 		if( !HasLowID() )
 		{

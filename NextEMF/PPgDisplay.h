@@ -1,6 +1,5 @@
 #pragma once
 
-#include "3dpreviewcontrol.h"
 
 class CPPgDisplay : public CPropertyPage
 {
@@ -23,9 +22,6 @@ protected:
 	} m_eSelectFont;
 	void LoadSettings(void);
 
-	void DrawPreview();		//Cax2 - aqua bar
-	C3DPreviewControl	m_3DPreview;
-
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual BOOL OnInitDialog();
 	virtual BOOL OnApply();
@@ -34,12 +30,9 @@ protected:
 	static UINT CALLBACK ChooseFontHook(HWND hdlg, UINT uiMsg, WPARAM wParam, LPARAM lParam);
 
 	DECLARE_MESSAGE_MAP()
-	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg void OnSettingsChange()					{ SetModified(); }
 	afx_msg void OnBnClickedSelectHypertextFont();
 	afx_msg void OnBtnClickedResetHist();
 	afx_msg void OnHelp();
 	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
-//	afx_msg void On3DDepth(NMHDR *pNMHDR, LRESULT *pResult);
-
 };

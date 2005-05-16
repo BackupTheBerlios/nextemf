@@ -16,7 +16,7 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
 
-const CString strDefaultToolbar = _T("0099010203040506070899091011");
+const CString strDefaultToolbar = _T("00990102030405060799080910");
 
 enum EViewSharedFilesAccess{
 	vsfaEverybody = 0,
@@ -26,8 +26,7 @@ enum EViewSharedFilesAccess{
 
 enum ENotifierSoundType{
 	ntfstNoSound = 0,
-	ntfstSoundFile = 1,
-	ntfstSpeech = 2
+	ntfstSoundFile = 1
 };
 
 enum EToolbarLabelType;
@@ -41,17 +40,6 @@ struct Preferences_Ext_Struct{
 	WINDOWPLACEMENT EmuleWindowPlacement;
 };
 #pragma pack()
-
-// deadlake PROXYSUPPORT
-struct ProxySettings{
-	uint16 type;
-	uint16 port;
-	TCHAR name[50];
-	CHAR user[50];
-	CHAR password[50];
-	bool EnablePassword;
-	bool UseProxy;
-};
 
 #pragma pack(1)
 struct Category_Struct{
@@ -101,7 +89,6 @@ public:
 	static	bool	autoconnectstaticonly; // Barry
 	static	bool	autotakeed2klinks;	   // Barry
 	static	bool	addnewfilespaused;	   // Barry
-	static	uint8	depth3D;			   // Barry
 	static	bool	m_bEnableMiniMule;
 	static	int		m_iStraightWindowStyles;
 	static	bool	m_bRTLWindowsLayout;
@@ -142,12 +129,6 @@ public:
 	static	uint16	FilenamesListColumnWidths[2];
 	static	BOOL	FilenamesListColumnHidden[2];
 	static	INT		FilenamesListColumnOrder[2];
-	static	uint16	IrcMainColumnWidths[2];
-	static	BOOL	IrcMainColumnHidden[2];
-	static	INT		IrcMainColumnOrder[2];
-	static	uint16	IrcChannelsColumnWidths[3];
-	static	BOOL	IrcChannelsColumnHidden[3];
-	static	INT		IrcChannelsColumnOrder[3];
 	static	uint16	downloadClientsColumnWidths[8];
 	static	BOOL	downloadClientsColumnHidden[8];
 	static	INT		downloadClientsColumnOrder[8];
@@ -327,7 +308,6 @@ public:
 	static	UINT	splitterbarPositionStat_HL;
 	static	UINT	splitterbarPositionStat_HR;
 	static	UINT	splitterbarPositionFriend;
-	static	UINT	splitterbarPositionIRC;
 	//MORPH END - Added by SiRoB, Splitting Bar [O²]
 	static	uint16	deadserverretries;
 	static	DWORD	m_dwServerKeepAliveTimeout;
@@ -347,27 +327,7 @@ public:
 	static	ENotifierSoundType notifierSoundType;
 	static	CString	notifierSoundFile;
 
-	static	TCHAR	m_sircserver[50];
-	static	TCHAR	m_sircnick[30];
-	static	TCHAR	m_sircchannamefilter[50];
 	static	bool	m_bircaddtimestamp;
-	static	bool	m_bircusechanfilter;
-	static	uint16	m_iircchanneluserfilter;
-	static	TCHAR	m_sircperformstring[255];
-	static	bool	m_bircuseperform;
-	static	bool	m_birclistonconnect;
-	static	bool	m_bircacceptlinks;
-	static	bool	m_bircacceptlinksfriends;
-	static	bool	m_bircsoundevents;
-	static	bool	m_bircignoremiscmessage;
-	static	bool	m_bircignorejoinmessage;
-	static	bool	m_bircignorepartmessage;
-	static	bool	m_bircignorequitmessage;
-	static	bool	m_bircignoreemuleprotoaddfriend;
-	static	bool	m_bircallowemuleprotoaddfriend;
-	static	bool	m_bircignoreemuleprotosendlink;
-	static	bool	m_birchelpchannel;
-
 	static	bool	m_bRemove2bin;
 	static	bool	m_bShowCopyEd2kLinkCmd;
 	static	bool	m_bpreviewprio;
@@ -429,8 +389,6 @@ public:
 	static	int		tableSortItemServer;
 	static	int		tableSortItemClientList;
 	static  int		tableSortItemFilenames;
-	static  int		tableSortItemIrcMain;
-	static  int		tableSortItemIrcChannels;
 	static	int		tableSortItemDownloadClients;
 
 	static	bool	tableSortAscendingDownload;
@@ -441,8 +399,6 @@ public:
 	static	bool	tableSortAscendingServer;
 	static	bool	tableSortAscendingClientList;
 	static  bool	tableSortAscendingFilenames;
-	static  bool	tableSortAscendingIrcMain;
-	static  bool	tableSortAscendingIrcChannels;
 	static	bool	tableSortAscendingDownloadClients;
 
 	static	bool	showRatesInTitle;
@@ -502,9 +458,6 @@ public:
 	static	int		m_iWebTimeoutMins;
 
 	static	TCHAR	m_sTemplateFile[MAX_PATH];
-	static	ProxySettings proxy; // deadlake PROXYSUPPORT
-	static	bool	m_bIsASCWOP;
-	static	bool	m_bShowProxyErrors;
 	static  bool	m_bAllowAdminHiLevFunc;
 	static	CUIntArray m_aAllowedRemoteAccessIPs;
 
@@ -523,10 +476,6 @@ public:
 	static	int		m_iSearchMethod;
 	static	bool	m_bAdvancedSpamfilter;
 	static	bool	m_bUseSecureIdent;
-	// mobilemule
-	static	TCHAR	m_sMMPassword[256];
-	static	bool	m_bMMEnabled;
-	static	uint16	m_nMMPort;
 
 	static	bool	networkkademlia;
 	static	bool	networked2k;
@@ -598,8 +547,6 @@ public:
 		tableServer, 
 		tableClientList,
 		tableFilenames,
-		tableIrcMain,
-		tableIrcChannels,
 		tableDownloadClients
 	};
 
@@ -610,7 +557,6 @@ public:
 	friend class CPPgDirectories;
 	friend class CPPgFiles;
 	friend class CPPgNotify;
-	friend class CPPgIRC;
 	friend class Wizard;
 	friend class CPPgTweaks;
 	friend class CPPgDisplay;
@@ -971,13 +917,10 @@ public:
 	static	void	SetSplitterbarPositionStat_HR(UINT pos) {splitterbarPositionStat_HR=pos;}
 	static	UINT	GetSplitterbarPositionFriend()		{return splitterbarPositionFriend;}
 	static	void	SetSplitterbarPositionFriend(UINT pos) {splitterbarPositionFriend=pos;}
-	static	UINT	GetSplitterbarPositionIRC()			{return splitterbarPositionIRC;}
-	static	void	SetSplitterbarPositionIRC(UINT pos) {splitterbarPositionIRC=pos;}
 	//MORPH END   - Added by SiRoB, Splitting Bar [O²]
 	// -khaos--+++> Changed datatype to avoid overflows
 	static	uint16	GetStatsMax()						{return statsMax;}
 	// <-----khaos-
-	static	bool	UseFlatBar()						{return (depth3D==0);}
 	static	int		GetStraightWindowStyles()			{return m_iStraightWindowStyles;}
 
 	static	const CString& GetSkinProfile()				{return m_strSkinProfile;}
@@ -1004,27 +947,8 @@ public:
 	static	bool	GetEnableMiniMule()					{return m_bEnableMiniMule;}
 	static	bool	GetRTLWindowsLayout()				{return m_bRTLWindowsLayout;}
 
-	static	CString GetIRCNick()						{return m_sircnick;}
-	static	void	SetIRCNick( TCHAR in_nick[] )		{ _tcscpy(m_sircnick,in_nick);}
-	static	CString GetIRCServer()						{return m_sircserver;}
 	static	bool	GetIRCAddTimestamp()				{return m_bircaddtimestamp;}
-	static	CString GetIRCChanNameFilter()				{return m_sircchannamefilter;}
-	static	bool	GetIRCUseChanFilter()				{return m_bircusechanfilter;}
-	static	uint16	GetIRCChannelUserFilter()			{return m_iircchanneluserfilter;}
-	static	CString GetIrcPerformString()				{return m_sircperformstring;}
-	static	bool	GetIrcUsePerform()					{return m_bircuseperform;}
-	static	bool	GetIRCListOnConnect()				{return m_birclistonconnect;}
-	static	bool	GetIrcAcceptLinks()					{return m_bircacceptlinks;}
-	static	bool	GetIrcAcceptLinksFriends()			{return m_bircacceptlinksfriends;}
-	static	bool	GetIrcSoundEvents()					{return m_bircsoundevents;}
-	static	bool	GetIrcIgnoreMiscMessage()			{return m_bircignoremiscmessage;}
-	static	bool	GetIrcIgnoreJoinMessage()			{return m_bircignorejoinmessage;}
-	static	bool	GetIrcIgnorePartMessage()			{return m_bircignorepartmessage;}
-	static	bool	GetIrcIgnoreQuitMessage()			{return m_bircignorequitmessage;}
-	static	bool	GetIrcIgnoreEmuleProtoAddFriend()	{return m_bircignoreemuleprotoaddfriend;}
-	static	bool	GetIrcAllowEmuleProtoAddFriend()	{return m_bircallowemuleprotoaddfriend;}
-	static	bool	GetIrcIgnoreEmuleProtoSendLink()	{return m_bircignoreemuleprotosendlink;}
-	static	bool	GetIrcHelpChannel()					{return m_birchelpchannel;}
+
 	static	WORD	GetWindowsVersion();
 	static	bool	GetStartMinimized()					{return startMinimized;}
 	static	void	SetStartMinimized( bool instartMinimized) {startMinimized = instartMinimized;}
@@ -1070,7 +994,6 @@ public:
 	static	bool	GetShowCopyEd2kLinkCmd()			{return m_bShowCopyEd2kLinkCmd;}
 
 	// Barry
-	static	uint16	Get3DDepth()						{return depth3D;}
 	static	bool	AutoTakeED2KLinks()					{return autotakeed2klinks;}
 	static	bool	AddNewFilesPaused()					{return addnewfilespaused;}
 
@@ -1195,27 +1118,6 @@ public:
 	static	bool	GetNetworkED2K()						{ return networked2k;}
 	static	void	SetNetworkED2K(bool val)				{ networked2k = val;}
 
-	// mobileMule
-	static	CString GetMMPass()								{ return CString(m_sMMPassword); }
-	static	void	SetMMPass(CString strNewPass);
-	static	bool	IsMMServerEnabled()						{ return m_bMMEnabled; }
-	static	void	SetMMIsEnabled(bool bEnable)			{ m_bMMEnabled=bEnable; }
-	static	uint16	GetMMPort()								{ return m_nMMPort; }
-	static	void	SetMMPort(uint16 uPort)					{ m_nMMPort=uPort; }
-
-	// deadlake PROXYSUPPORT
-	static	const ProxySettings& GetProxy()					{ return proxy; }
-	static	void	SetProxySettings(const ProxySettings& proxysettings) { proxy = proxysettings; }
-	static	uint16	GetListenPort()							{ if (m_UseProxyListenPort) return ListenPort; else return port; }
-	static	void	SetListenPort(uint16 uPort)				{ ListenPort = uPort; m_UseProxyListenPort = true; }
-	static	void	ResetListenPort()						{ ListenPort = 0; m_UseProxyListenPort = false; }
-	static	void	SetUseProxy(bool in)					{ proxy.UseProxy=in;}
-	static	bool	GetShowProxyErrors()					{ return m_bShowProxyErrors; }
-	static	void	SetShowProxyErrors(bool bEnable)		{ m_bShowProxyErrors = bEnable; }
-
-	static	bool	IsProxyASCWOP()							{ return m_bIsASCWOP;}
-	static	void	SetProxyASCWOP(bool in)					{ m_bIsASCWOP=in;}
-
 	static	bool	ShowCatTabInfos()						{ return showCatTabInfos;}
 	static	void	ShowCatTabInfos(bool in)				{ showCatTabInfos=in;}
 
@@ -1337,8 +1239,6 @@ protected:
 	static	CString m_strLogDir;
 	static	Preferences_Ext_Struct* prefsExt;
 	static	WORD m_wWinVer;
-	static	bool m_UseProxyListenPort;
-	static	uint16	ListenPort;
 	static	CArray<Category_Struct*,Category_Struct*> catMap;
 
 	static void	CreateUserHash();

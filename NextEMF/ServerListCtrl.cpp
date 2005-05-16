@@ -26,7 +26,6 @@
 #include "Sockets.h"
 #include "MenuCmds.h"
 #include "ServerWnd.h"
-#include "IrcWnd.h"
 #include "Opcodes.h"
 #include "Log.h"
 
@@ -562,20 +561,6 @@ BOOL CServerListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 						link += buffer;
 					}
 					theApp.CopyTextToClipboard(link);
-					return TRUE;
-				}
-			case Irc_SetSendLink:
-				{
-					POSITION pos = GetFirstSelectedItemPosition();
-					CString buffer, link;
-					while (pos != NULL){
-						const CServer* change = (CServer*)GetItemData(GetNextSelectedItem(pos));
-						buffer.Format(_T("ed2k://|server|%s|%d|/"), change->GetFullIP(), change->GetPort());
-						if (link.GetLength() > 0)
-							buffer = _T("\r\n") + buffer;
-						link += buffer;
-					}
-					theApp.emuledlg->ircwnd->SetSendFileString(link);
 					return TRUE;
 				}
 			}

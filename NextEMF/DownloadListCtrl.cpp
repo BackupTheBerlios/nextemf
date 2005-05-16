@@ -37,7 +37,6 @@
 #include "Kademlia/Kademlia/Kademlia.h"
 #include "Kademlia/Kademlia/Prefs.h"
 #include "Kademlia/net/KademliaUDPListener.h"
-#include "WebServices.h"
 #include "Preview.h"
 #include "StringConversion.h"
 #include "AddSourceDlg.h"
@@ -508,7 +507,7 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 					rec_status.top = 0; 
 					rec_status.bottom = iHeight; 
 					rec_status.right = iWidth; 
-					lpPartFile->DrawStatusBar(&cdcStatus,  &rec_status, thePrefs.UseFlatBar()); 
+					lpPartFile->DrawStatusBar(&cdcStatus,  &rec_status); 
 
 					lpCtrlItem->dwUpdated = dwTicks + (rand() % 128); 
 				} else 
@@ -786,7 +785,7 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 					rec_status.top = 0; 
 					rec_status.bottom = iHeight; 
 					rec_status.right = iWidth; 
-					lpUpDownClient->DrawStatusBar(&cdcStatus,  &rec_status,(lpCtrlItem->type == UNAVAILABLE_SOURCE), thePrefs.UseFlatBar()); 
+					lpUpDownClient->DrawStatusBar(&cdcStatus,  &rec_status,(lpCtrlItem->type == UNAVAILABLE_SOURCE)); 
 
 					lpCtrlItem->dwUpdated = dwTicks + (rand() % 128); 
 				} else 
@@ -1317,17 +1316,10 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 			m_FileMenu.EnableMenuItem(thePrefs.GetShowCopyEd2kLinkCmd() ? MP_GETED2KLINK : MP_SHOWED2KLINK, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
 			m_FileMenu.EnableMenuItem(MP_PASTE, theApp.IsEd2kFileLinkInClipboard() ? MF_ENABLED : MF_GRAYED);
 
-			CTitleMenu WebMenu;
-			WebMenu.CreateMenu();
-			WebMenu.AddMenuTitle(NULL, true);
-			int iWebMenuEntries = theWebServices.GetFileMenuEntries(&WebMenu);
-			UINT flag = (iWebMenuEntries == 0 || iSelectedItems != 1) ? MF_GRAYED : MF_ENABLED;
-			m_FileMenu.AppendMenu(MF_POPUP | flag, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES), _T("WEB"));
-
 			// create cat-submenue
 			CMenu CatsMenu;
 			CatsMenu.CreateMenu();
-			flag = (thePrefs.GetCatCount() == 1) ? MF_GRAYED : MF_ENABLED;
+			UINT flag = (thePrefs.GetCatCount() == 1) ? MF_GRAYED : MF_ENABLED;
 			CString label;
 			if (thePrefs.GetCatCount()>1) {
 				for (int i = 0; i < thePrefs.GetCatCount(); i++){
@@ -1343,10 +1335,8 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 			GetPopupMenuPos(*this, point);
 			m_FileMenu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON, point.x, point.y, this);
 			VERIFY( m_FileMenu.RemoveMenu(m_FileMenu.GetMenuItemCount() - 1, MF_BYPOSITION) );
-			VERIFY( m_FileMenu.RemoveMenu(m_FileMenu.GetMenuItemCount() - 1, MF_BYPOSITION) );
 			if (iPreviewMenuEntries)
 				VERIFY( m_FileMenu.RemoveMenu((UINT)PreviewMenu.m_hMenu, MF_BYCOMMAND) );
-			VERIFY( WebMenu.DestroyMenu() );
 			VERIFY( CatsMenu.DestroyMenu() );
 			VERIFY( PreviewMenu.DestroyMenu() );
 		}
@@ -1401,21 +1391,10 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 		m_FileMenu.EnableMenuItem(MP_CLEARCOMPLETED, GetCompleteDownloads(curTab,total) > 0 ? MF_ENABLED : MF_GRAYED);
 		m_FileMenu.EnableMenuItem(thePrefs.GetShowCopyEd2kLinkCmd() ? MP_GETED2KLINK : MP_SHOWED2KLINK, MF_GRAYED);
 		m_FileMenu.EnableMenuItem(MP_PASTE, theApp.IsEd2kFileLinkInClipboard() ? MF_ENABLED : MF_GRAYED);
-		m_FileMenu.SetDefaultItem((UINT)-1);
 		m_FileMenu.EnableMenuItem((UINT_PTR)m_SourcesMenu.m_hMenu, MF_GRAYED);
-
-		// also show the "Web Services" entry, even if its disabled and therefore not useable, it though looks a little 
-		// less confusing this way.
-		CTitleMenu WebMenu;
-		WebMenu.CreateMenu();
-		WebMenu.AddMenuTitle(NULL, true);
-		theWebServices.GetFileMenuEntries(&WebMenu);
-		m_FileMenu.AppendMenu(MF_POPUP | MF_GRAYED, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES), _T("WEB"));
 
 		GetPopupMenuPos(*this, point);
 		m_FileMenu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON, point.x, point.y, this);
-		m_FileMenu.RemoveMenu(m_FileMenu.GetMenuItemCount() - 1, MF_BYPOSITION);
-		VERIFY( WebMenu.DestroyMenu() );
 	}
 }
 
@@ -1709,10 +1688,7 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					break;
 				}
 				default:
-					if (wParam>=MP_WEBURL && wParam<=MP_WEBURL+99){
-						theWebServices.RunURL(file, wParam);
-					}
-					else if (wParam>=MP_ASSIGNCAT && wParam<=MP_ASSIGNCAT+99){
+                                        if (wParam>=MP_ASSIGNCAT && wParam<=MP_ASSIGNCAT+99){
 						SetRedraw(FALSE);
 						while (!selectedList.IsEmpty()){
 							CPartFile *partfile = selectedList.GetHead();
@@ -2202,7 +2178,6 @@ void CDownloadListCtrl::CreateMenues() {
 	else
 		m_FileMenu.AppendMenu(MF_STRING,MP_SHOWED2KLINK, GetResString(IDS_DL_SHOWED2KLINK), _T("ED2KLINK"));
 	m_FileMenu.AppendMenu(MF_STRING,MP_PASTE, GetResString(IDS_SW_DIRECTDOWNLOAD), _T("PASTELINK"));
-	m_FileMenu.AppendMenu(MF_SEPARATOR);
 }
 
 CString CDownloadListCtrl::getTextList()

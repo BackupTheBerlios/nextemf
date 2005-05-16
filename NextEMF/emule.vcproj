@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding = "Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.00"
+	Version="7.10"
 	Name="emule"
 	ProjectGUID="{584EA69D-3443-4197-8994-364880FC1B9B}"
 	Keyword="MFCProj">
@@ -61,7 +61,13 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
@@ -124,9 +130,17 @@
 			<Tool
 				Name="VCWebServiceProxyGeneratorTool"/>
 			<Tool
+				Name="VCXMLDataGeneratorTool"/>
+			<Tool
 				Name="VCWebDeploymentTool"/>
+			<Tool
+				Name="VCManagedWrapperGeneratorTool"/>
+			<Tool
+				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
 		</Configuration>
 	</Configurations>
+	<References>
+	</References>
 	<Files>
 		<Filter
 			Name="Source Files"
@@ -136,9 +150,6 @@
 			</File>
 			<File
 				RelativePath="ArchiveRecovery.cpp">
-			</File>
-			<File
-				RelativePath="AsyncProxySocketLayer.cpp">
 			</File>
 			<File
 				RelativePath="AsyncSocketEx.cpp">
@@ -204,10 +215,10 @@
 				RelativePath="I18n.cpp">
 			</File>
 			<File
-				RelativePath="IPFilter.cpp">
+				RelativePath="Ini2.cpp">
 			</File>
 			<File
-				RelativePath="Ini2.cpp">
+				RelativePath="IPFilter.cpp">
 			</File>
 			<File
 				RelativePath="KnownFile.cpp">
@@ -260,12 +271,6 @@
 			</File>
 			<File
 				RelativePath="MD5Sum.cpp">
-			</File>
-			<File
-				RelativePath="MMServer.cpp">
-			</File>
-			<File
-				RelativePath="MMSocket.cpp">
 			</File>
 			<File
 				RelativePath="Mdump.cpp">
@@ -339,31 +344,6 @@
 				RelativePath="Quantize.cpp">
 			</File>
 			<File
-				RelativePath="SHA.cpp">
-			</File>
-			<File
-				RelativePath="SHAHashSet.cpp">
-			</File>
-			<File
-				RelativePath="SHA_asm.asm">
-				<FileConfiguration
-					Name="Debug|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="ml.exe /c /Cx /coff /Fo $(IntDir)\ &quot;$(InputPath)&quot;
-"
-						Outputs="$(IntDir)\$(InputName).obj"/>
-				</FileConfiguration>
-				<FileConfiguration
-					Name="Release|Win32">
-					<Tool
-						Name="VCCustomBuildTool"
-						CommandLine="ml.exe /c /Cx /coff /Fo $(IntDir)\ &quot;$(InputPath)&quot;
-"
-						Outputs="$(IntDir)\$(InputName).obj"/>
-				</FileConfiguration>
-			</File>
-			<File
 				RelativePath="SafeFile.cpp">
 			</File>
 			<File
@@ -417,6 +397,31 @@
 				RelativePath="ServerSocket.cpp">
 			</File>
 			<File
+				RelativePath="SHA.cpp">
+			</File>
+			<File
+				RelativePath="SHA_asm.asm">
+				<FileConfiguration
+					Name="Debug|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="ml.exe /c /Cx /coff /Fo $(IntDir)\ &quot;$(InputPath)&quot;
+"
+						Outputs="$(IntDir)\$(InputName).obj"/>
+				</FileConfiguration>
+				<FileConfiguration
+					Name="Release|Win32">
+					<Tool
+						Name="VCCustomBuildTool"
+						CommandLine="ml.exe /c /Cx /coff /Fo $(IntDir)\ &quot;$(InputPath)&quot;
+"
+						Outputs="$(IntDir)\$(InputName).obj"/>
+				</FileConfiguration>
+			</File>
+			<File
+				RelativePath="SHAHashSet.cpp">
+			</File>
+			<File
 				RelativePath="SharedFileList.cpp">
 			</File>
 			<File
@@ -450,9 +455,6 @@
 				RelativePath="UDPSocket.cpp">
 			</File>
 			<File
-				RelativePath="URLClient.cpp">
-			</File>
-			<File
 				RelativePath="UploadBandwidthThrottler.cpp">
 			</File>
 			<File
@@ -460,6 +462,9 @@
 			</File>
 			<File
 				RelativePath="UploadQueue.cpp">
+			</File>
+			<File
+				RelativePath="URLClient.cpp">
 			</File>
 			<File
 				RelativePath="Version.cpp">
@@ -486,10 +491,10 @@
 					RelativePath="kademlia\io\FileIO.cpp">
 				</File>
 				<File
-					RelativePath="kademlia\io\IOException.cpp">
+					RelativePath="kademlia\kademlia\Indexed.cpp">
 				</File>
 				<File
-					RelativePath="kademlia\kademlia\Indexed.cpp">
+					RelativePath="kademlia\io\IOException.cpp">
 				</File>
 				<File
 					RelativePath="kademlia\kademlia\Kademlia.cpp">
@@ -525,16 +530,6 @@
 					RelativePath="kademlia\utils\UInt128.cpp">
 				</File>
 			</Filter>
-			<Filter
-				Name="SMIRC"
-				Filter="">
-				<File
-					RelativePath="IrcMain.cpp">
-				</File>
-				<File
-					RelativePath="IrcSocket.cpp">
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -544,9 +539,6 @@
 			</File>
 			<File
 				RelativePath="ArchiveRecovery.h">
-			</File>
-			<File
-				RelativePath="AsyncProxySocketLayer.h">
 			</File>
 			<File
 				RelativePath="AsyncSocketEx.h">
@@ -612,16 +604,19 @@
 				RelativePath="HttpClientReqSocket.h">
 			</File>
 			<File
-				RelativePath="IPFilter.h">
+				RelativePath="Ini2.h">
 			</File>
 			<File
-				RelativePath="Ini2.h">
+				RelativePath="IPFilter.h">
 			</File>
 			<File
 				RelativePath="KnownFile.h">
 			</File>
 			<File
 				RelativePath="KnownFileList.h">
+			</File>
+			<File
+				RelativePath="langids.h">
 			</File>
 			<File
 				RelativePath="LastCommonRouteFinder.h">
@@ -633,19 +628,13 @@
 				RelativePath="Log.h">
 			</File>
 			<File
+				RelativePath="MapKey.h">
+			</File>
+			<File
 				RelativePath="MD4.h">
 			</File>
 			<File
 				RelativePath="MD5Sum.h">
-			</File>
-			<File
-				RelativePath="MMServer.h">
-			</File>
-			<File
-				RelativePath="MMSocket.h">
-			</File>
-			<File
-				RelativePath="MapKey.h">
 			</File>
 			<File
 				RelativePath="Mdump.h">
@@ -696,12 +685,6 @@
 				RelativePath="Resource.h">
 			</File>
 			<File
-				RelativePath="SHA.h">
-			</File>
-			<File
-				RelativePath="SHAHashSet.h">
-			</File>
-			<File
 				RelativePath="SafeFile.h">
 			</File>
 			<File
@@ -727,6 +710,12 @@
 			</File>
 			<File
 				RelativePath="ServerSocket.h">
+			</File>
+			<File
+				RelativePath="SHA.h">
+			</File>
+			<File
+				RelativePath="SHAHashSet.h">
 			</File>
 			<File
 				RelativePath="SharedFileList.h">
@@ -756,9 +745,6 @@
 				RelativePath="UDPSocket.h">
 			</File>
 			<File
-				RelativePath="URLClient.h">
-			</File>
-			<File
 				RelativePath="UpdownClient.h">
 			</File>
 			<File
@@ -768,19 +754,16 @@
 				RelativePath="UploadQueue.h">
 			</File>
 			<File
-				RelativePath="Version.h">
+				RelativePath="URLClient.h">
 			</File>
 			<File
-				RelativePath="WebServices.h">
+				RelativePath="Version.h">
 			</File>
 			<File
 				RelativePath="WebSocket.h">
 			</File>
 			<File
 				RelativePath="ZIPFile.h">
-			</File>
-			<File
-				RelativePath="langids.h">
 			</File>
 			<Filter
 				Name="Kademlia"
@@ -807,10 +790,10 @@
 					RelativePath="kademlia\io\FileIO.h">
 				</File>
 				<File
-					RelativePath="kademlia\io\IOException.h">
+					RelativePath="kademlia\kademlia\Indexed.h">
 				</File>
 				<File
-					RelativePath="kademlia\kademlia\Indexed.h">
+					RelativePath="kademlia\io\IOException.h">
 				</File>
 				<File
 					RelativePath="kademlia\kademlia\Kademlia.h">
@@ -852,23 +835,10 @@
 					RelativePath="kademlia\utils\UInt128.h">
 				</File>
 			</Filter>
-			<Filter
-				Name="SMIRC"
-				Filter="">
-				<File
-					RelativePath="IrcMain.h">
-				</File>
-				<File
-					RelativePath="IrcSocket.h">
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Interface Source"
 			Filter="">
-			<File
-				RelativePath="3DPreviewControl.cpp">
-			</File>
 			<File
 				RelativePath="AddFriend.cpp">
 			</File>
@@ -972,16 +942,16 @@
 				RelativePath="HyperTextCtrl.cpp">
 			</File>
 			<File
-				RelativePath="IESecurity.cpp">
-			</File>
-			<File
-				RelativePath="IPFilterDlg.cpp">
-			</File>
-			<File
 				RelativePath="IconStatic.cpp">
 			</File>
 			<File
+				RelativePath="IESecurity.cpp">
+			</File>
+			<File
 				RelativePath="InputBox.cpp">
+			</File>
+			<File
+				RelativePath="IPFilterDlg.cpp">
 			</File>
 			<File
 				RelativePath="KadContactHistogramCtrl.cpp">
@@ -1050,13 +1020,7 @@
 				RelativePath="PPgGeneral.cpp">
 			</File>
 			<File
-				RelativePath="PPgIRC.cpp">
-			</File>
-			<File
 				RelativePath="PPgNotify.cpp">
-			</File>
-			<File
-				RelativePath="PPgProxy.cpp">
 			</File>
 			<File
 				RelativePath="PPgScheduler.cpp">
@@ -1077,9 +1041,6 @@
 				RelativePath="PPgWebServer.cpp">
 			</File>
 			<File
-				RelativePath="PShtWiz1.cpp">
-			</File>
-			<File
 				RelativePath="PreferencesDlg.cpp">
 			</File>
 			<File
@@ -1087,6 +1048,9 @@
 			</File>
 			<File
 				RelativePath="ProgressCtrlX.cpp">
+			</File>
+			<File
+				RelativePath="PShtWiz1.cpp">
 			</File>
 			<File
 				RelativePath="RichEditCtrlX.cpp">
@@ -1123,9 +1087,6 @@
 			</File>
 			<File
 				RelativePath="TaskbarNotifier.cpp">
-			</File>
-			<File
-				RelativePath="TextToSpeech.cpp">
 			</File>
 			<File
 				RelativePath="TitleMenu.cpp">
@@ -1210,29 +1171,10 @@
 					RelativePath="TrayMenuBtn.cpp">
 				</File>
 			</Filter>
-			<Filter
-				Name="SMIRC"
-				Filter="">
-				<File
-					RelativePath="IrcChannelListCtrl.cpp">
-				</File>
-				<File
-					RelativePath="IrcChannelTabCtrl.cpp">
-				</File>
-				<File
-					RelativePath="IrcNickListCtrl.cpp">
-				</File>
-				<File
-					RelativePath="IrcWnd.cpp">
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Interface Header"
 			Filter="">
-			<File
-				RelativePath="3DPreviewControl.h">
-			</File>
 			<File
 				RelativePath="AddFriend.h">
 			</File>
@@ -1330,13 +1272,13 @@
 				RelativePath="GDIThread.h">
 			</File>
 			<File
-				RelativePath="HTRichEditCtrl.h">
-			</File>
-			<File
 				RelativePath="HelpIDs.h">
 			</File>
 			<File
 				RelativePath="HighColorTab.hpp">
+			</File>
+			<File
+				RelativePath="HTRichEditCtrl.h">
 			</File>
 			<File
 				RelativePath="HttpDownloadDlg.h">
@@ -1345,16 +1287,16 @@
 				RelativePath="HyperTextCtrl.h">
 			</File>
 			<File
-				RelativePath="IESecurity.h">
-			</File>
-			<File
-				RelativePath="IPFilterDlg.h">
-			</File>
-			<File
 				RelativePath="IconStatic.h">
 			</File>
 			<File
+				RelativePath="IESecurity.h">
+			</File>
+			<File
 				RelativePath="InputBox.h">
+			</File>
+			<File
+				RelativePath="IPFilterDlg.h">
 			</File>
 			<File
 				RelativePath="KadContactHistogramCtrl.h">
@@ -1411,6 +1353,9 @@
 				RelativePath="OScopeCtrl.h">
 			</File>
 			<File
+				RelativePath="Parser.hpp">
+			</File>
+			<File
 				RelativePath="PPgConnection.h">
 			</File>
 			<File
@@ -1429,13 +1374,7 @@
 				RelativePath="PPgGeneral.h">
 			</File>
 			<File
-				RelativePath="PPgIRC.h">
-			</File>
-			<File
 				RelativePath="PPgNotify.h">
-			</File>
-			<File
-				RelativePath="PPgProxy.h">
 			</File>
 			<File
 				RelativePath="PPgScheduler.h">
@@ -1454,9 +1393,6 @@
 			</File>
 			<File
 				RelativePath="PPgWebServer.h">
-			</File>
-			<File
-				RelativePath="Parser.hpp">
 			</File>
 			<File
 				RelativePath="PreferencesDlg.h">
@@ -1511,9 +1447,6 @@
 			</File>
 			<File
 				RelativePath="TaskbarNotifier.h">
-			</File>
-			<File
-				RelativePath="TextToSpeech.h">
 			</File>
 			<File
 				RelativePath="TitleMenu.h">
@@ -1604,22 +1537,6 @@
 					RelativePath="TrayMenuBtn.h">
 				</File>
 			</Filter>
-			<Filter
-				Name="SMIRC"
-				Filter="">
-				<File
-					RelativePath="IrcChannelListCtrl.h">
-				</File>
-				<File
-					RelativePath="IrcChannelTabCtrl.h">
-				</File>
-				<File
-					RelativePath="IrcNickListCtrl.h">
-				</File>
-				<File
-					RelativePath="IrcWnd.h">
-				</File>
-			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"
@@ -1649,6 +1566,12 @@
 				RelativePath="res\Client4.ico">
 			</File>
 			<File
+				RelativePath="res\ClientaMule.ico">
+			</File>
+			<File
+				RelativePath="res\ClientaMulePlus.ico">
+			</File>
+			<File
 				RelativePath="res\ClientCompatible.ico">
 			</File>
 			<File
@@ -1659,6 +1582,18 @@
 			</File>
 			<File
 				RelativePath="res\ClientDefaultPlus.ico">
+			</File>
+			<File
+				RelativePath="res\ClienteDonkeyHybrid.ico">
+			</File>
+			<File
+				RelativePath="res\ClienteDonkeyHybridPlus.ico">
+			</File>
+			<File
+				RelativePath="res\ClientlPhant.ico">
+			</File>
+			<File
+				RelativePath="res\ClientlPhantPlus.ico">
 			</File>
 			<File
 				RelativePath="res\ClientMLDonkey.ico">
@@ -1674,24 +1609,6 @@
 			</File>
 			<File
 				RelativePath="res\ClientShareazaPlus.ico">
-			</File>
-			<File
-				RelativePath="res\ClientaMule.ico">
-			</File>
-			<File
-				RelativePath="res\ClientaMulePlus.ico">
-			</File>
-			<File
-				RelativePath="res\ClienteDonkeyHybrid.ico">
-			</File>
-			<File
-				RelativePath="res\ClienteDonkeyHybridPlus.ico">
-			</File>
-			<File
-				RelativePath="res\ClientlPhant.ico">
-			</File>
-			<File
-				RelativePath="res\ClientlPhantPlus.ico">
 			</File>
 			<File
 				RelativePath="res\ClientsKnown.ico">
@@ -1713,9 +1630,6 @@
 			</File>
 			<File
 				RelativePath="res\ConnectDrop.ico">
-			</File>
-			<File
-				RelativePath="res\ConnectStop.ico">
 			</File>
 			<File
 				RelativePath="res\Connected.gif">
@@ -1778,6 +1692,9 @@
 				RelativePath="res\Connection.ico">
 			</File>
 			<File
+				RelativePath="res\ConnectStop.ico">
+			</File>
+			<File
 				RelativePath="res\Contact0.ico">
 			</File>
 			<File
@@ -1832,7 +1749,22 @@
 				RelativePath="res\DownloadFiles.ico">
 			</File>
 			<File
+				RelativePath="res\eD2kLink.ico">
+			</File>
+			<File
+				RelativePath="res\eD2kLinkPaste.ico">
+			</File>
+			<File
 				RelativePath="res\Empty.ico">
+			</File>
+			<File
+				RelativePath="res\emule.manifest">
+			</File>
+			<File
+				RelativePath="emule.rc">
+			</File>
+			<File
+				RelativePath="res\emule.rc2">
 			</File>
 			<File
 				RelativePath="res\Exit.ico">
@@ -1934,9 +1866,6 @@
 				RelativePath="res\Friend.ico">
 			</File>
 			<File
-				RelativePath="res\FriendSlot.ico">
-			</File>
-			<File
 				RelativePath="res\Friends1.ico">
 			</File>
 			<File
@@ -1944,6 +1873,9 @@
 			</File>
 			<File
 				RelativePath="res\Friends3.ico">
+			</File>
+			<File
+				RelativePath="res\FriendSlot.ico">
 			</File>
 			<File
 				RelativePath="res\Global.ico">
@@ -1958,15 +1890,6 @@
 				RelativePath="res\Help.ico">
 			</File>
 			<File
-				RelativePath="res\IPFilter.ico">
-			</File>
-			<File
-				RelativePath="res\IRC.ico">
-			</File>
-			<File
-				RelativePath="res\IRCClipboard.ico">
-			</File>
-			<File
 				RelativePath="res\Import.ico">
 			</File>
 			<File
@@ -1977,6 +1900,9 @@
 			</File>
 			<File
 				RelativePath="res\Info.ico">
+			</File>
+			<File
+				RelativePath="res\IPFilter.ico">
 			</File>
 			<File
 				RelativePath="res\Kad.ico">
@@ -2055,6 +1981,12 @@
 				RelativePath="res\Mule.ico">
 			</File>
 			<File
+				RelativePath="res\mule_wiz.gif">
+			</File>
+			<File
+				RelativePath="res\mule_wiz_hdr.gif">
+			</File>
+			<File
 				RelativePath="res\NavigateBack.ico">
 			</File>
 			<File
@@ -2091,7 +2023,7 @@
 				RelativePath="res\PriorityNormal.ico">
 			</File>
 			<File
-				RelativePath="res\Proxy.ico">
+				RelativePath="res\queue.ico">
 			</File>
 			<File
 				RelativePath="res\Rating.ico">
@@ -2172,6 +2104,9 @@
 				RelativePath="res\SpeedMin.ico">
 			</File>
 			<File
+				RelativePath=".\res\splash.bmp">
+			</File>
+			<File
 				RelativePath="res\SplitWindow.ico">
 			</File>
 			<File
@@ -2215,6 +2150,9 @@
 			</File>
 			<File
 				RelativePath="res\Transfer.ico">
+			</File>
+			<File
+				RelativePath="res\transfers.ico">
 			</File>
 			<File
 				RelativePath="res\TransferUpDown.ico">
@@ -2297,40 +2235,10 @@
 			<File
 				RelativePath="res\Wizzard.ico">
 			</File>
-			<File
-				RelativePath="res\eD2kLink.ico">
-			</File>
-			<File
-				RelativePath="res\eD2kLinkPaste.ico">
-			</File>
-			<File
-				RelativePath="res\emule.manifest">
-			</File>
-			<File
-				RelativePath="emule.rc">
-			</File>
-			<File
-				RelativePath="res\emule.rc2">
-			</File>
-			<File
-				RelativePath="res\mule_wiz.gif">
-			</File>
-			<File
-				RelativePath="res\mule_wiz_hdr.gif">
-			</File>
-			<File
-				RelativePath="res\queue.ico">
-			</File>
-			<File
-				RelativePath="res\transfers.ico">
-			</File>
 		</Filter>
 		<Filter
 			Name="Templates"
 			Filter="">
-			<File
-				RelativePath="..\setup\Template.eMuleSkin.ini">
-			</File>
 			<File
 				RelativePath="..\setup\eMule.tmpl">
 			</File>
@@ -2341,7 +2249,20 @@
 				RelativePath="..\setup\staticservers.dat">
 			</File>
 			<File
+				RelativePath="..\setup\Template.eMuleSkin.ini">
+			</File>
+			<File
 				RelativePath="..\setup\webservices.dat">
+			</File>
+		</Filter>
+		<Filter
+			Name="Eigene Source"
+			Filter="">
+			<File
+				RelativePath=".\SplashScreenEx.cpp">
+			</File>
+			<File
+				RelativePath=".\SplashScreenEx.h">
 			</File>
 		</Filter>
 	</Files>

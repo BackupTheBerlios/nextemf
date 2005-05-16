@@ -32,7 +32,6 @@
 #define MP_HM_SEARCH			10212
 #define MP_HM_FILES				10213
 #define MP_HM_MSGS				10214
-#define MP_HM_IRC				10215
 #define MP_HM_STATS				10216
 #define MP_HM_PREFS				10217
 #define MP_HM_OPENINC			10218
@@ -61,7 +60,6 @@
 #define MP_HM_1STSWIZARD		10243
 #define MP_OPENFOLDER			10244
 #define	MP_HM_IPFILTER			10245
-#define	MP_WEBSVC_EDIT			10246
 #define	MP_HM_DIRECT_DOWNLOAD	10247
 #define	MP_INSTALL_SKIN			10248
 #define	MP_LARGEICONS			10249
@@ -149,7 +147,6 @@
 #define MP_QS_PA				10533
 #define MP_QS_UA				10534
 
-#define MP_WEBURL				10600	// reserve 100 entries for weburls!
 #define MP_ASSIGNCAT			10700	// reserve 100 entries for categories!
 #define MP_SCHACTIONS			10800	// reserve 100 entries for schedules
 #define MP_CAT_SET0				10900	// reserve 100 entries for change all-cats
@@ -157,19 +154,3 @@
 #define	MP_SKIN_PROFILE			11100	// reserve 100 entries for skin profiles
 #define	MP_PREVIEW_APP_MIN		11200	// reserve 50 entries for preview apps
 #define	MP_PREVIEW_APP_MAX		(MP_PREVIEW_APP_MIN+49)
-
-#define Irc_Version				"(SMIRCv00.68)"
-#define Irc_Join				10240
-#define Irc_Close				10241
-#define Irc_Priv				10242
-#define Irc_AddFriend			10243
-#define	Irc_SendLink			10244
-#define Irc_SetSendLink			10245
-#define Irc_Kick				10246
-#define Irc_Ban					10247
-#define Irc_KB					10248
-#define Irc_Slap				10249
-//Note: reserve at least 50 ID's (Irc_OpCommands-Irc_OpCommands+49).
-#define Irc_OpCommands			10250
-//Note: reserve at least 100 ID's (Irc_ChanCommands-Irc_ChanCommands+99).
-#define Irc_ChanCommands		Irc_OpCommands+50

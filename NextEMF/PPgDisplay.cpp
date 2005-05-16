@@ -48,7 +48,6 @@ CPPgDisplay::~CPPgDisplay()
 void CPPgDisplay::DoDataExchange(CDataExchange* pDX)
 {
 	CPropertyPage::DoDataExchange(pDX);
-	DDX_Control(pDX, IDC_PREVIEW, m_3DPreview);
 }
 
 
@@ -56,7 +55,6 @@ BEGIN_MESSAGE_MAP(CPPgDisplay, CPropertyPage)
 	ON_BN_CLICKED(IDC_MINTRAY, OnSettingsChange)
 	ON_BN_CLICKED(IDC_DBLCLICK, OnSettingsChange)
 	ON_EN_CHANGE(IDC_TOOLTIPDELAY, OnSettingsChange)
-	ON_WM_HSCROLL()
 	ON_BN_CLICKED(IDC_UPDATEQUEUE, OnSettingsChange)
 	ON_BN_CLICKED(IDC_SHOWRATEONTITLE, OnSettingsChange)
 	ON_BN_CLICKED(IDC_INDICATERATINGS , OnSettingsChange)
@@ -71,7 +69,6 @@ BEGIN_MESSAGE_MAP(CPPgDisplay, CPropertyPage)
 	ON_BN_CLICKED(IDC_SHOWTRANSTOOLBAR,OnSettingsChange)
 	ON_BN_CLICKED(IDC_RESETHIST, OnBtnClickedResetHist)
 	ON_WM_HELPINFO()
-//	ON_NOTIFY(NM_CUSTOMDRAW, IDC_3DDEPTH, On3DDepth)
 END_MESSAGE_MAP()
 
 void CPPgDisplay::LoadSettings(void)
@@ -130,14 +127,6 @@ BOOL CPPgDisplay::OnInitDialog()
 	CPropertyPage::OnInitDialog();
 	InitWindowStyles(this);
 
-	// Barry - Controls depth of 3d colour shading
-	CSliderCtrl *slider3D = (CSliderCtrl*)GetDlgItem(IDC_3DDEPTH);
-	slider3D->SetRange(0, 5, true);
-	slider3D->SetPos(thePrefs.Get3DDepth());
-	slider3D->SetTicFreq(1);
-	DrawPreview();
-
-
 	LoadSettings();
 	Localize();
 
@@ -152,7 +141,6 @@ BOOL CPPgDisplay::OnApply()
 	bool mintotray_old = thePrefs.mintotray;
 	thePrefs.mintotray = IsDlgButtonChecked(IDC_MINTRAY)!=0;
 	thePrefs.transferDoubleclick = IsDlgButtonChecked(IDC_DBLCLICK)!=0;
-	thePrefs.depth3D = ((CSliderCtrl*)GetDlgItem(IDC_3DDEPTH))->GetPos();
 	thePrefs.indicateratings = IsDlgButtonChecked(IDC_INDICATERATINGS)!=0;
 	thePrefs.dontRecreateGraphs = IsDlgButtonChecked(IDC_REPAINT)!=0;
 	thePrefs.m_bShowDwlPercentage = IsDlgButtonChecked(IDC_SHOWDWLPERCENT)!=0;
@@ -259,9 +247,6 @@ void CPPgDisplay::Localize(void)
 		GetDlgItem(IDC_MINTRAY)->SetWindowText(GetResString(IDS_PW_TRAY));
 		GetDlgItem(IDC_DBLCLICK)->SetWindowText(GetResString(IDS_PW_DBLCLICK));
 		GetDlgItem(IDC_TOOLTIPDELAY_LBL)->SetWindowText(GetResString(IDS_PW_TOOL));
-		GetDlgItem(IDC_3DDEP)->SetWindowText(GetResString(IDS_3DDEP));
-		GetDlgItem(IDC_FLAT)->SetWindowText(GetResString(IDS_FLAT));
-		GetDlgItem(IDC_ROUND)->SetWindowText(GetResString(IDS_ROUND));
 		GetDlgItem(IDC_UPDATEQUEUE)->SetWindowText(GetResString(IDS_UPDATEQUEUE));
 		GetDlgItem(IDC_SHOWRATEONTITLE)->SetWindowText(GetResString(IDS_SHOWRATEONTITLE));
 		GetDlgItem(IDC_INDICATERATINGS)->SetWindowText(GetResString(IDS_INDICATERATINGS));
@@ -281,16 +266,6 @@ void CPPgDisplay::Localize(void)
 
 		GetDlgItem(IDC_SHOWTRANSTOOLBAR)->SetWindowText(GetResString(IDS_PW_SHOWTRANSTOOLBAR));
 	}
-}
-
-void CPPgDisplay::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) 
-{
-	SetModified(TRUE);
-
-	UpdateData(false); 
-	CPropertyPage::OnHScroll(nSBCode, nPos, pScrollBar);
-
-	DrawPreview();
 }
 
 // NOTE: Can't use 'lCustData' for a structure which would hold that static members,
@@ -399,19 +374,3 @@ BOOL CPPgDisplay::OnHelpInfo(HELPINFO* pHelpInfo)
 	OnHelp();
 	return TRUE;
 }
-
-void CPPgDisplay::DrawPreview()
-{
-	int dep=((CSliderCtrl*)GetDlgItem(IDC_3DDEPTH))->GetPos();
-	m_3DPreview.SetSliderPos( dep);
-}
-/*
-void CPPgDisplay::On3DDepth(NMHDR *pNMHDR, LRESULT *pResult)
-{
-	LPNMCUSTOMDRAW pNMCD = reinterpret_cast<LPNMCUSTOMDRAW>(pNMHDR);
-	DrawPreview();
-theApp.AddLogLine(true,"ding");
-
-	*pResult = 0;
-}
-*/

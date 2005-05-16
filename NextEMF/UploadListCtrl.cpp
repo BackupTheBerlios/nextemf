@@ -347,7 +347,7 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				case 7:
 					cur_rec.bottom--;
 					cur_rec.top++;
-					client->DrawUpStatusBar(dc, &cur_rec, false, thePrefs.UseFlatBar());
+					client->DrawUpStatusBar(dc, &cur_rec, false);
 					cur_rec.bottom++;
 					cur_rec.top--;
 					break;

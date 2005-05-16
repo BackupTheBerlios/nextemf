@@ -29,7 +29,6 @@
 #include "DownloadQueue.h"
 #include "FriendList.h"
 #include "Statistics.h"
-#include "MMServer.h"
 #include "OtherFunctions.h"
 #include "UpDownClient.h"
 #include "SharedFileList.h"
@@ -904,8 +903,6 @@ VOID CALLBACK CUploadQueue::UploadTimer(HWND hwnd, UINT uMsg,UINT_PTR idEvent,DW
 			}
 			//save rates every second
 			theStats.RecordRate();
-			// mobilemule sockets
-			theApp.mmserver->Process();
 
 			// ZZ:UploadSpeedSense -->
             theApp.emuledlg->ShowPing();

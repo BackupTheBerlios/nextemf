@@ -238,7 +238,7 @@ CLogFile::CLogFile()
 	m_tStarted = 0;
 	m_fp = NULL;
 	m_bInOpenCall = false;
-	ASSERT( ELogFileFormat::Unicode == 0 );
+	ASSERT( Unicode == 0 );
 	m_eFileFormat = Unicode;
 }
 

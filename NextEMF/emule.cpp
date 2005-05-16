@@ -41,7 +41,6 @@
 #include "ClientUDPSocket.h"
 #include "DownloadQueue.h"
 #include "IPFilter.h"
-#include "MMServer.h"
 #include "Statistics.h"
 #include "OtherFunctions.h"
 #include "WebServer.h"
@@ -466,7 +465,6 @@ BOOL CemuleApp::InitInstance()
 	uploadqueue = new CUploadQueue();
 	ipfilter 	= new CIPFilter();
 	webserver = new CWebServer(); // Webserver [kuchin]
-	mmserver = new CMMServer();
 	scheduler = new CScheduler();
 	m_pPeerCache = new CPeerCacheFinder();
 	

@@ -346,7 +346,7 @@ public:
 
 	void			ProcessExtendedInfo(CSafeMemFile* packet, CKnownFile* tempreqfile);
 	uint16			GetUpPartCount() const							{ return m_nUpPartCount; }
-	void			DrawUpStatusBar(CDC* dc, RECT* rect, bool onlygreyrect, bool  bFlat) const;
+	void			DrawUpStatusBar(CDC* dc, RECT* rect, bool onlygreyrect) const;
 	bool			IsUpPartAvailable(uint16 iPart) const {
 						return (iPart>=m_nUpPartCount || !m_abyUpPartStatus) ? false : m_abyUpPartStatus[iPart]!=0;
 					}
@@ -371,7 +371,7 @@ public:
 	void			SetRemoteQueueRank(uint16 nr, bool bUpdateDisplay = false);
 	bool			IsRemoteQueueFull() const						{ return m_bRemoteQueueFull; }
 	void			SetRemoteQueueFull(bool flag)					{ m_bRemoteQueueFull = flag; }
-	void			DrawStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool  bFlat) const;
+	void			DrawStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect) const;
 	bool			AskForDownload();
 	virtual void	SendFileRequest();
 	void			SendStartupLoadReq();

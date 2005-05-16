@@ -69,7 +69,6 @@ bool	CPreferences::autoconnect;
 bool	CPreferences::autoconnectstaticonly;
 bool	CPreferences::autotakeed2klinks;
 bool	CPreferences::addnewfilespaused;
-uint8	CPreferences::depth3D;
 bool	CPreferences::m_bEnableMiniMule;
 int		CPreferences::m_iStraightWindowStyles;
 bool	CPreferences::m_bRTLWindowsLayout;
@@ -110,12 +109,6 @@ INT		CPreferences::clientListColumnOrder[8];
 uint16	CPreferences::FilenamesListColumnWidths[2];
 BOOL	CPreferences::FilenamesListColumnHidden[2];
 INT		CPreferences::FilenamesListColumnOrder[2];
-uint16	CPreferences::IrcMainColumnWidths[2];
-BOOL	CPreferences::IrcMainColumnHidden[2];
-INT		CPreferences::IrcMainColumnOrder[2];
-uint16	CPreferences::IrcChannelsColumnWidths[3];
-BOOL	CPreferences::IrcChannelsColumnHidden[3];
-INT		CPreferences::IrcChannelsColumnOrder[3];
 uint16	CPreferences::downloadClientsColumnWidths[8];
 BOOL	CPreferences::downloadClientsColumnHidden[8];
 INT		CPreferences::downloadClientsColumnOrder[8];
@@ -246,7 +239,6 @@ UINT	CPreferences::splitterbarPositionStat;
 UINT	CPreferences::splitterbarPositionStat_HL;
 UINT	CPreferences::splitterbarPositionStat_HR;
 UINT	CPreferences::splitterbarPositionFriend;
-UINT	CPreferences::splitterbarPositionIRC;
 UINT	CPreferences::m_uTransferWnd2;
 uint16	CPreferences::deadserverretries;
 DWORD	CPreferences::m_dwServerKeepAliveTimeout;
@@ -262,26 +254,7 @@ bool	CPreferences::notifierOnEveryChatMsg;
 bool	CPreferences::notifierOnNewVersion;
 ENotifierSoundType CPreferences::notifierSoundType = ntfstNoSound;
 CString	CPreferences::notifierSoundFile;
-TCHAR	CPreferences::m_sircserver[50];
-TCHAR	CPreferences::m_sircnick[30];
-TCHAR	CPreferences::m_sircchannamefilter[50];
 bool	CPreferences::m_bircaddtimestamp;
-bool	CPreferences::m_bircusechanfilter;
-uint16	CPreferences::m_iircchanneluserfilter;
-TCHAR	CPreferences::m_sircperformstring[255];
-bool	CPreferences::m_bircuseperform;
-bool	CPreferences::m_birclistonconnect;
-bool	CPreferences::m_bircacceptlinks;
-bool	CPreferences::m_bircacceptlinksfriends;
-bool	CPreferences::m_bircsoundevents;
-bool	CPreferences::m_bircignoremiscmessage;
-bool	CPreferences::m_bircignorejoinmessage;
-bool	CPreferences::m_bircignorepartmessage;
-bool	CPreferences::m_bircignorequitmessage;
-bool	CPreferences::m_bircignoreemuleprotoaddfriend;
-bool	CPreferences::m_bircallowemuleprotoaddfriend;
-bool	CPreferences::m_bircignoreemuleprotosendlink;
-bool	CPreferences::m_birchelpchannel;
 bool	CPreferences::m_bRemove2bin;
 bool	CPreferences::m_bShowCopyEd2kLinkCmd;
 bool	CPreferences::m_bpreviewprio;
@@ -343,8 +316,6 @@ int		CPreferences::tableSortItemShared;
 int		CPreferences::tableSortItemServer;
 int		CPreferences::tableSortItemClientList;
 int		CPreferences::tableSortItemFilenames;
-int		CPreferences::tableSortItemIrcMain;
-int		CPreferences::tableSortItemIrcChannels;
 int		CPreferences::tableSortItemDownloadClients;
 bool	CPreferences::tableSortAscendingDownload;
 bool	CPreferences::tableSortAscendingUpload;
@@ -354,8 +325,6 @@ bool	CPreferences::tableSortAscendingShared;
 bool	CPreferences::tableSortAscendingServer;
 bool	CPreferences::tableSortAscendingClientList;
 bool	CPreferences::tableSortAscendingFilenames;
-bool	CPreferences::tableSortAscendingIrcMain;
-bool	CPreferences::tableSortAscendingIrcChannels;
 bool	CPreferences::tableSortAscendingDownloadClients;
 bool	CPreferences::showRatesInTitle;
 TCHAR	CPreferences::TxtEditor[256];
@@ -374,7 +343,7 @@ bool	CPreferences::log2disk;
 bool	CPreferences::debug2disk;
 int		CPreferences::iMaxLogBuff;
 UINT	CPreferences::uMaxLogFileSize;
-ELogFileFormat CPreferences::m_iLogFileFormat = ELogFileFormat::Unicode;
+ELogFileFormat CPreferences::m_iLogFileFormat = Unicode;
 bool	CPreferences::scheduler;
 bool	CPreferences::dontcompressavi;
 bool	CPreferences::msgonlyfriends;
@@ -409,9 +378,6 @@ TCHAR	CPreferences::m_sWebResDir[MAX_PATH];
 int		CPreferences::m_iWebTimeoutMins;
 bool	CPreferences::m_bAllowAdminHiLevFunc;
 TCHAR	CPreferences::m_sTemplateFile[MAX_PATH];
-ProxySettings CPreferences::proxy;
-bool	CPreferences::m_bIsASCWOP;
-bool	CPreferences::m_bShowProxyErrors;
 bool	CPreferences::showCatTabInfos;
 bool	CPreferences::resumeSameCat;
 bool	CPreferences::dontRecreateGraphs;
@@ -424,9 +390,6 @@ bool	CPreferences::m_bShowActiveDownloadsBold;
 int		CPreferences::m_iSearchMethod;
 bool	CPreferences::m_bAdvancedSpamfilter;
 bool	CPreferences::m_bUseSecureIdent;
-TCHAR	CPreferences::m_sMMPassword[256];
-bool	CPreferences::m_bMMEnabled;
-uint16	CPreferences::m_nMMPort;
 bool	CPreferences::networkkademlia;
 bool	CPreferences::networked2k;
 EToolbarLabelType CPreferences::m_nToolbarLabels;
@@ -458,8 +421,6 @@ CString CPreferences::m_strFileCommentsFilePath;
 CString	CPreferences::m_strLogDir;
 Preferences_Ext_Struct* CPreferences::prefsExt;
 WORD	CPreferences::m_wWinVer;
-bool	CPreferences::m_UseProxyListenPort;
-uint16	CPreferences::ListenPort;
 CArray<Category_Struct*,Category_Struct*> CPreferences::catMap;
 uint8	CPreferences::m_nWebMirrorAlertLevel;
 bool	CPreferences::m_bRunAsUser;
@@ -644,10 +605,6 @@ void CPreferences::Init()
 	userhash[5] = 14;
 	userhash[14] = 111;
 
-	// deadlake PROXYSUPPORT
-	m_UseProxyListenPort = false;
-	ListenPort = 0;
-
 	// Explicitly inform the user about errors with incoming/temp folders!
 	if (!PathFileExists(GetIncomingDir()) && !::CreateDirectory(GetIncomingDir(),0)) {
 		CString strError;
@@ -773,8 +730,7 @@ bool CPreferences::IsConfigFile(const CString& rstrDirectory, const CString& rst
 		_T("server_met.old"),
 		_T("shareddir.dat"),
 		_T("sharedsubdir.dat"),
-		_T("staticservers.dat"),
-		_T("webservices.dat")
+		_T("staticservers.dat")
 	};
 	for (int i = 0; i < ARRSIZE(_apszNotSharedFiles); i++){
 		if (rstrName.CompareNoCase(_apszNotSharedFiles[i])==0)
@@ -1583,10 +1539,6 @@ int CPreferences::GetColumnWidth(Table t, int index)
 			return clientListColumnWidths[index];
 		case tableFilenames:
 			return FilenamesListColumnWidths[index];
-		case tableIrcMain:
-			return IrcMainColumnWidths[index];
-		case tableIrcChannels:
-			return IrcChannelsColumnWidths[index];
 		case tableDownloadClients:
 			return downloadClientsColumnWidths[index];
 	}
@@ -1619,12 +1571,6 @@ void CPreferences::SetColumnWidth(Table t, int index, int width) {
 		case tableFilenames:
 			FilenamesListColumnWidths[index] = width;
 			break;
-		case tableIrcMain:
-			IrcMainColumnWidths[index] = width;
-			break;
-		case tableIrcChannels:
-			IrcChannelsColumnWidths[index] = width;
-			break;
 		case tableDownloadClients:
 			downloadClientsColumnWidths[index] = width;
 			break;
@@ -1650,10 +1596,6 @@ BOOL CPreferences::GetColumnHidden(Table t, int index)
 			return clientListColumnHidden[index];
 		case tableFilenames:
 			return FilenamesListColumnHidden[index];
-		case tableIrcMain:
-			return IrcMainColumnHidden[index];
-		case tableIrcChannels:
-			return IrcChannelsColumnHidden[index];
 		case tableDownloadClients:
 			return downloadClientsColumnHidden[index];
 	}
@@ -1686,12 +1628,6 @@ void CPreferences::SetColumnHidden(Table t, int index, BOOL bHidden) {
 		case tableFilenames:
 			FilenamesListColumnHidden[index] = bHidden;
 			break;
-		case tableIrcMain:
-			IrcMainColumnHidden[index] = bHidden;
-			break;
-		case tableIrcChannels:
-			IrcChannelsColumnHidden[index] = bHidden;
-			break;
 		case tableDownloadClients:
 			downloadClientsColumnHidden[index] = bHidden;
 			break;
@@ -1717,10 +1653,6 @@ int CPreferences::GetColumnOrder(Table t, int index)
 			return clientListColumnOrder[index];
 		case tableFilenames:
 			return FilenamesListColumnOrder[index];
-		case tableIrcMain:
-			return IrcMainColumnOrder[index];
-		case tableIrcChannels:
-			return IrcChannelsColumnOrder[index];
 		case tableDownloadClients:
 			return downloadClientsColumnOrder[index];
 	}
@@ -1752,12 +1684,6 @@ void CPreferences::SetColumnOrder(Table t, INT *piOrder) {
 			break;
 		case tableFilenames:
 			memcpy(FilenamesListColumnOrder, piOrder, sizeof(FilenamesListColumnOrder));
-			break;
-		case tableIrcMain:
-			memcpy(IrcMainColumnOrder, piOrder, sizeof(IrcMainColumnOrder));
-			break;
-		case tableIrcChannels:
-			memcpy(IrcChannelsColumnOrder, piOrder, sizeof(IrcChannelsColumnOrder));
 			break;
 		case tableDownloadClients:
 			memcpy(downloadClientsColumnOrder, piOrder, sizeof(downloadClientsColumnOrder));
@@ -1821,7 +1747,6 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("SplitterbarPositionStat_HL"),splitterbarPositionStat_HL+1,_T("eMule"));
 	ini.WriteInt(_T("SplitterbarPositionStat_HR"),splitterbarPositionStat_HR+1,_T("eMule"));
 	ini.WriteInt(_T("SplitterbarPositionFriend"),splitterbarPositionFriend,_T("eMule"));
-	ini.WriteInt(_T("SplitterbarPositionIRC"),splitterbarPositionIRC+2,_T("eMule"));
 	ini.WriteInt(_T("TransferWnd2"),m_uTransferWnd2);
 	ini.WriteInt(_T("VariousStatisticsMaxValue"),statsMax);
 	ini.WriteInt(_T("StatsAverageMinutes"),statsAverageMinutes);
@@ -1861,7 +1786,6 @@ void CPreferences::SavePreferences()
     ini.WriteBool(_T("AutoConnectStaticOnly"), autoconnectstaticonly);
 	ini.WriteBool(_T("AutoTakeED2KLinks"), autotakeed2klinks);
     ini.WriteBool(_T("AddNewFilesPaused"), addnewfilespaused);
-    ini.WriteInt (_T("3DDepth"), depth3D);  
 
 	ini.WriteString(_T("NotifierConfiguration"), notifierConfiguration);
 	ini.WriteBool(_T("NotifyOnDownload"), notifierOnDownloadFinished);
@@ -1883,27 +1807,8 @@ void CPreferences::SavePreferences()
 	ini.WriteString(_T("WebTemplateFile"),m_sTemplateFile);
 	ini.WriteString(_T("FilenameCleanups"),filenameCleanups);
 	ini.WriteInt(_T("ExtractMetaData"),m_iExtractMetaData);
+	ini.WriteBool(_T("AddTimestamp"), m_bircaddtimestamp);
 
-	ini.WriteString(_T("DefaultIRCServerNew"),m_sircserver);
-	ini.WriteString(_T("IRCNick"),m_sircnick);
-	ini.WriteBool(_T("IRCAddTimestamp"), m_bircaddtimestamp);
-	ini.WriteString(_T("IRCFilterName"), m_sircchannamefilter);
-	ini.WriteInt(_T("IRCFilterUser"), m_iircchanneluserfilter);
-	ini.WriteBool(_T("IRCUseFilter"), m_bircusechanfilter);
-	ini.WriteString(_T("IRCPerformString"), m_sircperformstring);
-	ini.WriteBool(_T("IRCUsePerform"), m_bircuseperform);
-	ini.WriteBool(_T("IRCListOnConnect"), m_birclistonconnect);
-	ini.WriteBool(_T("IRCAcceptLink"), m_bircacceptlinks);
-	ini.WriteBool(_T("IRCAcceptLinkFriends"), m_bircacceptlinksfriends);
-	ini.WriteBool(_T("IRCSoundEvents"), m_bircsoundevents);
-	ini.WriteBool(_T("IRCIgnoreMiscMessages"), m_bircignoremiscmessage);
-	ini.WriteBool(_T("IRCIgnoreJoinMessages"), m_bircignorejoinmessage);
-	ini.WriteBool(_T("IRCIgnorePartMessages"), m_bircignorepartmessage);
-	ini.WriteBool(_T("IRCIgnoreQuitMessages"), m_bircignorequitmessage);
-	ini.WriteBool(_T("IRCIgnoreEmuleProtoAddFriend"), m_bircignoreemuleprotoaddfriend);
-	ini.WriteBool(_T("IRCAllowEmuleProtoAddFriend"), m_bircallowemuleprotoaddfriend);
-	ini.WriteBool(_T("IRCIgnoreEmuleProtoSendLink"), m_bircignoreemuleprotosendlink);
-	ini.WriteBool(_T("IRCHelpChannel"), m_birchelpchannel);
 	ini.WriteBool(_T("SmartIdCheck"), smartidcheck);
 	ini.WriteBool(_T("Verbose"), m_bVerbose);
 	ini.WriteBool(_T("DebugSourceExchange"), m_bDebugSourceExchange);	// do *not* use the according 'Get...' function here!
@@ -2030,20 +1935,6 @@ void CPreferences::SavePreferences()
 	ini.SerGet(false, FilenamesListColumnOrder,
 		ARRSIZE(FilenamesListColumnOrder), _T("FilenamesListColumnOrder"));
 	
-	ini.SerGet(false, IrcMainColumnWidths,
-		ARRSIZE(IrcMainColumnWidths), _T("IrcMainColumnWidths"));
-	ini.SerGet(false, IrcMainColumnHidden,
-		ARRSIZE(IrcMainColumnHidden), _T("IrcMainColumnHidden"));
-	ini.SerGet(false, IrcMainColumnOrder,
-		ARRSIZE(IrcMainColumnOrder), _T("IrcMainColumnOrder"));
-
-	ini.SerGet(false, IrcChannelsColumnWidths,
-		ARRSIZE(IrcChannelsColumnWidths), _T("IrcChannelsColumnWidths"));
-	ini.SerGet(false, IrcChannelsColumnHidden,
-		ARRSIZE(IrcChannelsColumnHidden), _T("IrcChannelsColumnHidden"));
-	ini.SerGet(false, IrcChannelsColumnOrder,
-		ARRSIZE(IrcChannelsColumnOrder), _T("IrcChannelsColumnOrder"));
-
 	ini.SerGet(false, downloadClientsColumnWidths,
 		ARRSIZE(downloadClientsColumnWidths), _T("DownloadClientsColumnWidths"));
 	ini.SerGet(false, downloadClientsColumnHidden,
@@ -2061,8 +1952,6 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("TableSortItemServer"), tableSortItemServer);
 	ini.WriteInt(_T("TableSortItemClientList"), tableSortItemClientList);
 	ini.WriteInt(_T("TableSortItemFilenames"), tableSortItemFilenames);
-	ini.WriteInt(_T("TableSortItemIrcMain"), tableSortItemIrcMain);
-	ini.WriteInt(_T("TableSortItemIrcChannels"), tableSortItemIrcChannels);
 	ini.WriteBool(_T("TableSortAscendingDownload"), tableSortAscendingDownload);
 	ini.WriteBool(_T("TableSortAscendingUpload"), tableSortAscendingUpload);
 	ini.WriteBool(_T("TableSortAscendingQueue"), tableSortAscendingQueue);
@@ -2071,8 +1960,6 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("TableSortAscendingServer"), tableSortAscendingServer);
 	ini.WriteBool(_T("TableSortAscendingClientList"), tableSortAscendingClientList);
 	ini.WriteBool(_T("TableSortAscendingFilenames"), tableSortAscendingFilenames);
-	ini.WriteBool(_T("TableSortAscendingIrcMain"), tableSortAscendingIrcMain);
-	ini.WriteBool(_T("TableSortAscendingIrcChannels"), tableSortAscendingIrcChannels);
 	ini.WriteInt(_T("TableSortItemDownloadClients"), tableSortItemDownloadClients);
 
 	ini.WriteBinary(_T("HyperTextFont"), (LPBYTE)&m_lfHyperText, sizeof m_lfHyperText);
@@ -2105,20 +1992,6 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("WinaTransToolbar"), m_bWinaTransToolbar);
 
 	///////////////////////////////////////////////////////////////////////////
-	// Section: "Proxy"
-	//
-	ini.WriteBool(_T("ProxyEnablePassword"),proxy.EnablePassword,_T("Proxy"));
-	ini.WriteBool(_T("ProxyEnableProxy"),proxy.UseProxy,_T("Proxy"));
-	ini.WriteString(_T("ProxyName"),proxy.name,_T("Proxy"));
-	ini.WriteString(_T("ProxyPassword"),A2CT(proxy.password),_T("Proxy"));
-	ini.WriteString(_T("ProxyUser"),A2CT(proxy.user),_T("Proxy"));
-	ini.WriteInt(_T("ProxyPort"),proxy.port,_T("Proxy"));
-	ini.WriteInt(_T("ProxyType"),proxy.type,_T("Proxy"));
-	ini.WriteBool(_T("ConnectWithoutProxy"),m_bIsASCWOP,_T("Proxy"));
-	ini.WriteBool(_T("ShowErrors"),m_bShowProxyErrors,_T("Proxy"));
-
-
-	///////////////////////////////////////////////////////////////////////////
 	// Section: "Statistics"
 	//
 	ini.WriteInt(_T("statsConnectionsGraphRatio"), statsConnectionsGraphRatio,_T("Statistics"));
@@ -2142,14 +2015,6 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("PageRefreshTime"), m_nWebPageRefresh);
 	ini.WriteBool(_T("UseLowRightsUser"), m_bWebLowEnabled);
 	ini.WriteBool(_T("AllowAdminHiLevelFunc"),m_bAllowAdminHiLevFunc);
-
-
-	///////////////////////////////////////////////////////////////////////////
-	// Section: "MobileMule"
-	//
-	ini.WriteString(_T("Password"), GetMMPass(), _T("MobileMule"));
-	ini.WriteBool(_T("Enabled"), m_bMMEnabled);
-	ini.WriteInt(_T("Port"), m_nMMPort);
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -2294,7 +2159,6 @@ void CPreferences::LoadPreferences()
 		splitterbarPositionStat_HR = 33;
 	}
 	splitterbarPositionFriend=ini.GetInt(_T("SplitterbarPositionFriend"),300);
-	splitterbarPositionIRC=ini.GetInt(_T("SplitterbarPositionIRC"),200);
 
 	m_uTransferWnd2 = ini.GetInt(_T("TransferWnd2"),0);
 
@@ -2341,7 +2205,6 @@ void CPreferences::LoadPreferences()
 	autoconnectstaticonly = ini.GetBool(_T("AutoConnectStaticOnly"),false); 
 	autotakeed2klinks = ini.GetBool(_T("AutoTakeED2KLinks"),true); 
 	addnewfilespaused = ini.GetBool(_T("AddNewFilesPaused"),false); 
-	depth3D = ini.GetInt(_T("3DDepth"), 5);
 	m_bEnableMiniMule = ini.GetBool(_T("MiniMule"), true);
 
 	// Notifier
@@ -2360,33 +2223,14 @@ void CPreferences::LoadPreferences()
 	if (_tcslen(datetimeformat)==0) _tcscpy(datetimeformat,_T("%A, %x, %X"));
 	_stprintf(datetimeformat4log,_T("%s"),ini.GetString(_T("DateTimeFormat4Log"),_T("%c")));
 	if (_tcslen(datetimeformat4log)==0) _tcscpy(datetimeformat4log,_T("%c"));
+	m_bircaddtimestamp=ini.GetBool(_T("AddTimestamp"),true);
 
-	_stprintf(m_sircserver,_T("%s"),ini.GetString(_T("DefaultIRCServerNew"),_T("ircchat.emule-project.net")));
-	_stprintf(m_sircnick,_T("%s"),ini.GetString(_T("IRCNick"),_T("eMule")));
-	m_bircaddtimestamp=ini.GetBool(_T("IRCAddTimestamp"),true);
-	_stprintf(m_sircchannamefilter,_T("%s"),ini.GetString(_T("IRCFilterName"), _T("") ));
-	m_bircusechanfilter=ini.GetBool(_T("IRCUseFilter"), false);
-	m_iircchanneluserfilter=ini.GetInt(_T("IRCFilterUser"), 0);
-	_stprintf(m_sircperformstring,_T("%s"),ini.GetString(_T("IRCPerformString"), _T("") ));
-	m_bircuseperform=ini.GetBool(_T("IRCUsePerform"), false);
-	m_birclistonconnect=ini.GetBool(_T("IRCListOnConnect"), true);
-	m_bircacceptlinks=ini.GetBool(_T("IRCAcceptLink"), true);
-	m_bircacceptlinksfriends=ini.GetBool(_T("IRCAcceptLinkFriends"), true);
-	m_bircsoundevents=ini.GetBool(_T("IRCSoundEvents"), false);
-	m_bircignoremiscmessage=ini.GetBool(_T("IRCIgnoreMiscMessages"), false);
-	m_bircignorejoinmessage=ini.GetBool(_T("IRCIgnoreJoinMessages"), true);
-	m_bircignorepartmessage=ini.GetBool(_T("IRCIgnorePartMessages"), true);
-	m_bircignorequitmessage=ini.GetBool(_T("IRCIgnoreQuitMessages"), true);
-	m_bircignoreemuleprotoaddfriend=ini.GetBool(_T("IRCIgnoreEmuleProtoAddFriend"), false);
-	m_bircallowemuleprotoaddfriend=ini.GetBool(_T("IRCAllowEmuleProtoAddFriend"), true);
-	m_bircignoreemuleprotosendlink=ini.GetBool(_T("IRCIgnoreEmuleProtoSendLink"), false);
-	m_birchelpchannel=ini.GetBool(_T("IRCHelpChannel"),true);
 	smartidcheck=ini.GetBool(_T("SmartIdCheck"),true);
 
 	log2disk = ini.GetBool(_T("SaveLogToDisk"),false);
 	uMaxLogFileSize = ini.GetInt(_T("MaxLogFileSize"), 1024*1024);
 	iMaxLogBuff = ini.GetInt(_T("MaxLogBuff"),64) * 1024;
-	m_iLogFileFormat = (ELogFileFormat)ini.GetInt(_T("LogFileFormat"), ELogFileFormat::Unicode);
+	m_iLogFileFormat = (ELogFileFormat)ini.GetInt(_T("LogFileFormat"), Unicode);
 	m_bEnableVerboseOptions=ini.GetBool(_T("VerboseOptions"), true);
 	if (m_bEnableVerboseOptions)
 	{
@@ -2571,20 +2415,6 @@ void CPreferences::LoadPreferences()
 	ini.SerGet(true, FilenamesListColumnOrder,
 		ARRSIZE(FilenamesListColumnOrder), _T("FilenamesListColumnOrder"));
 
-	ini.SerGet(true, IrcMainColumnWidths,
-		ARRSIZE(IrcMainColumnWidths), _T("IrcMainColumnWidths"));
-	ini.SerGet(true, IrcMainColumnHidden,
-		ARRSIZE(IrcMainColumnHidden), _T("IrcMainColumnHidden"));
-	ini.SerGet(true, IrcMainColumnOrder,
-		ARRSIZE(IrcMainColumnOrder), _T("IrcMainColumnOrder"));
-
-	ini.SerGet(true, IrcChannelsColumnWidths,
-		ARRSIZE(IrcChannelsColumnWidths), _T("IrcChannelsColumnWidths"));
-	ini.SerGet(true, IrcChannelsColumnHidden,
-		ARRSIZE(IrcChannelsColumnHidden), _T("IrcChannelsColumnHidden"));
-	ini.SerGet(true, IrcChannelsColumnOrder,
-		ARRSIZE(IrcChannelsColumnOrder), _T("IrcChannelsColumnOrder"));
-
 	ini.SerGet(true, downloadClientsColumnWidths,
 		ARRSIZE(downloadClientsColumnWidths), _T("DownloadClientsColumnWidths"));
 	ini.SerGet(true, downloadClientsColumnHidden,
@@ -2602,8 +2432,6 @@ void CPreferences::LoadPreferences()
 	tableSortItemServer = ini.GetInt(_T("TableSortItemServer"), 0);
 	tableSortItemClientList = ini.GetInt(_T("TableSortItemClientList"), 0);
 	tableSortItemFilenames = ini.GetInt(_T("TableSortItemFilenames"), 1);
-	tableSortItemIrcMain = ini.GetInt(_T("TableSortItemIrcMain"), 0);
-	tableSortItemIrcChannels = ini.GetInt(_T("TableSortItemIrcChannels"), 0);
 	tableSortItemDownloadClients = ini.GetInt(_T("TableSortItemDownloadClients"), 0);
 
 	tableSortAscendingDownload = ini.GetBool(_T("TableSortAscendingDownload"), true);
@@ -2614,8 +2442,6 @@ void CPreferences::LoadPreferences()
 	tableSortAscendingServer = ini.GetBool(_T("TableSortAscendingServer"), true);
 	tableSortAscendingClientList = ini.GetBool(_T("TableSortAscendingClientList"), true);
 	tableSortAscendingFilenames = ini.GetBool(_T("TableSortAscendingFilenames"), false);
-	tableSortAscendingIrcMain = ini.GetBool(_T("TableSortAscendingIrcMain"), false);
-	tableSortAscendingIrcChannels = ini.GetBool(_T("TableSortAscendingIrcChannels"), false);
 	tableSortAscendingDownloadClients = ini.GetBool(_T("TableSortAscendingDownloadClients"), true);
 
 	LPBYTE pData = NULL;
@@ -2672,20 +2498,6 @@ void CPreferences::LoadPreferences()
 	m_bWinaTransToolbar = ini.GetBool(_T("WinaTransToolbar"), false);
 
 	///////////////////////////////////////////////////////////////////////////
-	// Section: "Proxy"
-	//
-	proxy.EnablePassword = ini.GetBool(_T("ProxyEnablePassword"),false,_T("Proxy"));
-	proxy.UseProxy = ini.GetBool(_T("ProxyEnableProxy"),false,_T("Proxy"));
-	_sntprintf(proxy.name, ARRSIZE(proxy.name), _T("%s"), ini.GetString(_T("ProxyName"), _T(""), _T("Proxy")));
-	_snprintf(proxy.password, ARRSIZE(proxy.password), "%s", T2CA(ini.GetString(_T("ProxyPassword"), _T(""), _T("Proxy"))));
-	_snprintf(proxy.user, ARRSIZE(proxy.user), "%s", T2CA(ini.GetString(_T("ProxyUser"), _T(""), _T("Proxy"))));
-	proxy.port = ini.GetInt(_T("ProxyPort"),1080,_T("Proxy"));
-	proxy.type = ini.GetInt(_T("ProxyType"),PROXYTYPE_NOPROXY,_T("Proxy"));
-	m_bIsASCWOP = ini.GetBool(_T("ConnectWithoutProxy"),false,_T("Proxy"));
-	m_bShowProxyErrors = ini.GetBool(_T("ShowErrors"),false,_T("Proxy"));
-
-
-	///////////////////////////////////////////////////////////////////////////
 	// Section: "Statistics"
 	//
 	statsSaveInterval = ini.GetInt(_T("SaveInterval"), 60, _T("Statistics"));
@@ -2729,13 +2541,6 @@ void CPreferences::LoadPreferences()
 			m_aAllowedRemoteAccessIPs.Add(nIP);
 		strIP = buffer2.Tokenize(_T(";"), iPos);
 	}
-
-	///////////////////////////////////////////////////////////////////////////
-	// Section: "MobileMule"
-	//
-	_stprintf(m_sMMPassword,_T("%s"),ini.GetString(_T("Password"), _T(""),_T("MobileMule")));
-	m_bMMEnabled = ini.GetBool(_T("Enabled"), false);
-	m_nMMPort = ini.GetInt(_T("Port"), 80);
 
 	///////////////////////////////////////////////////////////////////////////
 	// Section: "PeerCache"
@@ -2797,10 +2602,6 @@ int CPreferences::GetColumnSortItem(Table t)
 			return tableSortItemClientList;
 		case tableFilenames:
 			return tableSortItemFilenames;
-		case tableIrcMain:
-			return tableSortItemIrcMain;
-		case tableIrcChannels:
-			return tableSortItemIrcChannels;
 		case tableDownloadClients:
 			return tableSortItemDownloadClients;
 	}
@@ -2828,10 +2629,6 @@ bool CPreferences::GetColumnSortAscending(Table t)
 			return tableSortAscendingClientList;
 		case tableFilenames:
 			return tableSortAscendingFilenames;
-		case tableIrcMain:
-			return tableSortAscendingIrcMain;
-		case tableIrcChannels:
-			return tableSortAscendingIrcChannels;
 		case tableDownloadClients:
 			return tableSortAscendingDownloadClients;
 	}
@@ -2867,12 +2664,6 @@ void CPreferences::SetColumnSortItem(Table t, int sortItem)
 		case tableFilenames:
 			tableSortItemFilenames = sortItem;
 			break;
-		case tableIrcMain:
-			tableSortItemIrcMain = sortItem;
-			break;
-		case tableIrcChannels:
-			tableSortItemIrcChannels = sortItem;
-			break;
 		case tableDownloadClients:
 			tableSortItemDownloadClients = sortItem;
 			break;
@@ -2907,12 +2698,6 @@ void CPreferences::SetColumnSortAscending(Table t, bool sortAscending)
 			break;
 		case tableFilenames:
 			tableSortAscendingFilenames= sortAscending;
-			break;
-		case tableIrcMain:
-			tableSortAscendingIrcMain = sortAscending;
-			break;
-		case tableIrcChannels:
-			tableSortAscendingIrcChannels = sortAscending;
 			break;
 		case tableDownloadClients:
 			tableSortAscendingDownloadClients = sortAscending;
@@ -3107,11 +2892,6 @@ void CPreferences::SetWSPass(CString strNewPass)
 void CPreferences::SetWSLowPass(CString strNewPass)
 {
 	_stprintf(m_sWebLowPassword,_T("%s"),MD5Sum(strNewPass).GetHash().GetBuffer(0));
-}
-
-void CPreferences::SetMMPass(CString strNewPass)
-{
-	_stprintf(m_sMMPassword,_T("%s"),MD5Sum(strNewPass).GetHash().GetBuffer(0));
 }
 
 void CPreferences::SetMaxUpload(uint16 in)

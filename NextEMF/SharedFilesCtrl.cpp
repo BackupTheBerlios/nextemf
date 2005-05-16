@@ -29,11 +29,9 @@
 #include "MemDC.h"
 #include "PartFile.h"
 #include "MenuCmds.h"
-#include "IrcWnd.h"
 #include "SharedFilesWnd.h"
 #include "Opcodes.h"
 #include "InputBox.h"
-#include "WebServices.h"
 #include "TransferWnd.h"
 #include "ClientList.h"
 #include "UpDownClient.h"
@@ -521,7 +519,7 @@ void CSharedFilesCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					if (file->GetPartCount()){
 						cur_rec.bottom--;
 						cur_rec.top++;
-						file->DrawShareStatusBar(dc,&cur_rec,false,thePrefs.UseFlatBar());
+						file->DrawShareStatusBar(dc,&cur_rec,false);
 						cur_rec.bottom++;
 						cur_rec.top--;
 					}
@@ -686,22 +684,9 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	else
 		m_SharedFilesMenu.EnableMenuItem(MP_GETKADSOURCELINK, MF_GRAYED);
 #endif
-	m_SharedFilesMenu.EnableMenuItem(Irc_SetSendLink, iSelectedItems == 1 && theApp.emuledlg->ircwnd->IsConnected() ? MF_ENABLED : MF_GRAYED);
-
-	CTitleMenu WebMenu;
-	WebMenu.CreateMenu();
-	WebMenu.AddMenuTitle(NULL, true);
-	int iWebMenuEntries = theWebServices.GetFileMenuEntries(&WebMenu);
-	UINT flag2 = (iWebMenuEntries == 0 || iSelectedItems != 1) ? MF_GRAYED : MF_STRING;
-	m_SharedFilesMenu.AppendMenu(flag2 | MF_POPUP, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES), _T("WEB"));
 
 	GetPopupMenuPos(*this, point);
 	m_SharedFilesMenu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON,point.x,point.y,this);
-
-	m_SharedFilesMenu.RemoveMenu(m_SharedFilesMenu.GetMenuItemCount()-1,MF_BYPOSITION);
-	VERIFY( WebMenu.DestroyMenu() );
-	if (uInsertedMenuItem)
-		VERIFY( m_SharedFilesMenu.RemoveMenu(uInsertedMenuItem, MF_BYCOMMAND) );
 }
 
 BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
@@ -721,10 +706,6 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 			file = selectedList.GetHead();
 
 		switch (wParam){
-			case Irc_SetSendLink:
-				if (file)
-					theApp.emuledlg->ircwnd->SetSendFileString(CreateED2kLink(file));
-				break;
 			case MP_GETED2KLINK:{
 				CString str;
 				POSITION pos = selectedList.GetHeadPosition();
@@ -923,9 +904,6 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					break;
 				}
 			default:
-				if (wParam>=MP_WEBURL && wParam<=MP_WEBURL+256){
-					theWebServices.RunURL(file, wParam);
-				}
 				break;
 		}
 	}
@@ -1143,7 +1121,6 @@ void CSharedFilesCtrl::CreateMenues()
 	else
 		m_SharedFilesMenu.AppendMenu(MF_STRING,MP_SHOWED2KLINK, GetResString(IDS_DL_SHOWED2KLINK), _T("ED2KLINK") );
 	m_SharedFilesMenu.AppendMenu(MF_STRING,MP_CMT, GetResString(IDS_CMT_ADD), _T("FILECOMMENTS")); 
-	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_SEPARATOR); 
 
 #if defined(_DEBUG)
 	//JOHNTODO: Not for release as we need kad lowID users in the network to see how well this work work. Also, we do not support these links yet.
@@ -1151,8 +1128,7 @@ void CSharedFilesCtrl::CreateMenues()
 	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_SEPARATOR); 	
 #endif
 
-	m_SharedFilesMenu.AppendMenu(MF_STRING,Irc_SetSendLink,GetResString(IDS_IRC_ADDLINKTOIRC), _T("IRCCLIPBOARD"));
-	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_SEPARATOR); 
+//	m_SharedFilesMenu.AppendMenu(MF_STRING|MF_SEPARATOR); 
 }
 
 void CSharedFilesCtrl::ShowComments(CKnownFile* file)

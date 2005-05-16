@@ -27,7 +27,6 @@ namespace Kademlia {
 };
 
 class CChatWnd;
-class CIrcWnd;
 class CKademliaWnd;
 class CKnownFileList; 
 class CMainFrameDropTarget;
@@ -41,7 +40,9 @@ class CStatisticsDlg;
 class CTaskbarNotifier;
 class CTransferWnd;
 struct Status;
-class CSplashScreen;
+//==> SplashScreen [Xman]
+class CSplashScreenEx;
+//<== SplashScreen [Xman]
 class CMuleSystrayDlg;
 class CMiniMule;
 
@@ -111,7 +112,6 @@ public:
 	CChatWnd*		chatwnd;
 	CMuleStatusBarCtrl* statusbar;
 	CStatisticsDlg*  statisticswnd;
-	CIrcWnd*		ircwnd;
 	CTaskbarNotifier* m_wndTaskbarNotifier;
 	CReBarCtrl		m_ctlMainTopReBar;
 	CMuleToolbarCtrl* toolbar;
@@ -148,7 +148,9 @@ protected:
 	char			m_acVCDNSBuffer[MAXGETHOSTSTRUCT];
 
 	// Splash screen
-	CSplashScreen *m_pSplashWnd;
+//==> SplashScreen [Xman]
+	CSplashScreenEx *m_pSplashWnd;
+//<== SplashScreen [Xman]
 	DWORD m_dwSplashTime;
 	void ShowSplash();
 	void DestroySplash();

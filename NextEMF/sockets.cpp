@@ -168,11 +168,6 @@ void CServerConnect::StopConnectionTry()
 
 void CServerConnect::ConnectionEstablished(CServerSocket* sender)
 {
-	if (thePrefs.IsProxyASCWOP())
-	{
-		thePrefs.SetUseProxy(true);
-		AddLogLine(false, GetResString(IDS_ASCWOP_PROXYSUPPORT) + GetResString(IDS_ENABLED));
-	}
 
 	if (connecting == false)
 	{

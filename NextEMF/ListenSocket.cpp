@@ -2300,7 +2300,7 @@ void CListenSocket::OnAccept(int nErrorCode)
 			CClientReqSocket* newclient;
 			SOCKADDR_IN SockAddr = {0};
 			int iSockAddrLen = sizeof SockAddr;
-			if (thePrefs.GetConditionalTCPAccept() && !thePrefs.GetProxy().UseProxy)
+			if (thePrefs.GetConditionalTCPAccept())
 			{
 				_bAcceptConnectionCondRejected = false;
 				SOCKET sNew = WSAAccept(m_SocketData.hSocket, (SOCKADDR*)&SockAddr, &iSockAddrLen, AcceptConnectionCond, 0);

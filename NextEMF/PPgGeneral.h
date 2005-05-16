@@ -28,7 +28,6 @@ protected:
 	afx_msg void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar);
 	afx_msg void OnSettingsChange()					{ SetModified(); }
 	afx_msg void OnBnClickedEd2kfix();
-	afx_msg void OnBnClickedEditWebservices();
 	afx_msg void OnLangChange();
 	afx_msg void OnBnClickedCheck4Update();
 	afx_msg void OnCbnCloseupLangs();

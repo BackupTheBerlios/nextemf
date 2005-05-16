@@ -19,7 +19,6 @@
 #include "OtherFunctions.h"
 #include "ThrottledSocket.h" // ZZ:UploadBandWithThrottler (UDP)
 
-class CAsyncProxySocketLayer;
 class Packet;
 
 #define ERR_WRONGHEADER		0x01
@@ -56,11 +55,6 @@ public:
 	virtual UINT GetTimeOut() const;
 	virtual void SetTimeOut(UINT uTimeOut);
 
-	virtual BOOL Connect(LPCTSTR lpszHostAddress, UINT nHostPort);
-	virtual BOOL Connect(SOCKADDR* pSockAddr, int iSockAddrLen);
-	void InitProxySupport();
-	virtual void RemoveAllLayers();
-
     DWORD GetLastCalledSend() { return lastCalledSend; }
 
     uint64 GetSentBytesCompleteFileSinceLastCallAndReset();
@@ -81,8 +75,6 @@ public:
 #endif
 
 protected:
-	virtual int	OnLayerCallback(const CAsyncSocketExLayer *pLayer, int nType, int nParam1, int nParam2);
-	
 	virtual void	DataReceived(const BYTE* pcData, UINT uSize);
 	virtual bool	PacketReceived(Packet* packet) = 0;
 	virtual void	OnError(int nErrorCode) = 0;
@@ -92,8 +84,6 @@ protected:
 
 	uint8	byConnected;
 	UINT	m_uTimeOut;
-	bool	m_ProxyConnectFailed;
-	CAsyncProxySocketLayer* m_pProxyLayer;
 
 private:
     virtual SocketSentBytes Send(uint32 maxNumberOfBytesToSend, uint32 minFragSize, bool onlyAllowedToSendControlPacket);

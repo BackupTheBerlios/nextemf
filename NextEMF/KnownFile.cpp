@@ -28,7 +28,6 @@
 #include "KnownFileList.h"
 #include "SharedFileList.h"
 #include "UpDownClient.h"
-#include "MMServer.h"
 #include "ClientList.h"
 #include "opcodes.h"
 #include "ini2.h"
@@ -237,7 +236,7 @@ void CKnownFile::Dump(CDumpContext& dc) const
 
 CBarShader CKnownFile::s_ShareStatusBar(16);
 
-void CKnownFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool  bFlat) const
+void CKnownFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect) const
 {
 	const COLORREF crMissing = RGB(255, 0, 0);
 	s_ShareStatusBar.SetFileSize(GetFileSize());
@@ -249,15 +248,9 @@ void CKnownFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bo
 		COLORREF crProgress;
 		COLORREF crHave;
 		COLORREF crPending;
-		if(bFlat) { 
-			crProgress = RGB(0, 150, 0);
-			crHave = RGB(0, 0, 0);
-			crPending = RGB(255,208,0);
-		} else { 
-			crProgress = RGB(0, 224, 0);
-			crHave = RGB(104, 104, 104);
-			crPending = RGB(255, 208, 0);
-		} 
+		crProgress = RGB(0, 224, 0);
+		crHave = RGB(104, 104, 104);
+		crPending = RGB(255, 208, 0);
 		for (int i = 0; i < GetPartCount(); i++){
 			if(m_AvailPartFrequency[i] > 0 ){
 				COLORREF color = RGB(0, (210-(22*(m_AvailPartFrequency[i]-1)) <	0)? 0:210-(22*(m_AvailPartFrequency[i]-1)), 255);
@@ -265,7 +258,7 @@ void CKnownFile::DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bo
 			}
 		}
 	}
-   	s_ShareStatusBar.Draw(dc, rect->left, rect->top, bFlat); 
+   	s_ShareStatusBar.Draw(dc, rect->left, rect->top); 
 } 
 
 // SLUGFILLER: heapsortCompletesrc
@@ -2026,10 +2019,7 @@ bool CKnownFile::GrabImage(CString strFileName,uint8 nFramesToGrab, double dStar
 void CKnownFile::GrabbingFinished(CxImage** imgResults, uint8 nFramesGrabbed, void* pSender)
 {
 	// continue processing
-	if (pSender == theApp.mmserver){
-		theApp.mmserver->PreviewFinished(imgResults, nFramesGrabbed);
-	}
-	else if (theApp.clientlist->IsValidClient((CUpDownClient*)pSender)){
+    if (theApp.clientlist->IsValidClient((CUpDownClient*)pSender)){
 		((CUpDownClient*)pSender)->SendPreviewAnswer(this, imgResults, nFramesGrabbed);
 	}
 	else{

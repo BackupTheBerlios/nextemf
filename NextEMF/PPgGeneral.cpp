@@ -29,8 +29,6 @@
 #include "ChatWnd.h"
 #include "SharedFilesWnd.h"
 #include "KademliaWnd.h"
-#include "IrcWnd.h"
-#include "WebServices.h"
 #include "HelpIDs.h"
 #include "StringConversion.h"
 #include "Log.h"
@@ -69,7 +67,6 @@ BEGIN_MESSAGE_MAP(CPPgGeneral, CPropertyPage)
 	ON_BN_CLICKED(IDC_BRINGTOFOREGROUND, OnSettingsChange)
 	ON_CBN_SELCHANGE(IDC_LANGS, OnLangChange)
 	ON_BN_CLICKED(IDC_ED2KFIX, OnBnClickedEd2kfix)
-	ON_BN_CLICKED(IDC_WEBSVEDIT , OnBnClickedEditWebservices)
 	ON_BN_CLICKED(IDC_ONLINESIG, OnSettingsChange)
 	ON_BN_CLICKED(IDC_CHECK4UPDATE, OnBnClickedCheck4Update)
 	ON_WM_HSCROLL()
@@ -226,7 +223,6 @@ BOOL CPPgGeneral::OnApply()
 			theApp.emuledlg->sharedfileswnd->Localize();
 			theApp.emuledlg->chatwnd->Localize();
 			theApp.emuledlg->Localize();
-			theApp.emuledlg->ircwnd->Localize();
 			theApp.emuledlg->kademliawnd->Localize();
 		}
 	}
@@ -283,7 +279,6 @@ void CPPgGeneral::Localize(void)
 		GetDlgItem(IDC_BRINGTOFOREGROUND)->SetWindowText(GetResString(IDS_PW_FRONT));
 		GetDlgItem(IDC_ONLINESIG)->SetWindowText(GetResString(IDS_PREF_ONLINESIG));	
 		GetDlgItem(IDC_STARTMIN)->SetWindowText(GetResString(IDS_PREF_STARTMIN));	
-		GetDlgItem(IDC_WEBSVEDIT)->SetWindowText(GetResString(IDS_WEBSVEDIT));
 		GetDlgItem(IDC_ED2KFIX)->SetWindowText(GetResString(IDS_ED2KLINKFIX));
 		GetDlgItem(IDC_CHECK4UPDATE)->SetWindowText(GetResString(IDS_CHECK4UPDATE));
 		GetDlgItem(IDC_STARTUP)->SetWindowText(GetResString(IDS_STARTUP));
@@ -304,11 +299,6 @@ void CPPgGeneral::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 	UpdateData(false); 
 	CPropertyPage::OnHScroll(nSBCode, nPos, pScrollBar);
-}
-
-void CPPgGeneral::OnBnClickedEditWebservices()
-{
-	theWebServices.Edit();
 }
 
 void CPPgGeneral::OnLangChange()

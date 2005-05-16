@@ -40,7 +40,6 @@
 #include "SearchDlg.h"
 #include "SharedFilesWnd.h"
 #include "ChatWnd.h"
-#include "IrcWnd.h"
 #include "StatisticsDlg.h"
 #include "CreditsDlg.h"
 #include "PreferencesDlg.h"
@@ -50,7 +49,9 @@
 #include "Opcodes.h"
 #include "SharedFileList.h"
 #include "ED2KLink.h"
-#include "Splashscreen.h"
+//==> SplashScreen [Xman]
+#include "SplashScreenEx.h"
+//<== SplashScreen [Xman]
 #include "PartFileConvert.h"
 #include "EnBitmap.h"
 #include "Wizard.h"
@@ -69,7 +70,6 @@
 #include "DropTarget.h"
 #include "LastCommonRouteFinder.h"
 #include "WebServer.h"
-#include "MMServer.h"
 #include "DownloadQueue.h"
 #include "ClientUDPSocket.h"
 #include "UploadQueue.h"
@@ -89,7 +89,6 @@
 #include "MenuCmds.h"
 #include "MuleSystrayDlg.h"
 #include "IPFilterDlg.h"
-#include "WebServices.h"
 #include "DirectDownloadDlg.h"
 #include "PeerCacheFinder.h"
 #include "Statistics.h"
@@ -99,7 +98,6 @@
 #include "Log.h"
 #include "MiniMule.h"
 #include "UserMsgs.h"
-#include "TextToSpeech.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -198,7 +196,6 @@ CemuleDlg::CemuleDlg(CWnd* pParent /*=NULL*/)
 	sharedfileswnd = new CSharedFilesWnd;
 	searchwnd = new CSearchDlg;
 	chatwnd = new CChatWnd;
-	ircwnd = new CIrcWnd;
 	statisticswnd = new CStatisticsDlg;
 	toolbar = new CMuleToolbarCtrl;
 	statusbar = new CMuleStatusBarCtrl;
@@ -243,7 +240,6 @@ CemuleDlg::CemuleDlg(CWnd* pParent /*=NULL*/)
 
 CemuleDlg::~CemuleDlg()
 {
-	CloseTTS();
 	DestroyMiniMule();
 	if (m_icoSysTrayCurrent) VERIFY( DestroyIcon(m_icoSysTrayCurrent) );
 	if (m_hIcon) VERIFY( ::DestroyIcon(m_hIcon) );
@@ -273,7 +269,6 @@ CemuleDlg::~CemuleDlg()
 	delete transferwnd;
 	delete sharedfileswnd;
 	delete chatwnd;
-	delete ircwnd;
 	delete statisticswnd;
 	delete toolbar;
 	delete statusbar;
@@ -392,7 +387,6 @@ BOOL CemuleDlg::OnInitDialog()
 	transferwnd->Create(IDD_TRANSFER);
 	statisticswnd->Create(IDD_STATISTICS);
 	kademliawnd->Create(IDD_KADEMLIAWND);
-	ircwnd->Create(IDD_IRC);
 
 	// with the top rebar control, some XP themes look better with some additional lite borders.. some not..
 	//serverwnd->ModifyStyleEx(0, WS_EX_STATICEDGE);
@@ -428,9 +422,6 @@ BOOL CemuleDlg::OnInitDialog()
 		case IDD_KADEMLIAWND:
 			SetActiveDialog(kademliawnd);
 			break;
-		case IDD_IRC:
-			SetActiveDialog(ircwnd);
-			break;
 		}
 	}
 
@@ -460,7 +451,6 @@ BOOL CemuleDlg::OnInitDialog()
 		sharedfileswnd,
 		searchwnd,
 		chatwnd,
-		ircwnd,
 		statisticswnd
 	};
 	for (int i = 0; i < ARRSIZE(apWnds); i++)
@@ -473,7 +463,6 @@ BOOL CemuleDlg::OnInitDialog()
 	AddAnchor(*sharedfileswnd,	TOP_LEFT, BOTTOM_RIGHT);
     AddAnchor(*searchwnd,		TOP_LEFT, BOTTOM_RIGHT);
     AddAnchor(*chatwnd,			TOP_LEFT, BOTTOM_RIGHT);
-	AddAnchor(*ircwnd,			TOP_LEFT, BOTTOM_RIGHT);
 	AddAnchor(*statisticswnd,	TOP_LEFT, BOTTOM_RIGHT);
 	AddAnchor(*pwndToolbarX,	TOP_LEFT, TOP_RIGHT);
 	AddAnchor(*statusbar,		BOTTOM_LEFT, BOTTOM_RIGHT);
@@ -551,7 +540,6 @@ BOOL CemuleDlg::OnInitDialog()
 
 	if (thePrefs.GetWSIsEnabled())
 		theApp.webserver->StartServer();
-	theApp.mmserver->Init();
 
 	VERIFY( (m_hTimer = ::SetTimer(NULL, NULL, 300, StartupTimer)) != NULL );
 	if (thePrefs.GetVerbose() && !m_hTimer)
@@ -1168,9 +1156,6 @@ void CemuleDlg::SetActiveDialog(CWnd* dlg)
 		toolbar->PressMuleButton(IDC_TOOLBARBUTTON+6);
 		chatwnd->chatselector.ShowChat();
 	}
-	else if (dlg == ircwnd){
-		toolbar->PressMuleButton(IDC_TOOLBARBUTTON+7);
-	}
 	else if (dlg == sharedfileswnd){
 		toolbar->PressMuleButton(IDC_TOOLBARBUTTON+5);
 	}
@@ -1178,7 +1163,7 @@ void CemuleDlg::SetActiveDialog(CWnd* dlg)
 		toolbar->PressMuleButton(IDC_TOOLBARBUTTON+4);
 	}
 	else if (dlg == statisticswnd){
-		toolbar->PressMuleButton(IDC_TOOLBARBUTTON+8);
+		toolbar->PressMuleButton(IDC_TOOLBARBUTTON+7);
 		statisticswnd->ShowStatistics();
 	}
 	else if	(dlg == kademliawnd){
@@ -1475,7 +1460,6 @@ void CemuleDlg::OnClose()
 		return;
 
 	Log(_T("Closing eMule"));
-	CloseTTS();
 	m_pDropTarget->Revoke();
 	theApp.m_app_state = APP_STATE_SHUTINGDOWN;
 	theApp.serverconnect->Disconnect();
@@ -1507,8 +1491,6 @@ void CemuleDlg::OnClose()
 			thePrefs.SetLastMainWndDlgID(IDD_STATISTICS);
 		else if (activewnd->IsKindOf(RUNTIME_CLASS(CKademliaWnd)))
 			thePrefs.SetLastMainWndDlgID(IDD_KADEMLIAWND);
-		else if (activewnd->IsKindOf(RUNTIME_CLASS(CIrcWnd)))
-			thePrefs.SetLastMainWndDlgID(IDD_IRC);
 		else{
 			ASSERT(0);
 			thePrefs.SetLastMainWndDlgID(0);
@@ -1533,7 +1515,6 @@ void CemuleDlg::OnClose()
 	sharedfileswnd->sharedfilesctrl.SaveSettings(CPreferences::tableShared);
 	serverwnd->SaveAllSettings();
 	kademliawnd->SaveAllSettings();
-	ircwnd->SaveAllSettings();
 
 	theApp.m_pPeerCache->Save();
 	theApp.scheduler->RestoreOriginals();
@@ -1564,7 +1545,6 @@ void CemuleDlg::OnClose()
     // NOTE: Do not move those dtors into 'CemuleApp::InitInstance' (althought they should be there). The
 	// dtors are indirectly calling functions which access several windows which would not be available 
 	// after we have closed the main window -> crash!
-	delete theApp.mmserver;			theApp.mmserver = NULL;
 	delete theApp.listensocket;		theApp.listensocket = NULL;
 	delete theApp.clientudp;		theApp.clientudp = NULL;
 	delete theApp.sharedfiles;		theApp.sharedfiles = NULL;
@@ -1952,8 +1932,6 @@ void CemuleDlg::ShowNotifier(LPCTSTR pszText, int iMsgType, LPCTSTR pszLink, boo
 	if (bShowIt && !bForceSoundOFF && thePrefs.GetNotifierSoundType() != ntfstNoSound)
 	{
 		bool bNotifiedWithAudio = false;
-		if (thePrefs.GetNotifierSoundType() == ntfstSpeech)
-			bNotifiedWithAudio = Speak(pszText);
 
 		if (!bNotifiedWithAudio)
 		{
@@ -2238,27 +2216,23 @@ BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 			SetActiveDialog(chatwnd);
 			break;
 		case IDC_TOOLBARBUTTON + 7:
-		case MP_HM_IRC:
-			SetActiveDialog(ircwnd);
-			break;
-		case IDC_TOOLBARBUTTON + 8:
 		case MP_HM_STATS:
 			SetActiveDialog(statisticswnd);
 			break;
-		case IDC_TOOLBARBUTTON + 9:
+		case IDC_TOOLBARBUTTON + 8:
 		case MP_HM_PREFS:
-			toolbar->CheckButton(IDC_TOOLBARBUTTON+9,TRUE);
+			toolbar->CheckButton(IDC_TOOLBARBUTTON+8,TRUE);
 			ShowPreferences();
-			toolbar->CheckButton(IDC_TOOLBARBUTTON+9,FALSE);
+			toolbar->CheckButton(IDC_TOOLBARBUTTON+8,FALSE);
 			break;
-		case IDC_TOOLBARBUTTON + 10:
+		case IDC_TOOLBARBUTTON + 9:
 			ShowToolPopup(true);
 			break;
 		case MP_HM_OPENINC:
 			ShellExecute(NULL, _T("open"), thePrefs.GetIncomingDir(),NULL, NULL, SW_SHOW); 
 			break;
 		case MP_HM_HELP:
-		case IDC_TOOLBARBUTTON + 11:
+		case IDC_TOOLBARBUTTON + 10:
 			wParam = ID_HELP;
 			break;
 		case MP_HM_CON:
@@ -2279,9 +2253,6 @@ BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 			ShellExecute(NULL, NULL, theUrl, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT);
 			break;
 		}
-		case MP_WEBSVC_EDIT:
-			theWebServices.Edit();
-			break;
 		case MP_HM_CONVERTPF:
 			CPartFileConvert::ShowGUI();
 			break;
@@ -2308,10 +2279,7 @@ BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 			break;
 		}
 	}	
-	if (wParam>=MP_WEBURL && wParam<=MP_WEBURL+99) {
-		theWebServices.RunURL(NULL, wParam);
-	}
-	else if (wParam>=MP_SCHACTIONS && wParam<=MP_SCHACTIONS+99) {
+	if (wParam>=MP_SCHACTIONS && wParam<=MP_SCHACTIONS+99) {
 		theApp.scheduler->ActivateSchedule(wParam-MP_SCHACTIONS);
 		theApp.scheduler->SaveOriginals(); // use the new settings as original
 	}
@@ -2388,9 +2356,6 @@ void CemuleDlg::ShowToolPopup(bool toolsonly)
 	Links.AppendMenu(MF_STRING, MP_HM_LINK1, GetResString(IDS_HM_LINKHP), _T("WEB"));
 	Links.AppendMenu(MF_STRING, MP_HM_LINK2, GetResString(IDS_HM_LINKFAQ), _T("WEB"));
 	Links.AppendMenu(MF_STRING, MP_HM_LINK3, GetResString(IDS_HM_LINKVC), _T("WEB"));
-	theWebServices.GetGeneralMenuEntries(&Links);
-	Links.InsertMenu(3, MF_BYPOSITION | MF_SEPARATOR);
-	Links.AppendMenu(MF_STRING, MP_WEBSVC_EDIT, GetResString(IDS_WEBSVEDIT));
 
 	CMenu scheduler;
 	scheduler.CreateMenu();
@@ -2417,7 +2382,6 @@ void CemuleDlg::ShowToolPopup(bool toolsonly)
 		menu.AppendMenu(MF_STRING,MP_HM_SEARCH, GetResString(IDS_EM_SEARCH), _T("SEARCH"));
 		menu.AppendMenu(MF_STRING,MP_HM_FILES, GetResString(IDS_EM_FILES), _T("SharedFiles"));
 		menu.AppendMenu(MF_STRING,MP_HM_MSGS, GetResString(IDS_EM_MESSAGES), _T("MESSAGES"));
-		menu.AppendMenu(MF_STRING,MP_HM_IRC, GetResString(IDS_IRC), _T("IRC"));
 		menu.AppendMenu(MF_STRING,MP_HM_STATS, GetResString(IDS_EM_STATISTIC), _T("STATISTICS"));
 		menu.AppendMenu(MF_STRING,MP_HM_PREFS, GetResString(IDS_EM_PREFS), _T("PREFERENCES"));
 		menu.AppendMenu(MF_STRING,MP_HM_HELP, GetResString(IDS_EM_HELP), _T("HELP"));
@@ -2453,7 +2417,6 @@ void CemuleDlg::ApplyHyperTextFont(LPLOGFONT plf)
 		thePrefs.SetHyperTextFont(plf);
 		serverwnd->servermsgbox->SetFont(&theApp.m_fontHyperText);
 		chatwnd->chatselector.UpdateFonts(&theApp.m_fontHyperText);
-		ircwnd->UpdateFonts(&theApp.m_fontHyperText);
 	}
 }
 
@@ -2588,20 +2551,28 @@ LRESULT CemuleDlg::OnVersionCheckResponse(WPARAM wParam, LPARAM lParam)
 	return 0;
 }
 
+//==> SplashScreen [Xman]
 void CemuleDlg::ShowSplash()
 {
 	ASSERT( m_pSplashWnd == NULL );
 	if (m_pSplashWnd == NULL)
 	{
-		m_pSplashWnd = new CSplashScreen;
+		m_pSplashWnd = new CSplashScreenEx();
 		if (m_pSplashWnd != NULL)
 		{
 			ASSERT(m_hWnd);
-			if (m_pSplashWnd->Create(CSplashScreen::IDD, this))
+
+			if (m_pSplashWnd->Create(this,/*MOD_MAJOR_VERSION*/_T("eMule v0.46a") ,0,CSS_FADE | CSS_CENTERSCREEN | CSS_SHADOW))
 			{
-				m_pSplashWnd->ShowWindow(SW_SHOW);
-				m_pSplashWnd->UpdateWindow();
+				m_pSplashWnd->SetBitmap(IDB_SPLASH,0,255,0);
+				m_pSplashWnd->SetTextFont(_T("Tahoma"),100,CSS_TEXT_BOLD);
+				m_pSplashWnd->SetTextRect(CRect(230,150,340,185));
+				m_pSplashWnd->SetTextColor(RGB(252,191,111));
+				m_pSplashWnd->SetTextFormat(DT_SINGLELINE | DT_CENTER | DT_VCENTER);
+				m_pSplashWnd->Show();
+				Sleep(1000);
 				m_dwSplashTime = ::GetCurrentTime();
+				m_pSplashWnd->SetText(/*MOD_VERSION*/_T("NextEMF v0.4"));
 			}
 			else
 			{
@@ -2611,6 +2582,7 @@ void CemuleDlg::ShowSplash()
 		}
 	}
 }
+//<== SplashScreen [Xman]
 
 void CemuleDlg::DestroySplash()
 {

@@ -42,12 +42,10 @@ CPreferencesDlg::CPreferencesDlg()
 	m_wndDirectories.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndFiles.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndStats.m_psp.dwFlags &= ~PSH_HASHELP;
-	m_wndIRC.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndWebServer.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndTweaks.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndSecurity.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndScheduler.m_psp.dwFlags &= ~PSH_HASHELP;
-	m_wndProxy.m_psp.dwFlags &= ~PSH_HASHELP;
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	m_wndDebug.m_psp.dwFlags &= ~PSH_HASHELP;
 #endif
@@ -55,13 +53,11 @@ CPreferencesDlg::CPreferencesDlg()
 	CTreePropSheet::SetPageIcon(&m_wndGeneral, _T("Preferences"));
 	CTreePropSheet::SetPageIcon(&m_wndDisplay, _T("DISPLAY"));
 	CTreePropSheet::SetPageIcon(&m_wndConnection, _T("CONNECTION"));
-	CTreePropSheet::SetPageIcon(&m_wndProxy, _T("PROXY"));
 	CTreePropSheet::SetPageIcon(&m_wndServer, _T("SERVER"));
 	CTreePropSheet::SetPageIcon(&m_wndDirectories, _T("FOLDERS"));
 	CTreePropSheet::SetPageIcon(&m_wndFiles, _T("SharedFiles"));
 	CTreePropSheet::SetPageIcon(&m_wndNotify, _T("NOTIFICATIONS"));
 	CTreePropSheet::SetPageIcon(&m_wndStats, _T("STATISTICS"));
-	CTreePropSheet::SetPageIcon(&m_wndIRC, _T("IRC"));
 	CTreePropSheet::SetPageIcon(&m_wndSecurity, _T("SECURITY"));
 	CTreePropSheet::SetPageIcon(&m_wndScheduler, _T("SCHEDULER"));
 	CTreePropSheet::SetPageIcon(&m_wndWebServer, _T("WEB"));
@@ -73,13 +69,11 @@ CPreferencesDlg::CPreferencesDlg()
 	AddPage(&m_wndGeneral);
 	AddPage(&m_wndDisplay);
 	AddPage(&m_wndConnection);
-	AddPage(&m_wndProxy);
 	AddPage(&m_wndServer);
 	AddPage(&m_wndDirectories);
 	AddPage(&m_wndFiles);
 	AddPage(&m_wndNotify);
 	AddPage(&m_wndStats);
-	AddPage(&m_wndIRC);
 	AddPage(&m_wndSecurity);
 	AddPage(&m_wndScheduler);
 	AddPage(&m_wndWebServer);
@@ -141,12 +135,10 @@ void CPreferencesDlg::Localize()
 	m_wndFiles.Localize();
 	m_wndStats.Localize();
 	m_wndNotify.Localize();
-	m_wndIRC.Localize();
 	m_wndSecurity.Localize();
 	m_wndTweaks.Localize();
 	m_wndWebServer.Localize();
 	m_wndScheduler.Localize();
-	m_wndProxy.Localize();
 
 	CTreeCtrl* pTree = GetPageTreeControl();
 	if (pTree)
@@ -154,19 +146,17 @@ void CPreferencesDlg::Localize()
 		pTree->SetItemText(GetPageTreeItem(0), RemoveAmbersand(GetResString(IDS_PW_GENERAL)));
 		pTree->SetItemText(GetPageTreeItem(1), RemoveAmbersand(GetResString(IDS_PW_DISPLAY))); 
 		pTree->SetItemText(GetPageTreeItem(2), RemoveAmbersand(GetResString(IDS_PW_CONNECTION))); 
-		pTree->SetItemText(GetPageTreeItem(3), RemoveAmbersand(GetResString(IDS_PW_PROXY))); 
-		pTree->SetItemText(GetPageTreeItem(4), RemoveAmbersand(GetResString(IDS_PW_SERVER))); 
-		pTree->SetItemText(GetPageTreeItem(5), RemoveAmbersand(GetResString(IDS_PW_DIR))); 
-		pTree->SetItemText(GetPageTreeItem(6), RemoveAmbersand(GetResString(IDS_PW_FILES))); 
-		pTree->SetItemText(GetPageTreeItem(7), RemoveAmbersand(GetResString(IDS_PW_EKDEV_OPTIONS))); 
-		pTree->SetItemText(GetPageTreeItem(8), RemoveAmbersand(GetResString(IDS_STATSSETUPINFO))); 
-		pTree->SetItemText(GetPageTreeItem(9), RemoveAmbersand(GetResString(IDS_IRC)));
-		pTree->SetItemText(GetPageTreeItem(10), RemoveAmbersand(GetResString(IDS_SECURITY))); 
-		pTree->SetItemText(GetPageTreeItem(11), RemoveAmbersand(GetResString(IDS_SCHEDULER)));
-		pTree->SetItemText(GetPageTreeItem(12), RemoveAmbersand(GetResString(IDS_PW_WS)));
-		pTree->SetItemText(GetPageTreeItem(13), RemoveAmbersand(GetResString(IDS_PW_TWEAK)));
+		pTree->SetItemText(GetPageTreeItem(3), RemoveAmbersand(GetResString(IDS_PW_SERVER))); 
+		pTree->SetItemText(GetPageTreeItem(4), RemoveAmbersand(GetResString(IDS_PW_DIR))); 
+		pTree->SetItemText(GetPageTreeItem(5), RemoveAmbersand(GetResString(IDS_PW_FILES))); 
+		pTree->SetItemText(GetPageTreeItem(6), RemoveAmbersand(GetResString(IDS_PW_EKDEV_OPTIONS))); 
+		pTree->SetItemText(GetPageTreeItem(7), RemoveAmbersand(GetResString(IDS_STATSSETUPINFO))); 
+		pTree->SetItemText(GetPageTreeItem(8), RemoveAmbersand(GetResString(IDS_SECURITY))); 
+		pTree->SetItemText(GetPageTreeItem(9), RemoveAmbersand(GetResString(IDS_SCHEDULER)));
+		pTree->SetItemText(GetPageTreeItem(10), RemoveAmbersand(GetResString(IDS_PW_WS)));
+		pTree->SetItemText(GetPageTreeItem(11), RemoveAmbersand(GetResString(IDS_PW_TWEAK)));
 	#if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
-		pTree->SetItemText(GetPageTreeItem(14), _T("Debug"));
+		pTree->SetItemText(GetPageTreeItem(12), _T("Debug"));
 	#endif
 	}
 

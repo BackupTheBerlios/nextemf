@@ -22,7 +22,6 @@
 #include "OtherFunctions.h"
 #include "Preferences.h"
 #include "HelpIDs.h"
-#include "TextToSpeech.h"
 #include "TaskbarNotifier.h"
 
 #ifdef _DEBUG
@@ -38,7 +37,6 @@ BEGIN_MESSAGE_MAP(CPPgNotify, CPropertyPage)
 	ON_WM_HELPINFO()
 	ON_BN_CLICKED(IDC_CB_TBN_NOSOUND, OnBnClickedNoSound)
 	ON_BN_CLICKED(IDC_CB_TBN_USESOUND, OnBnClickedUseSound)
-	ON_BN_CLICKED(IDC_CB_TBN_USESPEECH, OnBnClickedUseSpeech)
 	ON_EN_CHANGE(IDC_EDIT_TBN_WAVFILE, OnSettingsChange)
 	ON_BN_CLICKED(IDC_BTN_BROWSE_WAV, OnBnClickedBrowseAudioFile)
 	ON_BN_CLICKED(IDC_TEST_NOTIFICATION, OnBnClickedTestNotification)
@@ -76,8 +74,6 @@ BOOL CPPgNotify::OnInitDialog()
 	LoadSettings();
 	Localize();
 
-	GetDlgItem(IDC_CB_TBN_USESPEECH)->EnableWindow(IsSpeechEngineAvailable());
-
 	return TRUE;  // return TRUE unless you set the focus to a control
 				  // EXCEPTION: OCX Property Pages should return FALSE
 }
@@ -96,14 +92,12 @@ void CPPgNotify::LoadSettings(void)
 	int iBtnID;
 	if (thePrefs.notifierSoundType == ntfstSoundFile)
 		iBtnID = IDC_CB_TBN_USESOUND;
-	else if (thePrefs.notifierSoundType == ntfstSpeech)
-		iBtnID = IDC_CB_TBN_USESPEECH;
 	else {
 		ASSERT( thePrefs.notifierSoundType == ntfstNoSound );
 		iBtnID = IDC_CB_TBN_NOSOUND;
 	}
-	ASSERT( IDC_CB_TBN_NOSOUND < IDC_CB_TBN_USESOUND && IDC_CB_TBN_USESOUND < IDC_CB_TBN_USESPEECH );
-	CheckRadioButton(IDC_CB_TBN_NOSOUND, IDC_CB_TBN_USESPEECH, iBtnID);
+	ASSERT( IDC_CB_TBN_NOSOUND < IDC_CB_TBN_USESOUND);
+	CheckRadioButton(IDC_CB_TBN_NOSOUND, IDC_CB_TBN_USESOUND, iBtnID);
 
 	CheckDlgButton(IDC_CB_TBN_ONDOWNLOAD, thePrefs.notifierOnDownloadFinished ? BST_CHECKED : BST_UNCHECKED);
 	CheckDlgButton(IDC_CB_TBN_ONNEWDOWNLOAD, thePrefs.notifierOnNewDownload ? BST_CHECKED : BST_UNCHECKED);
@@ -154,7 +148,6 @@ void CPPgNotify::Localize(void)
 		GetDlgItem(IDC_CB_TBN_IMPORTATNT)->SetWindowText(GetResString(IDS_PS_TBN_IMPORTANT) + _T(" (*)"));
 		GetDlgItem(IDC_CB_TBN_ONNEWVERSION)->SetWindowText(GetResString(IDS_CB_TBN_ONNEWVERSION));
 		GetDlgItem(IDC_TBN_OPTIONS)->SetWindowText(GetResString(IDS_PW_TBN_OPTIONS));
-		GetDlgItem(IDC_CB_TBN_USESPEECH)->SetWindowText(GetResString(IDS_USESPEECH));
 
 		GetDlgItem(IDC_EMAILNOT_GROUP)->SetWindowText(GetResString(IDS_PW_EMAILNOTIFICATIONS) + _T(" (*)"));
 		GetDlgItem(IDC_TXT_SMTPSERVER)->SetWindowText(GetResString(IDS_PW_SMTPSERVER));
@@ -180,8 +173,6 @@ BOOL CPPgNotify::OnApply()
 	thePrefs.SetNotifierSendMail(IsDlgButtonChecked(IDC_CB_ENABLENOTIFICATIONS) != 0);
 
 	ApplyNotifierSoundType();
-	if (thePrefs.notifierSoundType != ntfstSpeech)
-		ReleaseTTS();
 
 	SetModified(FALSE);
 	return CPropertyPage::OnApply();
@@ -192,8 +183,6 @@ void CPPgNotify::ApplyNotifierSoundType()
 	GetDlgItemText(IDC_EDIT_TBN_WAVFILE, thePrefs.notifierSoundFile);
 	if (IsDlgButtonChecked(IDC_CB_TBN_USESOUND))
 		thePrefs.notifierSoundType = ntfstSoundFile;
-	else if (IsDlgButtonChecked(IDC_CB_TBN_USESPEECH))
-		thePrefs.notifierSoundType = IsSpeechEngineAvailable() ? ntfstSpeech : ntfstNoSound;
 	else {
 		ASSERT( IsDlgButtonChecked(IDC_CB_TBN_NOSOUND) );
 		thePrefs.notifierSoundType = ntfstNoSound;

@@ -206,7 +206,7 @@ public:
 	void	AddUploadingClient(CUpDownClient* client);
 	void	RemoveUploadingClient(CUpDownClient* client);
 	virtual void	UpdatePartsInfo();
-	virtual	void	DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect, bool bFlat) const;
+	virtual	void	DrawShareStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect) const;
 
 	// comment
 	const CString& GetFileComment() /*const*/;

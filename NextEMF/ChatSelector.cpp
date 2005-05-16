@@ -707,10 +707,6 @@ void CChatSelector::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 	menu.SetDefaultItem(MP_DETAIL);
 
 	GetCurrentChatItem();
-	if (fr==NULL )
-		menu.AppendMenu(MF_STRING, MP_ADDFRIEND, GetResString(IDS_IRC_ADDTOFRIENDLIST), _T("ADDFRIEND"));
-	else
-		menu.AppendMenu(MF_STRING, MP_REMOVEFRIEND, GetResString(IDS_REMOVEFRIEND), _T("DELETEFRIEND"));
 	
 	m_ptCtxMenu = point;
 	ScreenToClient(&m_ptCtxMenu);

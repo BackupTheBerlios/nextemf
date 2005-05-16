@@ -27,7 +27,6 @@
 #include "SharedFileList.h"
 #include "UpDownClient.h"
 #include "Opcodes.h"
-#include "WebServices.h"
 #include <shlobj.h>
 #include "emuledlg.h"
 #include "MenuCmds.h"
@@ -42,8 +41,6 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
-
-CWebServices theWebServices;
 
 // Base chars for encode an decode functions
 static byte base16Chars[17] = "0123456789ABCDEF";
@@ -775,140 +772,6 @@ uint32 DecodeBase32(LPCTSTR pszInput, uchar* paucOutput, uint32 nBufferLen)
 
 uint32 DecodeBase32(LPCTSTR pszInput, CAICHHash& Hash){
 	return DecodeBase32(pszInput, Hash.GetRawHash(), Hash.GetHashSize());
-}
-
-CWebServices::CWebServices()
-{
-	m_tDefServicesFileLastModified = 0;
-}
-
-CString CWebServices::GetDefaultServicesFile() const
-{
-	return thePrefs.GetConfigDir() + _T("webservices.dat");
-}
-
-void CWebServices::RemoveAllServices()
-{
-	m_aServices.RemoveAll();
-	m_tDefServicesFileLastModified = 0;
-}
-
-int CWebServices::ReadAllServices()
-{
-	RemoveAllServices();
-
-	CString strFilePath = GetDefaultServicesFile();
-	FILE* readFile = _tfsopen(strFilePath, _T("r"), _SH_DENYWR);
-	if (readFile != NULL)
-	{
-		CString name, url, sbuffer;
-		while (!feof(readFile))
-		{
-			TCHAR buffer[1024];
-			if (_fgetts(buffer, ARRSIZE(buffer), readFile) == NULL)
-				break;
-			sbuffer = buffer;
-
-			// ignore comments & too short lines
-			if (sbuffer.GetAt(0) == _T('#') || sbuffer.GetAt(0) == _T('/') || sbuffer.GetLength() < 5)
-				continue;
-
-			int iPos = sbuffer.Find(_T(','));
-			if (iPos > 0)
-			{
-				CString strUrlTemplate = sbuffer.Right(sbuffer.GetLength() - iPos - 1).Trim();
-				if (!strUrlTemplate.IsEmpty())
-				{
-					bool bFileMacros = false;
-					static const LPCTSTR _apszMacros[] = { _T("#hashid"), _T("#filesize"), _T("#filename") };
-					for (int i = 0; i < ARRSIZE(_apszMacros); i++)
-					{
-						if (strUrlTemplate.Find(_apszMacros[i]) != -1)
-						{
-							bFileMacros = true;
-							break;
-						}
-					}
-
-					SEd2kLinkService svc;
-					svc.uMenuID = MP_WEBURL + m_aServices.GetCount();
-					svc.strMenuLabel = sbuffer.Left(iPos).Trim();
-					svc.strUrl = strUrlTemplate;
-					svc.bFileMacros = bFileMacros;
-					m_aServices.Add(svc);
-				}
-			}
-		}
-		fclose(readFile);
-
-		struct _stat st;
-		if (_tstat(strFilePath, &st) == 0)
-			m_tDefServicesFileLastModified = st.st_mtime;
-	}
-
-	return m_aServices.GetCount();
-}
-
-int CWebServices::GetAllMenuEntries(CTitleMenu* pMenu, DWORD dwFlags)
-{
-	if (m_aServices.GetCount() == 0)
-	{
-		ReadAllServices();
-	}
-	else
-	{
-		struct _stat st;
-		if (_tstat(GetDefaultServicesFile(), &st) == 0 && st.st_mtime > m_tDefServicesFileLastModified)
-			ReadAllServices();
-	}
-
-	int iMenuEntries = 0;
-	for (int i = 0; i < m_aServices.GetCount(); i++)
-	{
-		const SEd2kLinkService& rSvc = m_aServices.GetAt(i);
-		if ((dwFlags & WEBSVC_GEN_URLS) && rSvc.bFileMacros)
-			continue;
-		if ((dwFlags & WEBSVC_FILE_URLS) && !rSvc.bFileMacros)
-			continue;
-		if (pMenu->AppendMenu(MF_STRING, MP_WEBURL + i, rSvc.strMenuLabel, _T("WEB")))
-			iMenuEntries++;
-	}
-	return iMenuEntries;
-}
-
-bool CWebServices::RunURL(const CAbstractFile* file, UINT uMenuID)
-{
-	for (int i = 0; i < m_aServices.GetCount(); i++)
-	{
-		const SEd2kLinkService& rSvc = m_aServices.GetAt(i);
-		if (rSvc.uMenuID == uMenuID)
-		{
-			CString strUrlTemplate = rSvc.strUrl;
-			if (file != NULL)
-			{
-				// Convert hash to hexadecimal text and add it to the URL
-				strUrlTemplate.Replace(_T("#hashid"), md4str(file->GetFileHash()));
-
-				// Add file size to the URL
-				CString temp;
-				temp.Format(_T("%u"), file->GetFileSize());
-				strUrlTemplate.Replace(_T("#filesize"), temp);
-
-				// add filename to the url
-				strUrlTemplate.Replace(_T("#filename"), URLEncode(file->GetFileName()));
-			}
-
-			// Open URL
-			TRACE("Starting URL: %s\n", strUrlTemplate);
-			return (int)ShellExecute(NULL, NULL, strUrlTemplate, NULL, thePrefs.GetAppDir(), SW_SHOWDEFAULT) > 32;
-		}
-	}
-	return false;
-}
-
-void CWebServices::Edit()
-{
-	ShellExecute(NULL, _T("open"), thePrefs.GetTxtEditor(), _T("\"") + thePrefs.GetConfigDir() + _T("webservices.dat\""), NULL, SW_SHOW);
 }
 
 typedef struct

@@ -29,7 +29,6 @@
 #include "TransferWnd.h"
 #include "SharedFilesWnd.h"
 #include "ChatWnd.h"
-#include "IrcWnd.h"
 #include "StatisticsDlg.h"
 
 #ifdef _DEBUG
@@ -145,11 +144,6 @@ void CMuleToolbarCtrl::Init(void)
 	lLen += lLen2;
 	++m_buttoncount;
 
-	lLen2 = _tcslen(GetResString(IDS_IRC)) + 1;
-	memcpy(cButtonStrings+lLen, GetResString(IDS_IRC), lLen2*sizeof(TCHAR));
-	lLen += lLen2;
-	++m_buttoncount;
-
 	lLen2 = _tcslen(GetResString(IDS_EM_STATISTIC)) + 1;
 	memcpy(cButtonStrings+lLen, GetResString(IDS_EM_STATISTIC), lLen2*sizeof(TCHAR));
 	lLen += lLen2;
@@ -242,7 +236,6 @@ void CMuleToolbarCtrl::SetAllButtonsStrings()
 		IDS_EM_SEARCH,
 		IDS_EM_FILES,
 		IDS_EM_MESSAGES,
-		IDS_IRC,
 		IDS_EM_STATISTIC,
 		IDS_EM_PREFS,
 		IDS_TOOLS,
@@ -898,7 +891,6 @@ void CMuleToolbarCtrl::Refresh()
 			theApp.emuledlg->sharedfileswnd,
 			theApp.emuledlg->searchwnd,
 			theApp.emuledlg->chatwnd,
-			theApp.emuledlg->ircwnd,
 			theApp.emuledlg->statisticswnd
 		};
 		for (int i = 0; i < ARRSIZE(wnds); i++)

@@ -319,7 +319,7 @@ void CDownloadClientsCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				case 4:
 						cur_rec.bottom--;
 						cur_rec.top++;
-						client->DrawStatusBar(dc, &cur_rec, false, thePrefs.UseFlatBar());
+						client->DrawStatusBar(dc, &cur_rec, false);
 						cur_rec.bottom++;
 						cur_rec.top--;
 						break;	
