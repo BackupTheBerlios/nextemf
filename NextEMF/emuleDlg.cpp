@@ -360,6 +360,13 @@ BOOL CemuleDlg::OnInitDialog()
 	//set title
 	CString buffer = _T("eMule v"); 
 	buffer += theApp.m_strCurVersionLong;
+
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+	buffer += _T(" [") + theApp.m_strModLongVersion + _T("]");
+#endif //Modversion
+//<==Modversion [shadow2004]
+
 	SetWindowText(buffer);
 
 	//START - enkeyDEV(kei-kun) -TaskbarNotifier-
@@ -640,8 +647,23 @@ void CALLBACK CemuleDlg::StartupTimer(HWND hwnd, UINT uiMsg, UINT idEvent, DWORD
 				}
 				
 				if (!bError) // show the success msg, only if we had no serious error
+//==> WINSOCK2 [shadow2004]
+#ifdef WINSOCK2 //WINSOCK2
+					{
+					AddLogLine(false,_T("Winsock: Version %d.%d [%.40s] %.40s"), HIBYTE( theApp.m_wsaData.wVersion ),LOBYTE(theApp.m_wsaData.wVersion ),
+					(CString)theApp.m_wsaData.szDescription, (CString)theApp.m_wsaData.szSystemStatus);
+					if (theApp.m_wsaData.iMaxSockets!=0)
+						AddLogLine(false,_T("Winsock: max. sockets %d"), theApp.m_wsaData.iMaxSockets);
+					else
+						AddLogLine(false,_T("Winsock: unlimited sockets"));
+#endif //WINSOCK2
+//<== WINSOCK2 [shadow2004]
 					AddLogLine(true, GetResString(IDS_MAIN_READY),theApp.m_strCurVersionLong);
-
+//==> WINSOCK2 [shadow2004]
+#ifdef WINSOCK2 //WINSOCK2
+					}
+#endif //WINSOCK2
+//<== WINSOCK2 [shadow2004]
 				if(thePrefs.DoAutoConnect())
 					theApp.emuledlg->OnBnClickedButton2();
 				theApp.emuledlg->status++;
@@ -1070,10 +1092,19 @@ void CemuleDlg::ShowTransferRate(bool bForceAll)
 			iDownRateProcent = 100;
 		UpdateTrayIcon(iDownRateProcent);
 
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+		if (theApp.IsConnected())
+			_sntprintf(buffer2,ARRSIZE(buffer2),_T("[%s] (%s)\r\n%s"),theApp.m_strModLongVersion,GetResString(IDS_CONNECTED), strTransferRate);
+		else 
+			_sntprintf(buffer2,ARRSIZE(buffer2),_T("[%s] (%s)\r\n%s"),theApp.m_strModLongVersion,GetResString(IDS_DISCONNECTED), strTransferRate);
+#else //Modversion
 		if (theApp.IsConnected()) 
 			_sntprintf(buffer2, ARRSIZE(buffer2), _T("eMule v%s (%s)\r\n%s"), theApp.m_strCurVersionLong, GetResString(IDS_CONNECTED), strTransferRate);
 		else
 			_sntprintf(buffer2, ARRSIZE(buffer2), _T("eMule v%s (%s)\r\n%s"), theApp.m_strCurVersionLong, GetResString(IDS_DISCONNECTED), strTransferRate);
+#endif //Modversion
+//<==Modversion [shadow2004]
 
 		buffer2[63] = _T('\0');
 		TraySetToolTip(buffer2);
@@ -1087,7 +1118,13 @@ void CemuleDlg::ShowTransferRate(bool bForceAll)
 	if (IsWindowVisible() && thePrefs.ShowRatesOnTitle())
 	{
 		TCHAR szBuff[128];
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+		_sntprintf(szBuff,ARRSIZE(szBuff),_T("(U:%.1f D:%.1f) eMule v%s [%s]"),(float)m_uUpDatarate/1024, (float)m_uDownDatarate/1024,theApp.m_strCurVersionLong,theApp.m_strModLongVersion);
+#else //Modversion
 		_sntprintf(szBuff, ARRSIZE(szBuff), _T("(U:%.1f D:%.1f) eMule v%s"), (float)m_uUpDatarate/1024, (float)m_uDownDatarate/1024, theApp.m_strCurVersionLong);
+#endif //Modversion
+//<==Modversion [shadow2004]
 		SetWindowText(szBuff);
 	}
 	if (m_pMiniMule && m_pMiniMule->m_hWnd && m_pMiniMule->IsWindowVisible() && !m_pMiniMule->GetAutoClose())
@@ -2562,7 +2599,7 @@ void CemuleDlg::ShowSplash()
 		{
 			ASSERT(m_hWnd);
 
-			if (m_pSplashWnd->Create(this,/*MOD_MAJOR_VERSION*/_T("eMule v0.46a") ,0,CSS_FADE | CSS_CENTERSCREEN | CSS_SHADOW))
+			if (m_pSplashWnd->Create(this,_T("eMule ") + theApp.m_strCurVersionLong,0,CSS_FADE | CSS_CENTERSCREEN | CSS_SHADOW))
 			{
 				m_pSplashWnd->SetBitmap(IDB_SPLASH,0,255,0);
 				m_pSplashWnd->SetTextFont(_T("Tahoma"),100,CSS_TEXT_BOLD);
@@ -2572,7 +2609,7 @@ void CemuleDlg::ShowSplash()
 				m_pSplashWnd->Show();
 				Sleep(1000);
 				m_dwSplashTime = ::GetCurrentTime();
-				m_pSplashWnd->SetText(/*MOD_VERSION*/_T("NextEMF v0.4"));
+				m_pSplashWnd->SetText(theApp.m_strModVersion);
 			}
 			else
 			{

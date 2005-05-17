@@ -233,6 +233,14 @@ CemuleApp::CemuleApp(LPCTSTR lpszAppName)
 	m_bGuardClipboardPrompt = false;
 
 	EnableHtmlHelp();
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+	m_strModVersion = MOD_VERSION;
+	m_strModVersion.AppendFormat(_T(" %u.%u"), MOD_VERSION_MJR, MOD_VERSION_MIN);
+	m_strModLongVersion = MOD_LONG_VERSION;
+	m_strModLongVersion.AppendFormat(_T("%u.%u"), MOD_VERSION_MJR, MOD_VERSION_MIN);
+#endif //Modversion
+//<==Modversion [shadow2004]
 }
 
 
@@ -256,6 +264,46 @@ void __cdecl __AfxSocketTerm()
 #else
 #error "You are using an MFC version which may require a special version of the above function!"
 #endif
+
+//==> WINSOCK2 [shadow2004]
+#ifdef WINSOCK2 //WINSOCK2
+BOOL InitWinsock2(WSADATA *lpwsaData) 
+{  
+_AFX_SOCK_STATE* pState = _afxSockState.GetData();
+if (pState->m_pfnSockTerm == NULL)
+	{
+	// initialize Winsock library
+	WSADATA wsaData;
+	if (lpwsaData == NULL)
+		lpwsaData = &wsaData;
+	WORD wVersionRequested = MAKEWORD(2, 2);
+	int nResult = WSAStartup(wVersionRequested, lpwsaData);
+	if (nResult != 0)
+		return FALSE;
+	if (LOBYTE(lpwsaData->wVersion) != 2 || HIBYTE(lpwsaData->wVersion) != 2)
+		{
+		WSACleanup();
+		return FALSE;
+		}
+	// setup for termination of sockets
+	pState->m_pfnSockTerm = &AfxSocketTerm;
+	}
+#ifndef _AFXDLL
+	//BLOCK: setup maps and lists specific to socket state
+	{
+	_AFX_SOCK_THREAD_STATE* pState = _afxSockThreadState;
+	if (pState->m_pmapSocketHandle == NULL)
+		pState->m_pmapSocketHandle = new CMapPtrToPtr;
+	if (pState->m_pmapDeadSockets == NULL)
+		pState->m_pmapDeadSockets = new CMapPtrToPtr;
+	if (pState->m_plistSocketNotifications == NULL)
+		pState->m_plistSocketNotifications = new CPtrList;
+	}
+#endif
+return TRUE;
+}
+#endif //WINSOCK2
+//<== WINSOCK2 [shadow2004]
 
 // CemuleApp Initialisierung
 
@@ -347,11 +395,26 @@ BOOL CemuleApp::InitInstance()
 
 	CWinApp::InitInstance();
 
+//==> WINSOCK2 [shadow2004]
+#ifdef WINSOCK2 //WINSOCK2
+	memset(&m_wsaData, 0, sizeof(WSADATA));
+	if (!InitWinsock2(&m_wsaData)) //first try it with winsock2
+		{
+		memset(&m_wsaData, 0, sizeof(WSADATA));
+		if (!AfxSocketInit(&m_wsaData)) //then try it with old winsock
+#else //WINSOCK2
 	if (!AfxSocketInit())
+#endif //WINSOCK2
+//<== WINSOCK2 [shadow2004]
 	{
 		AfxMessageBox(GetResString(IDS_SOCKETS_INIT_FAILED));
 		return FALSE;
 	}
+//==> WINSOCK2 [shadow2004]
+#ifdef WINSOCK2 //WINSOCK2
+		}
+#endif //WINSOCK2
+//<==WINSOCK2 [shadow2004]
 #if _MFC_VER==0x0700 || _MFC_VER==0x0710
 	atexit(__AfxSocketTerm);
 #else

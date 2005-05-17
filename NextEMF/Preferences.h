@@ -108,12 +108,23 @@ public:
 	static	uint16	downloadColumnWidths[13];
 	static	BOOL	downloadColumnHidden[13];
 	static	INT		downloadColumnOrder[13];
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+	static	uint16	uploadColumnWidths[9]; //+1 Modversion
+	static	BOOL	uploadColumnHidden[9]; //+1 Modversion
+	static	INT		uploadColumnOrder[9]; //+1 Modversion
+	static	uint16	queueColumnWidths[11]; //+1 Modversion
+	static	BOOL	queueColumnHidden[11]; //+1 Modversion
+	static	INT		queueColumnOrder[11]; //+1 Modversion
+#else //Modversion
 	static	uint16	uploadColumnWidths[8];
 	static	BOOL	uploadColumnHidden[8];
 	static	INT		uploadColumnOrder[8];
 	static	uint16	queueColumnWidths[10];
 	static	BOOL	queueColumnHidden[10];
 	static	INT		queueColumnOrder[10];
+#endif //Modversion
+//<==Modversion [shadow2004]
 	static	uint16	searchColumnWidths[14];
 	static	BOOL	searchColumnHidden[14];
 	static	INT		searchColumnOrder[14];

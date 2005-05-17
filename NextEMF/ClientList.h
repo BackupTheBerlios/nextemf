@@ -68,6 +68,12 @@ public:
 						  CMap<uint32, uint32, uint32, uint32>& clientVersionEMule,
 						  CMap<uint32, uint32, uint32, uint32>& clientVersionAMule);
 	uint32	GetClientCount()	{ return list.GetCount();}
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+	void	GetModStatistics(CRBMap<uint16, CRBMap<CString, uint32>* > *clientMods);
+	void	ReleaseModStatistics(CRBMap<uint16, CRBMap<CString, uint32>* > *clientMods);
+#endif //Modversion
+//<==Modversion [shadow2004]
 	void	DeleteAll();
 	bool	AttachToAlreadyKnown(CUpDownClient** client, CClientReqSocket* sender);
 	CUpDownClient* FindClientByIP(uint32 clientip, UINT port) const;

@@ -186,6 +186,11 @@ void CDownloadListCtrl::SetAllIcons()
 	m_ImageList.Add(CTempIconLoader(_T("ClientAMule")));
 	m_ImageList.Add(CTempIconLoader(_T("ClientLPhant")));
 	m_ImageList.SetOverlayImage(m_ImageList.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+	m_ImageList.Add(CTempIconLoader(_T("CLIENT_NEXTEMF")));//17
+#endif //Modversion
+//<==Modversion [shadow2004]
 }
 
 void CDownloadListCtrl::Localize()
@@ -705,6 +710,13 @@ void CDownloadListCtrl::DrawSourceItem(CDC *dc, int nColumn, LPCRECT lpRect, Ctr
 				else if (lpUpDownClient->GetClientSoft() == SO_LPHANT)
 					m_ImageList.Draw(dc, 15, point2, ILD_NORMAL | uOvlImg);
 				else if (lpUpDownClient->ExtProtocolAvailable())
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+					if ( lpUpDownClient->IsNextEMF() )
+						m_ImageList.Draw(dc, 17, point2, ILD_NORMAL | uOvlImg);
+					else
+#endif //Modversion
+//<==Modversion [shadow2004]
 					m_ImageList.Draw(dc, 5, point2, ILD_NORMAL | uOvlImg);
 				else
 					m_ImageList.Draw(dc, 7, point2, ILD_NORMAL | uOvlImg);
@@ -2034,10 +2046,25 @@ int CDownloadListCtrl::Compare(const CUpDownClient *client1, const CUpDownClient
 	case 5: //progress asc
 		return CompareUnsigned(client1->GetAvailablePartCount(), client2->GetAvailablePartCount());
 
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+	case 6:
+		if( client1->GetClientSoft() == client2->GetClientSoft() )
+			if(client2->GetVersion() == client1->GetVersion() && client1->GetClientSoft() == SO_EMULE){
+				return CompareOptLocaleStringNoCase(client2->GetClientSoftVer(), client1->GetClientSoftVer());
+			}
+			else {
+			return CompareUnsigned(client2->GetVersion(), client1->GetVersion());
+			}
+		else
+		return CompareUnsigned(client1->GetClientSoft(), client2->GetClientSoft());
+#else //Modversion
 	case 6:
 		if (client1->GetClientSoft() == client2->GetClientSoft())
 			return CompareUnsigned(client2->GetVersion(), client1->GetVersion());
 		return CompareUnsigned(client1->GetClientSoft(), client2->GetClientSoft());
+#endif //Modversion
+//<==Modversion [shadow2004]
 	case 7: //qr asc
 		if (client1->GetDownloadState() == DS_DOWNLOADING){
 			if (client2->GetDownloadState() == DS_DOWNLOADING)

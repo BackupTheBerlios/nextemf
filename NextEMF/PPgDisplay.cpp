@@ -230,7 +230,14 @@ BOOL CPPgDisplay::OnApply()
 	if (mintotray_old != thePrefs.mintotray)
 		theApp.emuledlg->TrayMinimizeToTrayChange();
 	if (!thePrefs.ShowRatesOnTitle()) {
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+		_stprintf(buffer,_T("eMule v%s [%s]"),theApp.m_strCurVersionLong,theApp.m_strModLongVersion);
+#else //Modversion
 		_stprintf(buffer,_T("eMule v%s"),theApp.m_strCurVersionLong);
+#endif //Modversion
+//<==Modversion [shadow2004]
+		
 		theApp.emuledlg->SetWindowText(buffer);
 	}
 

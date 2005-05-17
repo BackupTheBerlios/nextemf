@@ -2232,6 +2232,7 @@ FILESHAREDSERVER        ICON                    "res\\FileSharedServer.ico"
 FILESHAREDKAD           ICON                    "res\\FileSharedKad.ico"
 SPLITWINDOW             ICON                    "res\\SplitWindow.ico"
 DOWNLOADFILES           ICON                    "res\\DownloadFiles.ico"
+CLIENT_NEXTEMF          ICON                    "res\\client_nextemf.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -3634,6 +3635,7 @@ BEGIN
     IDS_LONGHRS             "Hours"
     IDS_STATS_LARGESTFILE   "Largest Shared File"
     IDS_SPLIT_WINDOW        "Split Window"
+    IDS_CLIENTSOFTWARE      "Client Software"
     IDS_STATS_DSPF          "Part File"
     IDS_STATS_DATASOURCE    "Data Source"
     IDS_STATS_DSFILE        "Complete File"

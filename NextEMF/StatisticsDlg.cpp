@@ -2448,6 +2448,13 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 			{
 				uint32 verCount = 0;
 				
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+				CRBMap<uint16, CRBMap<CString, uint32>* > clientMods;
+				theApp.clientlist->GetModStatistics(&clientMods);
+#endif //Modversion
+//<==Modversion [shadow2004]
+
 				//--- find top 4 eMule client versions ---
 				uint32 currtop = 0;
 				uint32 lasttop = 0xFFFFFFFF;
@@ -2509,6 +2516,54 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 					else
 						stattree.SetItemText(cli_versions[MAX_SUB_CLIENT_VERSIONS*0+i], cbuffer);
 
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+					CRBMap<CString, uint32> *versionMods;
+
+					if (clientMods.Lookup(topver, versionMods)) {
+						POSITION mpos = versionMods->GetHeadPosition();
+						if (stattree.ItemHasChildren(cli_versions[i])){
+							HTREEITEM hChild; 
+							hChild = stattree.GetChildItem(cli_versions[i]);
+							while( hChild != NULL && mpos != NULL )
+							{
+								CString name;
+								uint32 count;
+								versionMods->GetNextAssoc(mpos, name, count);
+								if (name.IsEmpty())
+									name = "Official eMule";
+								cbuffer.Format(_T("%s: %i (%1.1f%%)"), name, count, (double)count/topcnt*100);
+								stattree.SetItemText(hChild, cbuffer);
+								hChild = stattree.GetNextSiblingItem( hChild );
+							}
+							while (hChild != NULL){
+								HTREEITEM hTemp = hChild;
+								hChild = stattree.GetNextSiblingItem( hChild );
+								stattree.DeleteItem(hTemp);
+							}
+						}
+						while (mpos != NULL){
+							CString name;
+							uint32 count;
+							versionMods->GetNextAssoc(mpos, name, count);
+							if (name.IsEmpty())
+								name = "Official eMule";
+							cbuffer.Format(_T("%s: %i (%1.1f%%)"), name, count, (double)count/topcnt*100);
+							stattree.InsertItem(cbuffer, cli_versions[i]);
+						}
+					}
+					else if (stattree.ItemHasChildren(cli_versions[i])){
+						HTREEITEM hChild; 
+						hChild = stattree.GetChildItem(cli_versions[i]);
+						while( hChild != NULL) {
+							HTREEITEM hTemp = hChild;
+							hChild = stattree.GetNextSiblingItem( hChild );
+							stattree.DeleteItem(hTemp);
+						}
+					}
+#endif //Modversion
+//<==Modversion [shadow2004]
+
 					verCount++;
 				}
 				if (verCount > MAX_SUB_CLIENT_VERSIONS/2) 
@@ -2526,6 +2581,13 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 					}
 				}
 				cli_lastCount[0] = verCount;
+
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+				theApp.clientlist->ReleaseModStatistics(&clientMods);
+#endif //Modversion
+//<==Modversion [shadow2004]
+
 			} // End Clients -> Client Software -> eMule Section
 
 

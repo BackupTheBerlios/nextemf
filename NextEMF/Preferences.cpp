@@ -88,12 +88,23 @@ bool	CPreferences::confirmExit;
 uint16	CPreferences::downloadColumnWidths[13];
 BOOL	CPreferences::downloadColumnHidden[13];
 INT		CPreferences::downloadColumnOrder[13];
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+uint16	CPreferences::uploadColumnWidths[9]; //+1 Modversion
+BOOL	CPreferences::uploadColumnHidden[9]; //+1 Modversion
+INT		CPreferences::uploadColumnOrder[9]; //+1 Modversion
+uint16	CPreferences::queueColumnWidths[11]; //+1 Modversion
+BOOL	CPreferences::queueColumnHidden[11]; //+1 Modversion
+INT		CPreferences::queueColumnOrder[11]; //+1 Modversion
+#else //Modversion
 uint16	CPreferences::uploadColumnWidths[8];
 BOOL	CPreferences::uploadColumnHidden[8];
 INT		CPreferences::uploadColumnOrder[8];
 uint16	CPreferences::queueColumnWidths[10];
 BOOL	CPreferences::queueColumnHidden[10];
 INT		CPreferences::queueColumnOrder[10];
+#endif //Modversion
+//<==Modversion [shadow2004]
 uint16	CPreferences::searchColumnWidths[14];
 BOOL	CPreferences::searchColumnHidden[14];
 INT		CPreferences::searchColumnOrder[14];

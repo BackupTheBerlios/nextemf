@@ -47,9 +47,15 @@
 #endif // _AFX_NO_AFXCMN_SUPPORT
 #include <afxole.h>			// MFC OLE support
 
+//==> WINSOCK2 [shadow2004]
+#ifdef WINSOCK2
+#include "afxsock.h"	// MFC-Socket-Erweiterungen
+#else //WINSOCK2
 #include <winsock2.h>
 #define _WINSOCKAPI_
 #include <afxsock.h>		// MFC support for Windows Sockets
+#endif //WINSOCK2
+//<== WINSOCK2 [shadow2004]
 #include <afxdhtml.h>
 
 #include <afxmt.h>			// MFC Multithreaded Extensions (Syncronization Objects)

@@ -176,6 +176,61 @@ void CClientList::GetStatistics(uint32 &ruTotalClients, int stats[NUM_CLIENTLIST
 	}
 }
 
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+void CClientList::GetModStatistics(CRBMap<uint16, CRBMap<CString, uint32>* > *clientMods){
+	if (!clientMods)
+		return;
+	clientMods->RemoveAll();
+	
+	// [TPT] Code improvement
+	for (POSITION pos = list.GetHeadPosition(); pos != NULL;) {		
+		CUpDownClient* cur_client =	list.GetNext(pos);
+
+		switch (cur_client->GetClientSoft()) {
+		case SO_EMULE   :
+		case SO_OLDEMULE:
+			break;
+		default:
+			continue;
+		}
+
+		CRBMap<CString, uint32> *versionMods;
+
+		if (!clientMods->Lookup(cur_client->GetVersion(), versionMods)){
+			versionMods = new CRBMap<CString, uint32>;
+			versionMods->RemoveAll();
+			clientMods->SetAt(cur_client->GetVersion(), versionMods);
+		}
+
+		uint32 count;
+
+		if (!versionMods->Lookup(cur_client->GetClientModVer(), count))
+			count = 1;
+		else
+			count++;
+
+		versionMods->SetAt(cur_client->GetClientModVer(), count);
+	}
+	// [TPT] end
+}
+
+void CClientList::ReleaseModStatistics(CRBMap<uint16, CRBMap<CString, uint32>* > *clientMods){
+	if (!clientMods)
+		return;
+	POSITION pos = clientMods->GetHeadPosition();
+	while(pos != NULL)
+	{
+		uint16 version;
+		CRBMap<CString, uint32> *versionMods;
+		clientMods->GetNextAssoc(pos, version, versionMods);
+		delete versionMods;
+	}
+	clientMods->RemoveAll();
+}
+#endif //Modversion
+//<==Modversion [shadow2004]
+
 void CClientList::AddClient(CUpDownClient* toadd, bool bSkipDupTest)
 {
 	// skipping the check for duplicate list entries is only to be done for optimization purposes, if the calling

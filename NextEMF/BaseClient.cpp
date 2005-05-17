@@ -233,6 +233,13 @@ void CUpDownClient::Init()
 	m_byKadVersion = 0;
 	SetLastBuddyPingPongTime();
 	m_fSentOutOfPartReqs = 0;
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+	m_strModVersion.Empty();
+	m_bIsNextEMF = false;
+#endif //Modversion
+//<==Modversion [shadow2004]
+
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -318,6 +325,13 @@ void CUpDownClient::ClearHelloProperties()
 	m_uPeerCacheDownloadPushId = 0;
 	m_uPeerCacheUploadPushId = 0;
 	m_byKadVersion = 0;
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+	m_strModVersion.Empty();
+	m_bIsNextEMF = false;
+#endif //Modversion
+//<==Modversion [shadow2004]
+
 }
 
 bool CUpDownClient::ProcessHelloPacket(const uchar* pachPacket, uint32 nSize)
@@ -393,8 +407,18 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 				nUserPort = temptag.GetInt();
 				break;
 			case CT_MOD_VERSION:
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+				if (temptag.IsStr())
+					{
+					m_strModVersion = temptag.GetStr();
+					m_bIsNextEMF = StrStrI(m_strModVersion,_T("NextEMF"));
+					}
+#else //Modversion
 				if (temptag.IsStr())
 					m_strModVersion = temptag.GetStr();
+#endif //Modversion
+//<==Modversion [shadow2004]
 				else if (temptag.IsInt())
 					m_strModVersion.Format(_T("ModID=%u"), temptag.GetInt());
 				else
@@ -593,7 +617,6 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	{
 		Kademlia::CKademlia::bootstrap(ntohl(GetIP()), GetKadPort());
 	}
-
 	return bIsMule;
 }
 
@@ -627,7 +650,13 @@ void CUpDownClient::SendMuleInfoPacket(bool bAnswer){
 	CSafeMemFile data(128);
 	data.WriteUInt8(theApp.m_uCurVersionShort);
 	data.WriteUInt8(EMULE_PROTOCOL);
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+	data.WriteUInt32(7+1); // nr. of tags +1 ET_MOD_VERSION
+#else //Modversion
 	data.WriteUInt32(7); // nr. of tags
+#endif //Modversion
+//<==Modversion [shadow2004]
 	CTag tag(ET_COMPRESSION,1);
 	tag.WriteTagToFile(&data);
 	CTag tag2(ET_UDPVER,4);
@@ -646,6 +675,13 @@ void CUpDownClient::SendMuleInfoPacket(bool bAnswer){
 		dwTagValue |= 128;
 	CTag tag7(ET_FEATURES, dwTagValue);
 	tag7.WriteTagToFile(&data);
+
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+	CTag tag8(ET_MOD_VERSION, theApp.m_strModVersion);
+	tag8.WriteTagToFile(&data);
+#endif //Modversion
+//<==Modversion [shadow2004]
 
 	Packet* packet = new Packet(&data,OP_EMULEPROT);
 	if (!bAnswer)
@@ -762,8 +798,18 @@ void CUpDownClient::ProcessMuleInfoPacket(const uchar* pachPacket, uint32 nSize)
 					m_strMuleInfo.AppendFormat(_T("\n  SecIdent=%u  Preview=%u"), m_bySupportSecIdent, m_fSupportsPreview);
 				break;
 			case ET_MOD_VERSION:
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+				if (temptag.IsStr())
+					{
+					m_strModVersion = temptag.GetStr();
+					m_bIsNextEMF = StrStrI(m_strModVersion,_T("NextEMF"));
+					}
+#else //Modversion
 				if (temptag.IsStr())
 					m_strModVersion = temptag.GetStr();
+#endif
+//<==Modversion [shadow2004]
 				else if (temptag.IsInt())
 					m_strModVersion.Format(_T("ModID=%u"), temptag.GetInt());
 				else
@@ -818,11 +864,16 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 
 	data->WriteUInt32(clientid);
 	data->WriteUInt16(thePrefs.GetPort());
-
 	uint32 tagcount = 6;
 
 	if( theApp.clientlist->GetBuddy() && theApp.IsFirewalled() )
 		tagcount += 2;
+
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+	tagcount += 1; //MOD_VERSION
+#endif //Modversion
+//<==Modversion [shadow2004]
 
 	data->WriteUInt32(tagcount);
 
@@ -906,6 +957,13 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 //				(RESERVED			     ) 
 				);
 	tagMuleVersion.WriteTagToFile(data);
+
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+	CTag tagMODVersion(ET_MOD_VERSION, theApp.m_strModVersion);
+	tagMODVersion.WriteTagToFile(data);
+#endif //Modversion
+//<==Modversion [shadow2004]
 
 	uint32 dwIP;
 	uint16 nPort;
@@ -1514,6 +1572,12 @@ void CUpDownClient::ReGetClientSoft()
 		if (iLen > 0){
 			memcpy(m_strClientSoftware.GetBuffer(iLen), szSoftware, iLen*sizeof(TCHAR));
 			m_strClientSoftware.ReleaseBuffer(iLen);
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+			if(!m_strModVersion.IsEmpty())
+				m_strClientSoftware.Append(_T(" [") + m_strModVersion + _T("]"));
+#endif //Modversion
+//<==Modversion [shadow2004]
 		}
 		return;
 	}
@@ -1585,6 +1649,12 @@ void CUpDownClient::ReGetClientSoft()
 		if (iLen > 0){
 			memcpy(m_strClientSoftware.GetBuffer(iLen), szSoftware, iLen*sizeof(TCHAR));
 			m_strClientSoftware.ReleaseBuffer(iLen);
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+			if(!m_strModVersion.IsEmpty())
+				m_strClientSoftware.Append(_T(" [") + m_strModVersion + _T("]"));
+#endif //Modversion
+//<==Modversion [shadow2004]
 		}
 		return;
 	}
@@ -1598,6 +1668,12 @@ void CUpDownClient::ReGetClientSoft()
 		if (iLen > 0){
 			memcpy(m_strClientSoftware.GetBuffer(iLen), szSoftware, iLen*sizeof(TCHAR));
 			m_strClientSoftware.ReleaseBuffer(iLen);
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+			if(!m_strModVersion.IsEmpty())
+				m_strClientSoftware.Append(_T(" [") + m_strModVersion + _T("]"));
+#endif //Modversion
+//<==Modversion [shadow2004]
 		}
 		return;
 	}
@@ -1611,6 +1687,12 @@ void CUpDownClient::ReGetClientSoft()
 		if (iLen > 0){
 			memcpy(m_strClientSoftware.GetBuffer(iLen), szSoftware, iLen*sizeof(TCHAR));
 			m_strClientSoftware.ReleaseBuffer(iLen);
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+			if(!m_strModVersion.IsEmpty())
+				m_strClientSoftware.Append(_T(" [") + m_strModVersion + _T("]"));
+#endif //Modversion
+//<==Modversion [shadow2004]
 		}
 		return;
 	}
@@ -1623,6 +1705,12 @@ void CUpDownClient::ReGetClientSoft()
 	if (iLen > 0){
 		memcpy(m_strClientSoftware.GetBuffer(iLen), szSoftware, iLen*sizeof(TCHAR));
 		m_strClientSoftware.ReleaseBuffer(iLen);
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+			if(!m_strModVersion.IsEmpty())
+				m_strClientSoftware.Append(_T(" [") + m_strModVersion + _T("]"));
+#endif //Modversion
+//<==Modversion [shadow2004]
 	}
 }
 

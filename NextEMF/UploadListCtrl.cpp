@@ -33,6 +33,11 @@
 #include "kademlia/kademlia/Kademlia.h"
 #include "kademlia/net/KademliaUDPListener.h"
 #include "UploadQueue.h"
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+#include "DownloadQueue.h"
+#endif //Modversion
+//<==Modversion [shadow2004]
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -75,6 +80,12 @@ void CUploadListCtrl::Init()
 	InsertColumn(5,GetResString(IDS_UPLOADTIME),LVCFMT_LEFT,60,5);
 	InsertColumn(6,GetResString(IDS_STATUS),LVCFMT_LEFT,110,6);
 	InsertColumn(7,GetResString(IDS_UPSTATUS),LVCFMT_LEFT,100,7);
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+	InsertColumn(8,GetResString(IDS_CLIENTSOFTWARE),LVCFMT_LEFT,100,8);
+#endif //Modversion
+//<==Modversion [shadow2004]
+
 
 	SetAllIcons();
 	Localize();
@@ -117,6 +128,11 @@ void CUploadListCtrl::SetAllIcons()
 	imagelist.Add(CTempIconLoader(_T("ClientLPhant")));
 	imagelist.Add(CTempIconLoader(_T("ClientLPhantPlus")));
 	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+	imagelist.Add(CTempIconLoader(_T("CLIENT_NEXTEMF")));//16
+#endif //Modversion
+//<==Modversion [shadow2004]
 }
 
 void CUploadListCtrl::Localize()
@@ -165,6 +181,14 @@ void CUploadListCtrl::Localize()
 	hdi.pszText = strRes.GetBuffer();
 	pHeaderCtrl->SetItem(7, &hdi);
 	strRes.ReleaseBuffer();
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+	strRes = GetResString(IDS_CLIENTSOFTWARE);
+	hdi.pszText = strRes.GetBuffer();
+	pHeaderCtrl->SetItem(8, &hdi);
+	strRes.ReleaseBuffer();
+#endif //Modversion
+//<==Modversion [shadow2004]
 }
 
 void CUploadListCtrl::AddClient(const CUpDownClient* client)
@@ -297,9 +321,23 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					}
 					else if (client->ExtProtocolAvailable()){
 						if(client->credits->GetScoreRatio(client->GetIP()) > 1)
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+						image = (client->IsNextEMF())?16:3;
+#else //Modversion
 							image = 3;
+#endif //Modversion
+//<==Modversion [shadow2004]
+						 // image = (client->credits->GetScoreRatio(client->GetIP()) > 1)?3:1 
 						else
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+							image = (client->IsNextEMF())?16:1;
+#else //Modversion
 							image = 1;
+#endif //Modversion
+//<==Modversion [shadow2004]
+
 					}
 					else{
 						if (client->credits->GetScoreRatio(client->GetIP()) > 1)
@@ -351,6 +389,14 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					cur_rec.bottom++;
 					cur_rec.top--;
 					break;
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+				case 8:			
+					Sbuffer = client->GetClientSoftVer();
+					break;
+
+#endif //Modversion
+//<==Modversion [shadow2004]
 			}
 			if (iColumn != 7 && iColumn != 0)
 				dc->DrawText(Sbuffer, Sbuffer.GetLength(), &cur_rec, DLC_DT_TEXT);
@@ -544,7 +590,14 @@ int CUploadListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			return item1->GetUpPartCount() - item2->GetUpPartCount();
 		case 107: 
 			return item2->GetUpPartCount() - item1->GetUpPartCount();
-
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+		case 8:
+			return item2->GetClientSoftVer().CompareNoCase(item1->GetClientSoftVer());
+		case 108:
+			return item1->GetClientSoftVer().CompareNoCase(item2->GetClientSoftVer());
+#endif //Modversion
+//<==Modversion [shadow2004]
 		default:
 			return 0;
 	}

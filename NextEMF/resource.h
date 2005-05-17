@@ -2061,6 +2061,8 @@
 #define IDC_TXT_RECEIVER                2920
 #define IDC_TXT_SENDER                  2921
 
+#define IDS_CLIENTSOFTWARE              3000
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

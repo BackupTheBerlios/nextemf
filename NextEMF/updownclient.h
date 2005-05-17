@@ -534,6 +534,12 @@ public:
 	CPeerCacheDownSocket* m_pPCDownSocket;
 	CPeerCacheUpSocket* m_pPCUpSocket;
 
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+	bool IsNextEMF() const { return m_bIsNextEMF;}
+#endif //Modversion
+//<==Modversion [shadow2004]
+
 protected:
 	int		m_iHttpSendState;
 	uint32	m_uPeerCacheDownloadPushId;
@@ -632,6 +638,12 @@ protected:
 
 	CTypedPtrList<CPtrList, Packet*> m_WaitingPackets_list;
 	CList<PartFileStamp> m_DontSwap_list;
+
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+	bool	m_bIsNextEMF;
+#endif //Modversion
+//<==Modversion [shadow2004]
 
 	////////////////////////////////////////////////////////////////////////
 	// Upload

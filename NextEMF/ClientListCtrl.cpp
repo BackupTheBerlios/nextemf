@@ -103,6 +103,11 @@ void CClientListCtrl::SetAllIcons()
 	imagelist.Add(CTempIconLoader(_T("ClientAMule")));
 	imagelist.Add(CTempIconLoader(_T("ClientLPhant")));
 	imagelist.SetOverlayImage(imagelist.Add(CTempIconLoader(_T("ClientSecureOvl"))), 1);
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+	imagelist.Add(CTempIconLoader(_T("CLIENT_NEXTEMF")));//10
+#endif //Modversion
+//<==Modversion [shadow2004]
 }
 
 void CClientListCtrl::Localize()
@@ -276,7 +281,13 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					else if (client->GetClientSoft() == SO_LPHANT)
 						image = 8;
 					else if (client->ExtProtocolAvailable())
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+						image = (client->IsNextEMF())?10:1;
+#else //Modversion
 						image = 1;
+#endif //Modversion
+//<==Modversion [shadow2004]
 					else
 						image = 0;
 
@@ -538,16 +549,44 @@ int CClientListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			    return 1;
 		    else
 			    return -1;
-
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+		case 5:
+		    if (item1->GetClientSoft() == item2->GetClientSoft())
+				if(item2->GetVersion() == item1->GetVersion() && item1->GetClientSoft() == SO_EMULE){
+					return CompareOptLocaleStringNoCase(item2->GetClientSoftVer(), item1->GetClientSoftVer());
+				}
+				else {
+			    return item2->GetVersion() - item1->GetVersion();
+				}
+			else
+				return item1->GetClientSoft() - item2->GetClientSoft();
+#else //Modversion
 		case 5:
 		    if (item1->GetClientSoft() == item2->GetClientSoft())
 			    return item2->GetVersion() - item1->GetVersion();
 		    return item1->GetClientSoft() - item2->GetClientSoft();
+#endif //Modversion
+//<==Modversion [shadow2004]
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
 	    case 105:
 		    if (item1->GetClientSoft() == item2->GetClientSoft())
+				if(item2->GetVersion() == item1->GetVersion() && item1->GetClientSoft() == SO_EMULE){
+					return CompareOptLocaleStringNoCase(item1->GetClientSoftVer(), item2->GetClientSoftVer());
+				}
+				else {
 			    return item1->GetVersion() - item2->GetVersion();
+				}
+			else
 		    return item2->GetClientSoft() - item1->GetClientSoft();
-
+#else //Modversion
+		case 105:
+			if( item1->GetClientSoft() == item2->GetClientSoft() )
+				return item1->GetVersion() - item2->GetVersion();
+		    return item2->GetClientSoft() - item1->GetClientSoft();
+#endif //Modversion
+//<==Modversion [shadow2004]
 		case 6:
 		    if (item1->socket && item2->socket)
 			    return item1->socket->IsConnected() - item2->socket->IsConnected();

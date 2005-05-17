@@ -20,6 +20,12 @@
 #endif
 #include "resource.h"
 
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+#include "ModName.h"
+#endif //Modversion
+//<==Modversion [shadow2004]
+
 #define	DEFAULT_NICK		thePrefs.GetHomepageBaseURL()
 #define	DEFAULT_TCP_PORT	4662
 #define	DEFAULT_UDP_PORT	(DEFAULT_TCP_PORT+10)
@@ -201,6 +207,25 @@ protected:
 
 	uint32 m_dwPublicIP;
 	bool m_bAutoStart;
+
+//==> WINSOCK2 [shadow2004]
+#ifdef WINSOCK2 //WINSOCK2
+protected:
+	bool	m_bWinSock2;
+public:
+	bool WinSock2() {return m_bWinSock2;}
+	WSADATA				m_wsaData;
+#endif //WINSOCK2
+//<== WINSOCK2 [shadow2004]
+
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+public:
+	CString		m_strModVersion;
+	CString		m_strModLongVersion;
+#endif //Modversion
+//<==Modversion [shadow2004]
+
 };
 
 extern CemuleApp theApp;
