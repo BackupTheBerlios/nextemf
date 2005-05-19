@@ -412,7 +412,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 				if (temptag.IsStr())
 					{
 					m_strModVersion = temptag.GetStr();
-					m_bIsNextEMF = StrStrI(m_strModVersion,_T("NextEMF"));
+					m_bIsNextEMF = StrStrI(m_strModVersion,_T("NextEMF"))!=0;//fix: Compiler Warning (level 3) C4800 [cyrex2001]
 					}
 #else //Modversion
 				if (temptag.IsStr())
@@ -815,7 +815,7 @@ void CUpDownClient::ProcessMuleInfoPacket(const uchar* pachPacket, uint32 nSize)
 				if (temptag.IsStr())
 					{
 					m_strModVersion = temptag.GetStr();
-					m_bIsNextEMF = StrStrI(m_strModVersion,_T("NextEMF"));
+					m_bIsNextEMF = StrStrI(m_strModVersion,_T("NextEMF"))!=0;//fix: Compiler Warning (level 3) C4800 [cyrex2001]
 					}
 #else //Modversion
 				if (temptag.IsStr())
