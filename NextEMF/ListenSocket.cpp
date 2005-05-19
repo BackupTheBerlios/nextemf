@@ -2261,7 +2261,13 @@ int CALLBACK AcceptConnectionCond(LPWSABUF lpCallerId, LPWSABUF lpCallerData, LP
 		if (theApp.clientlist->IsBannedClient(pSockAddr->sin_addr.S_un.S_addr)){
 			if (thePrefs.GetLogBannedClients()){
 				CUpDownClient* pClient = theApp.clientlist->FindClientByIP(pSockAddr->sin_addr.S_un.S_addr);
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+				AddLeecherLogLine(false, _T("Rejecting connection attempt of banned client %s %s"), ipstr(pSockAddr->sin_addr.S_un.S_addr), pClient->DbgGetClientInfo());
+#else //Anti-Leecher-Log
 				AddDebugLogLine(false, _T("Rejecting connection attempt of banned client %s %s"), ipstr(pSockAddr->sin_addr.S_un.S_addr), pClient->DbgGetClientInfo());
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 			}
 			_bAcceptConnectionCondRejected = true;
 			return CF_REJECT;
@@ -2388,7 +2394,13 @@ void CListenSocket::OnAccept(int nErrorCode)
 			    if (theApp.clientlist->IsBannedClient(SockAddr.sin_addr.S_un.S_addr)){
 				    if (thePrefs.GetLogBannedClients()){
 					    CUpDownClient* pClient = theApp.clientlist->FindClientByIP(SockAddr.sin_addr.S_un.S_addr);
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
 					    AddDebugLogLine(false, _T("Rejecting connection attempt of banned client %s %s"), ipstr(SockAddr.sin_addr.S_un.S_addr), pClient->DbgGetClientInfo());
+#else //Anti-Leecher-Log
+					    AddDebugLogLine(false, _T("Rejecting connection attempt of banned client %s %s"), ipstr(SockAddr.sin_addr.S_un.S_addr), pClient->DbgGetClientInfo());
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 				    }
 				    newclient->Safe_Delete();
 				    continue;

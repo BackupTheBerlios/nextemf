@@ -168,6 +168,20 @@ void AddDebugLogLine(bool bAddToStatusBar, LPCTSTR pszLine, ...)
 	va_end(argptr);	
 }
 
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+void AddLeecherLogLine(bool bAddToStatusBar, LPCTSTR pszLine, ...)
+{
+	ASSERT(pszLine != NULL);
+
+	va_list argptr;
+	va_start(argptr, pszLine);
+	AddLogTextV(LOG_LEECHER | (bAddToStatusBar ? LOG_STATUSBAR : 0), DLP_DEFAULT, pszLine, argptr);
+	va_end(argptr);	
+}
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
+
 void AddDebugLogLine(EDebugLogPriority Priority, bool bAddToStatusBar, LPCTSTR pszLine, ...)
 {
 	// loglevel needs to be merged with LOG_WARNING and LOG_ERROR later
@@ -194,8 +208,15 @@ void AddLogTextV(UINT uFlags, EDebugLogPriority dlpPriority, LPCTSTR pszLine, va
 {
 	ASSERT(pszLine != NULL);
 
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+	if (((uFlags & LOG_DEBUG) || (uFlags & LOG_LEECHER) ) && !(thePrefs.GetVerbose() && dlpPriority >= thePrefs.GetVerboseLogPriority()))
+		return;	
+#else //Anti-Leecher-Log
 	if ((uFlags & LOG_DEBUG) && !(thePrefs.GetVerbose() && dlpPriority >= thePrefs.GetVerboseLogPriority()))
 		return;	
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 
 	TCHAR szLogLine[1000];
 	if (_vsntprintf(szLogLine, ARRSIZE(szLogLine), pszLine, argptr) == -1)

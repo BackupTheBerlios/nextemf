@@ -72,6 +72,11 @@ CServerWnd::CServerWnd(CWnd* pParent /*=NULL*/)
 	servermsgbox = new CHTRichEditCtrl;
 	logbox = new CHTRichEditCtrl;
 	debuglog = new CHTRichEditCtrl;
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+	leecherlog = new CHTRichEditCtrl;
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 	m_pacServerMetURL=NULL;
 	m_uLangID = MAKELANGID(LANG_ENGLISH,SUBLANG_DEFAULT);
 	icon_srvlist = NULL;
@@ -88,6 +93,11 @@ CServerWnd::~CServerWnd()
 		m_pacServerMetURL->Unbind();
 		m_pacServerMetURL->Release();
 	}
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+	delete leecherlog;
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 	delete debuglog;
 	delete logbox;
 	delete servermsgbox;
@@ -158,6 +168,25 @@ BOOL CServerWnd::OnInitDialog()
 		debuglog->SetAutoURLDetect(FALSE);
 	}
 
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+	GetDlgItem(IDC_LEECHERLOG)->GetWindowRect(rect);
+	GetDlgItem(IDC_LEECHERLOG)->DestroyWindow();
+	::MapWindowPoints(NULL, m_hWnd, (LPPOINT)&rect, 2);
+	if (leecherlog->Create(LOG_PANE_RICHEDIT_STYLES, rect, this, IDC_LEECHERLOG)){
+		leecherlog->SetProfileSkinKey(_T("VerboseLog"));
+		leecherlog->ModifyStyleEx(0, WS_EX_STATICEDGE, SWP_FRAMECHANGED);
+		leecherlog->SendMessage(EM_SETMARGINS, EC_LEFTMARGIN | EC_RIGHTMARGIN, MAKELONG(3, 3));
+		if (theApp.m_fontLog.m_hObject)
+			leecherlog->SetFont(&theApp.m_fontLog);
+		leecherlog->ApplySkin();
+		//leecherlog->SetTitle(_T("Leecher-Messages"));
+		leecherlog->SetTitle(_T("Leecher-Meldungen"));
+		leecherlog->SetAutoURLDetect(FALSE);
+	}
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
+
 	SetAllIcons();
 	Localize();
 	serverlistctrl.Init(theApp.serverlist);
@@ -185,6 +214,17 @@ BOOL CServerWnd::OnInitDialog()
 	newitem.iImage = 0;
 	VERIFY( StatusSelector.InsertItem(StatusSelector.GetItemCount(), &newitem) == PaneVerboseLog );
 
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+	//name=_T("Leecher-Messages");
+	name=_T("Leecher-Meldungen");
+	newitem.mask = TCIF_TEXT|TCIF_IMAGE;
+	newitem.pszText = const_cast<LPTSTR>((LPCTSTR)name);
+	newitem.iImage = 0;
+	VERIFY( StatusSelector.InsertItem(StatusSelector.GetItemCount(), &newitem) == PaneLeecherLog );
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
+
 	AddAnchor(IDC_SERVLST_ICO, TOP_LEFT);
 	AddAnchor(IDC_SERVLIST_TEXT, TOP_LEFT);
 	AddAnchor(serverlistctrl, TOP_LEFT, MIDDLE_RIGHT);
@@ -210,10 +250,20 @@ BOOL CServerWnd::OnInitDialog()
 	AddAnchor(*servermsgbox, MIDDLE_LEFT, BOTTOM_RIGHT);
 	AddAnchor(*logbox, MIDDLE_LEFT, BOTTOM_RIGHT);
 	AddAnchor(*debuglog, MIDDLE_LEFT, BOTTOM_RIGHT);
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+	AddAnchor(*leecherlog, MIDDLE_LEFT, BOTTOM_RIGHT);
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 
 	debug = true;
 	ToggleDebugWindow();
 
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+	leecherlog->ShowWindow(SW_HIDE);
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 	debuglog->ShowWindow(SW_HIDE);
 	logbox->ShowWindow(SW_HIDE);
 	servermsgbox->ShowWindow(SW_SHOW);
@@ -377,6 +427,16 @@ void CServerWnd::Localize()
 	    item.mask = TCIF_TEXT;
 		item.pszText = const_cast<LPTSTR>((LPCTSTR)name);
 		StatusSelector.SetItem(PaneVerboseLog, &item);
+
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+		//name = _T("Leecher-Messages");
+		name = _T("Leecher-Meldungen");
+		item.mask = TCIF_TEXT;
+		item.pszText = const_cast<LPTSTR>((LPCTSTR)name);
+		StatusSelector.SetItem(PaneLeecherLog, &item);
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 	}
 
 	UpdateLogTabSelection();
@@ -547,6 +607,15 @@ void CServerWnd::OnBnClickedResetLog()
 	int cur_sel = StatusSelector.GetCurSel();
 	if (cur_sel == -1)
 		return;
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+	if (cur_sel == PaneLeecherLog)
+	{
+		theApp.emuledlg->ResetLeecherLog();
+		theApp.emuledlg->statusbar->SetText(_T(""), SBarLog, 0);
+	}
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 	if (cur_sel == PaneVerboseLog)
 	{
 		theApp.emuledlg->ResetDebugLog();
@@ -575,10 +644,30 @@ void CServerWnd::UpdateLogTabSelection()
 	int cur_sel = StatusSelector.GetCurSel();
 	if (cur_sel == -1)
 		return;
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+	if (cur_sel == PaneLeecherLog)
+	{
+		servermsgbox->ShowWindow(SW_HIDE);
+		logbox->ShowWindow(SW_HIDE);
+		debuglog->ShowWindow(SW_HIDE);
+		leecherlog->ShowWindow(SW_SHOW);
+		if (leecherlog->IsAutoScroll() && (StatusSelector.GetItemState(cur_sel, TCIS_HIGHLIGHTED) & TCIS_HIGHLIGHTED))
+			leecherlog->ScrollToLastLine(true);
+		leecherlog->Invalidate();
+		StatusSelector.HighlightItem(cur_sel, FALSE);
+	}
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 	if (cur_sel == PaneVerboseLog)
 	{
 		servermsgbox->ShowWindow(SW_HIDE);
 		logbox->ShowWindow(SW_HIDE);
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+		leecherlog->ShowWindow(SW_HIDE);
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 		debuglog->ShowWindow(SW_SHOW);
 		if (debuglog->IsAutoScroll() && (StatusSelector.GetItemState(cur_sel, TCIS_HIGHLIGHTED) & TCIS_HIGHLIGHTED))
 			debuglog->ScrollToLastLine(true);
@@ -589,6 +678,11 @@ void CServerWnd::UpdateLogTabSelection()
 	{
 		debuglog->ShowWindow(SW_HIDE);
 		servermsgbox->ShowWindow(SW_HIDE);
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+		leecherlog->ShowWindow(SW_HIDE);
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 		logbox->ShowWindow(SW_SHOW);
 		if (logbox->IsAutoScroll() && (StatusSelector.GetItemState(cur_sel, TCIS_HIGHLIGHTED) & TCIS_HIGHLIGHTED))
 			logbox->ScrollToLastLine(true);
@@ -599,6 +693,11 @@ void CServerWnd::UpdateLogTabSelection()
 	{
 		debuglog->ShowWindow(SW_HIDE);
 		logbox->ShowWindow(SW_HIDE);
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+		leecherlog->ShowWindow(SW_HIDE);
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 		servermsgbox->ShowWindow(SW_SHOW);
 		if (servermsgbox->IsAutoScroll() && (StatusSelector.GetItemState(cur_sel, TCIS_HIGHLIGHTED) & TCIS_HIGHLIGHTED))
 			servermsgbox->ScrollToLastLine(true);
@@ -619,18 +718,44 @@ void CServerWnd::ToggleDebugWindow()
 		newitem.pszText = const_cast<LPTSTR>((LPCTSTR)name);
 		newitem.iImage = 0;
 		StatusSelector.InsertItem(StatusSelector.GetItemCount(),&newitem);
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+		//name = _T("Leecher-Messages");
+		name = _T("Leecher-Meldungen");
+		newitem.mask = TCIF_TEXT|TCIF_IMAGE;
+		newitem.pszText = const_cast<LPTSTR>((LPCTSTR)name);
+		newitem.iImage = 0;
+		StatusSelector.InsertItem(StatusSelector.GetItemCount(),&newitem);
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 		debug = true;
 	}
 	else if (!thePrefs.GetVerbose() && debug)
 	{
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+		if (cur_sel == PaneVerboseLog || cur_sel == PaneLeecherLog)
+#else //Anti-Leecher-Log
 		if (cur_sel == PaneVerboseLog)
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 		{
 			StatusSelector.SetCurSel(PaneLog);
 			StatusSelector.SetFocus();
 		}
 		debuglog->ShowWindow(SW_HIDE);
 		servermsgbox->ShowWindow(SW_HIDE);
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+		leecherlog->ShowWindow(SW_HIDE);
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 		logbox->ShowWindow(SW_SHOW);
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+		StatusSelector.DeleteItem(PaneLeecherLog);
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 		StatusSelector.DeleteItem(PaneVerboseLog);
 		debug = false;
 	}

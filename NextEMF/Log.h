@@ -21,6 +21,12 @@ enum EDebugLogPriority{
 #define	LOG_STATUSBAR	0x20
 #define	LOG_DONTNOTIFY	0x40
 
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+#define LOG_LEECHER		0x50
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
+
 
 void Log(LPCTSTR pszLine, ...);
 void LogError(LPCTSTR pszLine, ...);
@@ -45,6 +51,12 @@ void AddDebugLogLine(bool bAddToStatusBar, LPCTSTR pszLine, ...);
 void AddDebugLogLine(EDebugLogPriority Priority, bool bAddToStatusBar, LPCTSTR pszLine, ...);
 
 void AddLogTextV(UINT uFlags, EDebugLogPriority dlpPriority, LPCTSTR pszLine, va_list argp);
+
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+void AddLeecherLogLine(bool bAddToStatusBar, LPCTSTR pszLine, ...);
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 
 
 ///////////////////////////////////////////////////////////////////////////////

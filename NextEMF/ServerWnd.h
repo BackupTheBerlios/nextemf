@@ -52,13 +52,25 @@ public:
 	{
 		PaneServerInfo	= 0, // those are CTabCtrl item indices
 		PaneLog			= 1,
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+		PaneVerboseLog	= 2,
+		PaneLeecherLog	= 3
+#else //Anti-Leecher-Log
 		PaneVerboseLog	= 2
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 	};
 
 	CServerListCtrl serverlistctrl;
 	CHTRichEditCtrl* servermsgbox;
 	CHTRichEditCtrl* logbox;
 	CHTRichEditCtrl* debuglog;
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+	CHTRichEditCtrl* leecherlog;
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 	CClosableTabCtrl StatusSelector;
 
 private:

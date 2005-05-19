@@ -863,7 +863,13 @@ void CUpDownClient::Ban(LPCTSTR pszReason)
 	theApp.clientlist->AddTrackClient(this);
 	if (!IsBanned()){
 		if (thePrefs.GetLogBannedClients())
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+			AddLeecherLogLine(false,_T("Banned: %s; %s"), pszReason==NULL ? _T("Aggressive behaviour") : pszReason, DbgGetClientInfo());
+#else //Anti-Leecher-Log
 			AddDebugLogLine(false,_T("Banned: %s; %s"), pszReason==NULL ? _T("Aggressive behaviour") : pszReason, DbgGetClientInfo());
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 	}
 #ifdef _DEBUG
 	else{

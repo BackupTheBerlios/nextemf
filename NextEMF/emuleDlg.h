@@ -80,6 +80,11 @@ public:
 	void AddServerMessageLine(LPCTSTR pszText);
 	void ResetLog();
 	void ResetDebugLog();
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+	void ResetLeecherLog();
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 	void ResetServerInfo();
 	CString GetLastLogEntry();
 	CString	GetLastDebugLogEntry();

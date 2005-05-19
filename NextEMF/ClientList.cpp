@@ -313,14 +313,26 @@ bool CClientList::AttachToAlreadyKnown(CUpDownClient** client, CClientReqSocket*
 					// if found_client is connected and has the IS_IDENTIFIED, it's safe to say that the other one is a bad guy
 					if (found_client->Credits() && found_client->Credits()->GetCurrentIdentState(found_client->GetIP()) == IS_IDENTIFIED){
 						if (thePrefs.GetLogBannedClients())
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+							AddLeecherLogLine(false, _T("Clients: %s (%s), Banreason: Userhash invalid"), tocheck->GetUserName(), ipstr(tocheck->GetConnectIP()));
+#else //Anti-Leecher-Log
 							AddDebugLogLine(false, _T("Clients: %s (%s), Banreason: Userhash invalid"), tocheck->GetUserName(), ipstr(tocheck->GetConnectIP()));
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 						tocheck->Ban();
 						return false;
 					}
 	
 					//IDS_CLIENTCOL Warning: Found matching client, to a currently connected client: %s (%s) and %s (%s)
 					if (thePrefs.GetLogBannedClients())
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+						AddLeecherLogLine(true,GetResString(IDS_CLIENTCOL), tocheck->GetUserName(), ipstr(tocheck->GetConnectIP()), found_client->GetUserName(), ipstr(found_client->GetConnectIP()));
+#else //Anti-Leecher-Log
 						AddDebugLogLine(true,GetResString(IDS_CLIENTCOL), tocheck->GetUserName(), ipstr(tocheck->GetConnectIP()), found_client->GetUserName(), ipstr(found_client->GetConnectIP()));
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 					return false;
 				}
 				found_client->socket->client = 0;
@@ -544,7 +556,13 @@ void CClientList::Process()
 	{
 		m_dwLastTrackedCleanUp = cur_tick;
 		if (thePrefs.GetLogBannedClients())
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+			AddLeecherLogLine(false, _T("Cleaning up TrackedClientList, %i clients on List..."), m_trackedClientsList.GetCount());
+#else //Anti-Leecher-Log
 			AddDebugLogLine(false, _T("Cleaning up TrackedClientList, %i clients on List..."), m_trackedClientsList.GetCount());
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 		POSITION pos = m_trackedClientsList.GetStartPosition();
 		uint32 nKey;
 		CDeletedClient* pResult;
@@ -557,7 +575,13 @@ void CClientList::Process()
 			}
 		}
 		if (thePrefs.GetLogBannedClients())
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+			AddLeecherLogLine(false, _T("...done, %i clients left on list"), m_trackedClientsList.GetCount());
+#else //Anti-Leecher-Log
 			AddDebugLogLine(false, _T("...done, %i clients left on list"), m_trackedClientsList.GetCount());
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 	}
 
 	//We need to try to connect to the clients in m_KadList

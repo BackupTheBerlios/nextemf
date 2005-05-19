@@ -443,7 +443,13 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 					if (theApp.clientlist->IsBannedClient(dwIP)){
 						if (thePrefs.GetLogBannedClients()){
 							CUpDownClient* pClient = theApp.clientlist->FindClientByIP(dwIP);
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+							AddLeecherLogLine(false, _T("Ignored callback request from banned client %s; %s"), ipstr(dwIP), pClient->DbgGetClientInfo());
+#else //Anti-Leecher-Log
 							AddDebugLogLine(false, _T("Ignored callback request from banned client %s; %s"), ipstr(dwIP), pClient->DbgGetClientInfo());
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 						}
 						break;
 					}

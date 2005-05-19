@@ -815,6 +815,15 @@ void CemuleDlg::ResetLog(){
 	serverwnd->logbox->Reset();
 }
 
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+void CemuleDlg::ResetLeecherLog()
+{
+	serverwnd->leecherlog->Reset();
+}
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
+
 void CemuleDlg::ResetDebugLog(){
 	serverwnd->debuglog->Reset();
 }
@@ -844,11 +853,24 @@ void CemuleDlg::AddLogText(UINT uFlags, LPCTSTR pszText)
 	if ((uFlags & LOG_DEBUG) && !thePrefs.GetVerbose())
 		return;
 
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+	if ((uFlags & LOG_LEECHER) && !thePrefs.GetVerbose())
+		return;
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
+
 	TCHAR temp[1060];
 	int iLen = _sntprintf(temp, ARRSIZE(temp), _T("%s: %s\r\n"), CTime::GetCurrentTime().Format(thePrefs.GetDateTimeFormat4Log()), pszText);
 	if (iLen >= 0)
 	{
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+		if (!(uFlags & LOG_DEBUG) && !(uFlags & LOG_LEECHER))
+#else //Anti-Leecher-Log
 		if (!(uFlags & LOG_DEBUG))
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 		{
 			serverwnd->logbox->AddTyped(temp, iLen, uFlags);
 			if (IsWindow(serverwnd->StatusSelector) && serverwnd->StatusSelector.GetCurSel() != CServerWnd::PaneLog)
@@ -858,7 +880,21 @@ void CemuleDlg::AddLogText(UINT uFlags, LPCTSTR pszText)
 			if (thePrefs.GetLog2Disk())
 				theLog.Log(temp, iLen);
 		}
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+		else
+		if (thePrefs.GetVerbose() && (uFlags & LOG_LEECHER) )
+		{
+			serverwnd->leecherlog->AddTyped(temp, iLen, uFlags);
+			if (IsWindow(serverwnd->StatusSelector) && serverwnd->StatusSelector.GetCurSel() != CServerWnd::PaneLeecherLog)
+				serverwnd->StatusSelector.HighlightItem(CServerWnd::PaneLeecherLog, TRUE);
 
+			if (thePrefs.GetDebug2Disk())
+				theVerboseLog.Log(temp, iLen);
+		}
+		else
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 		if (thePrefs.GetVerbose() && ((uFlags & LOG_DEBUG) || thePrefs.GetFullVerbose()))
 		{
 			serverwnd->debuglog->AddTyped(temp, iLen, uFlags);
@@ -2465,6 +2501,11 @@ void CemuleDlg::ApplyLogFont(LPLOGFONT plf)
 		thePrefs.SetLogFont(plf);
 		serverwnd->logbox->SetFont(&theApp.m_fontLog);
 		serverwnd->debuglog->SetFont(&theApp.m_fontLog);
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+		serverwnd->leecherlog->SetFont(&theApp.m_fontLog);
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 	}
 }
 

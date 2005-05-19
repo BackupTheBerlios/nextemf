@@ -145,6 +145,8 @@ BEGIN
                     200,348,82
     CONTROL         "",IDC_DEBUG_LOG,"Static",SS_BLACKFRAME | NOT WS_VISIBLE,
                     9,200,348,82
+    CONTROL         "",IDC_LEECHERLOG,"Static",SS_BLACKFRAME | NOT WS_VISIBLE,
+                    9,200,348,82
 END
 
 IDD_SEARCH DIALOGEX 0, 0, 329, 220

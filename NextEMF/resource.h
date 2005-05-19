@@ -2062,6 +2062,7 @@
 #define IDC_TXT_SENDER                  2921
 
 #define IDS_CLIENTSOFTWARE              3000
+#define IDC_LEECHERLOG                  3001
 
 // Next default values for new objects
 // 

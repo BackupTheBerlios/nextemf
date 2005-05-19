@@ -571,7 +571,13 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 		credits = pFoundCredits;
 		if (!theApp.clientlist->ComparePriorUserhash(m_dwUserIP, m_nUserPort, pFoundCredits)){
 			if (thePrefs.GetLogBannedClients())
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+				AddLeecherLogLine(false, _T("Clients: %s (%s), Banreason: Userhash changed (Found in TrackedClientsList)"), GetUserName(), ipstr(GetConnectIP()));
+#else //Anti-Leecher-Log
 				AddDebugLogLine(false, _T("Clients: %s (%s), Banreason: Userhash changed (Found in TrackedClientsList)"), GetUserName(), ipstr(GetConnectIP()));
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 			Ban();
 		}	
 	}
@@ -579,7 +585,13 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 		// userhash change ok, however two hours "waittime" before it can be used
 		credits = pFoundCredits;
 		if (thePrefs.GetLogBannedClients())
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+			AddLeecherLogLine(false, _T("Clients: %s (%s), Banreason: Userhash changed"), GetUserName(), ipstr(GetConnectIP()));
+#else //Anti-Leecher-Log
 			AddDebugLogLine(false, _T("Clients: %s (%s), Banreason: Userhash changed"), GetUserName(), ipstr(GetConnectIP()));
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 		Ban();
 	}
 
@@ -1220,7 +1232,13 @@ bool CUpDownClient::TryToConnect(bool bIgnoreMaxCon, CRuntimeClass* pClassSocket
 		if (theApp.clientlist->IsBannedClient(uClientIP))
 		{
 			if (thePrefs.GetLogBannedClients())
+//==>Anti-Leecher-Log [cyrex2001]
+#ifdef ANTI_LEECHER_LOG
+				AddLeecherLogLine(false, _T("Refused to connect to banned client %s"), DbgGetClientInfo());
+#else //Anti-Leecher-Log
 				AddDebugLogLine(false, _T("Refused to connect to banned client %s"), DbgGetClientInfo());
+#endif
+//<== Anti-Leecher-Log [cyrex2001]
 			if (Disconnected(_T("Banned IP")))
 			{
 				delete this;
