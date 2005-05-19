@@ -145,8 +145,8 @@ BEGIN
                     200,348,82
     CONTROL         "",IDC_DEBUG_LOG,"Static",SS_BLACKFRAME | NOT WS_VISIBLE,
                     9,200,348,82
-    CONTROL         "",IDC_LEECHERLOG,"Static",SS_BLACKFRAME | NOT WS_VISIBLE,
-                    9,200,348,82
+    CONTROL         "",IDC_LEECHERLOG,"Static",SS_BLACKFRAME | NOT 
+                    WS_VISIBLE,9,200,348,82
 END
 
 IDD_SEARCH DIALOGEX 0, 0, 329, 220
@@ -2286,11 +2286,6 @@ IDR_WIZ1_HEADER         GIF                     "res\\mule_wiz_hdr.gif"
 
 IDR_WIDECHARLOWERMAP    WIDECHARMAP             "res\\WideCharLowerMap.bin"
 
-/////////////////////////////////////////////////////////////////////////////
-//
-// Dialog Info
-//
-
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2352,7 +2347,7 @@ PREFERENCES.GIF         HTML                    "res\\Preferences.gif"
 
 
 /////////////////////////////////////////////////////////////////////////////
-// English (U.S.) resources
+// Englisch (USA) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 #ifdef _WIN32
@@ -2366,7 +2361,6 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 IDB_SPLASH              BITMAP                  "res\\splash.bmp"
-/////////////////////////////////////////////////////////////////////////////
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -3637,7 +3631,6 @@ BEGIN
     IDS_LONGHRS             "Hours"
     IDS_STATS_LARGESTFILE   "Largest Shared File"
     IDS_SPLIT_WINDOW        "Split Window"
-    IDS_CLIENTSOFTWARE      "Client Software"
     IDS_STATS_DSPF          "Part File"
     IDS_STATS_DATASOURCE    "Data Source"
     IDS_STATS_DSFILE        "Complete File"
@@ -3649,6 +3642,13 @@ BEGIN
     IDS_STATS_MAXAVGUL      "Max Average Upload Rate"
     IDS_STATS_MAXUL         "Max Upload Rate"
     IDS_STATS_AVGDLTIME     "Average Download Time"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_CLIENTSOFTWARE      "Client Software"
+    IDS_LEECHERLOG          "LeecherLog"
+    IDS_VERBOSE_TITLE       "Verbose"
 END
 
 STRINGTABLE 
@@ -4131,7 +4131,7 @@ BEGIN
     IDS_PW_SHOWTRANSTOOLBAR "Show additional toolbar on transferwindow"
 END
 
-#endif    // English (U.S.) resources
+#endif    // Englisch (USA) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

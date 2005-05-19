@@ -43,7 +43,7 @@ static char THIS_FILE[] = __FILE__;
 
 
 #define	SERVERMET_STRINGS_PROFILE	_T("AC_ServerMetURLs.dat")
-#define SZ_DEBUG_LOG_TITLE			_T("Verbose")
+#define SZ_DEBUG_LOG_TITLE			GetResString(IDS_VERBOSE_TITLE)//string for language [cyrex2001]
 
 // CServerWnd dialog
 
@@ -180,8 +180,7 @@ BOOL CServerWnd::OnInitDialog()
 		if (theApp.m_fontLog.m_hObject)
 			leecherlog->SetFont(&theApp.m_fontLog);
 		leecherlog->ApplySkin();
-		//leecherlog->SetTitle(_T("Leecher-Messages"));
-		leecherlog->SetTitle(_T("Leecher-Meldungen"));
+		leecherlog->SetTitle(GetResString(IDS_LEECHERLOG));
 		leecherlog->SetAutoURLDetect(FALSE);
 	}
 #endif
@@ -216,8 +215,7 @@ BOOL CServerWnd::OnInitDialog()
 
 //==>Anti-Leecher-Log [cyrex2001]
 #ifdef ANTI_LEECHER_LOG
-	//name=_T("Leecher-Messages");
-	name=_T("Leecher-Meldungen");
+	name = GetResString(IDS_LEECHERLOG);
 	newitem.mask = TCIF_TEXT|TCIF_IMAGE;
 	newitem.pszText = const_cast<LPTSTR>((LPCTSTR)name);
 	newitem.iImage = 0;
@@ -430,8 +428,7 @@ void CServerWnd::Localize()
 
 //==>Anti-Leecher-Log [cyrex2001]
 #ifdef ANTI_LEECHER_LOG
-		//name = _T("Leecher-Messages");
-		name = _T("Leecher-Meldungen");
+		name = GetResString(IDS_LEECHERLOG);
 		item.mask = TCIF_TEXT;
 		item.pszText = const_cast<LPTSTR>((LPCTSTR)name);
 		StatusSelector.SetItem(PaneLeecherLog, &item);
@@ -720,8 +717,7 @@ void CServerWnd::ToggleDebugWindow()
 		StatusSelector.InsertItem(StatusSelector.GetItemCount(),&newitem);
 //==>Anti-Leecher-Log [cyrex2001]
 #ifdef ANTI_LEECHER_LOG
-		//name = _T("Leecher-Messages");
-		name = _T("Leecher-Meldungen");
+		name = GetResString(IDS_LEECHERLOG);
 		newitem.mask = TCIF_TEXT|TCIF_IMAGE;
 		newitem.pszText = const_cast<LPTSTR>((LPCTSTR)name);
 		newitem.iImage = 0;

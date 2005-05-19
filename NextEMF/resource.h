@@ -2063,6 +2063,8 @@
 
 #define IDS_CLIENTSOFTWARE              3000
 #define IDC_LEECHERLOG                  3001
+#define IDS_LEECHERLOG                  3001
+#define IDS_VERBOSE_TITLE				3002
 
 // Next default values for new objects
 // 
