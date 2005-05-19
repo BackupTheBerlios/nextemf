@@ -14,7 +14,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// German (Germany) resources
+// Deutsch (Deutschland) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_DEU)
 #ifdef _WIN32
@@ -85,14 +85,22 @@ BEGIN
     IDS_HTTPDOWNLOAD_PERCENTAGE "Download: %s%% von %s fertig"
     IDS_HTTPDOWNLOAD_RETREIVEING_FILE "Datei wird empfangen"
     IDS_HTTPDOWNLOAD_OF     "%s von %s"
+    IDS_FILELINK            "Datei Link"
+    IDS_LD_BASICOPT         "Grundlegende Optionen"
+    IDS_LD_ADDSOURCE        "Mich selber als Quelle hinzufügen"
+    IDS_LD_EMULEHASH        "Füge eMule AICH Hash für bessere Korruptionsbehandlung hinzu"
+    IDS_LD_ADVANCEDOPT      "Erweiterte Optionen"
     IDS_CANCEL              "Abbruch"
 END
 
 STRINGTABLE 
 BEGIN
+    IDS_LD_ADDHTML          "Füge HTML-Tags hinzu"
     IDS_HTTP_CAPTION        "Aktualisiere Serverliste"
     IDS_HTTPDOWNLOAD_TIMELEFT "%s (%s kopiert)"
+    IDS_LD_ADDHASHSET       "Füge kompletten Hashset hinzu"
     IDS_HSAV                "Hashset vorhanden"
+    IDS_DL_SHOWED2KLINK     "Zeige eD2K Link..."
     IDS_FD_CORR             "Korrupt"
     IDS_HTTPDOWNLOAD_OK_TO_OVERWRITE 
                             "Die Datei '%s' existiert bereits.\nSoll sie überschrieben werden?"
@@ -435,12 +443,11 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_IRC                 "&IRC"
     IDS_SW_RESULT           "Ergebnisse"
     IDS_SW_DOWNLOAD         "Auswahl downloaden"
     IDS_SV_SERVERLIST       "Serverliste"
     IDS_SV_SERVERINFO       "Serverinfo"
-    IDS_SV_LOG              "Log"
+    IDS_SV_LOG              "Meldungen"
     IDS_SV_NEWSERVER        "Neuer Server"
     IDS_SV_ADDRESS          "IP oder Adresse"
     IDS_SV_PORT             "Port"
@@ -724,9 +731,7 @@ BEGIN
     IDS_ED2KLINKFIX         "eD2K Links"
     IDS_RECONNECT           "Automatischer Verbindungsversuch wird in %d Sekunden gestartet..."
     IDS_SERVERADDED         "Server hinzugefügt: %s"
-    IDS_IRC_IGNOREJOINMESSAGE "Ignoriere Raum-betreten-Infonachrichten (Join)"
     IDS_STATS_SUCCUPCOUNT   "Erfolgreiche Upload-Sessions: %i (%.2f%%)"
-    IDS_IRC_IGNOREPARTMESSAGE "Ignoriere Raum-verlassen-Nachrichten (Part)"
     IDS_STATS_FAILUPCOUNT   "Fehlgeschlagene Upload-Sessions: %i (%.2f%%)"
     IDS_STATS_AVEUPTIME     "Durchschnittliche Upload-Dauer: %s"
     IDS_SEARCHMINSIZE       "Min. Größe (MB)"
@@ -749,9 +754,7 @@ BEGIN
     IDS_STATS_AVGLABEL      "Durchschnittsgraphen über %i mins errechnen"
     IDS_GRAPHS              "Graphen"
     IDS_STREE               "Statistik-Baum"
-    IDS_IRC_IGNOREQUITMESSAGE "Ignoriere Chat-verlassen-Nachrichten (Quit)"
     IDS_STATSSETUPINFO      "Statistikanzeige"
-    IDS_IRC_SOUNDEVENTS     "Klänge für Ereignisse wiedergeben"
 END
 
 STRINGTABLE 
@@ -768,8 +771,6 @@ BEGIN
     IDS_MANUALSERVERHIGHPRIO 
                             "Setze manuell hinzugefügte Server auf hohe Priorität"
     IDS_VERBOSE             "Verbose (zusätzliche Programmausgaben)"
-    IDS_FLAT                "Flach"
-    IDS_ROUND               "Rund"
     IDS_SAMEUSERHASH        "Client '%s' und '%s' haben den gleichen Userhash oder IP - entferne:'%s'"
     IDS_SEARCHEXTENTION     "Dateiendung"
     IDS_SEARCHAVAIL         "Verfügbarkeit"
@@ -798,54 +799,17 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PW_CON_CAPFRM       "Kapazitäten"
-    IDS_IRC_STATUSLOG       "Status Log"
-    IDS_IRC_STATUS          "Status"
-    IDS_IRC_PRIVATECHANSTART "* Private Unterhaltung gestartet"
-    IDS_IRC_SLAPMSG         "* %s schlägt %s mit einem großen Babelfish!"
-    IDS_IRC_PRIVMESSAGE     "Private Nachricht"
-    IDS_IRC_KICK            "Kick"
-    IDS_IRC_SLAP            "Slap"
-    IDS_IRC_JOIN            "Betreten"
-    IDS_IRC_CHANNELLIST     "Raumliste"
-    IDS_IRC_CONNECT         "Verbinden"
+    IDS_SOURCEEXCHANGESWAP  "Temporärer Quellenaustausch-Swap"
+    IDS_DL_TRY_TO_GET_PREVIEW_PARTS 
+                            "Zuerst Teile für eine Vorschau downloaden"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_IRC_DISCONNECT      "Trennen"
-    IDS_IRC_HASJOINED       "* %s betrat %s"
-    IDS_IRC_HASPARTED       "* %s verließ Raum %s (%s)"
-    IDS_IRC_WASKICKEDBY     "* %s wurde gekickt von %s (%s)"
-    IDS_IRC_NICKUSED        "Dein Nickname wird bereits auf diesem IRC-Server benutzt. Wähle einen anderen Nick in den Einstellungen für das IRC!"
-    IDS_IRC_HASQUIT         "* %s hat den Chat verlassen (%s)"
-    IDS_IRC_NOWKNOWNAS      "* %s heißt jetzt %s"
-    IDS_IRC_SETSMODE        "* %s setzt mode: %s %s"
-    IDS_IRC_NOTSUPPORTED    "** Einige Modes wurden gesetzt, welche noch nicht unterstützt werden.. Es kann nötig sein, den Raum zu verlassen und erneut zu betreten um die Nick-Liste zu aktualisieren."
-    IDS_IRC_CHANNEL         "Raum"
-    IDS_IRC_NICK            "Nick"
-    IDS_IRC_SEND            "Senden"
-    IDS_IRC_NAME            "Name"
-    IDS_IRC_SLAPMSGSEND     "PRIVMSG %s :\001ACTION schlägt %s mit einem großen Babelfish!\001"
-    IDS_IRC_ADDTIMESTAMP    "Stelle Zeitstempel den Nachrichten voran"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_IRC_USEFILTER       "Benutze Raumlisten-Filter"
-    IDS_IRC_PERFORM         "Ausführen"
-    IDS_IRC_USEPERFORM      "Führe die Zeichenkette beim Verbinden aus"
-    IDS_IRC_ADDTOFRIENDLIST "Zur Freunde-Liste hinzufügen"
-    IDS_IRC_LOADCHANNELLISTONCON 
-                            "Lade beim Verbinden die Raumliste vom Server"
-    IDS_IRC_ADDASFRIEND     "Fügte dich als Freund hinzu!"
     IDS_PW_WARNING          "Die Anzahl für ""%s"" ist größer als es dein Betriebssystem unterstützt:  %d\nDies könnte das System instabil machen!\n\nWillst Du dennoch fortfahren?"
     IDS_TAKEOVER            "Ü&bernehmen"
     IDS_CLEANUP             "&Bereinigen"
     IDS_RENAME              "Umbenenne&n"
-    IDS_IRC_ADDLINKTOIRC    "In IRC-Zwischenablage kopieren"
-    IDS_IRC_SENDLINK        "Sende dies an Freunde:"
-    IDS_IRC_RECIEVEDLINK    "%s sendete (%s) um automatisch gestartet zu werden."
-    IDS_IRC_ACCEPTLINKS     "Akzeptiere eD2K-Links in IRC. (Vorsicht!)"
     IDS_SHARED              "Freigegeben"
     IDS_DOWNLOADED          "Heruntergeladen"
 END
@@ -877,7 +841,6 @@ BEGIN
     IDS_PW_MINREC           "Empfohlenes Minimum\t%i "
     IDS_PW_UA               "Limits deaktivieren"
     IDS_PW_PA               "Up/Down-Limits auf 1kB/s"
-    IDS_IRC_IGNOREINFOMESSAGE "Ignoriere Info-Nachrichten"
     IDS_CONNECTIONLOST      "Serververbindung verloren"
     IDS_WIZ_OS_FRAME        "Betriebssystem"
     IDS_WIZ_CONCURENTDOWN_FRAME 
@@ -919,7 +882,6 @@ BEGIN
     IDS_VIEWFILES           "Dateien einsehen"
     IDS_FRIENDSLOT          "Freund-Uploadplatz aufbauen"
     IDS_FRIENDDETAIL        "(Freund-Uploadplatz)"
-    IDS_ASCWOP_PROXYSUPPORT "Automatisches Serververbinden ohne Proxy"
     IDS_UDPDISABLED         "Deaktiviert"
     IDS_CTINFO              "Wähle deine Internetverbindung aus:"
     IDS_WIZ_CTFRAME         "Internetanbindung"
@@ -934,8 +896,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_STATS_MAXDL         "Max. Downloadrate: %s"
-    IDS_IRC_EMULEPROTO_IGNOREADDFRIEND 
-                            "Ignoriere eMule Protokollnachrichten für Freunde hinzufügen"
     IDS_PW_FASTSRVCON       "Sicheres / langsameres Verbinden zu Servern"
     IDS_SOURCELINKFAILED    "Eine hohe ID ist notwendig, um gültige Quellenlinks zu erstellen."
     IDS_CREATESOURCELINK    "Kopiere eD2K-Link (mit Quellen) in Zwischenablage"
@@ -1007,8 +967,6 @@ BEGIN
     IDS_MEGA                "M"
     IDS_GIGA                "G"
     IDS_TERRA               "T"
-    IDS_IRC_EMULEPROTO_IGNOREINFOMESSAGE 
-                            "Ignoriere Emule-IRC-Protokoll-Nachrichten"
     IDS_SMARTLOWIDCHECK     "Benutze Smart-LowID-Prüfung beim Verbinden"
     IDS_SF_SRVOCC           "Server Auslastung: %.2f%%"
     IDS_3DDEP               "Statusbalken Stil"
@@ -1026,10 +984,6 @@ BEGIN
     IDS_SP_ICONBAR          "Balken im Systray-Icon"
     IDS_RATINGRECV          "Datei-Bewertung für '%s' empfangen: %i"
     IDS_DESCRIPTIONRECV     "Datei-Beschreibung für '%s' empfangen: %s"
-    IDS_WEBSERVICES         "Web Dienste"
-    IDS_WEBSVEDIT           "Webdienste ändern"
-    IDS_IRC_EMULEPROTO_IGNORESENDLINK 
-                            "Ignoriere eMule Protokollnachrichten für Link-Senden"
     IDS_CHECK4UPDATE        "Auf neuere Version prüfen"
     IDS_STARTUP             "Programmstart"
     IDS_NEWVERSIONAVL       "Eine neuere Version von eMule ist verfügbar. Besuche die Projekt-Homepage um mehr Informationen zu erhalten."
@@ -1213,12 +1167,6 @@ BEGIN
     IDS_SW_REFETCHRES       "Resultate neu abfragen"
     IDS_FILEHASH            "Dateihash"
     IDS_GLOBALSEARCH2       "Globale Suche"
-    IDS_PW_PROXY            "Proxy"
-    IDS_PROXY_ENABLE        "Proxy aktivieren"
-    IDS_PROXY_TYPE          "Proxy-Typ:"
-    IDS_PROXY_HOST          "Proxy-Host:"
-    IDS_PROXY_PORT          "Proxy-Port:"
-    IDS_PROXY_AUTH          "Authentifizierung aktivieren"
     IDS_AUTH                "Authentifizierung"
     IDS_SHOWCATINFO         "Zeige Downloadinformation in den Kategorie-Reitern"
     IDS_SW_SEARCHINGINFO    "Die Suche wurde gestartet. Fragen sie die Resultate in einem Moment ab!"
@@ -1356,6 +1304,7 @@ BEGIN
     IDS_STATS_MNUTREECPYALL "Kopiere alle Statistiken"
     IDS_STATS_MNUTREEHTML   "HTML Funktionen"
     IDS_STATS_EXPORT2HTML   "Exportiere alle Statistiken"
+    IDS_CONDTCPACCEPT       "schnelle Verbindungszurückweisung"
     IDS_STATS_MNUTREECPYVIS "Kopiere alles sichtbare"
     IDS_STATS_MNUTREEEXPANDALL "Alle Knoten aufklappen"
     IDS_STATS_MNUTREECOLLAPSEALL "Alle Knoten schließen"
@@ -1416,8 +1365,6 @@ BEGIN
     IDS_SWAP_A4AF_TO_THIS   "Quelle zu dieser Datei"
     IDS_SWAP_A4AF_TO_OTHER  "Quelle zu anderer Datei"
     IDS_A4AF                "Quellen-Kontrolle"
-    IDS_MOBILEMULE          "MobileMule"
-    IDS_ENABLEMM            "MobileMule aktivieren"
     IDS_AUTOCAT_LABEL       "Autom. Kategorien-Zuweisung ( | trennt Muster)"
     IDS_SHOWEXTSETTINGS     "Zusätzliche Kontrollen anzeigen (für Fortgeschrittene)"
     IDS_TREEOPTIONS_TRUE    "Wahr"
@@ -1439,13 +1386,10 @@ BEGIN
     IDS_WRN_TEMPFILES_RESERVED 
                             "Das Temporär-Verzeichnis darf kein eMule-Installations-Verzeichnis sein."
     IDS_WRN_INCTEMP_SAME    "Eingangs- und Temporärverzeichnis dürfen nicht identisch sein."
-    IDS_MMFAILED            "MobileMule Socket konnte nicht erstellt werden!"
-    IDS_MMSTARTED           "MobileMule Server gestartet auf Port %i. Protokollversion: %s"
     IDS_SHOWDWLPERCENTAGE   "Zeige Fortschrittsprozent von Downloads im Statusbalken"
     IDS_TBN_ONNEWDOWNLOAD   "Download hinzugefügt"
     IDS_ARTIST              "Künstler"
     IDS_ALBUM               "Album"
-    IDS_MMGUIDELINK         "MobileMule Einführung"
 END
 
 STRINGTABLE 
@@ -1461,9 +1405,6 @@ BEGIN
     IDS_FD_TIMEDATE         "Zeit"
     IDS_FILEINFORMATION     "Datei Informationen"
     IDS_STATS_FREESPACE     "Freier Speicherplatz"
-    IDS_IRC_HELPCHANNEL     "Verbinde zu Hilfe-Räume."
-    IDS_IRC_HELPCHANNELPERFORM "/join #emule | /join #emule-german"
-    IDS_IRC_ACCEPTLINKSFRIENDS "...nur von Freunden."
     IDS_COMPLSOURCES        "Vollständige Quellen"
     IDS_CHECKNOENDTIME      "Keine Endzeit"
     IDS_FD_DOWNLOADSTARTED  "Download hinzugefügt:"
@@ -1547,7 +1488,6 @@ BEGIN
                             "Download und Installation der ausgewählten Sprache fehlgeschlagen (Download von:%s)!"
     IDS_ERR_BADFOLDER       "Ungültiges Verzeichnis.\nDas Verzeichnis kann nicht erstellt werden. Bitte prüfe den Namen!"
     IDS_AUTOREMOVEFD        "Beendete Downloads aus Liste entfernen"
-    IDS_MM_BLOCK            "3 fehlgeschlagene Loginversuche bei MobileMule aufgetreten - weitere Versuche werden für 10 Minuten blockiert!"
 END
 
 STRINGTABLE 
@@ -1573,7 +1513,6 @@ END
 
 STRINGTABLE 
 BEGIN
-    IDS_MM_NEWUSER          "Neuer Nutzer hat sich erfolgreich in den MobileMule-Server eingeloggt"
     IDS_RADCLIENTS          "Von verbundenen eMules"
     IDS_KADUDPPORTERR       "Kads UDP-Port steht im Konflikt mit entweder dem Ext UDP-Port oder dem Server-UDP-Port. Der Port wurde auf %u gewechselt."
     IDS_CONFIRM_FILEDELETE  "Sollen die gewählten Dateien vom Datenträger gelöscht werden?"
@@ -1634,9 +1573,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_ERR_NOTCONNECTEDKAD "Du bist derzeit nicht mit dem Kad-Netzwerk verbunden!"
-    IDS_IRC_NOSFS           "Keine freigegebenen Dateien ausgewählt"
     IDS_RESETLABEL          "Autovervollständigung (History-Funktion)"
-    IDS_IRC_IGNOREMISCMESSAGE "Ignoriere verschiedene Info-Nachrichten"
     IDS_KNOWN               "Bekannt"
     IDS_RAU_RUNNING         "eMule läuft als unpriviligierter Benutzer ""%s"""
     IDS_RAU_FAILED          "eMule konnte nicht als unpriviligierter Benutzer ""eMule_Secure"" gestartet werden. Die Rechte des gegenwärtigen Benutzers (""%S"") werden beibehalten."
@@ -1645,30 +1582,38 @@ BEGIN
     IDS_METATAGS            "Meta Tag Anzahl:"
     IDS_FILEFORMAT          "Dateiformat"
     IDS_UDPREASKS           "UDP Datei-Neuanfragen"
-END
-
-STRINGTABLE
-BEGIN
     IDS_DYNUP_PINGTOLERANCE_MS 			"Ping-Toleranz (ms)"
     IDS_DYNUP_RADIO_PINGTOLERANCE_HEADER 	"Methode der Ping-Toleranz"
     IDS_DYNUP_RADIO_PINGTOLERANCE_MS 		"Millisekunden (ms)"
     IDS_DYNUP_RADIO_PINGTOLERANCE_PERCENT 	"Prozent (%)"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_LOG_A4AF            "Logge A4AF Aktionen"
     IDS_A4AF_SAVE_CPU       "A4AF-Prüfungen deaktivieren (CPU schonen)"
     IDS_SEARCH_DOC          "Dokument"
-    IDS_DOWNLOAD_ALPHABETICAL "Download in alphabetischer Reihenfolge"
     IDS_INSTALL_SKIN        "Installiere eMule Skin"
     IDS_INSTALL_SKIN_NODIR  "Kein eMule Skin Verzeichnis ausgewählt oder Verzeichnis ist nicht zugreifbar!"
     IDS_INSTALL_SKIN_DIR_ERROR 
                             "Das Verzeichnis ""%s"" konnte nicht für das eMule Skin - %s erzeugt werden."
     IDS_INSTALL_SKIN_FILE_ERROR 
                             "Die Datei ""%s"" konnte nicht vom eMule Skin zur lokalent Datei ""%s"" entpackt werden - %s"
-    IDS_INSTALL_SKIN_PKG_ERROR "Dies ist keine gültiges eMule Skin - Paketdatei."
-    
+    IDS_INSTALL_SKIN_PKG_ERROR 
+                            "Dies ist keine gültiges eMule Skin - Paketdatei."
     IDS_NEXT_REASK          "Nächste Anfrage zu diesem Client"
     IDS_A4AF_FILES          "A4AF Datei"
-    IDS_STATS_FRATIO        "Session UL:DL Verhältnis (ohne Freundesupload):"
-    IDS_STATS_UDATA_FRIENDS "Hochgeladene Daten durch Freundesuploads (Session): %s"
+    IDS_FO_TEMPTCP_S        "Port %u (TCP) der WinXP-internen Firewall für diese eMulesitzung geöffnet"
+    IDS_FO_TEMPTCP_F        "Port %u (TCP) der WinXP-internen Firewall konnte nicht für diese eMulesitzung geöffnet werden"
+    IDS_FO_TEMPUDP_S        "Port %u (UDP) der WinXP-internen Firewall für diese eMulesitzung geöffnet"
+    IDS_FO_TEMPUDP_F        "Port %u (UDP) der WinXP-internen Firewall konnte für diese eMulesitzung nicht geöffnet werden"
+    IDS_FO_PREFBUTTON       "Öffne diese Ports an WinXP-interner Firewall"
+    IDS_FO_PREF_SUCCCEEDED  "Die gewählten Ports wurden erfolgreich an der WinXP-internen Firewall geöffnet.\nBeachte, dass Desktopfirewalls von Drittherstellern und Router von diesen Massnahmen nicht betroffen sind!"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_DOWNLOAD_ALPHABETICAL "Download in alphabetischer Reihenfolge"
 END
 
 STRINGTABLE 
@@ -1678,22 +1623,15 @@ BEGIN
     IDS_FO_PREF_STARTUP     "Ports bei der WinXP Firewall beim Starten/Beenden automatisch öffnen/schliessen"
     IDS_LOG_LEVEL           "Log Level"
     IDS_DISABLEPEERACHE     "Download von PeerCache deaktivieren"
-    IDS_FO_TEMPTCP_S        "Port %u (TCP) der WinXP-internen Firewall für diese eMulesitzung geöffnet"
-    IDS_FO_TEMPTCP_F        "Port %u (TCP) der WinXP-internen Firewall konnte nicht für diese eMulesitzung geöffnet werden"
-    IDS_FO_TEMPUDP_S        "Port %u (UDP) der WinXP-internen Firewall für diese eMulesitzung geöffnet"
-    IDS_FO_TEMPUDP_F        "Port %u (UDP) der WinXP-internen Firewall konnte für diese eMulesitzung nicht geöffnet werden"
-    IDS_FO_PREFBUTTON       "Öffne diese Ports an WinXP-interner Firewall"
-    IDS_FO_PREF_SUCCCEEDED  "Die gewählten Ports wurden erfolgreich an der WinXP-internen Firewall geöffnet.\nBeachte, dass Desktopfirewalls von Drittherstellern und Router von diesen Massnahmen nicht betroffen sind!"
-    IDS_SOURCESWAPBLOCKED   "Swap blockiert"
-    IDS_A4AF_CHECK_THIS_NOW "Jetzt diese Quelle prüfen (debug)"
-    IDS_SOURCEEXCHANGESWAP  "Temporärer Quellenaustausch-Swap"
     IDS_NEWMSG              "Neue Nachricht von '%s' (IP:%s)"
     IDS_PREF_STARTNEXTFILECATONLY "Nur aus gleicher Kategorie"
     IDS_LOG_ULDL_EVENTS     "Logge Upload/Download Ereignisse"
     IDS_PEERCACHE_ENABLED   "Dein ISP unterstützt die PeerCache Technologie. Cache Downloads aktiviert."
-    IDS_IRC_EMULEPROTO_ALLOWADDFRIEND "Erlaube dem Benutzer, dich als Freund aufzunehmen."
-    IDS_DL_TRY_TO_GET_PREVIEW_PARTS "Zuerst Teile für eine Vorschau downloaden"
-
+    IDS_SOURCESWAPBLOCKED   "Swap blockiert"
+    IDS_TRICKLING           "Wartend"
+    IDS_A4AF_CHECK_THIS_NOW "Jetzt diese Quelle prüfen (debug)"
+    IDS_STATS_FRATIO        "Session UL:DL Verhältnis (ohne Freundesupload):"
+    IDS_STATS_UDATA_FRIENDS "Hochgeladene Daten durch Freundesuploads (Session): %s"
 END
 
 STRINGTABLE 
@@ -1725,10 +1663,6 @@ BEGIN
     IDS_CHAT_UPLOADED       "Hochgeladen:"
     IDS_CHAT_IDENT          "Identifikation:"
     IDS_CHAT_CLIENT         "Client:"
-END
-
-STRINGTABLE 
-BEGIN
     IDS_MAXHALFOPENCONS     "Max. halboffene Verbindungen"
     IDS_WIZ_STARTWITHWINDOWS 
                             "Aktiviere dies, wenn eMule beim Windowsstart automatisch starten soll."
@@ -1740,6 +1674,10 @@ BEGIN
     IDS_INDEXED             "Indexiert"
     IDS_KADINFO_SRC         "\tQuelle: %u\r\n"
     IDS_KADINFO_KEYW        "\tSchlüsselwort: %u\r\n"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_STARTWITHWINDOWS    "Starte mit Windows"
     IDS_ADDSRCMANUALLY      "Quelle manuell hinzufügen"
     IDS_BUDDY               "Buddy"
@@ -1749,10 +1687,6 @@ BEGIN
     IDS_CONCOMPL            "Komplett"
     IDS_KADSTATUS_STOPPING  "Stoppe"
     IDS_KADSTATUS_ACTIVE    "Aktiv"
-END
-
-STRINGTABLE 
-BEGIN
     IDS_FORMAT              "Format"
     IDS_META_COLLECTION     "Kollektion"
     IDS_META_PARTPATH       "Tempdatei Pfad"
@@ -1760,6 +1694,10 @@ BEGIN
     IDS_META_GAPSTART       "Lückenstart"
     IDS_META_GAPEND         "Lückenende"
     IDS_FAIL                "Fehler"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_META_PREFERENCES    "Einstellungen"
     IDS_META_VERSION        "Version"
     IDS_META_TEMPFILE       "Temporäre Datei"
@@ -1770,45 +1708,30 @@ BEGIN
     IDS_META_SRCIP          "Quelle IP"
     IDS_META_SRCTYPE        "Quellentyp"
     IDS_SEARCH_UNICODE      "Suche mit Unicode"
+    IDS_PF_ADVANCEDCALC     "Nutze fortgeschrittene Methode für Restzeitbestimmung"
     IDS_PERSEC              "/s"
-END
-
-STRINGTABLE 
-BEGIN
     IDS_LD_ED2KLINK         "eD2K Link"
     IDS_LD_COPYCLIPBOARD    "In Zwischenablage kopieren"
     IDS_LD_HOSTNAME         "Benutze Hostnamen (aus den Einstellungen) anstatt der IP, wenn eD2K-Links mit Quelle erstellt werden"
     IDS_SAVEACFAILED        "AICH Hashset konnte nicht gespeichert werden!"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_IACHHASH            "AICH Hash"
     IDS_BYTESPERSEC         "B/s"
     IDS_KBYTESPERSEC        "KB/s"
     IDS_MBYTESPERSEC        "MB/s"
     IDS_GBYTESPERSEC        "GB/s"
     IDS_TBYTESPERSEC        "TB/s"
-END
-
-STRINGTABLE 
-BEGIN
     IDS_STATS_MINORCLIENTS  "Weitere"
-    IDS_LD_BASICOPT         "Grundlegende Optionen"
-    IDS_LD_ADDSOURCE        "Mich selber als Quelle hinzufügen"
-    IDS_LD_EMULEHASH        "Füge eMule AICH Hash für bessere Korruptionsbehandlung hinzu"
-    IDS_LD_ADVANCEDOPT      "Erweiterte Optionen"
-    IDS_LD_ADDHTML          "Füge HTML-Tags hinzu"
-    IDS_LD_ADDHASHSET       "Füge kompletten Hashset hinzu"
-    IDS_FILELINK            "Datei Link"
-    IDS_PF_ADVANCEDCALC     "Nutze fortgeschrittene Methode für Restzeitbestimmung"
-    IDS_DL_SHOWED2KLINK     "Zeige eD2K Link..."
     IDS_AICH_SYNCTOTAL      "%i Dateien ohne gültigen AICH Hashset gefunden - werden jetzt gehasht"
     IDS_AICH_CALCFILE       "Berechne AICH Hash für Datei %s"
     IDS_AICH_WARNUSER       "Seit Version 0.44a nutzt eMule einen weiteren Dateihash, welcher den Datenverlust bei Datenkorruption drastisch senkt. Da du von einer früheren Version aktualisiert hast, muss eMule nun alle freigegebenen Dateien berechnen. Dies kann etwas dauern, ist aber ein einmaliger Vorgang."
     IDS_AICH_WORKED         "AICH hat erfolgreich %s von %s von Teil %u der Datei %s wiederhergestellt"
-    IDS_TRICKLING           "Wartend"
     IDS_SOURCECLIENT        "Quell-Client"
     IDS_USERSIP             "Nutzers IP"
     IDS_FEATURES            "Features"
-    IDS_IRC_NEWNICK         "Wähle einen IRC Nutzernamen"
-    IDS_IRC_NEWNICKDESC     "Der Nutzername sollte nur ein Wort mit weniger als 20 Zeichen sein, mit den Zeichen (A-Z, 0-9). Der Name kann auch in den Einstellungen (->IRC) geändert werden."
 END
 
 STRINGTABLE 
@@ -1849,18 +1772,19 @@ BEGIN
     IDS_STORENOTES          "Speichere Notizen"
     IDS_NOTES               "Notizen"
     IDS_KADSEARCHALREADY    "Eine andere Suche ist noch aktiv. Versuche eine neue Suche später erneut!"
+    IDS_WEB_SHUTDOWN        "eMule beenden"
+    IDS_WEB_REBOOT          "Computer neu starten"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_WEB_SHUTDOWN        "eMule beenden"
-    IDS_WEB_REBOOT          "Computer neu starten"
     IDS_WEB_SHUTDOWNSYSTEM  "Computer herunterfahren"
     IDS_WEB_ADMINMENU       "Adminmenü"
     IDS_WEB_MAIN_CLOSE      "Soll eMule wirklich beendet werden?"
     IDS_WEB_MAIN_REBOOT     "Bist du dir sicher, dass der Rechner neu gestartet werden soll?"
     IDS_WEB_MAIN_SHUTDOWN   "Bist du dir sicher, dass der Rechner heruntergefahren werden soll?"
-    IDS_WEB_SHOW_UPLOAD_QUEUE_BANNED "Zeige gebannte Clients der Warteschlange"
+    IDS_WEB_SHOW_UPLOAD_QUEUE_BANNED 
+                            "Zeige gebannte Clients der Warteschlange"
     IDS_WEB_SHOW_UPLOAD_QUEUE_FRIEND "Zeige Freunde in der Warteschlange"
     IDS_WEB_SESSIONTIMEOUT  "Session Timeout"
     IDS_WEB_ALLOWHILEVFUNC  "Erlaube das Beenden von eMule und Computer-Neustart & -Herunterfahren"
@@ -1869,32 +1793,37 @@ BEGIN
                             "Bitte ein neues Quellenlimit für die ausgewählte(n) Datei(en) eingeben! \n(setze es auf 0 um die globale Einstellung zu nutzen)"
     IDS_UPDATECATINCOMINGDIRS 
                             "Sollen im Eingangsverzeichnis enthaltene Kategorienverzeichnisse der neuen Einstellung angepasst werden?"
-    IDS_USESPEECH           "Benachrichtigungen sprechen"
-    IDS_CONDTCPACCEPT       "schnelle Verbindungszurückweisung"
     IDS_TCPIP_CONNS         "TCP/IP Verbindungen"
-    IDS_ERR_DELFILE         "Datei konnte nicht gelöscht werden: ""%s"""
-    IDS_MANUAL_FILENAMECLEANUP "Sollen die Dateiname der ausgewählten Dateien bereinigt werden?"
+    IDS_MANUAL_FILENAMECLEANUP 
+                            "Sollen die Dateiname der ausgewählten Dateien bereinigt werden?"
 END
 
 STRINGTABLE 
 BEGIN
+    IDS_ERR_DELFILE         "Datei konnte nicht gelöscht werden: ""%s"""
     IDS_ERR_CONFIGCORRUPT   "%s scheint defekt zu sein und wird deshalb ersetzt"
     IDS_UPLOADING           "Hochladend"
     IDS_CANCELLED           "Abgebrochen"
     IDS_PW_REMEMBERDOWNLOADED "Heruntergeladene Dateien merken"
     IDS_PW_REMEMBERCANCELLED "Abgebrochene Downloads merken"
+    IDS_PW_EMAILNOTIFICATIONS "Email Benachrichtigungen"
+    IDS_PW_SMTPSERVER       "SMTP-Server:"
+    IDS_PW_SENDERADDRESS    "Senderaddresse:"
     IDS_AVAILABLEPARTS      "verfügbare Teile"
     IDS_NOSOUND             "kein Klang"
     IDS_PW_RECEIVERADDRESS  "Empfängeradresse:"
     IDS_PW_ENABLEEMAIL      "Aktiviere Emailbenachrichtigung"
     IDS_EMULENOTIFICATION   "eMule Benachrichtigung"
-    IDS_PW_EMAILNOTIFICATIONS "Email Benachrichtigungen"
-    IDS_PW_SMTPSERVER       "SMTP-Server:"
-    IDS_PW_SENDERADDRESS    "Senderaddresse:"
     IDS_PW_SHOWTRANSTOOLBAR "Zeige zusätzliche Toolbar im Transferfenster"
 END
 
-#endif    // German (Germany) resources
+STRINGTABLE 
+BEGIN
+    IDS_LEECHERLOG          "Leecher Meldungen"
+    IDS_VERBOSE_TITLE       "Ausführliche Meldungen"
+END
+
+#endif    // Deutsch (Deutschland) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

@@ -2,6 +2,7 @@
 // Microsoft Visual C++ generated include file.
 // Used by de_DE.rc
 //
+#define IDS_VERBOSE_TITLE               3002
 
 // Next default values for new objects
 // 
