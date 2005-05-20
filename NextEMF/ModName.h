@@ -22,6 +22,6 @@
 #define MOD_VERSION_MIN		4
 
 // this one is sent as the mod ID
-#define	MOD_VERSION			_T("NextEMF.alp2")	// [SLUGFILLER: -modID-]
+#define	MOD_VERSION			_T("NextEMF.alp5")	// [SLUGFILLER: -modID-]
 // this one is added to eMule name every time it is displayed
-#define	MOD_LONG_VERSION	_T("NextEMF.alp2 v")
+#define	MOD_LONG_VERSION	_T("NextEMF.alp5 v")
