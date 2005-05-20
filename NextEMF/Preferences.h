@@ -547,6 +547,15 @@ public:
 	static CString	m_strNotifierMailServer;
 	static CString	m_strNotifierMailSender;
 	static CString	m_strNotifierMailReceiver;
+////////////////////////////////////////////////////////
+////// NextEMF-Option
+//==>WiZaRd AntiLeechClass [cyrex2001]
+#ifdef ANTI_LEECH_CLASS
+	static bool	m_bAntiNickThief;
+	static bool	m_bAntiModThief;
+	static uint8	m_iClientBanTime;
+#endif //WiZaRd AntiLeechClass
+//<==WiZaRd AntiLeechClass [cyrex2001]
 
 	enum Table
 	{
@@ -574,6 +583,7 @@ public:
 	friend class CPPgSecurity;
 	friend class CPPgScheduler;
 	friend class CPPgDebug;
+	friend class CPPgNextEMF;// NextEMF-Pref [cyrex2001]
 
 	CPreferences();
 	~CPreferences();
@@ -1240,6 +1250,17 @@ public:
 	static	CString	GetNotifierMailReceiver()			{return m_strNotifierMailReceiver;}
 
 	static	void	SetNotifierSendMail(bool nv)		{m_bNotifierSendMail = nv;}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+///// NextEMF-Option
+//==>WiZaRd AntiLeechClass [cyrex2001]
+#ifdef ANTI_LEECH_CLASS
+	static bool GetAntiNickThief()						{return m_bAntiNickThief;}
+	static bool GetAntiModThief()						{return m_bAntiModThief;}
+	static void	SetClientBanTime (int in)				{m_iClientBanTime = in;}
+	static uint8	GetClientBanTime()					{return m_iClientBanTime;}
+#endif //WiZaRd AntiLeechClass
+//<==WiZaRd AntiLeechClass [cyrex2001]
 
 protected:
 	static	CString appdir;

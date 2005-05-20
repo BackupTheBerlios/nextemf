@@ -1821,6 +1821,9 @@ STRINGTABLE
 BEGIN
     IDS_LEECHERLOG          "Leecher Meldungen"
     IDS_VERBOSE_TITLE       "Ausführliche Meldungen"
+    IDS_ANTINICKTHIEF       "Clients die den User-Namen übernehmen, bannen?"
+    IDS_ANTIMODTHIEF        "Clients die Mod-Namen faken, bannen?"
+    IDS_CLIENTBANTIME       "Bann-Zeit für Clients [2-12h]"
 END
 
 #endif    // Deutsch (Deutschland) resources

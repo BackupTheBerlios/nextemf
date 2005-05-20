@@ -101,7 +101,13 @@
 #define CONNECTION_LATENCY		22050		// latency for responces
 #define MINWAIT_BEFORE_DLDISPLAY_WINDOWUPDATE   1000
 #define MINWAIT_BEFORE_ULDISPLAY_WINDOWUPDATE   1000
+//==>WiZaRd AntiLeechClass [cyrex2001]
+#ifdef ANTI_LEECH_CLASS
+#define CLIENTBANTIME			HR2MS(thePrefs.GetClientBanTime())
+#else
 #define CLIENTBANTIME			HR2MS(2)	// 2h
+#endif //WiZaRd AntiLeechClass
+//<==WiZaRd AntiLeechClass [cyrex2001]
 #define TRACKED_CLEANUP_TIME	HR2MS(1)	// 1 hour
 #define KEEPTRACK_TIME			HR2MS(2)	// 2h	//how long to keep track of clients which were once in the uploadqueue
 #define LOCALSERVERREQUESTS		20000		// only one local src request during this timespan (WHERE IS THIS USED?)

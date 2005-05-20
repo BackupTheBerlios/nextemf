@@ -1404,6 +1404,7 @@
 #define IDS_CANCELLED                   1523
 #define IDS_PW_REMEMBERDOWNLOADED       1524
 #define IDS_PW_REMEMBERCANCELLED        1525
+#define IDB_SPLASH                      1525
 #define IDS_PW_EMAILNOTIFICATIONS       1526
 #define IDS_PW_SMTPSERVER               1527
 #define IDS_PW_SENDERADDRESS            1528
@@ -1413,7 +1414,6 @@
 #define IDS_PW_ENABLEEMAIL              1532
 #define IDS_EMULENOTIFICATION           1533
 #define IDS_PW_SHOWTRANSTOOLBAR         1534
-#define IDB_SPLASH                      1525
 #define IDC_ANIMATE1                    2000
 #define IDC_STATUS                      2001
 #define IDC_FILESTATUS                  2002
@@ -2065,6 +2065,12 @@
 #define IDC_LEECHERLOG                  3001
 #define IDS_LEECHERLOG                  3001
 #define IDS_VERBOSE_TITLE				3002
+#define IDD_PPG_NEXTEMF                 3003
+#define IDC_PPG_NEXTEMF_OPTS            3003
+#define IDS_ANTINICKTHIEF               3004
+#define IDS_ANTIMODTHIEF                3005
+#define IDS_CLIENTBANTIME               3006
+#define IDS_STRING3007                  3007
 
 // Next default values for new objects
 // 

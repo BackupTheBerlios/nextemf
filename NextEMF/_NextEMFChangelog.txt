@@ -1,24 +1,23 @@
-Changes NextEMF v0.4
+Changes eMule 0.46a NextEMF v0.5
+================================
+based on eMule v0.46a
 
-- based in eMule v0.46a
-- removed IRC [shadow2004]
-- removed Text2Speech [shadow2004]
-- removed ProxySupport [shadow2004]
-- removed 3D-Bars [shadow2004]
-- removed MobilMule [shadow2004]
-- removed WebServices [shadow2004]
-+ SplashScreen by TBH, modified by Xman [shadow2004]
-+ Modversion by TPT [shadow2004]
-+ show NextEMF-Mods in all Listsby TPT [shadow2004]
-+ WinSock2.2 from eWombat [shadow2004]
-+ added Icons from christitus, Big THX
-+ added Dynamic Block Request by NetF adapted by WiZaRd, THX [shadow2004]
+removed : IRC [shadow2004]
+removed : Text2Speech [shadow2004]
+removed : ProxySupport [shadow2004]
+removed : 3D-Bars [shadow2004]
+removed : MobilMule [shadow2004]
+removed : WebServices [shadow2004]
 
+added   : SplashScreen by TBH, modified by Xman [shadow2004]
+added   : Modversion by TPT [shadow2004]
+added   : show NextEMF-Mods in all Listsby TPT [shadow2004]
+added   : WinSock2.2 from eWombat [shadow2004]
+added   : Icons from christitus, Big THX
+added   : Dynamic Block Request by NetF adapted by WiZaRd, THX [shadow2004]
+added   : LeecherLog by Xman [cyrex2001]
+added   : Pref-window for NextEMF [cyrex2001]
+added   : AntiLeecherClass by WiZaRd [cyrex2001]
+added   : ClientBanTime [2-12h] for banned clients [cyrex2001]
 
-
-//////////////////////
-//added   : LeecherLog by Xman [cyrex2001]  
-//added   : Pref-window for NextEMF [cyrex2001]  
-//added   : AntiLeecherClass by WiZaRd [cyrex2001]  
-//added   : ClientBanTime [2-12h] for banned clients [cyrex2001]
-//////////////////////
+fixed   : compiler warning (level 3) C4800 for modversion [cyrex2001] 

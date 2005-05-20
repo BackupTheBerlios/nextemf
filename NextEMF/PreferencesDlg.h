@@ -17,6 +17,7 @@
 #endif
 #include "otherfunctions.h"
 #include "TreePropSheet.h"
+#include ".\NextEMF\PPgNextEMF.h"// NextEMF-Pref [cyrex2001]
 
 class CPreferencesDlg : public CTreePropSheet
 {
@@ -41,6 +42,7 @@ public:
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	CPPgDebug		m_wndDebug;
 #endif
+	CPPgNextEMF		m_wndNextEMF;// NextEMF-Pref [cyrex2001]
 
 	void Localize();
 	void SetStartPage(UINT uStartPageID);

@@ -58,6 +58,11 @@
 #include "ClientUDPSocket.h"
 #include "shahashset.h"
 #include "Log.h"
+//==>WiZaRd AntiLeechClass [cyrex2001]
+#ifdef ANTI_LEECH_CLASS
+#include "./AntiLeech/AntiLeech.h"
+#endif //WiZaRd AntiLeechClass
+//<==WiZaRd AntiLeechClass [cyrex2001]
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -375,6 +380,11 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	uint32 tagcount = data->ReadUInt32();
 	if (bDbgInfo)
 		m_strHelloInfo.AppendFormat(_T("  Tags=%u"), tagcount);
+//==>WiZaRd AntiLeechClass [cyrex2001]
+#ifdef ANTI_LEECH_CLASS
+	bool m_bNickThief = false;
+#endif //WiZaRd AntiLeechClass
+//<==WiZaRd AntiLeechClass [cyrex2001]
 	for (uint32 i = 0;i < tagcount; i++){
 		CTag temptag(data, true);
 		switch (temptag.GetNameID()){
@@ -395,6 +405,15 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 					}
 					m_strHelloInfo.AppendFormat(_T("\n  Name='%s'"), m_pszUsername);
 				}
+//==>WiZaRd AntiLeechClass [cyrex2001]
+#ifdef ANTI_LEECH_CLASS
+				if(m_pszUsername)
+				{					
+					if(theAntiLeechClass.FindOurTagIn(m_pszUsername))
+						m_bNickThief = true; 
+				}
+#endif //WiZaRd AntiLeechClass
+//<==WiZaRd AntiLeechClass [cyrex2001]
 				break;
 			case CT_VERSION:
 				if (bDbgInfo)
@@ -629,6 +648,30 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	{
 		Kademlia::CKademlia::bootstrap(ntohl(GetIP()), GetKadPort());
 	}
+//==>WiZaRd AntiLeechClass [cyrex2001]
+#ifdef ANTI_LEECH_CLASS
+	//WiZaRd - AntiNickThief start
+	if (thePrefs.GetAntiNickThief())
+	{ 
+		if(m_bNickThief)
+		{ 
+			AddLeecherLogLine(false,_T("[%s] banned Client %s"),_T("[NickThief]"), DbgGetClientInfo());
+			Ban();
+		}
+	}
+	//WiZaRd - AntiNickThief end 
+	//WiZaRd - Anti Mod Faker Version
+	if(thePrefs.GetAntiModThief())
+	{
+		if(theAntiLeechClass.CheckForModThief(this))
+		{
+			AddLeecherLogLine(false,_T("[%s] banned Client %s"),_T("[ModThief]"), DbgGetClientInfo());
+			Ban();
+		}
+	}
+	//WiZaRd - Anti Mod Faker Version
+#endif //WiZaRd AntiLeechClass
+//<==WiZaRd AntiLeechClass [cyrex2001]
 	return bIsMule;
 }
 
@@ -850,6 +893,20 @@ void CUpDownClient::ProcessMuleInfoPacket(const uchar* pachPacket, uint32 nSize)
 
 	if (thePrefs.GetVerbose() && GetServerIP() == INADDR_NONE)
 		AddDebugLogLine(false, _T("Received invalid server IP %s from %s"), ipstr(GetServerIP()), DbgGetClientInfo());
+//==>WiZaRd AntiLeechClass [cyrex2001]
+#ifdef ANTI_LEECH_CLASS
+	//WiZaRd - Anti Mod Faker Version
+	if(thePrefs.GetAntiModThief())
+	{
+		if(theAntiLeechClass.CheckForModThief(this))
+		{
+			AddLeecherLogLine(false,_T("[%s] banned Client %s"),_T("[ModThief]"), DbgGetClientInfo());
+			Ban();
+		}
+	}
+	//WiZaRd - Anti Mod Faker Version
+#endif //WiZaRd AntiLeechClass
+//<==WiZaRd AntiLeechClass [cyrex2001]
 }
 
 void CUpDownClient::SendHelloAnswer(){
@@ -890,9 +947,15 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 	data->WriteUInt32(tagcount);
 
 	// eD2K Name
-
+//==>WiZaRd AntiLeechClass [cyrex2001]
+#ifdef ANTI_LEECH_CLASS
+	CTag tagName(CT_NAME, theAntiLeechClass.GetAntiNickThiefNick());
+#else //WiZaRd AntiLeechClass
 	// TODO implement multi language website which informs users of the effects of bad mods
 	CTag tagName(CT_NAME, (!m_bGPLEvildoer) ? thePrefs.GetUserNick() : _T("Please use a GPL-conform version of eMule") );
+#endif //WiZaRd AntiLeechClass
+//<==WiZaRd AntiLeechClass [cyrex2001]
+	// TODO implement multi language website which informs users of the effects of bad mods
 	tagName.WriteTagToFile(data, utf8strRaw);
 
 	// eD2K Version

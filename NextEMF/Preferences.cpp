@@ -454,6 +454,13 @@ CString	CPreferences::m_strNotifierMailSender;
 CString	CPreferences::m_strNotifierMailReceiver;
 
 bool	CPreferences::m_bWinaTransToolbar;
+//==>WiZaRd AntiLeechClass [cyrex2001]
+#ifdef ANTI_LEECH_CLASS
+bool	CPreferences::m_bAntiNickThief;
+bool	CPreferences::m_bAntiModThief;
+uint8	CPreferences::m_iClientBanTime;
+#endif //WiZaRd AntiLeechClass
+//<==WiZaRd AntiLeechClass [cyrex2001]
 
 CPreferences::CPreferences()
 {
@@ -2035,6 +2042,18 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("Found"), m_bPeerCacheWasFound);
 	ini.WriteBool(_T("Enabled"), m_bPeerCacheEnabled);
 	ini.WriteInt(_T("PCPort"), m_nPeerCachePort);
+
+
+	///////////////////////////////////////////////////////////////////////////
+	// Section: "NextEMF-Option"
+	//
+//==>WiZaRd AntiLeechClass [cyrex2001]
+#ifdef ANTI_LEECH_CLASS
+	ini.WriteBool(_T("AntiNickThief"),m_bAntiNickThief ,_T("NextEMF"));
+	ini.WriteBool(_T("AntiModThief"),m_bAntiModThief ,_T("NextEMF"));
+	ini.WriteInt(_T("ClientBanTime"), m_iClientBanTime,_T("NextEMF"));
+#endif //WiZaRd AntiLeechClass
+//<==WiZaRd AntiLeechClass [cyrex2001]
 }
 
 void CPreferences::ResetStatsColor(int index)
@@ -2561,6 +2580,17 @@ void CPreferences::LoadPreferences()
 	m_bPeerCacheEnabled = ini.GetBool(_T("Enabled"), true);
 	m_nPeerCachePort = ini.GetInt(_T("PCPort"), 0);
 	m_bPeerCacheShow = ini.GetBool(_T("Show"), false);
+
+	///////////////////////////////////////////////////////////////////////////
+	// Section: "NextEMF-Option"
+	//
+//==>WiZaRd AntiLeechClass [cyrex2001]
+#ifdef ANTI_LEECH_CLASS
+	m_bAntiNickThief=ini.GetBool(_T("AntiNickThief"), true, _T("NextEMF"));
+	m_bAntiModThief=ini.GetBool(_T("AntiModThief"), true, _T("NextEMF"));
+	m_iClientBanTime=ini.GetInt(_T("ClientBanTime"), 2, _T("NextEMF"));
+#endif //WiZaRd AntiLeechClass
+//<==WiZaRd AntiLeechClass [cyrex2001]
 
 	LoadCats();
 	SetLanguage();

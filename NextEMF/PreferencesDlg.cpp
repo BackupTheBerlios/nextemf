@@ -46,6 +46,7 @@ CPreferencesDlg::CPreferencesDlg()
 	m_wndTweaks.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndSecurity.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndScheduler.m_psp.dwFlags &= ~PSH_HASHELP;
+	m_wndNextEMF.m_psp.dwFlags &= ~PSH_HASHELP;// NextEMF-Pref [cyrex2001]
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	m_wndDebug.m_psp.dwFlags &= ~PSH_HASHELP;
 #endif
@@ -62,6 +63,7 @@ CPreferencesDlg::CPreferencesDlg()
 	CTreePropSheet::SetPageIcon(&m_wndScheduler, _T("SCHEDULER"));
 	CTreePropSheet::SetPageIcon(&m_wndWebServer, _T("WEB"));
 	CTreePropSheet::SetPageIcon(&m_wndTweaks, _T("TWEAK"));
+	CTreePropSheet::SetPageIcon(&m_wndNextEMF, _T("CLIENT_NEXTEMF"));// NextEMF-Pref [cyrex2001]
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	CTreePropSheet::SetPageIcon(&m_wndDebug, _T("Preferences"));
 #endif
@@ -78,6 +80,7 @@ CPreferencesDlg::CPreferencesDlg()
 	AddPage(&m_wndScheduler);
 	AddPage(&m_wndWebServer);
 	AddPage(&m_wndTweaks);
+	AddPage(&m_wndNextEMF);// NextEMF-Pref [cyrex2001]
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	AddPage(&m_wndDebug);
 #endif
@@ -139,6 +142,7 @@ void CPreferencesDlg::Localize()
 	m_wndTweaks.Localize();
 	m_wndWebServer.Localize();
 	m_wndScheduler.Localize();
+	m_wndNextEMF.Localize();// NextEMF-Pref [cyrex2001]
 
 	CTreeCtrl* pTree = GetPageTreeControl();
 	if (pTree)
@@ -155,8 +159,9 @@ void CPreferencesDlg::Localize()
 		pTree->SetItemText(GetPageTreeItem(9), RemoveAmbersand(GetResString(IDS_SCHEDULER)));
 		pTree->SetItemText(GetPageTreeItem(10), RemoveAmbersand(GetResString(IDS_PW_WS)));
 		pTree->SetItemText(GetPageTreeItem(11), RemoveAmbersand(GetResString(IDS_PW_TWEAK)));
+		pTree->SetItemText(GetPageTreeItem(12), RemoveAmbersand(_T("NextEMF")/*GetResString(IDS_NEXTEMF)*/));// NextEMF-Pref [cyrex200]
 	#if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
-		pTree->SetItemText(GetPageTreeItem(12), _T("Debug"));
+		pTree->SetItemText(GetPageTreeItem(13), _T("Debug"));// changed 12=>13 [cyrex2001]
 	#endif
 	}
 

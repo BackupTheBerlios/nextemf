@@ -2274,6 +2274,22 @@
 				RelativePath=".\SplashScreenEx.h">
 			</File>
 		</Filter>
+		<Filter
+			Name="NextEMF-Mod"
+			Filter="">
+			<File
+				RelativePath=".\AntiLeech\AntiLeech.cpp">
+			</File>
+			<File
+				RelativePath=".\AntiLeech\AntiLeech.h">
+			</File>
+			<File
+				RelativePath=".\NextEMF\PPgNextEMF.cpp">
+			</File>
+			<File
+				RelativePath=".\NextEMF\PPgNextEMF.h">
+			</File>
+		</Filter>
 	</Files>
 	<Globals>
 		<Global
