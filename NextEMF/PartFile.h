@@ -17,6 +17,11 @@
 #include "KnownFile.h"
 #include "DeadSourceList.h"
 #include "CorruptionBlackBox.h"
+//==> Dynamic Block Request by NetF [shadow2004]
+#ifdef DBR
+#include "opcodes.h"
+#endif
+//<== Dynamic Block Request by NetF [shadow2004]
 
 enum EPartFileStatus{
 	PS_READY			= 0,
@@ -162,7 +167,14 @@ public:
 	void	UpdateCompletedInfos(uint32 uTotalGaps);
 	virtual void	UpdatePartsInfo();
 
+//==> Dynamic Block Request by NetF [shadow2004]
+#ifdef DBR
+	bool	GetNextRequestedBlock(CUpDownClient* sender, Requested_Block_Struct** newblocks, uint16* count, uint32 pendingBytes);
+#else
 	bool	GetNextRequestedBlock(CUpDownClient* sender, Requested_Block_Struct** newblocks, uint16* count) /*const*/;
+#endif
+//<== Dynamic Block Request by NetF [shadow2004]
+
 	void	WritePartStatus(CSafeMemFile* file) const;
 	void	WriteCompleteSourcesCount(CSafeMemFile* file) const;
 	void	AddSources(CSafeMemFile* sources,uint32 serverip, uint16 serverport);
@@ -323,7 +335,14 @@ public:
 #endif
 
 protected:
+//==> Dynamic Block Request by NetF [shadow2004]
+#ifdef DBR
+        bool    DoBlockRequestStuff(uint32* bytesToRequest, uint32 pendingbytes, CUpDownClient* sender); 
+        bool    GetNextEmptyBlockInPart(uint16 partnumber,Requested_Block_Struct* result, uint32 bytesRequested = EMBLOCKSIZE) const;
+#else
 	bool	GetNextEmptyBlockInPart(uint16 partnumber,Requested_Block_Struct* result) const;
+#endif
+//<== Dynamic Block Request by NetF [shadow2004]
 	void	CompleteFile(bool hashingdone);
 	void	CreatePartFile();
 	void	Init();

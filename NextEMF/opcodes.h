@@ -517,3 +517,10 @@
 #define KADEMLIA_FIND_VALUE		0x02
 #define KADEMLIA_STORE			0x04
 #define KADEMLIA_FIND_NODE		0x0B
+
+//==> Dynamic Block Request by NetF [shadow2004]
+#ifdef DBR
+#define EMBLOCKSIZE        184320
+#endif
+//<== Dynamic Block Request by NetF [shadow2004]
+

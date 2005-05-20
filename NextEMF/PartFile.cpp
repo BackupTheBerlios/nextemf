@@ -1515,7 +1515,13 @@ uint32 CPartFile::GetTotalGapSizeInPart(UINT uPart) const
 	return GetTotalGapSizeInRange(uRangeStart, uRangeEnd);
 }
 
+//==> Dynamic Block Request by NetF [shadow2004]
+#ifdef DBR
+bool CPartFile::GetNextEmptyBlockInPart(uint16 partNumber, Requested_Block_Struct *result, uint32 bytesRequested) const
+#else
 bool CPartFile::GetNextEmptyBlockInPart(uint16 partNumber, Requested_Block_Struct *result) const
+#endif
+//<== Dynamic Block Request by NetF [shadow2004]
 {
 	Gap_Struct *firstGap;
 	Gap_Struct *currentGap;
@@ -1569,6 +1575,18 @@ bool CPartFile::GetNextEmptyBlockInPart(uint16 partNumber, Requested_Block_Struc
 			end = blockLimit;
 		if (end > partEnd)
 			end = partEnd;
+    
+//==> Dynamic Block Request by NetF [shadow2004]
+#ifdef DBR
+               bytesRequested -= bytesRequested % 10240; 
+               if (bytesRequested < 10240) 
+                        bytesRequested = 10240; 
+               if (bytesRequested > EMBLOCKSIZE) 
+                        bytesRequested = EMBLOCKSIZE; 
+               if(start + bytesRequested - 1 < end) 
+                        end = start + bytesRequested - 1;
+#endif
+//<== Dynamic Block Request by NetF [shadow2004]
     
 		// If this gap has not already been requested, we have found a valid entry
 		if (!IsAlreadyRequested(start, end))
@@ -4484,9 +4502,20 @@ struct Chunk {
 };
 #pragma pack()
 
+
+//==> Dynamic Block Request by NetF [shadow2004]
+#ifdef DBR
 bool CPartFile::GetNextRequestedBlock(CUpDownClient* sender, 
                                       Requested_Block_Struct** newblocks, 
-									  uint16* count) /*const*/
+                                      uint16* count, 
+                                      uint32 pendingbytes)
+#else
+bool CPartFile::GetNextRequestedBlock(CUpDownClient* sender, 
+                                      Requested_Block_Struct** newblocks, 
+									  uint16* count)
+#endif
+//<== Dynamic Block Request by NetF [shadow2004]
+
 {
 	// The purpose of this function is to return a list of blocks (~180KB) to
 	// download. To avoid a prematurely stop of the downloading, all blocks that 
@@ -4545,13 +4574,48 @@ bool CPartFile::GetNextRequestedBlock(CUpDownClient* sender,
 	const uint16 partCount = GetPartCount();
 	CList<Chunk> chunksList(partCount);
 
+//==> Dynamic Block Request by NetF [shadow2004]
+#ifdef DBR
+        uint16 requestedCount = *count;
+#endif
+//<== Dynamic Block Request by NetF [shadow2004]
+
 	// Main loop
 	uint16 newBlockCount = 0;
 	while(newBlockCount != *count){
 		// Create a request block stucture if a chunk has been previously selected
 		if(sender->m_lastPartAsked != 0xffff){
+
+//==> Dynamic Block Request by NetF [shadow2004]
+#ifdef DBR
+		            uint32 bytesToRequest = 3 * EMBLOCKSIZE; 
+                            if(!DoBlockRequestStuff(&bytesToRequest, pendingbytes, sender)) 
+                            { 
+                                   AddDebugLogLine(false, _T("PartFile::GetNextRequestedBlock - Request already large enough")); 
+                                   return false; 
+                            }
+#endif
+//<== Dynamic Block Request by NetF [shadow2004]
+
 			Requested_Block_Struct* pBlock = new Requested_Block_Struct;
-			if(GetNextEmptyBlockInPart(sender->m_lastPartAsked, pBlock) == true){
+//==> Dynamic Block Request by NetF [shadow2004]
+#ifdef DBR
+                        if(GetNextEmptyBlockInPart(sender->m_lastPartAsked, pBlock, bytesToRequest / (requestedCount - newBlockCount)))
+#else
+			if(GetNextEmptyBlockInPart(sender->m_lastPartAsked, pBlock) == true)
+#endif
+//<== Dynamic Block Request by NetF [shadow2004]
+                        {
+//==> Dynamic Block Request by NetF [shadow2004]
+#ifdef DBR
+                                 uint32 bytesRequested = pBlock->EndOffset - pBlock->StartOffset + 1; 
+                                 if (bytesToRequest >= bytesRequested) 
+                                       bytesToRequest -= bytesRequested; 
+                                 else 
+                                       bytesToRequest = 0;
+#endif
+//<== Dynamic Block Request by NetF [shadow2004]
+
 				// Keep a track of all pending requested blocks
 				requestedblocks_list.AddTail(pBlock);
 				// Update list of blocks to return
@@ -5232,3 +5296,72 @@ uint16 CPartFile::GetMaxSourcePerFileUDP() const
 		return MAX_SOURCES_FILE_UDP;
 	return temp;
 }
+
+//==> Dynamic Block Request by NetF [shadow2004]
+#ifdef DBR
+bool CPartFile::DoBlockRequestStuff(uint32* bytesToRequest, uint32 pendingbytes, CUpDownClient* sender) 
+{ 
+    uint16 part = sender->m_lastPartAsked; 
+    uint32 bytes2Request = *bytesToRequest; 
+
+//>>> inline MOD_GetRequestedSizeInPart(uint16 part) 
+    uint32 requestedSize = 0; 
+    uint32 requestedSizeFile = 0; //>>> inline MOD_GetRequestedSizeInFile 
+    // Find start of this part 
+    uint32 partStart = (PARTSIZE * part); 
+    // What is the end limit of this block, i.e. can't go outside part (or filesize) 
+    uint32 partEnd = (PARTSIZE * (part + 1)) - 1; 
+    if (partEnd >= GetFileSize()) 
+        partEnd = GetFileSize() - 1; 
+
+    for (POSITION pos =  requestedblocks_list.GetHeadPosition();pos != 0; ) 
+    { 
+        const Requested_Block_Struct* cur_block = requestedblocks_list.GetNext(pos); 
+//>>> inline MOD_GetRequestedSizeInFile 
+        requestedSizeFile += (cur_block->EndOffset - cur_block->StartOffset + 1) - cur_block->transferred; 
+//<<< inline end 
+        if ((partStart <= cur_block->StartOffset) && (partEnd >= cur_block->EndOffset)) 
+            requestedSize += (cur_block->EndOffset - cur_block->StartOffset + 1) - cur_block->transferred; 
+    } 
+    uint32 bytesToDownloadInPart = GetTotalGapSizeInPart(part) - requestedSize; 
+//<<< inline end 
+    uint32 bytesToDownloadInFile = GetTotalGapSizeInPart(part) - requestedSize; 
+
+//inline MOD_GetDownloadingSourcesInPart(sender->m_lastPartAsked, sender); 
+    uint16 downloadingSourcesInPart = 0; 
+    for(POSITION pos = m_downloadingSourceList.GetHeadPosition();pos!=0;)
+    { 
+        CUpDownClient* cur_src = m_downloadingSourceList.GetNext(pos); 
+       // if (cur_src && cur_src->IsUploading() 
+		if (cur_src && (cur_src->GetUploadState() == US_UPLOADING) 
+            //&& cur_src != sender 
+            && cur_src->m_lastPartAsked == part) 
+            downloadingSourcesInPart++; 
+    } 
+    ASSERT(downloadingSourcesInPart > 0); //at least the current src! 
+    if(downloadingSourcesInPart > 0) 
+        downloadingSourcesInPart -= 1; 
+//<<< inline end 
+
+    uint32 sourceDatarate = sender->GetDownloadDatarate(); 
+    uint32 fileDatarate = GetDatarate(); 
+    float rateFactor = 1.0; 
+    if (fileDatarate > 0) 
+        rateFactor = (float) sourceDatarate / (float) fileDatarate; 
+    bytes2Request = min(bytes2Request, bytesToDownloadInFile * rateFactor / 2); 
+    bytes2Request = min(bytes2Request, sourceDatarate * 60); 
+    bytes2Request = min(bytes2Request, bytesToDownloadInPart / (downloadingSourcesInPart + 2)); 
+    if (sourceDatarate < 1024 || bytes2Request < 10240) 
+        bytes2Request = 10240; 
+    if (bytes2Request <= pendingbytes) 
+    { 
+        *bytesToRequest = bytes2Request; 
+        return false; 
+    } 
+
+    bytes2Request -= pendingbytes; 
+    *bytesToRequest = bytes2Request; 
+    return true; 
+}
+#endif
+//<== Dynamic Block Request by NetF [shadow2004]

@@ -12,3 +12,13 @@ Changes NextEMF v0.4
 + show NextEMF-Mods in all Listsby TPT [shadow2004]
 + WinSock2.2 from eWombat [shadow2004]
 + added Icons from christitus, Big THX
++ added Dynamic Block Request by NetF adapted by WiZaRd, THX [shadow2004]
+
+
+
+//////////////////////
+//added   : LeecherLog by Xman [cyrex2001]  
+//added   : Pref-window for NextEMF [cyrex2001]  
+//added   : AntiLeecherClass by WiZaRd [cyrex2001]  
+//added   : ClientBanTime [2-12h] for banned clients [cyrex2001]
+//////////////////////
