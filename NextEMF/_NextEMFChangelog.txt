@@ -1,5 +1,5 @@
-Changes eMule 0.46a NextEMF v0.5
-================================
+Changes eMule 0.46a NextEMF v0.4
+=<| Alpha 5 |>==================
 based on eMule v0.46a
 
 removed : IRC [shadow2004]

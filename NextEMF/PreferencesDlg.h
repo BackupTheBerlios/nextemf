@@ -39,10 +39,10 @@ public:
 	CPPgSecurity	m_wndSecurity;
 	CPPgWebServer	m_wndWebServer;
 	CPPgScheduler	m_wndScheduler;
+	CPPgNextEMF		m_wndNextEMF;// NextEMF-Pref [cyrex2001]
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	CPPgDebug		m_wndDebug;
 #endif
-	CPPgNextEMF		m_wndNextEMF;// NextEMF-Pref [cyrex2001]
 
 	void Localize();
 	void SetStartPage(UINT uStartPageID);
