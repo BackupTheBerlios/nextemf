@@ -20,4 +20,5 @@ added   : Pref-window for NextEMF [cyrex2001]
 added   : AntiLeecherClass by WiZaRd [cyrex2001]
 added   : ClientBanTime [2-12h] for banned clients [cyrex2001]
 
-fixed   : compiler warning (level 3) C4800 for modversion [cyrex2001] 
+fixed   : compiler warning (level 3) C4800 for modversion [cyrex2001]
+fixed   : Dynamic Block Request [shadow2004]

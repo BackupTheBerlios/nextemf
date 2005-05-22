@@ -20,6 +20,14 @@
 //==> Dynamic Block Request by NetF [shadow2004]
 #ifdef DBR
 #include "opcodes.h"
+
+struct Chunk {
+	uint16 part;			// Index of the chunk
+	union {
+		uint16 frequency;	// Availability of the chunk
+		uint16 rank;		// Download priority factor (highest = 0, lowest = 0xffff)
+	};
+};
 #endif
 //<== Dynamic Block Request by NetF [shadow2004]
 
@@ -337,8 +345,11 @@ public:
 protected:
 //==> Dynamic Block Request by NetF [shadow2004]
 #ifdef DBR
-        bool    DoBlockRequestStuff(uint32* bytesToRequest, uint32 pendingbytes, CUpDownClient* sender); 
-        bool    GetNextEmptyBlockInPart(uint16 partnumber,Requested_Block_Struct* result, uint32 bytesRequested = EMBLOCKSIZE) const;
+	bool	GetNextEmptyBlockInPart(uint16 partNumber, Requested_Block_Struct *result, uint32 bytesRequested); /*const*/
+	uint32	MOD_GetRequestedSizeInPart(uint16 part) const;
+	uint32	MOD_GetRequestedSizeInFile() const;
+	uint16	MOD_GetDownloadingSourcesInPart(uint16 part, CUpDownClient* exclude_src) const;
+	bool	MOD_FindNextPart(CUpDownClient* sender);
 #else
 	bool	GetNextEmptyBlockInPart(uint16 partnumber,Requested_Block_Struct* result) const;
 #endif
