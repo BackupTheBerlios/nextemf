@@ -40,6 +40,11 @@
 #include "SHAHashSet.h"
 #include "SharedFileList.h"
 #include "Log.h"
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+#include "NextEMF/NextEMF.h"
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -642,7 +647,14 @@ void CUpDownClient::ClearDownloadBlockRequests()
 	m_PendingBlocks_list.RemoveAll();
 }
 
-void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason){
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+void CUpDownClient::SetDownloadState(EDownloadState nNewState, EReason nReason)
+#else
+void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason)
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
+{
 	if (m_nDownloadState != nNewState){
 		switch( nNewState )
 		{
@@ -687,6 +699,8 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason
 			if(socket)
 				socket->SetTimeOut(CONNECTION_TIMEOUT);
 
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifndef FSSTATS
 			if (thePrefs.GetLogUlDlEvents()) {
 				switch( nNewState )
 				{
@@ -696,14 +710,78 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason
 
 				AddDebugLogLine(DLP_VERYLOW, false, _T("Download session ended. User: %s in SetDownloadState(). New State: %i, Length: %s, Transferred: %s. Reason: %s"), DbgGetClientInfo(), nNewState, CastSecondsToHM(GetDownTimeDifference(false)/1000), CastItoXBytes(GetSessionDown(), false, false), pszReason);
 			}
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 
 			ResetSessionDown();
 
 			// -khaos--+++> Extended Statistics (Successful/Failed Download Sessions)
 			if ( m_bTransferredDownMini && nNewState != DS_ERROR )
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+			{
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 				thePrefs.Add2DownSuccessfulSessions(); // Increment our counters for successful sessions (Cumulative AND Session)
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+				switch(nReason)
+				{
+				case REASON_NoNeededParts:
+					theStats.m_iSessionSuccessfulDownloadNNP++;
+					break;
+				case REASON_Limit:
+					theStats.m_iSessionSuccessfulDownloadLimit++;
+					break;
+				case REASON_Timeout:
+					theStats.m_iSessionSuccessfulDownloadTimeout++;
+					break;
+				case REASON_Disconnect:
+					theStats.m_iSessionSuccessfulDownloadDisconnect++;
+					break;
+				case REASON_Dropped:
+					theStats.m_iSessionSuccessfulDownloadDropped++;
+					break;
+				default:
+					theStats.m_iSessionSuccessfulDownloadOther++;
+					break;
+				}
+			}
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 			else
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+			{
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 				thePrefs.Add2DownFailedSessions(); // Increment our counters failed sessions (Cumulative AND Session)
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+				switch(nReason)
+				{
+				case REASON_NoNeededParts:
+					theStats.m_iSessionFailedDownloadNNP++;
+					break;
+				case REASON_Limit:
+					theStats.m_iSessionFailedDownloadLimit++;
+					break;
+				case REASON_Timeout:
+					theStats.m_iSessionFailedDownloadTimeout++;
+					break;
+				case REASON_Disconnect:
+					theStats.m_iSessionFailedDownloadDisconnect++;
+					break;
+				case REASON_Dropped:
+					theStats.m_iSessionFailedDownloadDropped++;
+					break;
+				default:
+					theStats.m_iSessionFailedDownloadOther++;
+					break;
+				}
+			}
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 			thePrefs.Add2DownSAvgTime(GetDownTimeDifference()/1000);
 			// <-----khaos-
 
@@ -810,7 +888,13 @@ void CUpDownClient::SendBlockRequests()
 	CreateBlockRequests(3);
 	if (m_PendingBlocks_list.IsEmpty()){
 		SendCancelTransfer();
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+			SetDownloadState(DS_NONEEDEDPARTS, REASON_NoNeededParts);
+#else
 		SetDownloadState(DS_NONEEDEDPARTS);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 		return;
 	}
 	const int iPacketSize = 16+(3*4)+(3*4); // 40
@@ -1254,7 +1338,13 @@ void CUpDownClient::CheckDownloadTimeout()
 				if (!socket->IsRawDataMode())
 					SendCancelTransfer();
 			}
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+			SetDownloadState(DS_ONQUEUE, REASON_Timeout);
+#else
 			SetDownloadState(DS_ONQUEUE, _T("Timeout. More than 100 seconds since last complete block was received."));
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 		}
 	}
 }
@@ -1802,7 +1892,13 @@ bool CUpDownClient::DoSwap(CPartFile* SwapTo, bool bRemoveCompletely, LPCTSTR re
         m_fileReaskTimes.RemoveKey(reqfile);
     }
 
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+	SetDownloadState(DS_NONE, REASON_NoNeededParts);
+#else
 	SetDownloadState(DS_NONE);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 	CPartFile* pOldRequestFile = reqfile;
 	SetRequestFile(SwapTo);	
 	pOldRequestFile->UpdatePartsInfo();

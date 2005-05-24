@@ -95,6 +95,33 @@ DWORD	CStatistics::transferStarttime;
 DWORD	CStatistics::serverConnectTime;
 uint32	CStatistics::filteredclients;
 DWORD	CStatistics::starttime;
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+uint32	CStatistics::m_iSessionSuccessfulDownloadNNP;
+uint32	CStatistics::m_iSessionSuccessfulDownloadLimit;
+uint32	CStatistics::m_iSessionSuccessfulDownloadTimeout;
+uint32	CStatistics::m_iSessionSuccessfulDownloadDisconnect;
+uint32	CStatistics::m_iSessionSuccessfulDownloadDropped;
+uint32	CStatistics::m_iSessionSuccessfulDownloadOther;
+uint32	CStatistics::m_iSessionFailedDownloadNNP;
+uint32	CStatistics::m_iSessionFailedDownloadLimit;
+uint32	CStatistics::m_iSessionFailedDownloadTimeout;
+uint32	CStatistics::m_iSessionFailedDownloadDisconnect;
+uint32	CStatistics::m_iSessionFailedDownloadDropped;
+uint32	CStatistics::m_iSessionFailedDownloadOther;
+uint32	CStatistics::m_iSessionSuccessfulUploadCancel;
+uint32	CStatistics::m_iSessionSuccessfulUploadTimeout;
+uint32	CStatistics::m_iSessionSuccessfulUploadDisconnect;
+uint32	CStatistics::m_iSessionSuccessfulUploadLimit;
+uint32	CStatistics::m_iSessionSuccessfulUploadOther;
+uint32	CStatistics::m_iSessionFailedUploadCancel;
+uint32	CStatistics::m_iSessionFailedUploadTimeout;
+uint32	CStatistics::m_iSessionFailedUploadDisconnect;
+uint32	CStatistics::m_iSessionFailedUploadLimit;
+uint32	CStatistics::m_iSessionFailedUploadOther;
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
+
 
 
 CStatistics::CStatistics()
@@ -160,6 +187,32 @@ CStatistics::CStatistics()
 	m_nUpDataOverheadOther = 0;
 	m_nUpDataOverheadOtherPackets = 0;
 	m_sumavgUDRO = 0;
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+	m_iSessionSuccessfulDownloadNNP = 0;
+	m_iSessionSuccessfulDownloadLimit = 0;
+	m_iSessionSuccessfulDownloadTimeout = 0;
+	m_iSessionSuccessfulDownloadDisconnect = 0;
+	m_iSessionSuccessfulDownloadDropped = 0;
+	m_iSessionSuccessfulDownloadOther = 0;
+	m_iSessionFailedDownloadNNP = 0;
+	m_iSessionFailedDownloadLimit = 0;
+	m_iSessionFailedDownloadTimeout = 0;
+	m_iSessionFailedDownloadDisconnect = 0;
+	m_iSessionFailedDownloadDropped = 0;
+	m_iSessionFailedDownloadOther = 0;
+	m_iSessionSuccessfulUploadCancel = 0;
+	m_iSessionSuccessfulUploadTimeout = 0;
+	m_iSessionSuccessfulUploadDisconnect = 0;
+	m_iSessionSuccessfulUploadLimit = 0;
+	m_iSessionSuccessfulUploadOther = 0;
+	m_iSessionFailedUploadCancel = 0;
+	m_iSessionFailedUploadTimeout = 0;
+	m_iSessionFailedUploadDisconnect = 0;
+	m_iSessionFailedUploadLimit = 0;
+	m_iSessionFailedUploadOther = 0;
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 }
 
 void CStatistics::Init()

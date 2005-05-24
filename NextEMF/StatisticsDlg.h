@@ -70,6 +70,14 @@ private:
 	HTREEITEM	hdown_tcb, down_tcb[8], hdown_tpb, down_tpb[3]; // Total Downloaded Byte Breakdowns
 	HTREEITEM	hdown_soh, down_soh[4], hdown_toh, down_toh[4]; // Downline Overhead
 	HTREEITEM	down_ssessions[4], down_tsessions[4], down_sources[22]; // Breakdown of Download Sessions and Sources
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+	HTREEITEM	down_ssessions_succ[7]; // Breakdown of Download Successful Sessions
+	HTREEITEM	down_ssessions_fail[6]; // Breakdown of Download Failed Sessions
+	HTREEITEM	up_ssessions_succ[6]; // Breakdown of Upload Successful Sessions
+	HTREEITEM	up_ssessions_fail[5]; // Breakdown of Upload Failed Sessions
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 	HTREEITEM	h_connection, h_conn_session, h_conn_total; // Connection Section Headers
 	HTREEITEM	hconn_sg, conn_sg[5], hconn_su, conn_su[4], hconn_sd, conn_sd[4]; // Connection Session Section Headers and Items
 	HTREEITEM	hconn_tg, conn_tg[4], hconn_tu, conn_tu[3], hconn_td, conn_td[3]; // Connection Total Section Headers and Items

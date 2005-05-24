@@ -16,6 +16,12 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
 #include "EMSocket.h"
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+#include "NextEMF/NextEMF.h"
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
+
 
 class CUpDownClient;
 class CPacket;
@@ -38,7 +44,13 @@ public:
 	CClientReqSocket(CUpDownClient* in_client = NULL);
 
 	void	SetClient(CUpDownClient* pClient);
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+	void	Disconnect(LPCTSTR pszReason, EReason nReason = REASON_Other);
+#else
 	void	Disconnect(LPCTSTR pszReason);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 	void	WaitForOnConnect();
 	void	ResetTimeOutTimer();
 	bool	CheckTimeOut();

@@ -582,7 +582,13 @@ bool CUpDownClient::SendHttpBlockRequests()
 			ASSERT( m_pPCDownSocket == NULL );
 			SetPeerCacheDownState(PCDS_NONE);
 		}
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+		SetDownloadState(DS_NONEEDEDPARTS, REASON_NoNeededParts);
+#else
 		SetDownloadState(DS_NONEEDEDPARTS);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 		return false;
 	}
 

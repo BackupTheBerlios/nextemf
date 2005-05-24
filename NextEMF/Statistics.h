@@ -142,6 +142,33 @@ public:
 	static uint32	filteredclients;
 	static DWORD	starttime;
 
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+	static uint32	m_iSessionSuccessfulDownloadNNP;
+	static uint32	m_iSessionSuccessfulDownloadLimit;
+	static uint32	m_iSessionSuccessfulDownloadTimeout;
+	static uint32	m_iSessionSuccessfulDownloadDisconnect;
+	static uint32	m_iSessionSuccessfulDownloadDropped;
+	static uint32	m_iSessionSuccessfulDownloadOther;
+	static uint32	m_iSessionFailedDownloadNNP;
+	static uint32	m_iSessionFailedDownloadLimit;
+	static uint32	m_iSessionFailedDownloadTimeout;
+	static uint32	m_iSessionFailedDownloadDisconnect;
+	static uint32	m_iSessionFailedDownloadDropped;
+	static uint32	m_iSessionFailedDownloadOther;
+	static uint32	m_iSessionSuccessfulUploadCancel;
+	static uint32	m_iSessionSuccessfulUploadTimeout;
+	static uint32	m_iSessionSuccessfulUploadDisconnect;
+	static uint32	m_iSessionSuccessfulUploadLimit;
+	static uint32	m_iSessionSuccessfulUploadOther;
+	static uint32	m_iSessionFailedUploadCancel;
+	static uint32	m_iSessionFailedUploadTimeout;
+	static uint32	m_iSessionFailedUploadDisconnect;
+	static uint32	m_iSessionFailedUploadLimit;
+	static uint32	m_iSessionFailedUploadOther;
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
+
 private:
 	typedef struct TransferredData {
 		uint32	datalen;

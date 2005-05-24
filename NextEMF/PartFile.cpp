@@ -2985,6 +2985,20 @@ void CPartFile::CompleteFile(bool bIsHashingDone)
 		return;
 	}
 	else{
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+		for (POSITION pos = m_downloadingSourceList.GetHeadPosition(); pos != 0;)
+		{
+			CUpDownClient* pClient = m_downloadingSourceList.GetNext(pos);
+			if (pClient && pClient->socket && pClient->GetDownloadState() == DS_DOWNLOADING)
+			{
+				// TODO: Inform source that it can send us as a source via source exchange 
+				pClient->SendCancelTransfer(); // Should it be OP_CANCELTRANSFER or OP_END_OF_DOWNLOAD, or maybe both?
+				pClient->SetDownloadState(DS_NONEEDEDPARTS, REASON_NoNeededParts);
+			}
+		}
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 		StopFile();
 		SetStatus(PS_COMPLETING);
 		m_is_A4AF_auto=false;
@@ -3561,7 +3575,13 @@ void CPartFile::PauseFile(bool bInsufficient, bool resort)
 		if (cur_src->GetDownloadState() == DS_DOWNLOADING)
 		{
 			cur_src->SendCancelTransfer(packet);
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+			cur_src->SetDownloadState(DS_ONQUEUE, REASON_Cancel);
+#else
 			cur_src->SetDownloadState(DS_ONQUEUE, _T("You cancelled the download. Sending OP_CANCELTRANSFER"));
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 		}
 	}
 	delete packet;

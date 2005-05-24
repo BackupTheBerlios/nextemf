@@ -671,7 +671,14 @@ float CUploadQueue::GetAverageCombinedFilePrioAndCredit() {
     return m_fAverageCombinedFilePrioAndCredit;
 }
 
-bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReason, bool updatewindow, bool earlyabort){
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReason, bool updatewindow, bool earlyabort, EReason nReason)
+#else
+bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReason, bool updatewindow, bool earlyabort)
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
+{
     bool result = false;
     uint32 slotCounter = 1;
 	for (POSITION pos = uploadinglist.GetHeadPosition();pos != 0;){
@@ -705,7 +712,13 @@ bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReaso
                 requestedFile->UpdatePartsInfo();
             }
 			theApp.clientlist->AddTrackClient(client); // Keep track of this client
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+			client->SetUploadState(US_NONE, nReason);
+#else
 			client->SetUploadState(US_NONE);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 			client->ClearUploadBlockRequests();
 
             m_iHighestNumberOfFullyActivatedSlotsSinceLastCall = 0;

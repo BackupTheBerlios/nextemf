@@ -16,6 +16,11 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
 #include "BarShader.h"
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+#include "NextEMF/NextEMF.h"
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 
 class CClientReqSocket;
 class CPeerCacheDownSocket;
@@ -182,7 +187,13 @@ public:
 	virtual void	CheckDownloadTimeout();
 	virtual void	SendCancelTransfer(Packet* packet = NULL);
 	virtual bool	IsEd2kClient() const							{ return true; }
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+	virtual bool	Disconnected(LPCTSTR pszReason, bool bFromSocket = false, EReason nReason = REASON_Other);
+#else
 	virtual bool	Disconnected(LPCTSTR pszReason, bool bFromSocket = false);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 	virtual bool	TryToConnect(bool bIgnoreMaxCon = false, CRuntimeClass* pClassSocket = NULL);
 	virtual bool	Connect();
 	virtual void	ConnectionEstablished();
@@ -300,7 +311,13 @@ public:
 	void			CheckForGPLEvilDoer();
 	//upload
 	EUploadState	GetUploadState() const							{ return (EUploadState)m_nUploadState; }
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+	void			SetUploadState(EUploadState news, EReason nReason = REASON_None); // netfinity: Detailed failed uploads stat)
+#else
 	void			SetUploadState(EUploadState news);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 	uint32			GetWaitStartTime() const;
 	void 			SetWaitStartTime();
 	void 			ClearWaitStartTime();
@@ -358,7 +375,13 @@ public:
 	void			AddAskedCountDown()								{ m_cDownAsked++; }
 	void			SetAskedCountDown(uint32 m_cInDownAsked)		{ m_cDownAsked = m_cInDownAsked; }
 	EDownloadState	GetDownloadState() const						{ return (EDownloadState)m_nDownloadState; }
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+        void			SetDownloadState(EDownloadState nNewState, EReason nReason = REASON_Other); // netfinity: Detailed failed downloads stat
+#else
 	void			SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason = _T("Unspecified"));
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 	uint32			GetLastAskedTime(const CPartFile* partFile = NULL) const;
     void            SetLastAskedTime()								{ m_fileReaskTimes.SetAt(reqfile, ::GetTickCount()); }
 	bool			IsPartAvailable(uint16 iPart) const {

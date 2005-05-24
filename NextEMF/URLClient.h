@@ -37,7 +37,13 @@ public:
 	virtual bool TryToConnect(bool bIgnoreMaxCon, CRuntimeClass* pClassSocket = NULL);
 	virtual bool Connect();
 	virtual void OnSocketConnected(int nErrorCode);
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+	virtual bool Disconnected(LPCTSTR pszReason, bool bFromSocket = false, EReason nReason = REASON_Other);
+#else
 	virtual bool Disconnected(LPCTSTR pszReason, bool bFromSocket = false);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 
 	virtual bool SendHelloPacket();
 	virtual void SendBlockRequests();

@@ -160,7 +160,13 @@ bool CClientReqSocket::CheckTimeOut()
 			timeout_timer = ::GetTickCount();
 			CString str;
 			str.Format(_T("Timeout: State:%u"), m_nOnConnect);
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+			Disconnect(str, REASON_Timeout);
+#else
 			Disconnect(str);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 			return true;
 		}
 		return false;
@@ -190,7 +196,13 @@ bool CClientReqSocket::CheckTimeOut()
 		timeout_timer = ::GetTickCount();
 		CString str;
 		str.Format(_T("Timeout: State:%u"), m_nOnConnect);
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+		Disconnect(str, REASON_Timeout);
+#else
 		Disconnect(str);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 		return true;
 	}
 	return false;
@@ -211,17 +223,37 @@ void CClientReqSocket::OnClose(int nErrorCode){
 	}
 	else
 		pszReason = NULL;
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+	Disconnect(pszReason, REASON_Disconnect);
+#else
 	Disconnect(pszReason);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 	delete pstrReason;
 }
 
-void CClientReqSocket::Disconnect(LPCTSTR pszReason){
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+void CClientReqSocket::Disconnect(LPCTSTR pszReason, EReason nReason)
+#else
+void CClientReqSocket::Disconnect(LPCTSTR pszReason)
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
+{
 	AsyncSelect(0);
 	byConnected = ES_DISCONNECTED;
 	if (!client)
 		Safe_Delete();
 	else
-		if(client->Disconnected(pszReason, true)){
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+		if(client->Disconnected(pszReason, true, nReason))
+#else
+		if(client->Disconnected(pszReason, true))
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
+                {
 			CUpDownClient* temp = client;
 			client->socket = NULL;
 			client = NULL;
@@ -490,6 +522,12 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
                                 client->DontSwapTo(client->GetRequestFile()); // ZZ:DownloadManager
                                 if (!client->SwapToAnotherFile(_T("Source says it doesn't have the file. CClientReqSocket::ProcessPacket()"), true, true, true, NULL, false, false)) { // ZZ:DownloadManager
     								theApp.downloadqueue->RemoveSource(client);
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+								client->SetDownloadState(DS_NONEEDEDPARTS, REASON_NoNeededParts);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
+
                                 }
 							break;
 						}
@@ -624,7 +662,13 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 					if (thePrefs.GetDebugClientTCPLevel() > 0)
 						DebugRecv("OP_CancelTransfer", client);
 					theStats.AddDownDataOverheadFileRequest(size);
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+					theApp.uploadqueue->RemoveFromUploadQueue(client, _T("Remote client canceled transfer."), true, false, REASON_Cancel);
+#else
 					theApp.uploadqueue->RemoveFromUploadQueue(client, _T("Remote client canceled transfer."));
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 					break;
 				}
 				case OP_END_OF_DOWNLOAD:
@@ -633,7 +677,13 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 						DebugRecv("OP_EndOfDownload", client, (size >= 16) ? packet : NULL);
 					theStats.AddDownDataOverheadFileRequest(size);
 					if (size>=16 && !md4cmp(client->GetUploadFileID(),packet))
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+						theApp.uploadqueue->RemoveFromUploadQueue(client, _T("Remote client ended transfer."), true, false, REASON_Cancel);
+#else
 						theApp.uploadqueue->RemoveFromUploadQueue(client, _T("Remote client ended transfer."));
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 					else
 						client->CheckFailedFileIdReqs(packet);
 					break;
@@ -685,7 +735,13 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 					theStats.AddDownDataOverheadFileRequest(size);
 					if (client->GetDownloadState() == DS_DOWNLOADING)
 					{
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+						client->SetDownloadState(DS_ONQUEUE, REASON_Limit);
+#else
 						client->SetDownloadState(DS_ONQUEUE, _T("The remote client decided to stop/complete the transfer (got OP_OutOfPartReqs)."));
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 					}
 					break;
 				}
@@ -1078,7 +1134,13 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 		if (thePrefs.GetVerbose() && !ex->m_strMsg.IsEmpty())
 			DebugLogWarning(_T("%s - while processing eDonkey packet: opcode=%s  size=%u; %s"), ex->m_strMsg, DbgGetDonkeyClientTCPOpcode(opcode), size, DbgGetClientInfo());
 		if (client && ex->m_bDelete)
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+			client->SetDownloadState(DS_ERROR); 
+#else
 			client->SetDownloadState(DS_ERROR, _T("Error while processing eDonkey packet (CClientException): ") + ex->m_strMsg);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 		Disconnect(ex->m_strMsg);
 		ex->Delete();
 		return false;
@@ -1092,7 +1154,13 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 				DebugLogWarning(_T("%s - while processing eDonkey packet: opcode=%s  size=%u; %s"), error, DbgGetDonkeyClientTCPOpcode(opcode), size, DbgGetClientInfo());
 		}
 		if (client)
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+			client->SetDownloadState(DS_ERROR);
+#else
 			client->SetDownloadState(DS_ERROR, _T("Error while processing eDonkey packet (CString exception): ") + error);	
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 		Disconnect(_T("Error when processing packet.") + error);
 		return false;
 	}
@@ -1566,7 +1634,13 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 
 						// PC-TODO: Check client state.
 						ASSERT( client->GetDownloadState() == DS_DOWNLOADING );
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+						client->SetDownloadState(DS_ONQUEUE);
+#else
 						client->SetDownloadState(DS_ONQUEUE, _T("Peer cache query trouble")); // clear block requests
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 						if (client)
 							client->StartDownload();
 					}
@@ -1860,7 +1934,13 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 		if (thePrefs.GetVerbose() && !ex->m_strMsg.IsEmpty())
 			DebugLogWarning(_T("%s - while processing eMule packet: opcode=%s  size=%u; %s"), ex->m_strMsg, DbgGetMuleClientTCPOpcode(opcode), size, DbgGetClientInfo());
 		if (client && ex->m_bDelete)
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+			client->SetDownloadState(DS_ERROR); 
+#else
 			client->SetDownloadState(DS_ERROR, _T("Error while processing eMule packet: ") + ex->m_strMsg);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 		Disconnect(ex->m_strMsg);
 		ex->Delete();
 		return false;
@@ -1870,7 +1950,13 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 		if (thePrefs.GetVerbose() && !error.IsEmpty())
 			DebugLogWarning(_T("%s - while processing eMule packet: opcode=%s  size=%u; %s"), error, DbgGetMuleClientTCPOpcode(opcode), size, DbgGetClientInfo());
 		if (client)
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+			client->SetDownloadState(DS_ERROR); 
+#else
 			client->SetDownloadState(DS_ERROR, _T("ProcessExtPacket error. ") + error);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 		Disconnect(_T("ProcessExtPacket error. ") + error);
 		return false;
 	}
@@ -1991,7 +2077,13 @@ bool CClientReqSocket::PacketReceivedCppEH(Packet* packet)
 				DebugLogWarning(_T("Received unknown client TCP packet; %s; %s"), DbgGetClientTCPPacket(packet->prot, packet->opcode, packet->size), DbgGetClientInfo());
 
 			if (client)
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+				client->SetDownloadState(DS_ERROR);
+#else
 				client->SetDownloadState(DS_ERROR, _T("Unknown protocol"));
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 			Disconnect(_T("Unknown protocol"));
 			bResult = false;
 		}
@@ -2063,7 +2155,13 @@ bool CClientReqSocket::PacketReceived(Packet* packet)
 	if (iResult < 0)
 	{
 		if (client)
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+			client->SetDownloadState(DS_ERROR);
+#else
 			client->SetDownloadState(DS_ERROR, _T("Unknown Exception"));
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 		Disconnect(_T("Unknown Exception"));
 		bResult = false;
 	}

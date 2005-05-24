@@ -145,7 +145,13 @@ bool CUrlClient::SendHttpBlockRequests()
 
 	CreateBlockRequests(PARTSIZE / EMBLOCKSIZE);
 	if (m_PendingBlocks_list.IsEmpty()){
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+		SetDownloadState(DS_NONEEDEDPARTS, REASON_NoNeededParts);
+#else
 		SetDownloadState(DS_NONEEDEDPARTS);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 		return false;
 	}
 	
@@ -222,7 +228,13 @@ void CUrlClient::SendFileRequest()
 	; // just ignore it
 }
 
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+bool CUrlClient::Disconnected(LPCTSTR pszReason, bool bFromSocket, EReason nReason)
+#else
 bool CUrlClient::Disconnected(LPCTSTR pszReason, bool bFromSocket)
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 {
 	CHttpClientDownSocket* s = STATIC_DOWNCAST(CHttpClientDownSocket, socket);
 
@@ -230,7 +242,13 @@ bool CUrlClient::Disconnected(LPCTSTR pszReason, bool bFromSocket)
 	// TODO: This is a mess..
 	if (s && (s->GetHttpState() == HttpStateRecvExpected || s->GetHttpState() == HttpStateRecvBody))
         m_fileReaskTimes.RemoveKey(reqfile); // ZZ:DownloadManager (one resk timestamp for each file)
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+	return CUpDownClient::Disconnected(pszReason, bFromSocket, nReason);
+#else
 	return CUpDownClient::Disconnected(pszReason, bFromSocket);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 }
 
 bool CUrlClient::ProcessHttpDownResponse(const CStringAArray& astrHeaders)

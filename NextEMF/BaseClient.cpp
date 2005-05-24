@@ -1110,7 +1110,13 @@ void CUpDownClient::ProcessMuleCommentPacket(const uchar* pachPacket, uint32 nSi
 	}
 }
 
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket, EReason nReason)
+#else
 bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket)
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 {
 	ASSERT( theApp.clientlist->IsValidClient(this) );
 
@@ -1121,7 +1127,13 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket)
 	{
 		if (thePrefs.GetLogUlDlEvents() && GetUploadState()==US_UPLOADING && m_fSentOutOfPartReqs==0 && !theApp.uploadqueue->IsOnUploadQueue(this))
 			DebugLog(_T("Disconnected client removed from upload queue and waiting list: %s"), DbgGetClientInfo());
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+		theApp.uploadqueue->RemoveFromUploadQueue(this, pszReason, true, false, nReason);
+#else
 		theApp.uploadqueue->RemoveFromUploadQueue(this, pszReason);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 	}
 
 	// 28-Jun-2004 [bc]: re-applied this patch which was in 0.30b-0.30e. it does not seem to solve the bug but
@@ -1144,7 +1156,13 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket)
 	if (GetDownloadState() == DS_DOWNLOADING){
 		if (m_ePeerCacheDownState == PCDS_WAIT_CACHE_REPLY || m_ePeerCacheDownState == PCDS_DOWNLOADING)
 			theApp.m_pPeerCache->DownloadAttemptFailed();
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+		SetDownloadState(DS_ONQUEUE, nReason);
+#else
 		SetDownloadState(DS_ONQUEUE, CString(_T("Disconnected: ")) + pszReason);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 	}
 	else{
 		// ensure that all possible block requests are removed from the partfile

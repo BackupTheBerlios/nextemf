@@ -38,6 +38,11 @@
 #include "emuledlg.h"
 #include "TransferWnd.h"
 #include "Log.h"
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+#include "NextEMF/NextEMF.h"
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -116,10 +121,65 @@ void CUpDownClient::DrawUpStatusBar(CDC* dc, RECT* rect, bool onlygreyrect) cons
     }
 } 
 
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+void CUpDownClient::SetUploadState(EUploadState eNewState, EReason nReason)
+#else
 void CUpDownClient::SetUploadState(EUploadState eNewState)
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 {
 	if (eNewState != m_nUploadState)
 	{
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+		if (eNewState == US_NONE && nReason != REASON_None)
+		{
+			if (GetSessionUp() > 0)
+			{
+				switch(nReason)
+				{
+				case REASON_Cancel:
+					theStats.m_iSessionSuccessfulUploadCancel++;
+					break;
+				case REASON_Timeout:
+					theStats.m_iSessionSuccessfulUploadTimeout++;
+					break;
+				case REASON_Disconnect:
+					theStats.m_iSessionSuccessfulUploadDisconnect++;
+					break;
+				case REASON_Limit:
+					theStats.m_iSessionSuccessfulUploadLimit++;
+					break;
+				default:
+					theStats.m_iSessionSuccessfulUploadOther++;
+					break;
+				}
+			}
+			else
+			{
+				switch(nReason)
+				{
+				case REASON_Cancel:
+					theStats.m_iSessionFailedUploadCancel++;
+					break;
+				case REASON_Timeout:
+					theStats.m_iSessionFailedUploadTimeout++;
+					break;
+				case REASON_Disconnect:
+					theStats.m_iSessionFailedUploadDisconnect++;
+					break;
+				case REASON_Limit:
+					theStats.m_iSessionFailedUploadLimit++;
+					break;
+				default:
+					theStats.m_iSessionFailedUploadOther++;
+					break;
+				}
+			}
+		}
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 		if (m_nUploadState == US_UPLOADING)
 		{
 			// Reset upload data rate computation
@@ -675,7 +735,13 @@ uint32 CUpDownClient::SendBlockData(){
         m_nCurQueueSessionPayloadUp = (UINT)(m_nCurQueueSessionPayloadUp + sentBytesPayload);
 
         if (theApp.uploadqueue->CheckForTimeOver(this)) {
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+            theApp.uploadqueue->RemoveFromUploadQueue(this, _T("Completed transfer"), true, false, REASON_Limit);
+#else
             theApp.uploadqueue->RemoveFromUploadQueue(this, _T("Completed transfer"), true);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 			SendOutOfPartReqsAndAddToWaitingQueue();
         } 
 		else {

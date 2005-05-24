@@ -260,7 +260,13 @@ void CClientList::RemoveClient(CUpDownClient* toremove, LPCTSTR pszReason){
 			strInfo += _T(" Reason: ");
 			strInfo += pszReason;
 		}*/
+//==> Extended Failed/Success Statistic by NetF [shadow2004]
+#ifdef FSSTATS
+		theApp.uploadqueue->RemoveFromUploadQueue(toremove, pszReason, true, false, REASON_Other);
+#else
 		theApp.uploadqueue->RemoveFromUploadQueue(toremove, /*strInfo*/pszReason);
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
 		theApp.uploadqueue->RemoveFromWaitingQueue(toremove);
 		theApp.downloadqueue->RemoveSource(toremove);
 		theApp.emuledlg->transferwnd->clientlistctrl.RemoveClient(toremove);
