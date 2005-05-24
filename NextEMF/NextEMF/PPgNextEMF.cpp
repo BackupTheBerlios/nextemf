@@ -51,7 +51,6 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PPG_NEXTEMF_OPTS, m_ctrlTreeOptions);
 	if (!m_bInitializedTreeOpts)
 	{
-		int iImgOpt = 8;
 		int iImgSecurity = 8;
 		CImageList* piml = m_ctrlTreeOptions.GetImageList(TVSIL_NORMAL);
 		if (piml)
@@ -164,7 +163,6 @@ void CPPgNextEMF::OnDestroy()
 LRESULT CPPgNextEMF::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
 {
 	if (wParam == IDC_PPG_NEXTEMF_OPTS){
-		TREEOPTSCTRLNOTIFY* pton = (TREEOPTSCTRLNOTIFY*)lParam;
 		SetModified();
 	}
 	return 0;

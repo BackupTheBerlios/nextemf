@@ -918,8 +918,8 @@ void CEMSocket::AssertValid() const
 	const_cast<CEMSocket*>(this)->sendLocker.Lock();
 
 	ASSERT( byConnected==ES_DISCONNECTED || byConnected==ES_NOTCONNECTED || byConnected==ES_CONNECTED );
-	CHECK_BOOL(m_ProxyConnectFailed);
-	CHECK_PTR(m_pProxyLayer);
+	//CHECK_BOOL(m_ProxyConnectFailed);
+	//CHECK_PTR(m_pProxyLayer);
 	(void)downloadLimit;
 	CHECK_BOOL(downloadLimitEnable);
 	CHECK_BOOL(pendingOnReceive);

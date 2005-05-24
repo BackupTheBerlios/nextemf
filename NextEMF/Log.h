@@ -23,7 +23,7 @@ enum EDebugLogPriority{
 
 //==>Anti-Leecher-Log [cyrex2001]
 #ifdef ANTI_LEECHER_LOG
-#define LOG_LEECHER		0x50
+#define LOG_LEECHER		0x80
 #endif
 //<== Anti-Leecher-Log [cyrex2001]
 
