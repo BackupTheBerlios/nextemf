@@ -655,7 +655,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	{ 
 		if(m_bNickThief)
 		{ 
-			AddLeecherLogLine(false,_T("[%s] banned Client %s"),_T("[NickThief]"), DbgGetClientInfo());
+			AddLeecherLogLine(false,_T("%s banned Client %s"),_T("[NickThief]"), DbgGetClientInfo());
 			Ban();
 		}
 	}
@@ -665,7 +665,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	{
 		if(theAntiLeechClass.CheckForModThief(this))
 		{
-			AddLeecherLogLine(false,_T("[%s] banned Client %s"),_T("[ModThief]"), DbgGetClientInfo());
+			AddLeecherLogLine(false,_T("%s banned Client %s"),_T("[Modfaker]"), DbgGetClientInfo());
 			Ban();
 		}
 	}
@@ -900,7 +900,7 @@ void CUpDownClient::ProcessMuleInfoPacket(const uchar* pachPacket, uint32 nSize)
 	{
 		if(theAntiLeechClass.CheckForModThief(this))
 		{
-			AddLeecherLogLine(false,_T("[%s] banned Client %s"),_T("[ModThief]"), DbgGetClientInfo());
+			AddLeecherLogLine(false,_T("%s banned Client %s"),_T("[Modfaker]"), DbgGetClientInfo());
 			Ban();
 		}
 	}

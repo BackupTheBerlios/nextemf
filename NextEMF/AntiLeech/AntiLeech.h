@@ -38,7 +38,6 @@ public:
 
 private:
 	static	CString m_sMyVersion;
-	static	CString m_sMyModVersion;
 //<<< AntiModThief
 };
 
