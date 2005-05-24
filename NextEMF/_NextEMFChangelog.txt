@@ -22,3 +22,5 @@ added   : ClientBanTime [2-12h] for banned clients [cyrex2001]
 
 fixed   : compiler warning (level 3) C4800 for modversion [cyrex2001]
 fixed   : Dynamic Block Request [shadow2004]
+fixed   : LeecherLog [cyrex2001]
+fixed   : AntiLeecherClass=>Modfaker [cyrex2001]
