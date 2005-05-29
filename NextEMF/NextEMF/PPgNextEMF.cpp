@@ -9,7 +9,7 @@
 #include "opcodes.h"
 #include "otherfunctions.h"
 #include "UserMsgs.h"
-#include "ModName.h"
+#include "ModVersion.h"
 
 #ifdef _DEBUG
 #undef THIS_FILE

@@ -2265,7 +2265,10 @@
 				RelativePath=".\afxsock.h">
 			</File>
 			<File
-				RelativePath=".\ModName.h">
+				RelativePath=".\ModVersion.cpp">
+			</File>
+			<File
+				RelativePath=".\ModVersion.h">
 			</File>
 			<File
 				RelativePath=".\SplashScreenEx.cpp">

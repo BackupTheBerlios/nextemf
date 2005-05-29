@@ -77,11 +77,9 @@
 #include "stdafx.h"
 #include "AntiLeech.h"
 #include "updownclient.h"
-#include "Version.h" //for VERSION tags
-//#include "ModName.h" //for MOD_VERSION//cyrex2001 removed=>emule.h
 #include "Preferences.h" //for GetUserNick()
 #include "Opcodes.h"//cyrex2001 =>MIN2MS
-#include "emule.h"//cyrex2001 =>theApp.m_strModVersion
+#include "emule.h"//cyrex2001 =>theApp.m_strCurVersionLong and theApp.m_strModVersion 
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -109,7 +107,6 @@ CString	CAntiLeech::m_sMyVersion; //>>> AntiModThief
 void	CAntiLeech::Init()
 {
 	CreateAntiNickThiefTag();
-	m_sMyVersion.Format(_T("eMule v%u.%u%c"), VERSION_MJR, VERSION_MIN, _T('a') + VERSION_UPDATE);
 }
 
 void	CAntiLeech::UnInit()
@@ -171,6 +168,7 @@ bool CAntiLeech::CheckForModThief(const CUpDownClient* client)
 	ASSERT(client);
 
 	CString tocomp = client->GetClientModVer();
+	m_sMyVersion.Format(_T("eMule v%s [%s]"), theApp.m_strCurVersionLong, theApp.m_strModVersion);
 	if(tocomp.IsEmpty())
 		return false;
 	CString OurMod = theApp.m_strModVersion; //cache it

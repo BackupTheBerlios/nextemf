@@ -366,6 +366,13 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	m_fNoViewSharedFiles = 0;
 	m_bUnicodeSupport = false;
 
+	//==>Modversion [shadow2004]
+#ifdef MODVERSION
+	m_strModVersion.Empty();//fix [cyrex2001]
+	m_bIsNextEMF = false;//fix [cyrex2001]
+#endif //Modversion
+	//<==Modversion [shadow2004]
+
 	data->ReadHash16(m_achUserHash);
 	if (bDbgInfo)
 		m_strHelloInfo.AppendFormat(_T("Hash=%s (%s)"), md4str(m_achUserHash), DbgGetHashTypeString(m_achUserHash));
@@ -2445,9 +2452,15 @@ LPCTSTR CUpDownClient::DbgGetKadState() const
 
 CString CUpDownClient::DbgGetFullClientSoftVer() const
 {
+//==>Modversion [shadow2004][cyrex2001]
+#ifdef MODVERSION
+	return GetClientSoftVer();
+#else
 	if (GetClientModVer().IsEmpty())
 		return GetClientSoftVer();
 	return GetClientSoftVer() + _T(" [") + GetClientModVer() + _T(']');
+#endif //Modversion
+//<==Modversion [shadow2004][cyrex2001]
 }
 
 CString CUpDownClient::DbgGetClientInfo(bool bFormatIP) const

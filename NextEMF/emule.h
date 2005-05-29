@@ -22,7 +22,7 @@
 
 //==>Modversion [shadow2004]
 #ifdef MODVERSION
-#include "ModName.h"
+#include "ModVersion.h"
 #endif //Modversion
 //<==Modversion [shadow2004]
 
@@ -221,6 +221,9 @@ public:
 //==>Modversion [shadow2004]
 #ifdef MODVERSION
 public:
+	static const UINT	m_nMVersionMjr;
+	static const UINT	m_nMVersionMin;
+	static const UINT	m_nMVersionBld;
 	CString		m_strModVersion;
 	CString		m_strModLongVersion;
 #endif //Modversion

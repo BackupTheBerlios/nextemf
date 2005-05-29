@@ -2724,7 +2724,7 @@ BEGIN
     IDS_IPFILTERED          "Filtered IP: %s (%s)"
     IDS_DL_TRANSFCOMPL      "Completed"
     IDS_DL_ACTIVE_TIME      "Download time"
-    IDS_STATS_FILTEREDCLIENTS "Filtered: %i"
+    IDS_STATS_FILTEREDCLIENTS "Filtered: %u"
     IDS_FILTERLABEL         "Filter messages containing: (Separator | )"
     IDS_ERR_LARGEREQBLOCK   "Client requested too large of a block."
     IDS_SHOWRATEONTITLE     "Show transfer rates on title"

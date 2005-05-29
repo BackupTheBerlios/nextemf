@@ -1024,7 +1024,7 @@ BEGIN
     IDS_IPFILTERED          "Gefilterte IP: %s (%s)"
     IDS_DL_TRANSFCOMPL      "Fertiggestellt"
     IDS_DL_ACTIVE_TIME      "Downloadzeit"
-    IDS_STATS_FILTEREDCLIENTS "Gefiltert: %i"
+    IDS_STATS_FILTEREDCLIENTS "Gefiltert: %u"
     IDS_FILTERLABEL         "Filtere Nachrichten mit folgenden Strings: (Trennzeichen | )"
     IDS_ERR_LARGEREQBLOCK   "Client fragte einen zu groﬂen Block an."
     IDS_SHOWRATEONTITLE     "Zeige Transferraten im Titel"
