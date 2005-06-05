@@ -835,34 +835,11 @@ void CUpDownClient::ProcessHashSet(const uchar* packet,uint32 size)
 void CUpDownClient::CreateBlockRequests(int iMaxBlocks)
 {
 	ASSERT( iMaxBlocks >= 1 /*&& iMaxBlocks <= 3*/ );
-
-//==> Dynamic Block Request by NetF [shadow2004]
-#ifdef DBR
-	uint32	pendingBytes = 0;
-	uint32	transferredBytes = 0;
-	for (POSITION pos = m_PendingBlocks_list.GetHeadPosition(); pos != 0;){
-		Requested_Block_Struct* block = m_PendingBlocks_list.GetNext(pos)->block;
-		pendingBytes += (block->EndOffset - block->StartOffset + 1);
-		transferredBytes += block->transferred;
-	}
-	if(transferredBytes < pendingBytes)
-		pendingBytes -= transferredBytes;
-	else
-		pendingBytes = 0;
-#endif
-//<== Dynamic Block Request by NetF [shadow2004]
-
 	if (m_DownloadBlocks_list.IsEmpty())
 	{
 		uint16 count = iMaxBlocks - m_PendingBlocks_list.GetCount();
 		Requested_Block_Struct** toadd = new Requested_Block_Struct*[count];
-//==> Dynamic Block Request by NetF [shadow2004]
-#ifdef DBR
-		if (reqfile->GetNextRequestedBlock(this,toadd,&count,pendingBytes)){
-#else
 		if (reqfile->GetNextRequestedBlock(this,toadd,&count)){
-#endif
-//<== Dynamic Block Request by NetF [shadow2004]
 			for (int i = 0; i < count; i++)
 				m_DownloadBlocks_list.AddTail(toadd[i]);
 		}

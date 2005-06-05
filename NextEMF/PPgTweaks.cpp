@@ -71,6 +71,11 @@ CPPgTweaks::CPPgTweaks()
 	m_bLogFileSaving = false;
 	m_bLogA4AF = false;
 	m_bLogUlDlEvents = false;
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+	m_bLogEmulator = false;
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
 	m_bCreditSystem = false;
 	m_bLog2Disk = false;
 	m_bDebug2Disk = false;
@@ -109,6 +114,11 @@ CPPgTweaks::CPPgTweaks()
 	m_htiLogFilteredIPs = NULL;
 	m_htiLogFileSaving = NULL;
 	m_htiLogUlDlEvents = NULL;
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+	m_htiLogEmulator = NULL;
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
 	m_htiCreditSystem = NULL;
 	m_htiLog2Disk = NULL;
 	m_htiDebug2Disk = NULL;
@@ -230,6 +240,12 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 			m_htiLogFileSaving = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOG_FILE_SAVING), m_htiVerboseGroup, m_bLogFileSaving);
 			m_htiLogA4AF = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOG_A4AF), m_htiVerboseGroup, m_bLogA4AF); // ZZ:DownloadManager
 			m_htiLogUlDlEvents = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOG_ULDL_EVENTS), m_htiVerboseGroup, m_bLogUlDlEvents);
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+			m_htiLogEmulator = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_LOGEMULATOR), m_htiVerboseGroup, m_bLogEmulator);
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
+
 		}
 
 		/////////////////////////////////////////////////////////////////////////////
@@ -327,6 +343,13 @@ void CPPgTweaks::DoDataExchange(CDataExchange* pDX)
 	if (m_htiLogA4AF)               m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogA4AF, m_bVerbose);
 	if (m_htiLogUlDlEvents)			DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiLogUlDlEvents, m_bLogUlDlEvents);
 	if (m_htiLogUlDlEvents)         m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogUlDlEvents, m_bVerbose);
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+	if (m_htiLogEmulator)			DDX_TreeCheck(pDX, IDC_EXT_OPTS, m_htiLogEmulator, m_bLogEmulator);
+	if (m_htiLogEmulator)           m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogEmulator, m_bVerbose);
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
+
 
 	/////////////////////////////////////////////////////////////////////////////
 	// USS group
@@ -365,6 +388,11 @@ BOOL CPPgTweaks::OnInitDialog()
 		m_bLogFileSaving = thePrefs.m_bLogFileSaving;					// do *not* use the according 'Get...' function here!
         m_bLogA4AF = thePrefs.m_bLogA4AF;                   		    // do *not* use the according 'Get...' function here! // ZZ:DownloadManager
 		m_bLogUlDlEvents = thePrefs.m_bLogUlDlEvents;
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+		m_bLogEmulator = thePrefs.m_bLogEmulator;
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
 		m_iLogLevel = 5 - thePrefs.m_byLogLevel;
 	}
 	m_bLog2Disk = thePrefs.log2disk;
@@ -471,6 +499,12 @@ BOOL CPPgTweaks::OnApply()
 		thePrefs.m_bLogFileSaving = m_bLogFileSaving;
         thePrefs.m_bLogA4AF = m_bLogA4AF;
 		thePrefs.m_bLogUlDlEvents = m_bLogUlDlEvents;
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+		thePrefs.m_bLogEmulator = m_bLogEmulator;
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
+
 		thePrefs.m_byLogLevel = 5 - m_iLogLevel;
 
 		thePrefs.m_bVerbose = m_bVerbose; // store after related options were stored!
@@ -567,6 +601,11 @@ void CPPgTweaks::Localize(void)
 		if (m_htiLogLevel) m_ctrlTreeOptions.SetEditLabel(m_htiLogLevel, GetResString(IDS_LOG_LEVEL));
 		if (m_htiLogA4AF) m_ctrlTreeOptions.SetItemText(m_htiLogA4AF, GetResString(IDS_LOG_A4AF));
 		if (m_htiLogUlDlEvents) m_ctrlTreeOptions.SetItemText(m_htiLogUlDlEvents, GetResString(IDS_LOG_ULDL_EVENTS));
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+		if (m_htiLogEmulator) m_ctrlTreeOptions.SetItemText(m_htiLogEmulator, GetResString(IDS_LOGEMULATOR));
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
 		if (m_htiCommit) m_ctrlTreeOptions.SetItemText(m_htiCommit, GetResString(IDS_COMMITFILES));
 		if (m_htiCommitNever) m_ctrlTreeOptions.SetItemText(m_htiCommitNever, GetResString(IDS_NEVER));
 		if (m_htiCommitOnShutdown) m_ctrlTreeOptions.SetItemText(m_htiCommitOnShutdown, GetResString(IDS_ONSHUTDOWN));
@@ -622,6 +661,11 @@ void CPPgTweaks::OnDestroy()
     m_htiLogA4AF = NULL;
 	m_htiLogLevel = NULL;
 	m_htiLogUlDlEvents = NULL;
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+	m_htiLogEmulator = NULL;
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
 	m_htiCreditSystem = NULL;
 	m_htiLog2Disk = NULL;
 	m_htiDebug2Disk = NULL;
@@ -677,6 +721,12 @@ LRESULT CPPgTweaks::OnTreeOptsCtrlNotify(WPARAM wParam, LPARAM lParam)
 				if (m_htiLogFileSaving)			m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogFileSaving, bCheck);
                 if (m_htiLogA4AF)			    m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogA4AF, bCheck);
 				if (m_htiLogUlDlEvents)			m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogUlDlEvents, bCheck);
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+				if (m_htiLogEmulator)			m_ctrlTreeOptions.SetCheckBoxEnable(m_htiLogEmulator, bCheck);
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
+
 			}
 		}
 		SetModified();

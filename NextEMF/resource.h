@@ -2072,6 +2072,13 @@
 #define IDS_CLIENTBANTIME               3006
 #define IDS_STRING3007                  3007
 
+#define IDS_EMULATOR					3100
+#define IDS_EMUMLDONKEY					3101
+#define IDS_EMUEDONKEY					3102
+#define IDS_EMUEDONKEYHYBRID			3103
+#define IDS_EMUSHAREAZA2				3104
+#define IDS_LOGEMULATOR					3105
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

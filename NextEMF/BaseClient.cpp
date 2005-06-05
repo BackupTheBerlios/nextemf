@@ -934,7 +934,33 @@ void CUpDownClient::SendHelloAnswer(){
 
 void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 {
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+	uchar hash[16]; 
+	memcpy(hash,thePrefs.GetUserHash(), 16);
+
+    if (thePrefs.IsEmuMLDonkey() && GetClientSoft() == SO_MLDONKEY)
+	{ 
+        hash[5] = 0x0E; 
+        hash[14] = 0x6F;
+		if (thePrefs.IsEmuLog()) 
+			AddDebugLogLine(false, _T("[EMULATE] emuliere MLDonkey (%s)"),DbgGetClientInfo());
+    } 
+	else if ((thePrefs.IsEmueDonkey() && GetClientSoft() == SO_EDONKEY)
+		|| (thePrefs.IsEmueDonkeyHybrid() && GetClientSoft() == SO_EDONKEYHYBRID))
+	{
+		uint8	random = rand();
+		memcpy(&hash[5],&random,1); 
+		random = rand();
+		memcpy(&hash[14],&random,1);
+		if (thePrefs.IsEmuLog()) 
+			AddDebugLogLine(false, _T("[EMULATE] emuliere eDonkey / eDonkeyHybrid (%s)"),DbgGetClientInfo());
+	}
+   	data->WriteHash16(hash);
+#else
 	data->WriteHash16(thePrefs.GetUserHash());
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
 	uint32 clientid;
 	clientid = theApp.GetID();
 
@@ -1030,6 +1056,22 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 				);
 	tagMisOptions2.WriteTagToFile(data);
 
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+	if (thePrefs.IsEmuShareaza() && GetClientSoft() == SO_SHAREAZA)
+	{
+		CTag tagMuleVersion(CT_EMULE_VERSION,
+				(SO_SHAREAZA				<< 24) |
+				(2							<< 17) |
+				(1							<< 10) |
+				(1 							<<  7)
+				);
+		tagMuleVersion.WriteTagToFile(data);
+		if (thePrefs.IsEmuLog()) 
+			AddDebugLogLine(false, _T("[EMULATE] emuliere Shareaza (%s)"),DbgGetClientInfo());
+	} else {
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
 	// eMule Version
 	CTag tagMuleVersion(CT_EMULE_VERSION, 
 				//(uCompatibleClientID		<< 24) |
@@ -1039,6 +1081,12 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 //				(RESERVED			     ) 
 				);
 	tagMuleVersion.WriteTagToFile(data);
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+	}
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
+	
 
 //==>Modversion [shadow2004]
 #ifdef MODVERSION
@@ -1826,8 +1874,16 @@ int CUpDownClient::GetHashType() const
 		return SO_OLDEMULE;
 	else if (m_achUserHash[5] == 14 && m_achUserHash[14] == 111)
 		return SO_EMULE;
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+	else if ((m_achUserHash[5] == 0x0E && m_achUserHash[14] == 0x6F) ||
+			 (m_achUserHash[5] == 'M' && m_achUserHash[14] == 'L'))
+		return SO_MLDONKEY;
+#else
  	else if (m_achUserHash[5] == 'M' && m_achUserHash[14] == 'L')
 		return SO_MLDONKEY;
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]       
 	else
 		return SO_UNKNOWN;
 }

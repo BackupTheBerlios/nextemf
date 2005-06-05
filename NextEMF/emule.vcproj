@@ -90,7 +90,7 @@
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;MODVERSION;WINSOCK2;ANTI_LEECHER_LOG;ANTI_LEECH_CLASS;DBR;FSSTATS"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;MODVERSION;WINSOCK2;ANTI_LEECHER_LOG;ANTI_LEECH_CLASS;FSSTATS;EMULATE"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
 				BufferSecurityCheck="TRUE"
@@ -1759,6 +1759,9 @@
 			</File>
 			<File
 				RelativePath="res\Empty.ico">
+			</File>
+			<File
+				RelativePath=".\res\Emulate_Settings_Tree.ico">
 			</File>
 			<File
 				RelativePath="res\emule.manifest">

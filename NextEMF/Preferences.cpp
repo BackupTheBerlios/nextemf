@@ -462,6 +462,15 @@ uint8	CPreferences::m_iClientBanTime;
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
 
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+bool	CPreferences::EmuMLDonkey;
+bool	CPreferences::EmueDonkey;
+bool	CPreferences::EmueDonkeyHybrid;
+bool	CPreferences::EmuShareaza;
+bool	CPreferences::m_bLogEmulator;
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
 CPreferences::CPreferences()
 {
 #ifdef _DEBUG
@@ -2054,6 +2063,16 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("ClientBanTime"), m_iClientBanTime,_T("NextEMF"));
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
+
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+	ini.WriteBool(_T("EmuMLDonkey"), EmuMLDonkey,_T("NextEMF"));
+	ini.WriteBool(_T("EmueDonkey"), EmueDonkey,_T("NextEMF"));
+	ini.WriteBool(_T("EmueDonkeyHybrid"), EmueDonkeyHybrid,_T("NextEMF"));
+	ini.WriteBool(_T("EmuShareaza"), EmuShareaza,_T("NextEMF"));
+	ini.WriteBool(_T("LogEmulator"), m_bLogEmulator,_T("NextEMF"));
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
 }
 
 void CPreferences::ResetStatsColor(int index)
@@ -2591,6 +2610,17 @@ void CPreferences::LoadPreferences()
 	m_iClientBanTime=ini.GetInt(_T("ClientBanTime"), 2, _T("NextEMF"));
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
+
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+	EmuMLDonkey= ini.GetBool(_T("EmuMLDonkey"), false, _T("NextEMF"));
+	EmueDonkey= ini.GetBool(_T("EmueDonkey"), false, _T("NextEMF"));
+	EmueDonkeyHybrid= ini.GetBool(_T("EmueDonkeyHybrid"), false, _T("NextEMF"));
+	EmuShareaza= ini.GetBool(_T("EmuShareaza"), false, _T("NextEMF"));
+	m_bLogEmulator= ini.GetBool(_T("LogEmulator"), false, _T("NextEMF"));
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
+
 
 	LoadCats();
 	SetLanguage();

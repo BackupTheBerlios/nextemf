@@ -17,19 +17,6 @@
 #include "KnownFile.h"
 #include "DeadSourceList.h"
 #include "CorruptionBlackBox.h"
-//==> Dynamic Block Request by NetF [shadow2004]
-#ifdef DBR
-#include "opcodes.h"
-
-struct Chunk {
-	uint16 part;			// Index of the chunk
-	union {
-		uint16 frequency;	// Availability of the chunk
-		uint16 rank;		// Download priority factor (highest = 0, lowest = 0xffff)
-	};
-};
-#endif
-//<== Dynamic Block Request by NetF [shadow2004]
 
 enum EPartFileStatus{
 	PS_READY			= 0,
@@ -175,13 +162,7 @@ public:
 	void	UpdateCompletedInfos(uint32 uTotalGaps);
 	virtual void	UpdatePartsInfo();
 
-//==> Dynamic Block Request by NetF [shadow2004]
-#ifdef DBR
-	bool	GetNextRequestedBlock(CUpDownClient* sender, Requested_Block_Struct** newblocks, uint16* count, uint32 pendingBytes);
-#else
 	bool	GetNextRequestedBlock(CUpDownClient* sender, Requested_Block_Struct** newblocks, uint16* count) /*const*/;
-#endif
-//<== Dynamic Block Request by NetF [shadow2004]
 
 	void	WritePartStatus(CSafeMemFile* file) const;
 	void	WriteCompleteSourcesCount(CSafeMemFile* file) const;
@@ -343,17 +324,7 @@ public:
 #endif
 
 protected:
-//==> Dynamic Block Request by NetF [shadow2004]
-#ifdef DBR
-	bool	GetNextEmptyBlockInPart(uint16 partNumber, Requested_Block_Struct *result, uint32 bytesRequested); /*const*/
-	uint32	MOD_GetRequestedSizeInPart(uint16 part) const;
-	uint32	MOD_GetRequestedSizeInFile() const;
-	uint16	MOD_GetDownloadingSourcesInPart(uint16 part, CUpDownClient* exclude_src) const;
-	bool	MOD_FindNextPart(CUpDownClient* sender);
-#else
 	bool	GetNextEmptyBlockInPart(uint16 partnumber,Requested_Block_Struct* result) const;
-#endif
-//<== Dynamic Block Request by NetF [shadow2004]
 	void	CompleteFile(bool hashingdone);
 	void	CreatePartFile();
 	void	Init();

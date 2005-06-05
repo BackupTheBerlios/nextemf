@@ -30,6 +30,11 @@ protected:
 	bool m_bLogFileSaving;
     bool m_bLogA4AF;
 	bool m_bLogUlDlEvents;
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+	bool m_bLogEmulator;
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
 	bool m_bCreditSystem;
 	bool m_bLog2Disk;
 	bool m_bDebug2Disk;
@@ -74,6 +79,11 @@ protected:
 	HTREEITEM m_htiLogFileSaving;
     HTREEITEM m_htiLogA4AF;
 	HTREEITEM m_htiLogUlDlEvents;
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+	HTREEITEM m_htiLogEmulator;
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
 	HTREEITEM m_htiCreditSystem;
 	HTREEITEM m_htiLog2Disk;
 	HTREEITEM m_htiDebug2Disk;

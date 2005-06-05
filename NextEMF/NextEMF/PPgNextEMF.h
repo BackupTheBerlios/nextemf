@@ -24,6 +24,15 @@ protected:
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
 
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+	bool EmuMLDonkey;
+	bool EmueDonkey;
+	bool EmueDonkeyHybrid;
+	bool EmuShareaza;
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
+
 	HTREEITEM m_htiSecurity;
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS
@@ -32,6 +41,16 @@ protected:
 	HTREEITEM m_htiClientBanTime;
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
+
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+	HTREEITEM m_htiEmulator;
+	HTREEITEM m_htiEnableMLDonkey;
+	HTREEITEM m_htiEnableeDonkey;
+	HTREEITEM m_htiEnableeDonkeyHybrid;
+	HTREEITEM m_htiEnableShareaza;
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
 
 	CTreeOptionsCtrlEx m_ctrlTreeOptions;
 	bool m_bInitializedTreeOpts;

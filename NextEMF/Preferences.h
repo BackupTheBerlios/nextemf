@@ -557,6 +557,16 @@ public:
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
 
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+	static	bool	EmuMLDonkey;
+	static	bool	EmueDonkey;
+	static	bool	EmueDonkeyHybrid;
+	static	bool	EmuShareaza;
+	static	bool	m_bLogEmulator;
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
+
 	enum Table
 	{
 		tableDownload, 
@@ -1261,6 +1271,17 @@ public:
 	static uint8	GetClientBanTime()					{return m_iClientBanTime;}
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
+
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+	static	bool	IsEmuMLDonkey()			    {return EmuMLDonkey;}
+	static	bool	IsEmueDonkey()			    {return EmueDonkey;}
+	static	bool	IsEmueDonkeyHybrid()		{return EmueDonkeyHybrid;}
+	static	bool	IsEmuShareaza()				{return EmuShareaza;}
+	static	bool	IsEmuLog()					{return m_bLogEmulator;}
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
+
 
 protected:
 	static	CString appdir;
