@@ -480,7 +480,13 @@ CFileDetailDialogName::CFileDetailDialogName()
 	m_psp.pszTitle = m_strCaption;
 	m_psp.dwFlags |= PSP_USETITLE;
 	m_timer = 0;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero(m_aiColWidths, sizeof m_aiColWidths);
+#else
 	memset(m_aiColWidths, 0, sizeof m_aiColWidths);
+#endif
+//<== Optimizer [shadow2004]
 	m_bAppliedSystemImageList = false;
 	m_sortorder = 0;
 	m_sortindex = 1;

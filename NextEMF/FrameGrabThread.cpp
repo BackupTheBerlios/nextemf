@@ -169,7 +169,13 @@ uint8 CFrameGrabThread::GrabFrames(){
 				char* buffer = new char[nFullBufferLen];
 				
 				BITMAPFILEHEADER bfh;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+				memzero( &bfh, sizeof( bfh ) );
+#else
 				memset( &bfh, 0, sizeof( bfh ) );
+#endif
+//<== Optimizer [shadow2004]
 				bfh.bfType = 'MB';
 				bfh.bfSize = nFullBufferLen;
 				bfh.bfOffBits = sizeof( BITMAPINFOHEADER ) + sizeof( BITMAPFILEHEADER );

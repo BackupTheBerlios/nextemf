@@ -76,8 +76,13 @@ void CClientList::GetStatistics(uint32 &ruTotalClients, int stats[NUM_CLIENTLIST
 								CMap<uint32, uint32, uint32, uint32>& clientVersionAMule)
 {
 	ruTotalClients = list.GetCount();
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero(stats, sizeof(stats[0]) * NUM_CLIENTLIST_STATS);
+#else
 	memset(stats, 0, sizeof(stats[0]) * NUM_CLIENTLIST_STATS);
-
+#endif
+//<== Optimizer [shadow2004]
 	for (POSITION pos = list.GetHeadPosition(); pos != NULL; )
 	{
 		const CUpDownClient* cur_client = list.GetNext(pos);

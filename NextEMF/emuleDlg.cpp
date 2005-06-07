@@ -208,7 +208,13 @@ CemuleDlg::CemuleDlg(CWnd* pParent /*=NULL*/)
 	ready = false; 
 	m_bStartMinimizedChecked = false;
 	m_bStartMinimized = false;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero(&m_wpFirstRestore, sizeof m_wpFirstRestore);
+#else
 	memset(&m_wpFirstRestore, 0, sizeof m_wpFirstRestore);
+#endif
+//<== Optimizer [shadow2004]
 	m_uUpDatarate = 0;
 	m_uDownDatarate = 0;
 	status = 0;
@@ -650,12 +656,14 @@ void CALLBACK CemuleDlg::StartupTimer(HWND hwnd, UINT uiMsg, UINT idEvent, DWORD
 //==> WINSOCK2 [shadow2004]
 #ifdef WINSOCK2 //WINSOCK2
 					{
-					AddLogLine(false,_T("Winsock: Version %d.%d [%.40s] %.40s"), HIBYTE( theApp.m_wsaData.wVersion ),LOBYTE(theApp.m_wsaData.wVersion ),
+					AddLogLine(false,_T("*********   WinSock   *********"));
+					AddLogLine(false,_T("Version %d.%d [%.40s] %.40s"), HIBYTE( theApp.m_wsaData.wVersion ),LOBYTE(theApp.m_wsaData.wVersion ),
 					(CString)theApp.m_wsaData.szDescription, (CString)theApp.m_wsaData.szSystemStatus);
 					if (theApp.m_wsaData.iMaxSockets!=0)
-						AddLogLine(false,_T("Winsock: max. sockets %d"), theApp.m_wsaData.iMaxSockets);
+						AddLogLine(false,_T("max. sockets %d"), theApp.m_wsaData.iMaxSockets);
 					else
-						AddLogLine(false,_T("Winsock: unlimited sockets"));
+						AddLogLine(false,_T("unlimited sockets"));
+					AddLogLine(false,_T("*********   WinSock   *********"));
 #endif //WINSOCK2
 //<== WINSOCK2 [shadow2004]
 					AddLogLine(true, GetResString(IDS_MAIN_READY),theApp.m_strCurVersionLong);
@@ -1870,7 +1878,13 @@ void CemuleDlg::RestoreWindow()
 	if (m_wpFirstRestore.length)
 	{
 		SetWindowPlacement(&m_wpFirstRestore);
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+		memzero(&m_wpFirstRestore, sizeof m_wpFirstRestore);
+#else
 		memset(&m_wpFirstRestore, 0, sizeof m_wpFirstRestore);
+#endif
+//<== Optimizer [shadow2004]
 		SetForegroundWindow();
 		BringWindowToTop();
 	}

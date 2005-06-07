@@ -207,7 +207,13 @@ END_MESSAGE_MAP()
 CSharedFilesCtrl::CSharedFilesCtrl()
 	: CListCtrlItemWalk(this)
 {
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero(&sortstat, sizeof(sortstat));
+#else
 	memset(&sortstat, 0, sizeof(sortstat));
+#endif
+//<== Optimizer [shadow2004]
 	nAICHHashing = 0;
 }
 
@@ -819,7 +825,13 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 						else{
 							// delete to recycle bin :(
 							TCHAR todel[MAX_PATH+1];
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+							memzero(todel, sizeof todel);
+#else
 							memset(todel, 0, sizeof todel);
+#endif
+//<== Optimizer [shadow2004]
 							_tcsncpy(todel, myfile->GetFilePath(), ARRSIZE(todel)-2);
 
 							SHFILEOPSTRUCT fp = {0};

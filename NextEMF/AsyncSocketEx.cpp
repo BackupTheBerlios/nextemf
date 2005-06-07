@@ -128,7 +128,13 @@ public:
 	{
 		//Initialize data
 		m_pAsyncSocketExWindowData=new t_AsyncSocketExWindowData[512]; //Reserve space for 512 active sockets
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+		memzero(m_pAsyncSocketExWindowData, 512*sizeof(t_AsyncSocketExWindowData));
+#else
 		memset(m_pAsyncSocketExWindowData, 0, 512*sizeof(t_AsyncSocketExWindowData));
+#endif
+//<== Optimizer [shadow2004]
 		m_nWindowDataSize=512;
 		m_nSocketCount=0;
 		m_nWindowDataPos=0;
@@ -180,7 +186,13 @@ public:
 			ASSERT(!m_nSocketCount);
 			m_nWindowDataSize=512;
 			m_pAsyncSocketExWindowData=new t_AsyncSocketExWindowData[512]; //Reserve space for 512 active sockets
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+			memzero(m_pAsyncSocketExWindowData, 512*sizeof(t_AsyncSocketExWindowData));
+#else
 			memset(m_pAsyncSocketExWindowData, 0, 512*sizeof(t_AsyncSocketExWindowData));
+#endif
+//<== Optimizer [shadow2004]
 		}
 
 		if (nSocketIndex!=-1)
@@ -203,7 +215,13 @@ public:
 			t_AsyncSocketExWindowData *tmp=m_pAsyncSocketExWindowData;
 			m_pAsyncSocketExWindowData = new t_AsyncSocketExWindowData[m_nWindowDataSize];
 			memcpy(m_pAsyncSocketExWindowData, tmp, nOldWindowDataSize * sizeof(t_AsyncSocketExWindowData));
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+			memzero(m_pAsyncSocketExWindowData+nOldWindowDataSize, (m_nWindowDataSize-nOldWindowDataSize)*sizeof(t_AsyncSocketExWindowData));			
+#else
 			memset(m_pAsyncSocketExWindowData+nOldWindowDataSize, 0, (m_nWindowDataSize-nOldWindowDataSize)*sizeof(t_AsyncSocketExWindowData));
+#endif
+//<== Optimizer [shadow2004]
 			delete [] tmp;
 		}
 
@@ -405,7 +423,13 @@ public:
 				}
 
 				SOCKADDR_IN sockAddr;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+				memzero(&sockAddr,sizeof(sockAddr));
+#else
 				memset(&sockAddr,0,sizeof(sockAddr));
+#endif
+//<== Optimizer [shadow2004]
 				sockAddr.sin_family=AF_INET;
 				sockAddr.sin_addr.s_addr = ((LPIN_ADDR)((LPHOSTENT)pSocket->m_pAsyncGetHostByNameBuffer)->h_addr)->s_addr;
 
@@ -574,8 +598,13 @@ BOOL CAsyncSocketEx::Bind(UINT nSocketPort, LPCTSTR lpszSocketAddress)
 	USES_CONVERSION;
 
 	SOCKADDR_IN sockAddr;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero(&sockAddr,sizeof(sockAddr));
+#else
 	memset(&sockAddr,0,sizeof(sockAddr));
-
+#endif
+//<== Optimizer [shadow2004]
 	LPSTR lpszAscii = T2A((LPTSTR)lpszSocketAddress);
 	sockAddr.sin_family = AF_INET;
 
@@ -797,8 +826,14 @@ BOOL CAsyncSocketEx::Connect(LPCTSTR lpszHostAddress, UINT nHostPort)
 		ASSERT(lpszHostAddress != NULL);
 
 		SOCKADDR_IN sockAddr;
-		memset(&sockAddr,0,sizeof(sockAddr));
 
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+		memzero(&sockAddr,sizeof(sockAddr));
+#else
+		memset(&sockAddr,0,sizeof(sockAddr));
+#endif
+//<== Optimizer [shadow2004]
 		LPSTR lpszAscii = T2A((LPTSTR)lpszHostAddress);
 		sockAddr.sin_family = AF_INET;
 		sockAddr.sin_addr.s_addr = inet_addr(lpszAscii);
@@ -843,7 +878,13 @@ BOOL CAsyncSocketEx::GetPeerName( CString& rPeerAddress, UINT& rPeerPort )
 #endif NOLAYERS
 
 	SOCKADDR_IN sockAddr;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero(&sockAddr, sizeof(sockAddr));
+#else
 	memset(&sockAddr, 0, sizeof(sockAddr));
+#endif
+//<== Optimizer [shadow2004]
 
 	int nSockAddrLen = sizeof(sockAddr);
 	BOOL bResult = GetPeerName((SOCKADDR*)&sockAddr, &nSockAddrLen);
@@ -873,8 +914,13 @@ BOOL CAsyncSocketEx::GetPeerName( SOCKADDR* lpSockAddr, int* lpSockAddrLen )
 BOOL CAsyncSocketEx::GetSockName(CString& rSocketAddress, UINT& rSocketPort)
 {
 	SOCKADDR_IN sockAddr;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero(&sockAddr, sizeof(sockAddr));
+#else
 	memset(&sockAddr, 0, sizeof(sockAddr));
-
+#endif
+//<== Optimizer [shadow2004]
 	int nSockAddrLen = sizeof(sockAddr);
 	BOOL bResult = GetSockName((SOCKADDR*)&sockAddr, &nSockAddrLen);
 	if (bResult)

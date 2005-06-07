@@ -238,7 +238,13 @@ void CPartFile::Init(){
 		m_bAutoDownPriority = false;
 	}
 	srcarevisible = false;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero(m_anStates,sizeof(m_anStates));
+#else
 	memset(m_anStates,0,sizeof(m_anStates));
+#endif
+//<== Optimizer [shadow2004]
 	datarate = 0;
 	m_uMaxSources=0;
 	hashsetneeded = true;
@@ -265,8 +271,15 @@ void CPartFile::Init(){
 	m_lastRefreshedDLDisplay = 0;
 	m_is_A4AF_auto=false;
 	m_bLocalSrcReqQueued = false;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero(src_stats,sizeof(src_stats));
+	memzero(net_stats,sizeof(net_stats));
+#else
 	memset(src_stats,0,sizeof(src_stats));
 	memset(net_stats,0,sizeof(net_stats));
+#endif
+//<== Optimizer [shadow2004]
 	m_nCompleteSourcesTime = time(NULL);
 	m_nCompleteSourcesCount = 0;
 	m_nCompleteSourcesCountLo = 0;
@@ -1964,9 +1977,17 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 	{
 		bool downloadingbefore=m_anStates[DS_DOWNLOADING]>0;
 		// -khaos--+++> Moved this here, otherwise we were setting our permanent variables to 0 every tenth of a second...
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+		memzero(m_anStates,sizeof(m_anStates));
+		memzero(src_stats,sizeof(src_stats));
+		memzero(net_stats,sizeof(net_stats));
+#else
 		memset(m_anStates,0,sizeof(m_anStates));
 		memset(src_stats,0,sizeof(src_stats));
 		memset(net_stats,0,sizeof(net_stats));
+#endif
+//<== Optimizer [shadow2004]
 		uint16 nCountForState;
 
 		for (POSITION pos = srclist.GetHeadPosition(); pos != NULL;)
@@ -2377,12 +2398,26 @@ void CPartFile::UpdatePartsInfo()
 	for (POSITION pos = srclist.GetHeadPosition(); pos != 0; )
 	{
 		CUpDownClient* cur_src = srclist.GetNext(pos);
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP
+		uint8 weight=2;
+		if(cur_src->GetDownloadState()==DS_ONQUEUE && (cur_src->IsBanned() || cur_src->IsRemoteQueueFull() || cur_src->GetRemoteQueueRank()>4000)) 
+			weight=1;
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
+
 		if( cur_src->GetPartStatus() )
 		{		
 			for (int i = 0; i < partcount; i++)
 			{
 				if (cur_src->IsPartAvailable(i))
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP
+					m_SrcpartFrequency[i] +=weight;
+#else
 					m_SrcpartFrequency[i] += 1;
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
 			}
 			if ( flag )
 			{
@@ -2391,6 +2426,15 @@ void CPartFile::UpdatePartsInfo()
 		}
 	}
 
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP
+	for(uint16 i = 0; i < partcount; i++)
+	{
+		if(m_SrcpartFrequency[i]>1)
+			m_SrcpartFrequency[i] = m_SrcpartFrequency[i]>>1;
+	}
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
 	if (flag)
 	{
 		m_nCompleteSourcesCount = m_nCompleteSourcesCountLo = m_nCompleteSourcesCountHi = 0;
@@ -3048,9 +3092,17 @@ void CPartFile::StopFile(bool bCancel, bool resort)
 	stopped = true;
 	insufficient = false;
 	datarate = 0;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero(m_anStates,sizeof(m_anStates));
+	memzero(src_stats,sizeof(src_stats));	//Xman Bugfix
+	memzero(net_stats,sizeof(net_stats));	//Xman Bugfix
+#else
 	memset(m_anStates,0,sizeof(m_anStates));
 	memset(src_stats,0,sizeof(src_stats));	//Xman Bugfix
 	memset(net_stats,0,sizeof(net_stats));	//Xman Bugfix
+#endif
+//<== Optimizer [shadow2004]
 
 	if (!bCancel)
 		FlushBuffer(true);
@@ -4616,9 +4668,14 @@ bool CPartFile::GetNextRequestedBlock(CUpDownClient* sender,
 				// more depending on available sources
 				uint8 modif=10;
 				if (GetSourceCount()>800) modif=2; else if (GetSourceCount()>200) modif=5;
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP
+				uint16 limit= ceil((float)modif*GetSourceCount()/ 100) + 1;
+#else
 				uint16 limit= modif*GetSourceCount()/ 100;
 				if (limit==0) limit=1;
-
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
 				const uint16 veryRareBound = limit;
 				const uint16 rareBound = 2*limit;
 

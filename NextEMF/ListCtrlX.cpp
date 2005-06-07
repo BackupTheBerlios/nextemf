@@ -603,7 +603,13 @@ void CreateItemReport(CListCtrl& lv, CString& rstrReport)
 		TCHAR szItem[512];
 		int iItems = lv.GetItemCount();
 
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+		memzero(paiColWidths, sizeof(*paiColWidths) * iCols);
+#else
 		memset(paiColWidths, 0, sizeof(*paiColWidths) * iCols);
+#endif
+//<== Optimizer [shadow2004]
 		for (int iCol = 0; iCol < iCols; iCol++)
 		{
 			LVCOLUMN lvc;

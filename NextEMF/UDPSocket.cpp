@@ -485,7 +485,13 @@ void CUDPSocket::AsyncResolveDNS(LPCSTR lpszHostAddressA, UINT nHostPort)
 
 	if (sockAddr.sin_addr.s_addr == INADDR_NONE){
 		/* Resolve hostname "hostname" asynchronously */ 
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+		memzero(m_DnsHostBuffer, sizeof(m_DnsHostBuffer));
+#else
 		memset(m_DnsHostBuffer, 0, sizeof(m_DnsHostBuffer));
+#endif
+//<== Optimizer [shadow2004]
 
 		m_DnsTaskHandle = WSAAsyncGetHostByName(
 			m_hWndResolveMessage,
@@ -530,7 +536,13 @@ void CUDPSocket::DnsLookupDone(WPARAM wp, LPARAM lp){
 				m_SaveAddr.sin_addr.s_addr = ((LPIN_ADDR)(pHost->h_addr_list[0]))->s_addr;
 		}
 		// also reset the receive buffer
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+		memzero(m_DnsHostBuffer, sizeof(m_DnsHostBuffer));
+#else
 		memset(m_DnsHostBuffer, 0, sizeof(m_DnsHostBuffer));
+#endif
+//<== Optimizer [shadow2004]
 	}
 	if (m_cur_server){
 		if (m_SaveAddr.sin_addr.s_addr != INADDR_NONE){

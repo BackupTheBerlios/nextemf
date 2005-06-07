@@ -493,7 +493,13 @@ void CPreferences::Init()
 	srand((uint32)time(0)); // we need random numbers sometimes
 
 	prefsExt = new Preferences_Ext_Struct;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero(prefsExt, sizeof *prefsExt);
+#else
 	memset(prefsExt, 0, sizeof *prefsExt);
+#endif
+//<== Optimizer [shadow2004]
 
 	//get application start directory
 	TCHAR buffer[490];
@@ -2099,7 +2105,13 @@ void CPreferences::ResetStatsColor(int index)
 
 void CPreferences::GetAllStatsColors(int iCount, LPDWORD pdwColors)
 {
+//==> Optimizer [shadow2004]
+#ifdef OPTIM	
+	memzero(pdwColors, sizeof(*pdwColors) * iCount);
+#else
 	memset(pdwColors, 0, sizeof(*pdwColors) * iCount);
+#endif
+//<== Optimizer [shadow2004]
 	memcpy(pdwColors, m_adwStatsColors, sizeof(*pdwColors) * min(ARRSIZE(m_adwStatsColors), iCount));
 }
 
@@ -2498,7 +2510,13 @@ void CPreferences::LoadPreferences()
 	if (ini.GetBinary(_T("HyperTextFont"), &pData, &uSize) && uSize == sizeof m_lfHyperText)
 		memcpy(&m_lfHyperText, pData, sizeof m_lfHyperText);
 	else
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+		memzero(&m_lfHyperText, sizeof m_lfHyperText);
+#else
 		memset(&m_lfHyperText, 0, sizeof m_lfHyperText);
+#endif
+//<== Optimizer [shadow2004]
 	delete[] pData;
 
 	pData = NULL;
@@ -2506,7 +2524,13 @@ void CPreferences::LoadPreferences()
 	if (ini.GetBinary(_T("LogTextFont"), &pData, &uSize) && uSize == sizeof m_lfLogText)
 		memcpy(&m_lfLogText, pData, sizeof m_lfLogText);
 	else
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+		memzero(&m_lfLogText, sizeof m_lfLogText);
+#else
 		memset(&m_lfLogText, 0, sizeof m_lfLogText);
+#endif
+//<== Optimizer [shadow2004]
 	delete[] pData;
 
 	m_crLogError = ini.GetColRef(_T("LogErrorColor"), m_crLogError);

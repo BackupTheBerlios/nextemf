@@ -1,5 +1,5 @@
 Changes eMule 0.46a NextEMF v0.4
-=<| Alpha 6 |>==================
+=<| Alpha 7 |>==================
 based on eMule v0.46a
 
 removed : IRC [shadow2004]
@@ -20,6 +20,8 @@ added   : AntiLeecherClass by WiZaRd [cyrex2001]
 added   : ClientBanTime [2-12h] for banned clients [cyrex2001]
 added   : extended Statistic for Up-/Downloadsessions from NetF [shadow2004]
 added   : emulate other by WiZaRd, Spike2 and me [shadow2004]
+added   : Optimizer by ePlus [shadow2004]
+added   : Chunk-Selection-Patch by Xman [shadow2004]
 
 fixed   : compiler warning (level 3) C4800 for modversion [cyrex2001]
 fixed   : LeecherLog [cyrex2001]

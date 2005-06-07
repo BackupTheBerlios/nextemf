@@ -293,7 +293,13 @@ CString ReverseDnsLookup(DWORD dwIP)
 			// otherwise that function will never query a DNS server for the *local* host name.
 			IP4_ARRAY* pDnsServers = NULL;
 			BYTE aucBuff[16384];
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+			memzero(aucBuff, sizeof aucBuff);
+#else
 			memset(aucBuff, 0, sizeof aucBuff);
+#endif
+//<== Optimizer [shadow2004]
 			DWORD dwSize = sizeof aucBuff;
 			DNS_STATUS nDnsState = (*pfnDnsQueryConfig)(DnsConfigDnsServerList, FALSE, NULL, NULL, aucBuff, &dwSize);
 			if (nDnsState == 0)
@@ -305,7 +311,13 @@ CString ReverseDnsLookup(DWORD dwIP)
 					{
 						UINT uArrSize = sizeof(IP4_ARRAY) + sizeof(IP4_ADDRESS)*dwDnsServers;
 						pDnsServers = (IP4_ARRAY*)new BYTE[uArrSize];
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+						memzero(pDnsServers, uArrSize);
+#else
 						memset(pDnsServers, 0, uArrSize);
+#endif
+//<== Optimizer [shadow2004]
 						pDnsServers->AddrCount = dwDnsServers;
 						for (UINT s = 0; s < dwDnsServers; s++)
 							pDnsServers->AddrArray[s] = ((DWORD*)aucBuff)[1+s];
@@ -691,7 +703,13 @@ BOOL CPCReverseDnsThread::InitInstance()
 	ASSERT( m_dwIP != 0 );
 	InitThreadLocale();
 
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero(_acDNSBuffer, sizeof _acDNSBuffer);
+#else
 	memset(_acDNSBuffer, 0, sizeof _acDNSBuffer);
+#endif
+//<== Optimizer [shadow2004]
 	CString strHostname = ReverseDnsLookup(m_dwIP);
 	UINT uBufLen = 0;
 	UINT uError = WSAEINVAL;

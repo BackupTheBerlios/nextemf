@@ -80,8 +80,15 @@ CServerWnd::CServerWnd(CWnd* pParent /*=NULL*/)
 	m_pacServerMetURL=NULL;
 	m_uLangID = MAKELANGID(LANG_ENGLISH,SUBLANG_DEFAULT);
 	icon_srvlist = NULL;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero(&m_cfDef, sizeof m_cfDef);
+	memzero(&m_cfBold, sizeof m_cfBold);
+#else
 	memset(&m_cfDef, 0, sizeof m_cfDef);
 	memset(&m_cfBold, 0, sizeof m_cfBold);
+#endif
+//<== Optimizer [shadow2004]
 	StatusSelector.m_bCloseable = false;
 }
 

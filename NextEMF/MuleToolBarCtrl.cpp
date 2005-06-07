@@ -81,8 +81,15 @@ CMuleToolbarCtrl::CMuleToolbarCtrl()
 	m_iPreviousHeight = 0;
 	m_iLastPressedButton = -1;
 	m_buttoncount = 0;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero(TBButtons, sizeof(TBButtons));
+	memzero(TBStrings, sizeof(TBStrings));
+#else
 	memset(TBButtons, 0, sizeof(TBButtons));
 	memset(TBStrings, 0, sizeof(TBStrings));
+#endif
+//<== Optimizer [shadow2004]
 	m_eLabelType = NoLabels;
 }
 

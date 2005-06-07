@@ -54,7 +54,13 @@ END_MESSAGE_MAP()
 CClosableTabCtrl::CClosableTabCtrl()
 {
 	m_bCloseable = true;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero(&m_iiCloseButton, sizeof m_iiCloseButton);
+#else
 	memset(&m_iiCloseButton, 0, sizeof m_iiCloseButton);
+#endif
+//<== Optimizer [shadow2004]
 	m_ptCtxMenu.SetPoint(-1, -1);
 }
 

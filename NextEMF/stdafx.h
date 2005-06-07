@@ -64,7 +64,11 @@
 #include <atlcoll.h>
 #include <afxcoll.h>
 #include <afxtempl.h>
-
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+#include ".\Optimizer\optimize.h"
+#endif
+//<== Optimizer [shadow2004]
 
 #ifndef EWX_FORCEIFHUNG
 #define EWX_FORCEIFHUNG			0x00000010
@@ -133,3 +137,14 @@ typedef	CStringArray CStringWArray;
 #define _TWINAPI(fname)	fname "W"
 
 extern "C" int __cdecl __ascii_stricmp(const char * dst, const char * src);
+
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+#include <wchar.h>
+#include ".\Optimizer\Optimize.h"
+#define memcpy(a, b, c)	memcpy_optimized(a, b, c)
+#define memset(a, b, c) memset_optimized(a, b, c)
+#define memzero(a, b) memzero_optimized(a, b)
+#endif //OPTIM
+//<== Optimizer [shadow2004]
+

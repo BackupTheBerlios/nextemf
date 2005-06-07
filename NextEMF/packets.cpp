@@ -93,7 +93,13 @@ Packet::Packet(uint8 in_opcode, uint32 in_size, uint8 protocol, bool bFromPartFi
 	if (in_size){
 		completebuffer = new char[in_size+10];
 		pBuffer = completebuffer+6;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+		memzero(completebuffer,in_size+10);
+#else
 		memset(completebuffer,0,in_size+10);
+#endif
+//<== Optimizer [shadow2004]
 	}
 	else{
 		pBuffer = 0;

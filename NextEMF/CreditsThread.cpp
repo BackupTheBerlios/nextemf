@@ -337,7 +337,13 @@ void CCreditsThread::InitFonts()
 	// font 0
 	// SMALL ARIAL
 	CFont* font0 = new CFont;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero((void*)&lf, sizeof(lf));
+#else
 	memset((void*)&lf, 0, sizeof(lf));
+#endif
+//<== Optimizer [shadow2004]
 	lf.lfHeight = 12;
 	lf.lfWeight = 500;
 	lf.lfQuality = NONANTIALIASED_QUALITY;
@@ -352,7 +358,13 @@ void CCreditsThread::InitFonts()
 	// font 1
 	// MEDIUM BOLD ARIAL
 	CFont* font1 = new CFont;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero((void*)&lf, sizeof(lf));
+#else
 	memset((void*)&lf, 0, sizeof(lf));
+#endif
+//<== Optimizer [shadow2004]
 	lf.lfHeight = 14;
 	lf.lfWeight = 600;
 	lf.lfQuality = NONANTIALIASED_QUALITY;
@@ -367,7 +379,13 @@ void CCreditsThread::InitFonts()
 	// font 2
 	// LARGE ITALIC HEAVY BOLD TIMES ROMAN
 	CFont* font2 = new CFont;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero((void*)&lf, sizeof(lf));
+#else
 	memset((void*)&lf, 0, sizeof(lf));
+#endif
+//<== Optimizer [shadow2004]
 	lf.lfHeight = 16;
 	lf.lfWeight = 700;
 	//lf.lfItalic = TRUE;
@@ -382,7 +400,13 @@ void CCreditsThread::InitFonts()
 
 	// font 3
 	CFont* font3 = new CFont;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero((void*)&lf, sizeof(lf));
+#else
 	memset((void*)&lf, 0, sizeof(lf));
+#endif
+//<== Optimizer [shadow2004]
 	lf.lfHeight = 25;
 	lf.lfWeight = 900;
 	lf.lfQuality = afxData.bWin95 ? NONANTIALIASED_QUALITY : ANTIALIASED_QUALITY;

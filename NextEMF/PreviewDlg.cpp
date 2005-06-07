@@ -32,7 +32,13 @@ IMPLEMENT_DYNAMIC(PreviewDlg, CDialog)
 PreviewDlg::PreviewDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(PreviewDlg::IDD, pParent)
 {
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero(m_icons, sizeof m_icons);
+#else
 	memset(m_icons, 0, sizeof m_icons);
+#endif
+//<== Optimizer [shadow2004]
 }
 
 PreviewDlg::~PreviewDlg()

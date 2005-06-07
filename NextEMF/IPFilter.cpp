@@ -312,7 +312,13 @@ void CIPFilter::SaveToDefaultFile()
 bool CIPFilter::ParseFilterLine1(const CString& sbuffer, uint32& ip1, uint32& ip2, UINT& level, CString& desc) const
 {
 	TCHAR szDesc[256];
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero(szDesc, sizeof szDesc);
+#else
 	memset(szDesc, 0, sizeof szDesc);
+#endif
+//<== Optimizer [shadow2004]
 	UINT u1, u2, u3, u4, u5, u6, u7, u8, uLevel = DFLT_FILTER_LEVEL;
 	int iItems = _stscanf(sbuffer, _T("%u.%u.%u.%u - %u.%u.%u.%u , %u , %255c"), &u1, &u2, &u3, &u4, &u5, &u6, &u7, &u8, &uLevel, szDesc);
 	if (iItems < 8)

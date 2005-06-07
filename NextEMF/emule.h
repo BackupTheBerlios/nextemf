@@ -19,7 +19,11 @@
 	#error include 'stdafx.h' before including this file for PCH
 #endif
 #include "resource.h"
-
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+#include ".\Optimizer\cpu_info.h" 
+#endif
+//<== Optimizer [shadow2004]
 //==>Modversion [shadow2004]
 #ifdef MODVERSION
 #include "ModVersion.h"
@@ -67,6 +71,12 @@ class CemuleApp : public CWinApp
 {
 public:
 	CemuleApp(LPCTSTR lpszAppName = NULL);
+
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	CPUInfo 			cpu;
+#endif
+//<== Optimizer [shadow2004]
 
 	// ZZ:UploadSpeedSense -->
     UploadBandwidthThrottler* uploadBandwidthThrottler;
@@ -213,6 +223,11 @@ protected:
 protected:
 	bool	m_bWinSock2;
 public:
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	void OptimizerInfo(void);
+#endif
+//<== Optimizer [shadow2004]
 	bool WinSock2() {return m_bWinSock2;}
 	WSADATA				m_wsaData;
 #endif //WINSOCK2

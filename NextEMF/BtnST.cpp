@@ -483,7 +483,13 @@ BOOL CButtonST::OnClicked()
 			{
 				SHELLEXECUTEINFO	csSEI;
 
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+				memzero(&csSEI, sizeof(csSEI));
+#else
 				memset(&csSEI, 0, sizeof(csSEI));
+#endif
+//<== Optimizer [shadow2004]
 				csSEI.cbSize = sizeof(SHELLEXECUTEINFO);
 				csSEI.fMask = SEE_MASK_FLAG_NO_UI;
 				csSEI.lpVerb = _T("open");
@@ -1795,7 +1801,13 @@ DWORD CButtonST::SetBk(CDC* pDC)
 DWORD CButtonST::SetURL(LPCTSTR lpszURL)
 {
 	// Remove any existing URL
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero(m_szURL, sizeof(m_szURL));
+#else
 	memset(m_szURL, 0, sizeof(m_szURL));
+#endif
+//<== Optimizer [shadow2004]
 
 	if (lpszURL)
 	{

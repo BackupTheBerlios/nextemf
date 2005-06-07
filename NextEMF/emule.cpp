@@ -397,10 +397,23 @@ BOOL CemuleApp::InitInstance()
 
 //==> WINSOCK2 [shadow2004]
 #ifdef WINSOCK2 //WINSOCK2
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero(&m_wsaData, sizeof(WSADATA));
+#else
 	memset(&m_wsaData, 0, sizeof(WSADATA));
+#endif
+//<== Optimizer [shadow2004]
 	if (!InitWinsock2(&m_wsaData)) //first try it with winsock2
 		{
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+			memzero(&m_wsaData, sizeof(WSADATA));
+#else
 		memset(&m_wsaData, 0, sizeof(WSADATA));
+#endif
+//<== Optimizer [shadow2004]
+
 		if (!AfxSocketInit(&m_wsaData)) //then try it with old winsock
 #else //WINSOCK2
 	if (!AfxSocketInit())
@@ -475,6 +488,12 @@ BOOL CemuleApp::InitInstance()
 	CemuleDlg dlg;
 	emuledlg = &dlg;
 	m_pMainWnd = &dlg;
+
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	OptimizerInfo();
+#endif
+//<== Optimizer [shadow2004]
 
 	// Barry - Auto-take ed2k links
 	if (thePrefs.AutoTakeED2KLinks())
@@ -1780,3 +1799,35 @@ void CemuleApp::CreateBackwardDiagonalBrush()
 		VERIFY( m_brushBackwardDiagonal.CreateBrushIndirect(&logBrush) );
 	}
 }
+
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+void CemuleApp::OptimizerInfo(void)
+{
+	if (!emuledlg)
+		return;
+	AddLogLine(false,_T("********   Optimizer   ********"));
+	AddLogLine(false,_T("%s"),(CString)cpu.GetExtendedProcessorName());
+	switch (get_cpu_type())
+	{
+	case 1:
+		AddLogLine(false,_T("FPU optimizations active"));
+		break;
+	case 2:
+		AddLogLine(false,_T("MMX optimizations active"));
+		break;
+	case 3:
+		AddLogLine(false,_T("AMD optimizations active"));
+		break;
+	case 4:
+	case 5:
+		AddLogLine(false,_T("SSE optimizations active"));
+		break;
+	default:
+		AddLogLine(false,_T("Optimizations disabled"));
+		break;
+	}
+	AddLogLine(false,_T("********   Optimizer   ********"));
+}
+#endif
+//<== Optimizer [shadow2004]

@@ -181,14 +181,26 @@ struct SMediaInfo
 
 		iVideoStreams = 0;
 		(void)strVideoFormat;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+		memzero(&video, sizeof video);
+#else
 		memset(&video, 0, sizeof video);
+#endif
+//<== Optimizer [shadow2004]
 		fVideoLengthSec = 0.0;
 		fVideoFrameRate = 0.0;
 		fVideoAspectRatio = 0.0;
 
 		iAudioStreams = 0;
 		(void)strAudioFormat;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+		memzero(&audio, sizeof audio);
+#else
 		memset(&audio, 0, sizeof audio);
+#endif
+//<== Optimizer [shadow2004]
 		fAudioLengthSec = 0.0;
 	}
 

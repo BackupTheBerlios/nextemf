@@ -147,7 +147,13 @@ bool CArchiveRecovery::performRecovery(CPartFile *partFile, CTypedPtrList<CPtrLi
 			if (preview)
 			{
 				SHELLEXECUTEINFO SE;
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+				memzero(&SE,sizeof(SE));
+#else
 				memset(&SE,0,sizeof(SE));
+#endif
+//<== Optimizer [shadow2004]
 				SE.fMask = SEE_MASK_NOCLOSEPROCESS ;
 				SE.lpVerb = _T("open");
 				SE.lpFile = outputFileName.GetBuffer();
