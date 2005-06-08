@@ -1826,6 +1826,23 @@ BEGIN
     IDS_CLIENTBANTIME       "Bann-Zeit für Clients [2-12h]"
 END
 
+STRINGTABLE 
+BEGIN
+    IDS_EMULATOR            "Emuliere andere Clientsoftware"
+    IDS_EMUMLDONKEY         "Emuliere MLDonkey-Clients"
+    IDS_EMUEDONKEY          "Emuliere eDonkey-Clients"
+    IDS_EMUEDONKEYHYBRID    "Emuliere eDonkeyHybrid-Clients"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SHAREAZA2           "Emuliere Shareaza2-Clients"
+    IDS_LOGEMULATOR         "[EMF] Logge Emulator"
+    IDS_CSP_ENABLE          "Chunk-Auswahl"
+    IDS_CSP_NORMAL          "Normale Chunk-Auswahl"
+    IDS_CSP_XMAN            "Xman's Chunk-Auswahls-Patch"
+END
+
 #endif    // Deutsch (Deutschland) resources
 /////////////////////////////////////////////////////////////////////////////
 

@@ -2060,7 +2060,6 @@
 #define IDC_TXT_SMTPSERVER              2919
 #define IDC_TXT_RECEIVER                2920
 #define IDC_TXT_SENDER                  2921
-
 #define IDS_CLIENTSOFTWARE              3000
 #define IDC_LEECHERLOG                  3001
 #define IDS_LEECHERLOG                  3001
@@ -2070,14 +2069,15 @@
 #define IDS_ANTINICKTHIEF               3004
 #define IDS_ANTIMODTHIEF                3005
 #define IDS_CLIENTBANTIME               3006
-#define IDS_STRING3007                  3007
-
 #define IDS_EMULATOR					3100
 #define IDS_EMUMLDONKEY					3101
 #define IDS_EMUEDONKEY					3102
 #define IDS_EMUEDONKEYHYBRID			3103
 #define IDS_EMUSHAREAZA2				3104
 #define IDS_LOGEMULATOR					3105
+#define IDS_CSP_ENABLE                  3110
+#define IDS_CSP_NORMAL                  3111
+#define IDS_CSP_XMAN                    3112
 
 // Next default values for new objects
 // 

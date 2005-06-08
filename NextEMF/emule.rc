@@ -4161,9 +4161,16 @@ BEGIN
     IDS_EMUMLDONKEY         "Emulate MLDonkey-Clients"
     IDS_EMUEDONKEY          "Emulate eDonkey-Clients"
     IDS_EMUEDONKEYHYBRID    "Emulate eDonkeyHybrid-Clients"
+END
+
+STRINGTABLE 
+BEGIN
     IDS_EMUSHAREAZA2        "Emulate Shareaza 2 Clients"
     IDS_LOGEMULATOR         "[EMF] Log Emulatior"
-END;
+    IDS_CSP_ENABLE          "Chunk Selection"
+    IDS_CSP_NORMAL          "Official Chunk Selection"
+    IDS_CSP_XMAN            "Xman's Chunk Selection Patch"
+END
 
 #endif    // Englisch (USA) resources
 /////////////////////////////////////////////////////////////////////////////

@@ -31,6 +31,11 @@ CPPgNextEMF::CPPgNextEMF()
 	, m_ctrlTreeOptions(theApp.m_iDfltImageListColorFlags)
 {
 	m_bInitializedTreeOpts = false;
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP
+	m_iEnableCSP = 0;
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
 	m_htiSecurity = NULL;
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS
@@ -49,6 +54,12 @@ CPPgNextEMF::CPPgNextEMF()
 	m_htiEnableShareaza = NULL;
 #endif
 //<== Emulate others by WiZaRd & Spike [shadow2004]
+
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP
+	m_htiEnableCSP = NULL;
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
 }
 
 CPPgNextEMF::~CPPgNextEMF()
@@ -67,6 +78,12 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		int iImgEmulator = 8;
 #endif
 //<== Emulate others by WiZaRd & Spike [shadow2004]
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP
+		int iImgCSP = 8;
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
+
 
 		CImageList* piml = m_ctrlTreeOptions.GetImageList(TVSIL_NORMAL);
 		if (piml)
@@ -77,8 +94,16 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 			iImgEmulator = piml->Add(CTempIconLoader(_T("EMULATOR")));
 #endif
 //<== Emulate others by WiZaRd & Spike [shadow2004]
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP
+			iImgCSP = piml->Add(CTempIconLoader(_T("CLIENT_NEXTEMF")));
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
 		}
         m_htiSecurity = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SECURITY), iImgSecurity, TVI_ROOT);
+//==> Bold Categories by $icK$ [shadow2004]
+		m_ctrlTreeOptions.SetItemState(m_htiSecurity, TVIS_BOLD, TVIS_BOLD);
+//<== Bold Categories by $icK$ [shadow2004]
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS
 		m_htiEnableAntiNickThief = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ANTINICKTHIEF), m_htiSecurity, m_bEnableAntiNickThief);
@@ -91,6 +116,9 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 //==> Emulate others by WiZaRd & Spike [shadow2004]
 #ifdef EMULATE
 		m_htiEmulator = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_EMULATOR), iImgEmulator, TVI_ROOT);
+//==> Bold Categories by $icK$ [shadow2004]
+		m_ctrlTreeOptions.SetItemState(m_htiEmulator, TVIS_BOLD, TVIS_BOLD);
+//<== Bold Categories by $icK$ [shadow2004]
 		m_htiEnableMLDonkey = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_EMUMLDONKEY), m_htiEmulator, EmuMLDonkey);
 		m_htiEnableeDonkey = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_EMUEDONKEY), m_htiEmulator, EmueDonkey);
 		m_htiEnableeDonkeyHybrid = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_EMUEDONKEYHYBRID), m_htiEmulator, EmueDonkeyHybrid);
@@ -98,6 +126,18 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.Expand(m_htiEmulator, TVE_EXPAND);
 #endif
 //<== Emulate others by WiZaRd & Spike [shadow2004]
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP
+		m_htiEnableCSP = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_CSP_ENABLE), iImgCSP, TVI_ROOT);
+//==> Bold Categories by $icK$ [shadow2004]
+		m_ctrlTreeOptions.SetItemState(m_htiEnableCSP, TVIS_BOLD, TVIS_BOLD);
+//<== Bold Categories by $icK$ [shadow2004]
+		m_htiEnableCSPNormal = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_CSP_NORMAL), m_htiEnableCSP, m_iEnableCSP == 0);
+		m_htiEnableCSPXman = m_ctrlTreeOptions.InsertRadioButton(GetResString(IDS_CSP_XMAN), m_htiEnableCSP, m_iEnableCSP == 1);
+		m_ctrlTreeOptions.Expand(m_htiEnableCSP, TVE_EXPAND);
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
+
 		m_ctrlTreeOptions.SendMessage(WM_VSCROLL, SB_TOP);
 		m_bInitializedTreeOpts = true;
 	}
@@ -118,6 +158,11 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableShareaza, EmuShareaza);
 #endif
 //<== Emulate others by WiZaRd & Spike [shadow2004]
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP
+	DDX_TreeRadio(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableCSP, m_iEnableCSP);
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
 }
 
 BOOL CPPgNextEMF::OnInitDialog()
@@ -138,6 +183,13 @@ BOOL CPPgNextEMF::OnInitDialog()
 	EmuShareaza      = thePrefs.EmuShareaza;
 #endif
 //<== Emulate others by WiZaRd & Spike [shadow2004]
+
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP
+	m_iEnableCSP	= thePrefs.m_iEnableCSP;
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
+
 	CPropertyPage::OnInitDialog();
 	Localize();
 	return TRUE;  // return TRUE unless you set the focus to a control
@@ -175,6 +227,11 @@ BOOL CPPgNextEMF::OnApply()
 	thePrefs.EmuShareaza      = EmuShareaza;
 #endif
 //<== Emulate others by WiZaRd & Spike [shadow2004]
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP
+	thePrefs.m_iEnableCSP	  = m_iEnableCSP;
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
 	SetModified(FALSE);
 	return CPropertyPage::OnApply();
 }
@@ -207,6 +264,13 @@ void CPPgNextEMF::Localize(void)
 		if (m_htiEnableShareaza) m_ctrlTreeOptions.SetItemText(m_htiEnableShareaza, GetResString(IDS_EMUSHAREAZA2));
 #endif
 //<== Emulate others by WiZaRd & Spike [shadow2004]
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP
+		if (m_htiEnableCSP) m_ctrlTreeOptions.SetItemText(m_htiEnableCSP, GetResString(IDS_CSP_ENABLE));
+		if (m_htiEnableCSPNormal) m_ctrlTreeOptions.SetItemText(m_htiEnableCSPNormal, GetResString(IDS_CSP_NORMAL));		
+		if (m_htiEnableCSPXman) m_ctrlTreeOptions.SetItemText(m_htiEnableCSPXman, GetResString(IDS_CSP_XMAN));		
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
 	}
 }
 
@@ -230,7 +294,11 @@ void CPPgNextEMF::OnDestroy()
 	m_htiEnableShareaza      = NULL;
 #endif
 //<== Emulate others by WiZaRd & Spike [shadow2004]
-
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP
+	m_htiEnableCSP			 = NULL;
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
 	CPropertyPage::OnDestroy();
 }
 

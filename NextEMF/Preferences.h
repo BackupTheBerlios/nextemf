@@ -567,6 +567,12 @@ public:
 #endif
 //<== Emulate others by WiZaRd & Spike [shadow2004]
 
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP
+	static	int		m_iEnableCSP;
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
+
 	enum Table
 	{
 		tableDownload, 
@@ -1278,10 +1284,15 @@ public:
 	static	bool	IsEmueDonkey()			    {return EmueDonkey;}
 	static	bool	IsEmueDonkeyHybrid()		{return EmueDonkeyHybrid;}
 	static	bool	IsEmuShareaza()				{return EmuShareaza;}
-	static	bool	IsEmuLog()					{return m_bLogEmulator;}
+	static	bool	IsEmuLog()					{return m_bVerbose && m_bLogEmulator;}
 #endif
 //<== Emulate others by WiZaRd & Spike [shadow2004]
 
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP
+	static	int		GetCSPType()				{return m_iEnableCSP;}
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
 
 protected:
 	static	CString appdir;

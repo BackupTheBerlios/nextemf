@@ -33,6 +33,12 @@ protected:
 #endif
 //<== Emulate others by WiZaRd & Spike [shadow2004]
 
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP
+	int m_iEnableCSP;
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
+
 	HTREEITEM m_htiSecurity;
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS
@@ -51,6 +57,15 @@ protected:
 	HTREEITEM m_htiEnableShareaza;
 #endif
 //<== Emulate others by WiZaRd & Spike [shadow2004]
+
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP
+	HTREEITEM m_htiEnableCSP;
+	HTREEITEM m_htiEnableCSPNormal;
+	HTREEITEM m_htiEnableCSPXman;
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
+
 
 	CTreeOptionsCtrlEx m_ctrlTreeOptions;
 	bool m_bInitializedTreeOpts;

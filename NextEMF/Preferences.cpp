@@ -471,6 +471,13 @@ bool	CPreferences::EmuShareaza;
 bool	CPreferences::m_bLogEmulator;
 #endif
 //<== Emulate others by WiZaRd & Spike [shadow2004]
+
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP
+int		CPreferences::m_iEnableCSP;
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
+
 CPreferences::CPreferences()
 {
 #ifdef _DEBUG
@@ -2079,6 +2086,12 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("LogEmulator"), m_bLogEmulator,_T("NextEMF"));
 #endif
 //<== Emulate others by WiZaRd & Spike [shadow2004]
+
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP
+	ini.WriteInt(_T("EnableCSP"),m_iEnableCSP,_T("NextEMF"));
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
 }
 
 void CPreferences::ResetStatsColor(int index)
@@ -2645,6 +2658,11 @@ void CPreferences::LoadPreferences()
 #endif
 //<== Emulate others by WiZaRd & Spike [shadow2004]
 
+//==> Chunk Selection Patch by Xman [shadow2004]
+#ifdef CSP	
+	m_iEnableCSP = ini.GetInt(_T("EnableCSP"), 1, _T("NextEMF")); // 0=original, 1=Xman
+#endif
+//<== Chunk Selection Patch by Xman [shadow2004]
 
 	LoadCats();
 	SetLanguage();

@@ -2401,8 +2401,10 @@ void CPartFile::UpdatePartsInfo()
 //==> Chunk Selection Patch by Xman [shadow2004]
 #ifdef CSP
 		uint8 weight=2;
+		if (thePrefs.GetCSPType() == 1) {
 		if(cur_src->GetDownloadState()==DS_ONQUEUE && (cur_src->IsBanned() || cur_src->IsRemoteQueueFull() || cur_src->GetRemoteQueueRank()>4000)) 
 			weight=1;
+		}
 #endif
 //<== Chunk Selection Patch by Xman [shadow2004]
 
@@ -2413,7 +2415,13 @@ void CPartFile::UpdatePartsInfo()
 				if (cur_src->IsPartAvailable(i))
 //==> Chunk Selection Patch by Xman [shadow2004]
 #ifdef CSP
+				{
+
+					if (thePrefs.GetCSPType() == 1)
 					m_SrcpartFrequency[i] +=weight;
+					else
+						m_SrcpartFrequency[i] += 1;
+				}
 #else
 					m_SrcpartFrequency[i] += 1;
 #endif
@@ -2428,10 +2436,12 @@ void CPartFile::UpdatePartsInfo()
 
 //==> Chunk Selection Patch by Xman [shadow2004]
 #ifdef CSP
+	if (thePrefs.GetCSPType() == 1) {
 	for(uint16 i = 0; i < partcount; i++)
 	{
 		if(m_SrcpartFrequency[i]>1)
 			m_SrcpartFrequency[i] = m_SrcpartFrequency[i]>>1;
+	}
 	}
 #endif
 //<== Chunk Selection Patch by Xman [shadow2004]
