@@ -21,6 +21,6 @@
 #define MOD_VERSION_MIN		4
 #define MOD_VERSION_BUILD   0
 
-#define	MOD_VERSION			_T("NextEMF.alp7")
-#define	MOD_LONG_VERSION	_T("NextEMF.alp7 v")
+#define	MOD_VERSION			_T("NextEMF.alp8")
+#define	MOD_LONG_VERSION	_T("NextEMF.alp8 v")
 

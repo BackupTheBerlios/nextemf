@@ -48,9 +48,16 @@ static char THIS_FILE[] = __FILE__;
 
 
 CClientList::CClientList(){
-	m_dwLastBannCleanUp = 0;
-	m_dwLastTrackedCleanUp = 0;
-	m_dwLastClientCleanUp = 0;
+//==> Relax on Start-Up by WiZaRd [shadow2004]
+	AddLogLine(false, _T("Starting relaxed ;-) ..."));
+	const uint32 cur_tick = ::GetTickCount(); 
+	m_dwLastBannCleanUp = cur_tick+CLIENTBANTIME; 
+	m_dwLastTrackedCleanUp = cur_tick+KEEPTRACK_TIME; 
+	m_dwLastClientCleanUp = cur_tick; 
+//	m_dwLastBannCleanUp = 0;
+//	m_dwLastTrackedCleanUp = 0;
+//	m_dwLastClientCleanUp = 0;
+//<== Relax on Start-Up by WiZaRd [shadow2004]
 	m_nBuddyStatus = Disconnected;
 	m_bannedList.InitHashTable(331);
 	m_trackedClientsList.InitHashTable(2011);

@@ -1824,6 +1824,7 @@ BEGIN
     IDS_ANTINICKTHIEF       "Clients die den User-Namen übernehmen, bannen?"
     IDS_ANTIMODTHIEF        "Clients die Mod-Namen faken, bannen?"
     IDS_CLIENTBANTIME       "Bann-Zeit für Clients [2-12h]"
+    IDS_ENABLE_SNAFU        "Aktiviere S.N.A.F.U v 3.1"
 END
 
 STRINGTABLE 
