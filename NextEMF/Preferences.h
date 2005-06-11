@@ -557,6 +557,12 @@ public:
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
 
+//==>SNAFU [shadow2004]
+#ifdef SNAFU
+	static bool      m_bSnafu;
+#endif
+//<==SNAFU [shadow2004]
+
 //==> Emulate others by WiZaRd & Spike [shadow2004]
 #ifdef EMULATE
 	static	bool	EmuMLDonkey;
@@ -1277,6 +1283,12 @@ public:
 	static uint8	GetClientBanTime()					{return m_iClientBanTime;}
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
+
+//==>SNAFU [shadow2004]
+#ifdef SNAFU
+	static bool	GetAntiSnafu()					{return m_bSnafu;}
+#endif
+//<==SNAFU [shadow2004]
 
 //==> Emulate others by WiZaRd & Spike [shadow2004]
 #ifdef EMULATE

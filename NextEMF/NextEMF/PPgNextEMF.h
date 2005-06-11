@@ -24,6 +24,12 @@ protected:
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
 
+//==>SNAFU [shadow2004]
+#ifdef SNAFU
+	bool m_bSnafu;
+#endif
+//<==SNAFU [shadow2004]
+
 //==> Emulate others by WiZaRd & Spike [shadow2004]
 #ifdef EMULATE
 	bool EmuMLDonkey;
@@ -47,6 +53,12 @@ protected:
 	HTREEITEM m_htiClientBanTime;
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
+
+//==>SNAFU [shadow2004]
+#ifdef SNAFU
+	HTREEITEM m_htiEnableSnafu;
+#endif
+//<==SNAFU [shadow2004]
 
 //==> Emulate others by WiZaRd & Spike [shadow2004]
 #ifdef EMULATE

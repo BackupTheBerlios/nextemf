@@ -462,6 +462,12 @@ uint8	CPreferences::m_iClientBanTime;
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
 
+//==>SNAFU [shadow2004]
+#ifdef SNAFU
+bool     CPreferences::m_bSnafu;
+#endif
+//<==SNAFU [shadow2004]
+
 //==> Emulate others by WiZaRd & Spike [shadow2004]
 #ifdef EMULATE
 bool	CPreferences::EmuMLDonkey;
@@ -2077,6 +2083,12 @@ void CPreferences::SavePreferences()
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
 
+//==>SNAFU [shadow2004]
+#ifdef SNAFU
+	ini.WriteInt(_T("SNAFU"), m_bSnafu,_T("NextEMF"));         
+#endif
+//<==SNAFU [shadow2004]
+
 //==> Emulate others by WiZaRd & Spike [shadow2004]
 #ifdef EMULATE
 	ini.WriteBool(_T("EmuMLDonkey"), EmuMLDonkey,_T("NextEMF"));
@@ -2647,6 +2659,12 @@ void CPreferences::LoadPreferences()
 	m_iClientBanTime=ini.GetInt(_T("ClientBanTime"), 2, _T("NextEMF"));
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
+
+//==>SNAFU [shadow2004]
+#ifdef SNAFU
+	m_bSnafu=ini.GetBool(_T("SNAFU"), true, _T("NextEMF"));
+#endif
+//<==SNAFU [shadow2004]
 
 //==> Emulate others by WiZaRd & Spike [shadow2004]
 #ifdef EMULATE

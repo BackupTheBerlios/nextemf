@@ -3673,6 +3673,7 @@ BEGIN
     IDS_ANTINICKTHIEF       "Enable Anti-Nick-Thief"
     IDS_ANTIMODTHIEF        "Enable Anti-Mod-Faker"
     IDS_CLIENTBANTIME       "Time for banned clients [2-12h]"
+    IDS_ENABLE_SNAFU        "Enable S.N.A.F.U v3.1"
 END
 
 STRINGTABLE 

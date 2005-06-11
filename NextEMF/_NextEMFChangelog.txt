@@ -24,9 +24,13 @@ added   : Optimizer by ePlus [shadow2004]
 added   : Chunk-Selection-Patch by Xman [shadow2004]
 added	: Option to switch between Original and Xman's Chunk Selection [shadow2004]
 added   : Show Categories on Tweaks-Page in bold by $icK$ [shadow2004]
+added   : S.N.A.F.U. v 3.1 from eWombat (switchable) [shadow2004]
 
 fixed   : compiler warning (level 3) C4800 for modversion [cyrex2001]
 fixed   : LeecherLog [cyrex2001]
 fixed   : AntiLeecherClass=>Modfaker [cyrex2001]
+fixed	: Bug in bool CUpDownClient::IsBanned() const by Xman [shadow2004]
+fixed	: Bug in CDownloadClientsCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
+		  by Xman [shadow2004]
 
 update	: german Language File (08.06.2005) [shadow2004]

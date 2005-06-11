@@ -2069,6 +2069,7 @@
 #define IDS_ANTINICKTHIEF               3004
 #define IDS_ANTIMODTHIEF                3005
 #define IDS_CLIENTBANTIME               3006
+#define IDS_ENABLE_SNAFU                3007
 #define IDS_EMULATOR					3100
 #define IDS_EMUMLDONKEY					3101
 #define IDS_EMUEDONKEY					3102

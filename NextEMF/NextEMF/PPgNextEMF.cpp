@@ -45,6 +45,12 @@ CPPgNextEMF::CPPgNextEMF()
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
 
+//==>SNAFU [shadow2004]
+#ifdef SNAFU
+	m_htiEnableSnafu = NULL;
+#endif
+//<==SNAFU [shadow2004]
+
 //==> Emulate others by WiZaRd & Spike [shadow2004]
 #ifdef EMULATE
 	m_htiEmulator = NULL;
@@ -112,6 +118,11 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.AddEditBox(m_htiClientBanTime, RUNTIME_CLASS(CNumTreeOptionsEdit));
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
+//==>SNAFU [shadow2004]
+#ifdef SNAFU
+		m_htiEnableSnafu = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_ENABLE_SNAFU), m_htiSecurity, m_bSnafu);
+#endif
+//<==SNAFU [shadow2004]
         m_ctrlTreeOptions.Expand(m_htiSecurity, TVE_EXPAND);
 //==> Emulate others by WiZaRd & Spike [shadow2004]
 #ifdef EMULATE
@@ -150,6 +161,13 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
 
+//==>SNAFU [shadow2004]
+#ifdef SNAFU
+	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableSnafu, m_bSnafu);
+#endif
+//<==SNAFU [shadow2004]
+
+
 //==> Emulate others by WiZaRd & Spike [shadow2004]
 #ifdef EMULATE
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableMLDonkey, EmuMLDonkey);
@@ -174,6 +192,12 @@ BOOL CPPgNextEMF::OnInitDialog()
 	m_iClientBanTime = (int) (thePrefs.m_iClientBanTime);
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
+
+//==>SNAFU [shadow2004]
+#ifdef SNAFU
+	m_bSnafu = thePrefs.m_bSnafu;
+#endif
+//<==SNAFU [shadow2004]
 
 //==> Emulate others by WiZaRd & Spike [shadow2004]
 #ifdef EMULATE
@@ -219,6 +243,11 @@ BOOL CPPgNextEMF::OnApply()
 	thePrefs.m_iClientBanTime = m_iClientBanTime;
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
+//==>SNAFU [shadow2004]
+#ifdef SNAFU
+	thePrefs.m_bSnafu = m_bSnafu;
+#endif
+//<==SNAFU [shadow2004]
 //==> Emulate others by WiZaRd & Spike [shadow2004]
 #ifdef EMULATE
 	thePrefs.EmuMLDonkey      = EmuMLDonkey;
@@ -256,6 +285,11 @@ void CPPgNextEMF::Localize(void)
 	    if (m_htiClientBanTime) m_ctrlTreeOptions.SetEditLabel(m_htiClientBanTime, GetResString(IDS_CLIENTBANTIME));
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
+//==>SNAFU [shadow2004]
+#ifdef SNAFU
+		if (m_htiEnableSnafu) m_ctrlTreeOptions.SetItemText(m_htiEnableSnafu, GetResString(IDS_ENABLE_SNAFU));
+#endif
+//<==SNAFU [shadow2004]
 //==> Emulate others by WiZaRd & Spike [shadow2004]
 #ifdef EMULATE
 		if (m_htiEnableMLDonkey) m_ctrlTreeOptions.SetItemText(m_htiEnableMLDonkey, GetResString(IDS_EMUMLDONKEY));
@@ -286,6 +320,11 @@ void CPPgNextEMF::OnDestroy()
 	m_htiClientBanTime = NULL;
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
+//==>SNAFU [shadow2004]
+#ifdef SNAFU
+	m_htiEnableSnafu = NULL;
+#endif
+//<==SNAFU [shadow2004]
 //==> Emulate others by WiZaRd & Spike [shadow2004]
 #ifdef EMULATE
 	m_htiEnableMLDonkey      = NULL;
