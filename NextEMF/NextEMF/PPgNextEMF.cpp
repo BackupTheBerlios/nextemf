@@ -66,6 +66,13 @@ CPPgNextEMF::CPPgNextEMF()
 	m_htiEnableCSP = NULL;
 #endif
 //<== Chunk Selection Patch by Xman [shadow2004]
+
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	m_htiDownload = NULL;
+	m_htiAutoSetResumeOrder = NULL;
+#endif
+//<== Linear Prio [shadow2004]
 }
 
 CPPgNextEMF::~CPPgNextEMF()
@@ -89,7 +96,11 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		int iImgCSP = 8;
 #endif
 //<== Chunk Selection Patch by Xman [shadow2004]
-
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+		int iImgLP = 8;
+#endif
+//<== Linear Prio [shadow2004]
 
 		CImageList* piml = m_ctrlTreeOptions.GetImageList(TVSIL_NORMAL);
 		if (piml)
@@ -105,6 +116,11 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 			iImgCSP = piml->Add(CTempIconLoader(_T("CLIENT_NEXTEMF")));
 #endif
 //<== Chunk Selection Patch by Xman [shadow2004]
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+			iImgLP = piml->Add(CTempIconLoader(_T("TRANSFERUPDOWN")));
+#endif
+//<== Linear Prio [shadow2004]
 		}
         m_htiSecurity = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SECURITY), iImgSecurity, TVI_ROOT);
 //==> Bold Categories by $icK$ [shadow2004]
@@ -148,7 +164,16 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.Expand(m_htiEnableCSP, TVE_EXPAND);
 #endif
 //<== Chunk Selection Patch by Xman [shadow2004]
-
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+		m_htiDownload = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_DOWNLOAD), iImgLP, TVI_ROOT);
+		//==> Bold Categories by $icK$ [shadow2004]
+		m_ctrlTreeOptions.SetItemState(m_htiDownload, TVIS_BOLD, TVIS_BOLD);
+		//<== Bold Categories by $icK$ [shadow2004]
+		m_htiAutoSetResumeOrder = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_CAT_USELP), m_htiDownload, m_bAutoSetResumeOrder);
+		m_ctrlTreeOptions.Expand(m_htiDownload, TVE_EXPAND);
+#endif
+//<== Linear Prio [shadow2004]
 		m_ctrlTreeOptions.SendMessage(WM_VSCROLL, SB_TOP);
 		m_bInitializedTreeOpts = true;
 	}
@@ -181,6 +206,11 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeRadio(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableCSP, m_iEnableCSP);
 #endif
 //<== Chunk Selection Patch by Xman [shadow2004]
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiAutoSetResumeOrder, m_bAutoSetResumeOrder);
+#endif
+//<== Linear Prio [shadow2004]
 }
 
 BOOL CPPgNextEMF::OnInitDialog()
@@ -213,6 +243,12 @@ BOOL CPPgNextEMF::OnInitDialog()
 	m_iEnableCSP	= thePrefs.m_iEnableCSP;
 #endif
 //<== Chunk Selection Patch by Xman [shadow2004]
+
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	m_bAutoSetResumeOrder = thePrefs.m_bAutoSetResumeOrder;
+#endif
+//<== Linear Prio [shadow2004]
 
 	CPropertyPage::OnInitDialog();
 	Localize();
@@ -261,6 +297,11 @@ BOOL CPPgNextEMF::OnApply()
 	thePrefs.m_iEnableCSP	  = m_iEnableCSP;
 #endif
 //<== Chunk Selection Patch by Xman [shadow2004]
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	thePrefs.m_bAutoSetResumeOrder = m_bAutoSetResumeOrder;
+#endif
+//<== Linear Prio [shadow2004]
 	SetModified(FALSE);
 	return CPropertyPage::OnApply();
 }
@@ -305,6 +346,11 @@ void CPPgNextEMF::Localize(void)
 		if (m_htiEnableCSPXman) m_ctrlTreeOptions.SetItemText(m_htiEnableCSPXman, GetResString(IDS_CSP_XMAN));		
 #endif
 //<== Chunk Selection Patch by Xman [shadow2004]
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+		if (m_htiAutoSetResumeOrder) m_ctrlTreeOptions.SetItemText(m_htiAutoSetResumeOrder, GetResString(IDS_CAT_USELP));
+#endif
+//<== Linear Prio [shadow2004]
 	}
 }
 
@@ -338,6 +384,11 @@ void CPPgNextEMF::OnDestroy()
 	m_htiEnableCSP			 = NULL;
 #endif
 //<== Chunk Selection Patch by Xman [shadow2004]
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	m_htiAutoSetResumeOrder	 = NULL;
+#endif
+//<== Linear Prio [shadow2004]
 	CPropertyPage::OnDestroy();
 }
 

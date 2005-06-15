@@ -882,6 +882,8 @@ BEGIN
     PUSHBUTTON      "&Cleanup",IDC_CLEANFILENAME,2,40,59,14,BS_FLAT
     DEFPUSHBUTTON   "OK",IDOK,143,40,50,14,BS_FLAT
     PUSHBUTTON      "Abbrechen",IDCANCEL,197,40,50,14,BS_FLAT
+    EDITTEXT        IDC_TEXTNUM,2,25,245,12,ES_AUTOHSCROLL | ES_NUMBER | NOT 
+                    WS_VISIBLE
 END
 
 IDD_PPG_WEBSRV DIALOGEX 0, 0, 230, 241
@@ -1726,8 +1728,8 @@ BEGIN
         LEFTMARGIN, 7
         RIGHTMARGIN, 220
         TOPMARGIN, 7
-        HORZGUIDE, 46
         BOTTOMMARGIN, 231
+        HORZGUIDE, 46
     END
 
     IDD_ADDFRIEND, DIALOG
@@ -4171,6 +4173,37 @@ BEGIN
     IDS_CSP_ENABLE          "Chunk Selection"
     IDS_CSP_NORMAL          "Official Chunk Selection"
     IDS_CSP_XMAN            "Xman's Chunk Selection Patch"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_CAT_USELP           "Automatically increment and assign linear priority"
+    IDS_CAT_ORDER           "Download-Order"
+    IDS_CAT_SETORDER        "Set linear priority"
+    IDS_CAT_MNUAUTOINC      "Auto-increment selected"
+    IDS_CAT_MNUSTEPTHRU     "Step through each selected"
+    IDS_CAT_MNUALLSAME      "Set all to one value"
+    IDS_CAT_EXPAUTOINC      "Enter a non-negative starting number:"
+    IDS_CAT_EXPSTEPTHRU     "Enter a non-negative starting number:"
+    IDS_CAT_ABORTSTEPTHRU   "Do you wish to abort the linear priority step through?"
+    IDS_ABORT               "Abort?"
+    IDS_CAT_EXPALLSAME      "Enter a non-negative number, which will be applied to all selected files:"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STATS_STILLDOWN     "Still downloading"
+    IDS_STATS_LIMITREACH    "Limit reached"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STATS_TIMEDOUT      "Timed out"
+    IDS_STATS_DISCONNECT    "Disconneted"
+    IDS_STATS_DROPPED       "Dropped"
+    IDS_STATS_OTHER         "Other"
+    IDS_STATS_STILLUP       "Still uploading"
+    IDS_STATS_CANCELED      "Canceled"
 END
 
 #endif    // Englisch (USA) resources

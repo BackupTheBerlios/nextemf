@@ -45,6 +45,12 @@ protected:
 #endif
 //<== Chunk Selection Patch by Xman [shadow2004]
 
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	bool m_bAutoSetResumeOrder;
+#endif
+//<== Linear Prio [shadow2004]
+
 	HTREEITEM m_htiSecurity;
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS
@@ -78,6 +84,12 @@ protected:
 #endif
 //<== Chunk Selection Patch by Xman [shadow2004]
 
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	HTREEITEM m_htiDownload;
+	HTREEITEM m_htiAutoSetResumeOrder;
+#endif
+//<== Linear Prio [shadow2004]
 
 	CTreeOptionsCtrlEx m_ctrlTreeOptions;
 	bool m_bInitializedTreeOpts;

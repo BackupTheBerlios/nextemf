@@ -296,6 +296,11 @@ void CPartFile::Init(){
     m_random_update_wait = (uint32)(rand()/(RAND_MAX/1000));
     lastSwapForSourceExchangeTick = ::GetTickCount();
 	m_DeadSourceList.Init(false);
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	m_catResumeOrder=0;
+#endif
+//<== Linear Prio [shadow2004]
 }
 
 CPartFile::~CPartFile()
@@ -796,6 +801,17 @@ uint8 CPartFile::LoadPartFile(LPCTSTR in_directory,LPCTSTR in_filename, bool get
 						delete newtag;
 						break;
 					}
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+					case FT_CATRESUMEORDER:{
+						ASSERT( newtag->IsInt() );
+						if (newtag->IsInt())
+							m_catResumeOrder = newtag->GetInt();
+						delete newtag;
+						break;
+					}
+#endif
+//<== Linear Prio [shadow2004]
 				    default:{
 					    if (newtag->GetNameID()==0 && (newtag->GetName()[0]==FT_GAPSTART || newtag->GetName()[0]==FT_GAPEND))
 						{
@@ -1230,6 +1246,14 @@ bool CPartFile::SavePartFile()
 			aichtag.WriteTagToFile(&file);
 			uTagCount++;
 		}
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+		CTag catresumetag(FT_CATRESUMEORDER, m_catResumeOrder );
+		catresumetag.WriteTagToFile(&file);
+		uTagCount++;
+#endif
+//<== Linear Prio [shadow2004]
+
 		for (int j = 0; j < taglist.GetCount(); j++){
 			if (taglist[j]->IsStr() || taglist[j]->IsInt()){
 				taglist[j]->WriteTagToFile(&file);

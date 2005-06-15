@@ -117,6 +117,15 @@
 #define MP_GETKADSOURCELINK		10340
 #define MP_SHOWED2KLINK			10341
 #define MP_SETSOURCELIMIT		10342
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+#define MP_CAT_SHOWHIDEPAUSED	10350
+#define MP_CAT_SETRESUMEORDER	10351
+#define	MP_CAT_ORDERAUTOINC		10352
+#define MP_CAT_ORDERSTEPTHRU	10353
+#define MP_CAT_ORDERALLSAME		10354
+#endif
+//<== Linear Prio [shadow2004]
 
 // quick-speed changer
 #define MP_QS_U10				10501

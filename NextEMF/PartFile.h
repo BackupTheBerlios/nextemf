@@ -317,6 +317,13 @@ public:
 
 	CDeadSourceList	m_DeadSourceList;
 
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	void	SetCatResumeOrder(uint16 order)	{ m_catResumeOrder = order; SavePartFile(); }
+	uint16	GetCatResumeOrder() const				{ return m_catResumeOrder; }
+#endif
+//<== Linear Prio [shadow2004]
+
 #ifdef _DEBUG
 	// Diagnostic Support
 	virtual void AssertValid() const;
@@ -392,4 +399,9 @@ private:
 
     DWORD   lastSwapForSourceExchangeTick; // ZZ:DownloadManaager
 
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	uint16	m_catResumeOrder;
+#endif
+//<== Linear Prio [shadow2004]
 };

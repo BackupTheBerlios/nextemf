@@ -336,6 +336,11 @@
 #define  FT_CATEGORY			 0x53	// <uint32>
 #define	 FT_ATTRANSFERREDHI		 0x54	// <uint32>
 #define	 FT_MAXSOURCES			 0x55	// <uint32>
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+#define FT_CATRESUMEORDER		0x56
+#endif
+//<== Linear Prio [shadow2004]
 #define	 FT_MEDIA_ARTIST		 0xD0	// <string>
 #define	TAG_MEDIA_ARTIST		"\xD0"	// <string>
 #define	 FT_MEDIA_ALBUM			 0xD1	// <string>

@@ -69,8 +69,15 @@ public:
 	// add/remove entries
 	void	AddPartFilesToShare();
 	void	AddDownload(CPartFile* newfile, bool paused);
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	void	AddSearchToDownload(CSearchFile* toadd,uint8 paused=2,uint8 cat=0, uint16 useOrder = 0);
+	void	AddSearchToDownload(CString link,uint8 paused=2, uint8 cat=0, uint16 useOrder = 0);
+#else
 	void	AddSearchToDownload(CSearchFile* toadd,uint8 paused=2,uint8 cat=0);
 	void	AddSearchToDownload(CString link,uint8 paused=2, uint8 cat=0);
+#endif
+//<== Linear Prio [shadow2004]
 	void	AddFileLinkToDownload(class CED2KFileLink* pLink,uint8 cat=0);
 	void	RemoveFile(CPartFile* toremove);
 	void	DeleteAll();
@@ -89,6 +96,12 @@ public:
 
     void    StartNextFileIfPrefs(int cat);
 	void	StartNextFile(int cat=-1,bool force=false);
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	uint16	GetMaxCatResumeOrder(uint8 iCategory = 0);
+#endif
+//<== Linear Prio [shadow2004]
+
 	void	DisableAllA4AFAuto(void);
 
 	// sources

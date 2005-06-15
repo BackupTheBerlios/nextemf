@@ -1008,32 +1008,32 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 //==> Extended Failed/Success Statistic by NetF [shadow2004]
 #ifdef FSSTATS
 					// Successful
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Still downloading") , myStats.a[1] , (statGoodSessions > 0 ? (myStats.a[1] * 100.0f / statGoodSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_STILLDOWN) , myStats.a[1] , (statGoodSessions > 0 ? (myStats.a[1] * 100.0f / statGoodSessions) : 0.0f) );
 					stattree.SetItemText( down_ssessions_succ[0], cbuffer) ;
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Limit reached") , theStats.m_iSessionSuccessfulDownloadLimit , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulDownloadLimit * 100.0f / statGoodSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_LIMITREACH) , theStats.m_iSessionSuccessfulDownloadLimit , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulDownloadLimit * 100.0f / statGoodSessions) : 0.0f) );
 					stattree.SetItemText( down_ssessions_succ[1], cbuffer) ;
 					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_NONEEDEDPARTS) , theStats.m_iSessionSuccessfulDownloadNNP , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulDownloadNNP * 100.0f / statGoodSessions) : 0.0f) );
 					stattree.SetItemText( down_ssessions_succ[2], cbuffer) ;
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Timed out") , theStats.m_iSessionSuccessfulDownloadTimeout , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulDownloadTimeout * 100.0f / statGoodSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_TIMEDOUT) , theStats.m_iSessionSuccessfulDownloadTimeout , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulDownloadTimeout * 100.0f / statGoodSessions) : 0.0f) );
 					stattree.SetItemText( down_ssessions_succ[3], cbuffer) ;
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Disconnected") , theStats.m_iSessionSuccessfulDownloadDisconnect , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulDownloadDisconnect * 100.0f / statGoodSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_DISCONNECT) , theStats.m_iSessionSuccessfulDownloadDisconnect , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulDownloadDisconnect * 100.0f / statGoodSessions) : 0.0f) );
 					stattree.SetItemText( down_ssessions_succ[4], cbuffer) ;
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Dropped") , theStats.m_iSessionSuccessfulDownloadDropped , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulDownloadDropped * 100.0f / statGoodSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_DROPPED) , theStats.m_iSessionSuccessfulDownloadDropped , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulDownloadDropped * 100.0f / statGoodSessions) : 0.0f) );
 					stattree.SetItemText( down_ssessions_succ[5], cbuffer) ;
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Other") , theStats.m_iSessionSuccessfulDownloadOther , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulDownloadOther * 100.0f / statGoodSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_DROPPED) , theStats.m_iSessionSuccessfulDownloadOther , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulDownloadOther * 100.0f / statGoodSessions) : 0.0f) );
 					stattree.SetItemText( down_ssessions_succ[6], cbuffer) ;
 					// Failed
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Limit reached") , theStats.m_iSessionFailedDownloadLimit , (statBadSessions > 0 ? (theStats.m_iSessionFailedDownloadLimit * 100.0f / statBadSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_LIMITREACH) , theStats.m_iSessionFailedDownloadLimit , (statBadSessions > 0 ? (theStats.m_iSessionFailedDownloadLimit * 100.0f / statBadSessions) : 0.0f) );
 					stattree.SetItemText( down_ssessions_fail[0], cbuffer) ;
 					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_NONEEDEDPARTS) , theStats.m_iSessionFailedDownloadNNP , (statBadSessions > 0 ? (theStats.m_iSessionFailedDownloadNNP * 100.0f / statBadSessions) : 0.0f) );
 					stattree.SetItemText( down_ssessions_fail[1], cbuffer) ;
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Timed out") , theStats.m_iSessionFailedDownloadTimeout , (statBadSessions > 0 ? (theStats.m_iSessionFailedDownloadTimeout * 100.0f / statBadSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_TIMEDOUT) , theStats.m_iSessionFailedDownloadTimeout , (statBadSessions > 0 ? (theStats.m_iSessionFailedDownloadTimeout * 100.0f / statBadSessions) : 0.0f) );
 					stattree.SetItemText( down_ssessions_fail[2], cbuffer) ;
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Disconnected") , theStats.m_iSessionFailedDownloadDisconnect , (statBadSessions > 0 ? (theStats.m_iSessionFailedDownloadDisconnect * 100.0f / statBadSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_DISCONNECT) , theStats.m_iSessionFailedDownloadDisconnect , (statBadSessions > 0 ? (theStats.m_iSessionFailedDownloadDisconnect * 100.0f / statBadSessions) : 0.0f) );
 					stattree.SetItemText( down_ssessions_fail[3], cbuffer) ;
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Dropped") , theStats.m_iSessionFailedDownloadDropped , (statBadSessions > 0 ? (theStats.m_iSessionFailedDownloadDropped * 100.0f / statBadSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_DROPPED) , theStats.m_iSessionFailedDownloadDropped , (statBadSessions > 0 ? (theStats.m_iSessionFailedDownloadDropped * 100.0f / statBadSessions) : 0.0f) );
 					stattree.SetItemText( down_ssessions_fail[4], cbuffer) ;
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Other") , theStats.m_iSessionFailedDownloadOther , (statBadSessions > 0 ? (theStats.m_iSessionFailedDownloadOther * 100.0f / statBadSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_OTHER) , theStats.m_iSessionFailedDownloadOther , (statBadSessions > 0 ? (theStats.m_iSessionFailedDownloadOther * 100.0f / statBadSessions) : 0.0f) );
 					stattree.SetItemText( down_ssessions_fail[5], cbuffer) ;
 #endif
 //<== Extended Failed/Success Statistic by NetF [shadow2004]
@@ -1500,28 +1500,28 @@ void CStatisticsDlg::ShowStatistics(bool forceUpdate)
 //==> Extended Failed/Success Statistic by NetF [shadow2004]
 #ifdef FSSTATS
 					// Successful
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Still uploading") , theApp.uploadqueue->GetUploadQueueLength(), (statGoodSessions > 0 ? (theApp.uploadqueue->GetUploadQueueLength() * 100.0f / statGoodSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_STILLUP) , theApp.uploadqueue->GetUploadQueueLength(), (statGoodSessions > 0 ? (theApp.uploadqueue->GetUploadQueueLength() * 100.0f / statGoodSessions) : 0.0f) );
 					stattree.SetItemText( up_ssessions_succ[0], cbuffer) ;
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Limit reached") , theStats.m_iSessionSuccessfulUploadLimit , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulUploadLimit * 100.0f / statGoodSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_LIMITREACH) , theStats.m_iSessionSuccessfulUploadLimit , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulUploadLimit * 100.0f / statGoodSessions) : 0.0f) );
 					stattree.SetItemText( up_ssessions_succ[1], cbuffer) ;
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Cancelled") , theStats.m_iSessionSuccessfulUploadCancel , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulUploadCancel * 100.0f / statGoodSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_CANCELED) , theStats.m_iSessionSuccessfulUploadCancel , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulUploadCancel * 100.0f / statGoodSessions) : 0.0f) );
 					stattree.SetItemText( up_ssessions_succ[2], cbuffer) ;
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Timed out") , theStats.m_iSessionSuccessfulUploadTimeout , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulUploadTimeout * 100.0f / statGoodSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_TIMEDOUT) , theStats.m_iSessionSuccessfulUploadTimeout , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulUploadTimeout * 100.0f / statGoodSessions) : 0.0f) );
 					stattree.SetItemText( up_ssessions_succ[3], cbuffer) ;
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Disconnected") , theStats.m_iSessionSuccessfulUploadDisconnect , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulUploadDisconnect * 100.0f / statGoodSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_DISCONNECT) , theStats.m_iSessionSuccessfulUploadDisconnect , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulUploadDisconnect * 100.0f / statGoodSessions) : 0.0f) );
 					stattree.SetItemText( up_ssessions_succ[4], cbuffer) ;
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Other") , theStats.m_iSessionSuccessfulUploadOther , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulUploadOther * 100.0f / statGoodSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_OTHER) , theStats.m_iSessionSuccessfulUploadOther , (statGoodSessions > 0 ? (theStats.m_iSessionSuccessfulUploadOther * 100.0f / statGoodSessions) : 0.0f) );
 					stattree.SetItemText( up_ssessions_succ[5], cbuffer) ;
 					// Failed
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Limit reached") , theStats.m_iSessionFailedUploadLimit , (statBadSessions > 0 ? (theStats.m_iSessionFailedUploadLimit * 100.0f / statBadSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_LIMITREACH) , theStats.m_iSessionFailedUploadLimit , (statBadSessions > 0 ? (theStats.m_iSessionFailedUploadLimit * 100.0f / statBadSessions) : 0.0f) );
 					stattree.SetItemText( up_ssessions_fail[0], cbuffer) ;
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Cancelled") , theStats.m_iSessionFailedUploadCancel , (statBadSessions > 0 ? (theStats.m_iSessionFailedUploadCancel * 100.0f / statBadSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_CANCELED) , theStats.m_iSessionFailedUploadCancel , (statBadSessions > 0 ? (theStats.m_iSessionFailedUploadCancel * 100.0f / statBadSessions) : 0.0f) );
 					stattree.SetItemText( up_ssessions_fail[1], cbuffer) ;
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Timed out") , theStats.m_iSessionFailedUploadTimeout , (statBadSessions > 0 ? (theStats.m_iSessionFailedUploadTimeout * 100.0f / statBadSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_TIMEDOUT) , theStats.m_iSessionFailedUploadTimeout , (statBadSessions > 0 ? (theStats.m_iSessionFailedUploadTimeout * 100.0f / statBadSessions) : 0.0f) );
 					stattree.SetItemText( up_ssessions_fail[2], cbuffer) ;
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Disconnected") , theStats.m_iSessionFailedUploadDisconnect , (statBadSessions > 0 ? (theStats.m_iSessionFailedUploadDisconnect * 100.0f / statBadSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_DISCONNECT) , theStats.m_iSessionFailedUploadDisconnect , (statBadSessions > 0 ? (theStats.m_iSessionFailedUploadDisconnect * 100.0f / statBadSessions) : 0.0f) );
 					stattree.SetItemText( up_ssessions_fail[3], cbuffer) ;
-					cbuffer.Format( _T("%s: %u (%1.1f%%)") , _T("Other") , theStats.m_iSessionFailedUploadOther , (statBadSessions > 0 ? (theStats.m_iSessionFailedUploadOther * 100.0f / statBadSessions) : 0.0f) );
+					cbuffer.Format( _T("%s: %u (%1.1f%%)") , GetResString(IDS_STATS_OTHER) , theStats.m_iSessionFailedUploadOther , (statBadSessions > 0 ? (theStats.m_iSessionFailedUploadOther * 100.0f / statBadSessions) : 0.0f) );
 					stattree.SetItemText( up_ssessions_fail[4], cbuffer) ;
 #endif
 //<== Extended Failed/Success Statistic by NetF [shadow2004]

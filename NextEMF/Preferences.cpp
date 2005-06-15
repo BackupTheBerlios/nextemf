@@ -484,6 +484,12 @@ int		CPreferences::m_iEnableCSP;
 #endif
 //<== Chunk Selection Patch by Xman [shadow2004]
 
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+bool	CPreferences::m_bAutoSetResumeOrder;
+#endif
+//<== Linear Prio [shadow2004]
+
 CPreferences::CPreferences()
 {
 #ifdef _DEBUG
@@ -2104,6 +2110,12 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("EnableCSP"),m_iEnableCSP,_T("NextEMF"));
 #endif
 //<== Chunk Selection Patch by Xman [shadow2004]
+
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	ini.WriteBool(_T("AutoSetResumeOrder"), m_bAutoSetResumeOrder,_T("NextEMF"));
+#endif
+//<== Linear Prio [shadow2004]
 }
 
 void CPreferences::ResetStatsColor(int index)
@@ -2681,6 +2693,12 @@ void CPreferences::LoadPreferences()
 	m_iEnableCSP = ini.GetInt(_T("EnableCSP"), 1, _T("NextEMF")); // 0=original, 1=Xman
 #endif
 //<== Chunk Selection Patch by Xman [shadow2004]
+
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	m_bAutoSetResumeOrder=ini.GetBool(_T("AutoSetResumeOrder"), true, _T("NextEMF"));
+#endif
+//<== Linear Prio [shadow2004]
 
 	LoadCats();
 	SetLanguage();

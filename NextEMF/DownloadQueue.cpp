@@ -148,7 +148,13 @@ CDownloadQueue::~CDownloadQueue(){
 	m_srcwnd.DestroyWindow(); // just to avoid a MFC warning
 }
 
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+void CDownloadQueue::AddSearchToDownload(CSearchFile* toadd,uint8 paused,uint8 cat, uint16 useOrder){
+#else
 void CDownloadQueue::AddSearchToDownload(CSearchFile* toadd,uint8 paused,uint8 cat){
+#endif
+//<== Linear Prio [shadow2004]
 	if (IsFileExisting(toadd->GetFileHash()))
 		return;
 	CPartFile* newfile = new CPartFile(toadd);
@@ -157,6 +163,11 @@ void CDownloadQueue::AddSearchToDownload(CSearchFile* toadd,uint8 paused,uint8 c
 		return;
 	}
 	newfile->SetCategory(cat);
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	newfile->SetCatResumeOrder(useOrder);
+#endif
+//<== Linear Prio [shadow2004]
 	if (paused == 2)
 		paused = (uint8)thePrefs.AddNewFilesPaused();
 	AddDownload(newfile, (paused==1));
@@ -196,13 +207,24 @@ void CDownloadQueue::AddSearchToDownload(CSearchFile* toadd,uint8 paused,uint8 c
 	}
 }
 
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+void CDownloadQueue::AddSearchToDownload(CString link,uint8 paused, uint8 cat, uint16 useOrder){
+#else
 void CDownloadQueue::AddSearchToDownload(CString link,uint8 paused, uint8 cat){
+#endif
+//<== Linear Prio [shadow2004]
 	CPartFile* newfile = new CPartFile(link);
 	if (newfile->GetStatus() == PS_ERROR){
 		delete newfile;
 		return;
 	}
 	newfile->SetCategory(cat);
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	newfile->SetCatResumeOrder(useOrder);
+#endif
+//<== Linear Prio [shadow2004]
 	if (paused == 2)
 		paused = (uint8)thePrefs.AddNewFilesPaused();
 	AddDownload(newfile, (paused==1));
@@ -260,6 +282,12 @@ void CDownloadQueue::AddFileLinkToDownload(CED2KFileLink* pLink,uint8 cat)
 	}
 	else {
 		newfile->SetCategory(cat);
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+		if (thePrefs.AutoSetResumeOrder())
+			newfile->SetCatResumeOrder(GetMaxCatResumeOrder(cat)+1);
+#endif
+//<== Linear Prio [shadow2004]
 		AddDownload(newfile,thePrefs.AddNewFilesPaused());
 	}
 
@@ -288,6 +316,25 @@ void CDownloadQueue::AddFileLinkToDownload(CED2KFileLink* pLink,uint8 cat)
 		}
 	}
 }
+
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+uint16 CDownloadQueue::GetMaxCatResumeOrder(uint8 iCategory)
+{
+	uint16		max   = 0;
+	
+	for (POSITION pos = filelist.GetHeadPosition();pos != 0;filelist.GetNext(pos))
+	{
+		CPartFile* cur_file = filelist.GetAt(pos);
+		if (cur_file->GetCategory() == iCategory && cur_file->GetCatResumeOrder() > max)
+			max = cur_file->GetCatResumeOrder();
+	}
+
+	return max;
+}
+
+#endif
+//<== Linear Prio [shadow2004]
 
 void CDownloadQueue::AddToResolved( CPartFile* pFile, SUnresolvedHostname* pUH )
 {

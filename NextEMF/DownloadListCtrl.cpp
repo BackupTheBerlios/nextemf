@@ -124,6 +124,11 @@ void CDownloadListCtrl::Init()
 	lsctitle.Remove(':');
 	InsertColumn(11, lsctitle,LVCFMT_LEFT, 220);
 	InsertColumn(12, GetResString(IDS_CAT) ,LVCFMT_LEFT, 100);
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	InsertColumn(13, GetResString(IDS_CAT_ORDER),LVCFMT_LEFT,60);
+#endif
+//<== Linear Prio [shadow2004]
 
 	SetAllIcons();
 	Localize();
@@ -267,6 +272,14 @@ void CDownloadListCtrl::Localize()
 	pHeaderCtrl->SetItem(12, &hdi);
 	strRes.ReleaseBuffer();
 
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+		strRes = GetResString(IDS_CAT_ORDER);
+		hdi.pszText = strRes.GetBuffer();
+		pHeaderCtrl->SetItem(13, &hdi);
+		strRes.ReleaseBuffer();
+#endif
+//<== Linear Prio [shadow2004]
 	CreateMenues();
 
 	ShowFilesCount();
@@ -634,6 +647,16 @@ void CDownloadListCtrl::DrawFileItem(CDC *dc, int nColumn, LPCRECT lpRect, CtrlI
 					thePrefs.GetCategory(lpPartFile->GetCategory())->title:_T("");
 				dc->DrawText(buffer,buffer.GetLength(),const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
 			}
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+		case 13:
+			{
+				buffer.Format(_T("%u"), lpPartFile->GetCatResumeOrder());
+				dc->DrawText(buffer, buffer.GetLength(), const_cast<LPRECT>(lpRect), DLC_DT_TEXT);
+				break;
+			}
+#endif
+//<== Linear Prio [shadow2004]
 			break;
 		}
 	}
@@ -1344,9 +1367,30 @@ void CDownloadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 			}
 			m_FileMenu.AppendMenu(MF_POPUP | flag, (UINT_PTR)CatsMenu.m_hMenu, GetResString(IDS_TOCAT), _T("CATEGORY"));
 
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+			CTitleMenu mnuOrder;
+			if (this->GetSelectedCount() > 1) {
+				mnuOrder.CreatePopupMenu();
+				mnuOrder.AddMenuTitle(GetResString(IDS_CAT_SETORDER));
+				mnuOrder.AppendMenu(MF_STRING, MP_CAT_ORDERAUTOINC, GetResString(IDS_CAT_MNUAUTOINC));
+				mnuOrder.AppendMenu(MF_STRING, MP_CAT_ORDERSTEPTHRU, GetResString(IDS_CAT_MNUSTEPTHRU));
+				mnuOrder.AppendMenu(MF_STRING, MP_CAT_ORDERALLSAME, GetResString(IDS_CAT_MNUALLSAME));
+				m_FileMenu.AppendMenu(MF_STRING | MF_POPUP, (UINT_PTR)mnuOrder.m_hMenu, GetResString(IDS_CAT_SETORDER), _T("FILELINEARPRIO"));
+			}
+			else {
+				m_FileMenu.AppendMenu(MF_STRING, MP_CAT_SETRESUMEORDER, GetResString(IDS_CAT_SETORDER), _T("FILELINEARPRIO"));
+			}
+#endif
+//<== Linear Prio [shadow2004]
 			GetPopupMenuPos(*this, point);
 			m_FileMenu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON, point.x, point.y, this);
 			VERIFY( m_FileMenu.RemoveMenu(m_FileMenu.GetMenuItemCount() - 1, MF_BYPOSITION) );
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+			VERIFY( m_FileMenu.RemoveMenu(m_FileMenu.GetMenuItemCount() - 1, MF_BYPOSITION) );
+#endif
+//<== Linear Prio [shadow2004]
 			if (iPreviewMenuEntries)
 				VERIFY( m_FileMenu.RemoveMenu((UINT)PreviewMenu.m_hMenu, MF_BYCOMMAND) );
 			VERIFY( CatsMenu.DestroyMenu() );
@@ -1699,6 +1743,110 @@ BOOL CDownloadListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					as.DoModal();
 					break;
 				}
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+				case MP_CAT_SETRESUMEORDER: {
+					InputBox	inputOrder;
+					CString		currOrder;
+
+					currOrder.Format(_T("%u"), file->GetCatResumeOrder());
+					inputOrder.SetLabels(GetResString(IDS_CAT_SETORDER), GetResString(IDS_CAT_ORDER), currOrder);
+					inputOrder.SetNumber(true);
+					if (inputOrder.DoModal() == IDOK)
+					{
+					int newOrder = inputOrder.GetInputInt();
+						if  (newOrder < 0 || newOrder == file->GetCatResumeOrder()) break;
+
+					file->SetCatResumeOrder(newOrder);
+					Invalidate(); // Display the new category.
+					}
+					break;
+				}
+				// These next three are only called when there are multiple selections.
+				case MP_CAT_ORDERAUTOINC: {
+					// This option asks the user for a starting point, and then increments each selected item
+					// automatically.  It uses whatever order they appear in the list, from top to bottom.
+					InputBox	inputOrder;
+					if (selectedCount <= 1) break;
+						
+					inputOrder.SetLabels(GetResString(IDS_CAT_SETORDER), GetResString(IDS_CAT_EXPAUTOINC), _T("0"));
+					inputOrder.SetNumber(true);
+                    if (inputOrder.DoModal() == IDOK)
+					{
+					int newOrder = inputOrder.GetInputInt();
+					if  (newOrder < 0) break;
+
+					while (!selectedList.IsEmpty()) {
+						selectedList.GetHead()->SetCatResumeOrder(newOrder);
+						newOrder++;
+						selectedList.RemoveHead();
+					}
+					Invalidate();
+					}
+					break;
+				}
+				case MP_CAT_ORDERSTEPTHRU: {
+					// This option asks the user for a different resume modifier for each file.  It
+					// displays the filename in the inputbox so that they don't get confused about
+					// which one they're setting at any given moment.
+					InputBox	inputOrder;
+					CString		currOrder;
+					CString		currFile;
+					CString		currInstructions;
+					int			newOrder = 0;
+
+					if (selectedCount <= 1) break;
+					inputOrder.SetNumber(true);
+
+					while (!selectedList.IsEmpty()) {
+						currOrder.Format(_T("%u"), selectedList.GetHead()->GetCatResumeOrder());
+						currFile = selectedList.GetHead()->GetFileName();
+                        if (currFile.GetLength() > 50) currFile = currFile.Mid(0,47) + _T("...");
+						currInstructions.Format(_T("%s %s"), GetResString(IDS_CAT_EXPSTEPTHRU), currFile);
+						inputOrder.SetLabels(GetResString(IDS_CAT_SETORDER), currInstructions, currOrder);
+
+						if (inputOrder.DoModal() == IDCANCEL) {
+							if (MessageBox(GetResString(IDS_CAT_ABORTSTEPTHRU), GetResString(IDS_ABORT), MB_YESNO) == IDYES) {
+								break;
+							}
+							else {
+								selectedList.RemoveHead();
+								continue;
+							}
+						}
+
+						newOrder = inputOrder.GetInputInt();
+						selectedList.GetHead()->SetCatResumeOrder(newOrder);
+						selectedList.RemoveHead();
+					}
+					RedrawItems(0, GetItemCount() - 1);
+					break;
+				}
+				case MP_CAT_ORDERALLSAME: {
+					// This option asks the user for a single resume modifier and applies it to
+					// all the selected files.
+					InputBox	inputOrder;
+					CString		currOrder;
+
+					if (selectedCount <= 1) break;
+
+					inputOrder.SetLabels(GetResString(IDS_CAT_SETORDER), GetResString(IDS_CAT_EXPALLSAME), _T("0"));
+					inputOrder.SetNumber(true);
+					if (inputOrder.DoModal() == IDCANCEL)
+						break;
+
+					int newOrder = inputOrder.GetInputInt();
+					if  (newOrder < 0) break;
+
+					while (!selectedList.IsEmpty()) {
+						selectedList.GetHead()->SetCatResumeOrder(newOrder);
+						selectedList.RemoveHead();
+					}
+					RedrawItems(0, GetItemCount() - 1);
+					break;
+				}
+#endif
+//<== Linear Prio [shadow2004]
 				default:
                                         if (wParam>=MP_ASSIGNCAT && wParam<=MP_ASSIGNCAT+99){
 						SetRedraw(FALSE);
@@ -2014,6 +2162,18 @@ int CDownloadListCtrl::Compare(const CPartFile* file1, const CPartFile* file2, L
 			comp=CompareLocaleStringNoCase(	(const_cast<CPartFile*>(file1)->GetCategory()!=0)?thePrefs.GetCategory(const_cast<CPartFile*>(file1)->GetCategory())->title:GetResString(IDS_ALL),
 											(const_cast<CPartFile*>(file2)->GetCategory()!=0)?thePrefs.GetCategory(const_cast<CPartFile*>(file2)->GetCategory())->title:GetResString(IDS_ALL) );
 			break;
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+		case 13: // Mod
+			if (file1->GetCatResumeOrder() > file2->GetCatResumeOrder())
+				comp=1;
+			else if (file1->GetCatResumeOrder() < file2->GetCatResumeOrder())
+				comp=-1;
+			else
+				comp=0;
+			break;
+#endif
+//<== Linear Prio [shadow2004]
 		default:
 			comp=0;
 	}

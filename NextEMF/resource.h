@@ -2079,6 +2079,26 @@
 #define IDS_CSP_ENABLE                  3110
 #define IDS_CSP_NORMAL                  3111
 #define IDS_CSP_XMAN                    3112
+#define IDS_CAT_USELP                   3120
+#define IDS_CAT_ORDER                   3121
+#define IDS_CAT_SETORDER                3122
+#define IDS_CAT_MNUAUTOINC              3123
+#define IDS_CAT_MNUSTEPTHRU             3124
+#define IDS_CAT_MNUALLSAME              3125
+#define IDS_CAT_EXPAUTOINC              3126
+#define IDS_CAT_EXPSTEPTHRU             3127
+#define IDS_CAT_ABORTSTEPTHRU           3128
+#define IDS_ABORT                       3129
+#define IDS_CAT_EXPALLSAME              3130
+#define IDC_TEXTNUM                     3130
+#define IDS_STATS_STILLDOWN             3150
+#define IDS_STATS_LIMITREACH            3151
+#define IDS_STATS_TIMEDOUT              3152
+#define IDS_STATS_DISCONNECT            3153
+#define IDS_STATS_DROPPED               3154
+#define IDS_STATS_OTHER                 3155
+#define IDS_STATS_STILLUP               3156
+#define IDS_STATS_CANCELED              3157
 
 // Next default values for new objects
 // 

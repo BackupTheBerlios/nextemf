@@ -30,7 +30,12 @@ public:
 	const CString& GetInput() const { return m_return; }
 	bool	WasCancelled() const { return m_cancel;}
 	void	SetEditFilenameMode(bool isfilenamemode = true) { m_bFilenameMode = isfilenamemode; }
-
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	void	SetNumber(bool isNum = false) { isNumber = isNum; }
+	const int	GetInputInt() const { return _tstoi(m_return); };
+#endif
+//<== Linear Prio [shadow2004]
 protected:
 	CString m_label;
 	CString m_title;
@@ -39,11 +44,21 @@ protected:
 	bool	m_cancel;
 	bool	m_bFilenameMode;
 	HICON	m_icMain;
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	bool	isNumber;
+#endif
+//<== Linear Prio [shadow2004]
 
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual BOOL OnInitDialog();
 
 	afx_msg void OnOK();
 	afx_msg void OnCleanFilename();
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	afx_msg void OnCancel();
+#endif
+//<== Linear Prio [shadow2004]
 	DECLARE_MESSAGE_MAP()
 };

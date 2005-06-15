@@ -579,6 +579,12 @@ public:
 #endif
 //<== Chunk Selection Patch by Xman [shadow2004]
 
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	static	bool		m_bAutoSetResumeOrder;
+#endif
+//<== Linear Prio [shadow2004]
+
 	enum Table
 	{
 		tableDownload, 
@@ -1305,6 +1311,12 @@ public:
 	static	int		GetCSPType()				{return m_iEnableCSP;}
 #endif
 //<== Chunk Selection Patch by Xman [shadow2004]
+
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	static	bool	AutoSetResumeOrder()	{ return m_bAutoSetResumeOrder; }
+#endif
+//<== Linear Prio [shadow2004]
 
 protected:
 	static	CString appdir;

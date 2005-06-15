@@ -39,6 +39,11 @@ InputBox::InputBox(CWnd* pParent /*=NULL*/)
 	m_cancel = true;
 	m_bFilenameMode = false;
 	m_icMain = NULL;
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	isNumber = false;
+#endif
+//<== Linear Prio [shadow2004]
 }
 
 InputBox::~InputBox()
@@ -55,10 +60,29 @@ void InputBox::DoDataExchange(CDataExchange* pDX)
 void InputBox::OnOK()
 {
 	m_cancel = false;
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	if (isNumber)
+		GetDlgItemText(IDC_TEXTNUM,m_return);
+	else
+#endif
+//<== Linear Prio [shadow2004]
 	GetDlgItemText(IDC_TEXT, m_return);
 	m_return.Trim();
 	CDialog::OnOK();
 }
+
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+void InputBox::OnCancel()
+{
+	if (isNumber) m_return = "-1";
+	else m_return = "0";
+	
+	CDialog::OnCancel();
+}
+#endif
+//<== Linear Prio [shadow2004]
 
 void InputBox::SetLabels(CString title, CString label, CString defaultStr)
 {
@@ -74,7 +98,21 @@ BOOL InputBox::OnInitDialog()
 	SetIcon( m_icMain = theApp.LoadIcon(_T("RENAME")),FALSE);
 
 	GetDlgItem(IDC_IBLABEL)->SetWindowText(m_label);
+//==> Linear Prio [shadow2004]
+#ifdef LINPRIO
+	if (!isNumber)
+		GetDlgItem(IDC_TEXT)->SetWindowText(m_default);
+	else {
+		GetDlgItem(IDC_TEXTNUM)->SetWindowText(m_default);
+		GetDlgItem(IDC_TEXT)->ShowWindow(SW_HIDE);
+		GetDlgItem(IDC_TEXTNUM)->ShowWindow(SW_SHOW);
+		GetDlgItem(IDC_TEXTNUM)->SetFocus();
+	}
+#else
 	GetDlgItem(IDC_TEXT)->SetWindowText(m_default);
+#endif
+//<== Linear Prio [shadow2004]
+
 	SetWindowText(m_title);
 
 	GetDlgItem(IDCANCEL)->SetWindowText(GetResString(IDS_CANCEL));

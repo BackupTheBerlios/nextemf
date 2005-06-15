@@ -1844,6 +1844,37 @@ BEGIN
     IDS_CSP_XMAN            "Xman's Chunk-Auswahls-Patch"
 END
 
+STRINGTABLE 
+BEGIN
+    IDS_CAT_USELP           "Erhöhe automatisch die lineare Priorität"
+    IDS_CAT_ORDER           "Reihenfolge"
+    IDS_CAT_SETORDER        "Setze lineare Priorität"
+    IDS_CAT_MNUAUTOINC      "Automatisches Erhöhen"
+    IDS_CAT_MNUSTEPTHRU     "Für jede Datei einzeln festlegen"
+    IDS_CAT_MNUALLSAME      "Setze alle auf einen Wert"
+    IDS_CAT_EXPAUTOINC      "Gib eine nicht-negative Startnummer ein:"
+    IDS_CAT_EXPSTEPTHRU     "Gib eine nicht-negative Nummer ein:"
+    IDS_CAT_ABORTSTEPTHRU   "Willst du die Einzelauswahl abbrechen?"
+    IDS_ABORT               "Abbrechen?"
+    IDS_CAT_EXPALLSAME      "Gib eine nicht-negative Zahl ein, die allen audgewählten Dateien zugewiesen wird:"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STATS_STILLDOWN     "Am Herunterladen"
+    IDS_STATS_LIMITREACH    "Limit erreicht"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_STATS_TIMEDOUT      "Zeit überschritten"
+    IDS_STATS_DISCONNECT    "Verbindung getrennt"
+    IDS_STATS_DROPPED       "Verbindung verloren"
+    IDS_STATS_OTHER         "Sonstiges"
+    IDS_STATS_STILLUP       "Am Hochladen"
+    IDS_STATS_CANCELED      "Abgebrochen"
+END
+
 #endif    // Deutsch (Deutschland) resources
 /////////////////////////////////////////////////////////////////////////////
 
