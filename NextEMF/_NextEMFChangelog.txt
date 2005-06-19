@@ -35,3 +35,4 @@ fixed	: Bug in CDownloadClientsCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LP
 fixed	: Changed static Text in extended Statistic to dynamic (Lang-Support) [shadow2004]
 
 update	: german Language File (13.06.2005) [shadow2004]
+update  : italian Language File (19.06.2005) [maraglio16]
