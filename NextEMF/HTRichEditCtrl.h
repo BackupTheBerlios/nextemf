@@ -14,7 +14,6 @@ public:
 	void SetProfileSkinKey(LPCTSTR pszSkinKey);
 	void SetTitle(LPCTSTR pszTitle);
 	void Localize();
-	void ApplySkin();
 
 	void AddEntry(LPCTSTR pszMsg);
 	void Add(LPCTSTR pszMsg, int iLen = -1);

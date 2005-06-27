@@ -18,9 +18,9 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 #define MOD_VERSION_MJR		0
-#define MOD_VERSION_MIN		4
+#define MOD_VERSION_MIN		5
 #define MOD_VERSION_BUILD   0
 
-#define	MOD_VERSION			_T("NextEMF")
-#define	MOD_LONG_VERSION	_T("NextEMF v")
+#define	MOD_VERSION			_T("NextEMF b1")
+#define	MOD_LONG_VERSION	_T("NextEMF b1 v")
 

@@ -2446,7 +2446,6 @@ BEGIN
     IDS_WIZARD_NETWORK      "Choose which network(s) you want to use."
     IDS_MAIN_READY          "eMule Version %s ready"
     IDS_WIZARD_ED2K         "eD2K Settings"
-    IDS_SEL_SKIN            "Select Skin..."
 END
 
 STRINGTABLE 
@@ -2782,9 +2781,7 @@ BEGIN
     IDS_ERR_METCORRUPT      "Error: %s (%s) is corrupt, unable to load file"
     IDS_ERR_FILEERROR       "Unexpected file error while reading %s (%s): %s"
     IDS_ERR_FILEOPEN        "Failed to open %s (%s)"
-    IDS_SEL_SKINDIR         "Select Skin Directory..."
     IDS_ERR_REHASH          "Warning: %s might be corrupted, performing rehash of completed parts"
-    IDS_SKIN_PROF           "Skin Profiles"
     IDS_ERR_PART_FNF        "Part file not found"
     IDS_ERR_OPENMETFILE     "Failed to open part.met file"
     IDS_KADOPEN             "Open"
@@ -3929,18 +3926,10 @@ BEGIN
     IDS_EM_KADEMLIA         "&Kad"
     IDS_VIAKAD              "via Kad"
     IDS_VIASE               "via Source Exchange"
-    IDS_SELECTTOOLBARBITMAP "Select Toolbar Bitmap..."
-    IDS_SELECTTOOLBARBITMAPDIR "Select Toolbar Bitmap Directory..."
-    IDS_TOOLBARSKINS        "Toolbar Skins"
-    IDS_NOTEXTLABELS        "No Text Labels"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_TEXTLABELSONRIGHT   "Text Labels on Right"
-    IDS_TEXTLABELS          "Text Label Options"
-    IDS_ENABLETEXTLABELS    "Show Text Labels"
-    IDS_CUSTOMIZETOOLBAR    "Customize Toolbar..."
     IDS_MINBITRATE          "Min. Bitrate [kBit/s]"
     IDS_KAD_RECHECKFW       "Recheck Firewall"
     IDS_SHAREDTITLE         "Shared eD2K|Kad"
@@ -3980,13 +3969,6 @@ BEGIN
     IDS_LOG_A4AF            "Log A4AF actions"
     IDS_A4AF_SAVE_CPU       "Disable A4AF checks to save CPU"
     IDS_SEARCH_DOC          "Document"
-    IDS_INSTALL_SKIN        "Install eMule Skin"
-    IDS_INSTALL_SKIN_NODIR  "No eMule Skin profile directory selected or directory is not accessible!"
-    IDS_INSTALL_SKIN_DIR_ERROR 
-                            "Failed to create directory ""%s"" for eMule Skin - %s"
-    IDS_INSTALL_SKIN_FILE_ERROR 
-                            "Failed to extract file ""%s"" from eMule Skin to local file ""%s"" - %s"
-    IDS_INSTALL_SKIN_PKG_ERROR "This is not a valid eMule Skin package file."
     IDS_NEXT_REASK          "Next ask to this client"
     IDS_A4AF_FILES          "A4AF files"
     IDS_FO_TEMPTCP_S        "Opened port %u (TCP) on internal WinXP firewall for this eMule session"

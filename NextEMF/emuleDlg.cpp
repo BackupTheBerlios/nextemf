@@ -356,7 +356,6 @@ BOOL CemuleDlg::OnInitDialog()
 				rbbi.wID = 0;
 			    VERIFY( m_ctlMainTopReBar.InsertBand((UINT)-1, &rbbi) );
 				toolbar->SaveCurHeight();
-		    	toolbar->UpdateBackground();
     
 			    pwndToolbarX = &m_ctlMainTopReBar;
 		    }

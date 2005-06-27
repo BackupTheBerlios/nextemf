@@ -209,17 +209,6 @@ CString CreateFilePathUrl(LPCTSTR pszFilePath, int nProtocol)
 BOOL CMiniMule::OnInitDialog()
 {
 	ASSERT( m_iInCallback == 0 );
-	CString strHtmlFile = theApp.GetSkinFileItem(_T("MiniMule"), _T("HTML"));
-	if (!strHtmlFile.IsEmpty())
-	{
-		if (_taccess(strHtmlFile, 0) == 0)
-		{
-			m_strCurrentUrl = CreateFilePathUrl(strHtmlFile, INTERNET_SCHEME_FILE);
-			m_nHtmlResID = 0;
-			m_szHtmlResID = NULL;
-			m_bResolveImages = false;
-		}
-	}
 
 	if (m_strCurrentUrl.IsEmpty())
 	{

@@ -136,7 +136,6 @@ BOOL CServerWnd::OnInitDialog()
 		servermsgbox->SendMessage(EM_SETMARGINS, EC_LEFTMARGIN | EC_RIGHTMARGIN, MAKELONG(3, 3));
 		servermsgbox->SetEventMask(servermsgbox->GetEventMask() | ENM_LINK);
 		servermsgbox->SetFont(&theApp.m_fontHyperText);
-		servermsgbox->ApplySkin();
 		servermsgbox->SetTitle(GetResString(IDS_SV_SERVERINFO));
 
 		servermsgbox->AppendText(_T("eMule v") + theApp.m_strCurVersionLong + _T("\n"));
@@ -156,7 +155,6 @@ BOOL CServerWnd::OnInitDialog()
 		logbox->SendMessage(EM_SETMARGINS, EC_LEFTMARGIN | EC_RIGHTMARGIN, MAKELONG(3, 3));
 		if (theApp.m_fontLog.m_hObject)
 			logbox->SetFont(&theApp.m_fontLog);
-		logbox->ApplySkin();
 		logbox->SetTitle(GetResString(IDS_SV_LOG));
 		logbox->SetAutoURLDetect(FALSE);
 	}
@@ -170,7 +168,6 @@ BOOL CServerWnd::OnInitDialog()
 		debuglog->SendMessage(EM_SETMARGINS, EC_LEFTMARGIN | EC_RIGHTMARGIN, MAKELONG(3, 3));
 		if (theApp.m_fontLog.m_hObject)
 			debuglog->SetFont(&theApp.m_fontLog);
-		debuglog->ApplySkin();
 		debuglog->SetTitle(SZ_DEBUG_LOG_TITLE);
 		debuglog->SetAutoURLDetect(FALSE);
 	}
@@ -186,7 +183,6 @@ BOOL CServerWnd::OnInitDialog()
 		leecherlog->SendMessage(EM_SETMARGINS, EC_LEFTMARGIN | EC_RIGHTMARGIN, MAKELONG(3, 3));
 		if (theApp.m_fontLog.m_hObject)
 			leecherlog->SetFont(&theApp.m_fontLog);
-		leecherlog->ApplySkin();
 		leecherlog->SetTitle(GetResString(IDS_LEECHERLOG));
 		leecherlog->SetAutoURLDetect(FALSE);
 	}

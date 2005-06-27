@@ -1,5 +1,16 @@
-Changes eMule 0.46a NextEMF v0.4
-=<|  Final  |>==================
+/////////////////////////////////
+|Changes eMule 0.46a NextEMF v0.5
+|=<|  Beta 1  |>=================
+
+removed	: Skinsupport [shadow2004]
+removed	: Custom Toolbar [shadow2004]
+
+update	: Emulate others (Shareaza2) inspired by Spike2 [shadow2004]
+
+
+/////////////////////////////////
+|Changes eMule 0.46a NextEMF v0.4
+|=<|  Final  |>==================
 based on eMule v0.46a
 
 removed : IRC [shadow2004]

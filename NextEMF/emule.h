@@ -166,10 +166,6 @@ public:
 	HICON		LoadIcon(UINT nIDResource) const;
 	HBITMAP		LoadImage(LPCTSTR lpszResourceName, LPCTSTR pszResourceType) const;
 	HBITMAP		LoadImage(UINT nIDResource, LPCTSTR pszResourceType) const;
-	bool		LoadSkinColor(LPCTSTR pszKey, COLORREF& crColor) const;
-	bool		LoadSkinColorAlt(LPCTSTR pszKey, LPCTSTR pszAlternateKey, COLORREF& crColor) const;
-	CString		GetSkinFileItem(LPCTSTR lpszResourceName, LPCTSTR pszResourceType) const;
-	void		ApplySkin(LPCTSTR pszSkinProfile);
 	void		EnableRTLWindowsLayout();
 	void		DisableRTLWindowsLayout();
 

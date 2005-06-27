@@ -49,7 +49,6 @@
 #define IDS_MAIN_READY                  141
 #define IDD_SEARCH                      142
 #define IDS_WIZARD_ED2K                 142
-#define IDS_SEL_SKIN                    143
 #define IDS_MAIN_SOCKETERROR            144
 #define IDS_MAIN_BTN_DISCONNECT         145
 #define IDS_MAIN_BTN_DISCONNECT_TOOLTIP 146
@@ -70,7 +69,6 @@
 #define IDS_ERR_FILEERROR               161
 #define IDS_ERR_FILEOPEN                162
 #define IDD_HTTPDOWNLOAD                163
-#define IDS_SEL_SKINDIR                 163
 #define IDS_ERR_REHASH                  164
 #define IDD_CHAT                        165
 #define IDS_SKIN_PROF                   165
@@ -1169,14 +1167,6 @@
 #define IDS_EM_KADEMLIA                 1289
 #define IDS_VIAKAD                      1290
 #define IDS_VIASE                       1291
-#define IDS_SELECTTOOLBARBITMAP         1292
-#define IDS_SELECTTOOLBARBITMAPDIR      1293
-#define IDS_TOOLBARSKINS                1294
-#define IDS_NOTEXTLABELS                1295
-#define IDS_TEXTLABELSONRIGHT           1296
-#define IDS_TEXTLABELS                  1297
-#define IDS_ENABLETEXTLABELS            1298
-#define IDS_CUSTOMIZETOOLBAR            1299
 #define IDS_MINBITRATE                  1300
 #define IDS_KAD_RECHECKFW               1301
 #define IDS_SHAREDTITLE                 1302

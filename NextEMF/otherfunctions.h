@@ -102,7 +102,6 @@ bool IsUnicodeFile(LPCTSTR pszFilePath);
 ///////////////////////////////////////////////////////////////////////////////
 // GUI helpers
 //
-void InstallSkin(LPCTSTR pszSkinPackage);
 void ShellOpenFile(CString name);
 void ShellOpenFile(CString name, LPCTSTR pszVerb);
 bool SelectDir(HWND hWnd, LPTSTR pszPath, LPCTSTR pszTitle = NULL, LPCTSTR pszDlgTitle = NULL);

@@ -325,50 +325,6 @@ void CMuleListCtrl::SetColors(LPCTSTR pszLvKey) {
 	COLORREF crHighlight = ::GetSysColor(COLOR_HIGHLIGHT);
 
 	CString strBkImage;
-	LPCTSTR pszSkinProfile = thePrefs.GetSkinProfile();
-	if (pszSkinProfile != NULL && pszSkinProfile[0] != _T('\0'))
-	{
-		CString strKey;
-		if (pszLvKey != NULL && pszLvKey[0] != _T('\0'))
-			strKey = pszLvKey;
-		else if (IsKindOf(RUNTIME_CLASS(CServerListCtrl)))
-			strKey = _T("ServersLv");
-		else if (IsKindOf(RUNTIME_CLASS(CSearchListCtrl)))
-			strKey = _T("SearchResultsLv");
-		else if (IsKindOf(RUNTIME_CLASS(CDownloadListCtrl)))
-			strKey = _T("DownloadsLv");
-		else if (IsKindOf(RUNTIME_CLASS(CUploadListCtrl)))
-			strKey = _T("UploadsLv");
-		else if (IsKindOf(RUNTIME_CLASS(CQueueListCtrl)))
-			strKey = _T("QueuedLv");
-		else if (IsKindOf(RUNTIME_CLASS(CClientListCtrl)))
-			strKey = _T("ClientsLv");
-		else if (IsKindOf(RUNTIME_CLASS(CFriendListCtrl)))
-			strKey = _T("FriendsLv");
-		else if (IsKindOf(RUNTIME_CLASS(CSharedFilesCtrl)))
-			strKey = _T("SharedFilesLv");
-		else if (IsKindOf(RUNTIME_CLASS(CKadContactListCtrl)))
-			strKey = _T("KadContactsLv");
-		else if (IsKindOf(RUNTIME_CLASS(CKadSearchListCtrl)))
-			strKey = _T("KadActionsLv");
-		else
-			GetWindowText(strKey);
-
-		if (strKey.IsEmpty())
-			strKey = _T("DefLv");
-
-		if (theApp.LoadSkinColorAlt(strKey + _T("Bk" ), _T("DefLvBk"), m_crWindow))
-			m_crWindowTextBk = m_crWindow;
-		theApp.LoadSkinColorAlt(strKey + _T("Fg"), _T("DefLvFg"), m_crWindowText);
-		theApp.LoadSkinColorAlt(strKey + _T("Hl"), _T("DefLvHl"), crHighlight);
-
-		TCHAR szColor[MAX_PATH];
-		GetPrivateProfileString(_T("Colors"), strKey + _T("BkImg"), _T(""), szColor, ARRSIZE(szColor), pszSkinProfile);
-		if (szColor[0] == _T('\0'))
-			GetPrivateProfileString(_T("Colors"), _T("DefLvBkImg"), _T(""), szColor, ARRSIZE(szColor), pszSkinProfile);
-		if (szColor[0] != _T('\0'))
-			strBkImage = szColor;
-	}
 
 	SetBkColor(m_crWindow);
 	SetTextBkColor(m_crWindowTextBk);
@@ -376,38 +332,6 @@ void CMuleListCtrl::SetColors(LPCTSTR pszLvKey) {
 	LVBKIMAGE lvimg = {0};
 	lvimg.ulFlags = LVBKIF_SOURCE_NONE;
 	SetBkImage(&lvimg);
-	if (!strBkImage.IsEmpty())
-	{
-		// expand any optional available environment strings
-		TCHAR szExpSkinRes[MAX_PATH];
-		if (ExpandEnvironmentStrings(strBkImage, szExpSkinRes, ARRSIZE(szExpSkinRes)) != 0)
-			strBkImage = szExpSkinRes;
-
-		// create absolute path to icon resource file
-		TCHAR szFullResPath[MAX_PATH];
-		if (PathIsRelative(strBkImage))
-		{
-			TCHAR szSkinResFolder[MAX_PATH];
-			_tcsncpy(szSkinResFolder, pszSkinProfile, ARRSIZE(szSkinResFolder));
-			szSkinResFolder[ARRSIZE(szSkinResFolder)-1] = _T('\0');
-			PathRemoveFileSpec(szSkinResFolder);
-			_tmakepath(szFullResPath, NULL, szSkinResFolder, strBkImage, NULL);
-		}
-		else
-		{
-			_tcsncpy(szFullResPath, strBkImage, ARRSIZE(szFullResPath));
-			szFullResPath[ARRSIZE(szFullResPath)-1] = _T('\0');
-		}
-
-		CString strUrl(_T("file://"));
-		strUrl += szFullResPath;
-		//if (SetBkImage(const_cast<LPTSTR>((LPCTSTR)strUrl), FALSE, 0, 0))
-		if (SetBkImage(const_cast<LPTSTR>((LPCTSTR)strUrl), FALSE, 100, 0))
-		{
-			m_crWindowTextBk = CLR_NONE;
-			SetTextBkColor(m_crWindowTextBk);
-		}
-	}
 
 	m_crFocusLine   = crHighlight;
 	m_crNoHighlight = MLC_RGBBLEND(crHighlight, m_crWindow, 8);

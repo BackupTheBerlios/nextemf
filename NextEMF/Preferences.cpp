@@ -72,8 +72,6 @@ bool	CPreferences::addnewfilespaused;
 bool	CPreferences::m_bEnableMiniMule;
 int		CPreferences::m_iStraightWindowStyles;
 bool	CPreferences::m_bRTLWindowsLayout;
-CString	CPreferences::m_strSkinProfile;
-CString	CPreferences::m_strSkinProfileDir;
 bool	CPreferences::addserversfromserver;
 bool	CPreferences::addserversfromclient;
 uint16	CPreferences::maxsourceperfile;
@@ -403,12 +401,8 @@ bool	CPreferences::m_bAdvancedSpamfilter;
 bool	CPreferences::m_bUseSecureIdent;
 bool	CPreferences::networkkademlia;
 bool	CPreferences::networked2k;
-EToolbarLabelType CPreferences::m_nToolbarLabels;
-CString	CPreferences::m_sToolbarBitmap;
-CString	CPreferences::m_sToolbarBitmapFolder;
 CString	CPreferences::m_sToolbarSettings;
 bool	CPreferences::m_bReBarToolbar;
-CSize	CPreferences::m_sizToolbarIconSize;
 bool	CPreferences::m_bPreviewEnabled;
 bool	CPreferences::m_bDynUpEnabled;
 int		CPreferences::m_iDynUpPingTolerance;
@@ -678,19 +672,6 @@ void CPreferences::Init()
 			AfxMessageBox(strError, MB_ICONERROR);
 		}
 	}
-
-	// Create 'skins' directory
-	if (!PathFileExists(GetSkinProfileDir()) && !CreateDirectory(GetSkinProfileDir(), 0)) {
-		m_strSkinProfileDir = appdir + _T("skins");
-		CreateDirectory(GetSkinProfileDir(), 0);
-	}
-
-	// Create 'toolbars' directory
-	if (!PathFileExists(GetToolbarBitmapFolderSettings()) && !CreateDirectory(GetToolbarBitmapFolderSettings(), 0)) {
-		m_sToolbarBitmapFolder = appdir + _T("skins");
-		CreateDirectory(GetToolbarBitmapFolderSettings(), 0);
-	}
-
 
 	if (((int*)userhash[0]) == 0 && ((int*)userhash[1]) == 0 && ((int*)userhash[2]) == 0 && ((int*)userhash[3]) == 0)
 		CreateUserHash();
@@ -1929,13 +1910,6 @@ void CPreferences::SavePreferences()
 
 	// Toolbar
 	ini.WriteString(_T("ToolbarSetting"), m_sToolbarSettings);
-	ini.WriteString(_T("ToolbarBitmap"), m_sToolbarBitmap );
-	ini.WriteString(_T("ToolbarBitmapFolder"), m_sToolbarBitmapFolder);
-	ini.WriteInt(_T("ToolbarLabels"), m_nToolbarLabels);
-	ini.WriteInt(_T("ToolbarIconSize"), m_sizToolbarIconSize.cx);
-	ini.WriteString(_T("SkinProfile"), m_strSkinProfile);
-	ini.WriteString(_T("SkinProfileDir"), m_strSkinProfileDir);
-
 
 	ini.SerGet(false, downloadColumnWidths,
 		ARRSIZE(downloadColumnWidths), _T("DownloadColumnWidths"));
@@ -2454,15 +2428,9 @@ void CPreferences::LoadPreferences()
 
 	// Toolbar
 	m_sToolbarSettings = ini.GetString(_T("ToolbarSetting"), strDefaultToolbar);
-	m_sToolbarBitmap = ini.GetString(_T("ToolbarBitmap"), _T(""));
-	m_sToolbarBitmapFolder = ini.GetString(_T("ToolbarBitmapFolder"), appdir + _T("skins"));
-	m_nToolbarLabels = (EToolbarLabelType)ini.GetInt(_T("ToolbarLabels"), CMuleToolbarCtrl::GetDefaultLabelType());
 	m_bReBarToolbar = ini.GetBool(_T("ReBarToolbar"), 1);
-	m_sizToolbarIconSize.cx = m_sizToolbarIconSize.cy = ini.GetInt(_T("ToolbarIconSize"), 32);
 	m_iStraightWindowStyles=ini.GetInt(_T("StraightWindowStyles"),0);
 	m_bRTLWindowsLayout = ini.GetBool(_T("RTLWindowsLayout"));
-	m_strSkinProfile = ini.GetString(_T("SkinProfile"), _T(""));
-	m_strSkinProfileDir = ini.GetString(_T("SkinProfileDir"), appdir + _T("skins"));
 
 	ini.SerGet(true, downloadColumnWidths,
 		ARRSIZE(downloadColumnWidths), _T("DownloadColumnWidths"));

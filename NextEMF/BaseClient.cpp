@@ -1003,9 +1003,27 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 	// TODO implement multi language website which informs users of the effects of bad mods
 	tagName.WriteTagToFile(data, utf8strRaw);
 
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+	if (thePrefs.IsEmuShareaza() && GetClientSoft() == SO_SHAREAZA)
+	{
+		CTag tagVersion(CT_VERSION,	SHAREAZAEMUVERSION);
+		tagVersion.WriteTagToFile(data);
+		if (thePrefs.IsEmuLog()) 
+			AddDebugLogLine(false, _T("[EMULATE] emuliere Shareaza (%s)"),DbgGetClientInfo());
+	}
+	else {
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
+	
 	// eD2K Version
 	CTag tagVersion(CT_VERSION,EDONKEYVERSION);
 	tagVersion.WriteTagToFile(data);
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+	}
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
 
 	// eMule UDP Ports
 	uint32 kadUDPPort = 0;
@@ -1079,8 +1097,6 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 				(1 							<<  7)
 				);
 		tagMuleVersion.WriteTagToFile(data);
-		if (thePrefs.IsEmuLog()) 
-			AddDebugLogLine(false, _T("[EMULATE] emuliere Shareaza (%s)"),DbgGetClientInfo());
 	} else {
 #endif
 //<== Emulate others by WiZaRd & Spike [shadow2004]

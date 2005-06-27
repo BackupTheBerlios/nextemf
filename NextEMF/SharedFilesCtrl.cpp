@@ -659,22 +659,6 @@ void CSharedFilesCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	bool bSingleCompleteFileSelected = (iSelectedItems == 1 && iCompleteFileSelected == 1);
 	m_SharedFilesMenu.EnableMenuItem(MP_OPEN, bSingleCompleteFileSelected ? MF_ENABLED : MF_GRAYED);
 	UINT uInsertedMenuItem = 0;
-	static const TCHAR _szSkinPkgSuffix[] = _T(".") EMULSKIN_BASEEXT _T(".zip");
-	if (bSingleCompleteFileSelected 
-		&& pSingleSelFile 
-		&& pSingleSelFile->GetFilePath().Right(ARRSIZE(_szSkinPkgSuffix)-1).CompareNoCase(_szSkinPkgSuffix) == 0)
-	{
-		MENUITEMINFO mii = {0};
-		mii.cbSize = sizeof mii;
-		mii.fMask = MIIM_TYPE | MIIM_STATE | MIIM_ID;
-		mii.fType = MFT_STRING;
-		mii.fState = MFS_ENABLED;
-		mii.wID = MP_INSTALL_SKIN;
-		CString strBuff(GetResString(IDS_INSTALL_SKIN));
-		mii.dwTypeData = const_cast<LPTSTR>((LPCTSTR)strBuff);
-		if (::InsertMenuItem(m_SharedFilesMenu, MP_OPENFOLDER, FALSE, &mii))
-			uInsertedMenuItem = mii.wID;
-	}
 	m_SharedFilesMenu.EnableMenuItem(MP_OPENFOLDER, bSingleCompleteFileSelected ? MF_ENABLED : MF_GRAYED);
 	m_SharedFilesMenu.EnableMenuItem(MP_RENAME, bSingleCompleteFileSelected ? MF_ENABLED : MF_GRAYED);
 	m_SharedFilesMenu.EnableMenuItem(MP_REMOVE, iCompleteFileSelected > 0 ? MF_ENABLED : MF_GRAYED);
@@ -746,10 +730,6 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 				if (file && !file->IsPartFile())
 					OpenFile(file);
 				break; 
-			case MP_INSTALL_SKIN:
-				if (file && !file->IsPartFile())
-					InstallSkin(file->GetFilePath());
-				break;
 			case MP_OPENFOLDER:
 				if (file && !file->IsPartFile()){
 					CString path = file->GetPath();

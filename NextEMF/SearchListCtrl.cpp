@@ -1690,13 +1690,6 @@ void CSearchListCtrl::SetHighlightColors()
 	m_crSearchResultKnown			= RGB(0,128,0);
 	m_crSearchResultCancelled		= RGB(0,128,0);
 
-	theApp.LoadSkinColor(_T("SearchResultsLvFg_Downloading"), m_crSearchResultDownloading);
-	if (!theApp.LoadSkinColor(_T("SearchResultsLvFg_DownloadStopped"), m_crSearchResultDownloadStopped))
-		m_crSearchResultDownloadStopped = m_crSearchResultDownloading;
-	theApp.LoadSkinColor(_T("SearchResultsLvFg_Sharing"), m_crSearchResultShareing);
-	theApp.LoadSkinColor(_T("SearchResultsLvFg_Known"), m_crSearchResultKnown);
-	theApp.LoadSkinColor(_T("SearchResultsLvFg_AvblyBase"), crSearchResultAvblyBase);
-
 	// precalculate sources shades
 	COLORREF normFGC=GetTextColor();
 	float rdelta = (float)((GetRValue(crSearchResultAvblyBase) - GetRValue(normFGC)) / AVBLYSHADECOUNT);

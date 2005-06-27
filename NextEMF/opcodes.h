@@ -20,6 +20,11 @@
 #define	EMULE_PROTOCOL			0x01
 // MOD Note: end
 #define	EDONKEYVERSION			0x3C
+//==> Emulate others by WiZaRd & Spike [shadow2004]
+#ifdef EMULATE
+#define SHAREAZAEMUVERSION		0x3D
+#endif
+//<== Emulate others by WiZaRd & Spike [shadow2004]
 #define PREFFILE_VERSION		0x14	//<<-- last change: reduced .dat, by using .ini
 #define PARTFILE_VERSION		0xe0
 #define PARTFILE_SPLITTEDVERSION		0xe1

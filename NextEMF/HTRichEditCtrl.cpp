@@ -799,23 +799,6 @@ CFont* CHTRichEditCtrl::GetFont() const
 void CHTRichEditCtrl::OnSysColorChange()
 {
 	CRichEditCtrl::OnSysColorChange();
-	ApplySkin();
-}
-
-void CHTRichEditCtrl::ApplySkin()
-{
-	if (!m_strSkinKey.IsEmpty())
-	{
-		COLORREF cr;
-		if (theApp.LoadSkinColor(m_strSkinKey + _T("Bk"), cr))
-		{
-			SetBackgroundColor(FALSE, cr);
-		}
-		else
-		{
-			SetBackgroundColor(TRUE, GetSysColor(COLOR_WINDOW));
-		}
-	}
 }
 
 BOOL CHTRichEditCtrl::OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message)

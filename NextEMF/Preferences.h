@@ -92,8 +92,6 @@ public:
 	static	bool	m_bEnableMiniMule;
 	static	int		m_iStraightWindowStyles;
 	static	bool	m_bRTLWindowsLayout;
-	static	CString	m_strSkinProfile;
-	static	CString	m_strSkinProfileDir;
 	static	bool	addserversfromserver;
 	static	bool	addserversfromclient;
 	static	uint16	maxsourceperfile;
@@ -492,12 +490,8 @@ public:
 	static	bool	networked2k;
 
 	// toolbar
-	static	EToolbarLabelType m_nToolbarLabels;
-	static	CString	m_sToolbarBitmap;
-	static	CString	m_sToolbarBitmapFolder;
 	static	CString	m_sToolbarSettings;
 	static	bool	m_bReBarToolbar;
-	static	CSize	m_sizToolbarIconSize;
 
 	static	bool	m_bWinaTransToolbar;
 
@@ -972,11 +966,6 @@ public:
 	// <-----khaos-
 	static	int		GetStraightWindowStyles()			{return m_iStraightWindowStyles;}
 
-	static	const CString& GetSkinProfile()				{return m_strSkinProfile;}
-	static	void	SetSkinProfile(LPCTSTR pszProfile)	{m_strSkinProfile = pszProfile; }
-
-	static	const CString& GetSkinProfileDir()			{return m_strSkinProfileDir;}
-	static	void	SetSkinProfileDir(LPCTSTR pszDir)	{m_strSkinProfileDir = pszDir; }
 
 	static	uint8	GetStatsAverageMinutes()			{return statsAverageMinutes;}
 	static	void	SetStatsAverageMinutes(uint8 in)	{statsAverageMinutes=in;}
@@ -1189,16 +1178,8 @@ public:
 	//Toolbar
 	static	const CString& GetToolbarSettings()					{ return m_sToolbarSettings; }
 	static	void	SetToolbarSettings(const CString& in)		{ m_sToolbarSettings = in; }
-	static	const CString& GetToolbarBitmapSettings()			{ return m_sToolbarBitmap; }
-	static	void	SetToolbarBitmapSettings(const CString& path){ m_sToolbarBitmap = path; }
-	static	const CString& GetToolbarBitmapFolderSettings()		{ return m_sToolbarBitmapFolder; }
-	static	void	SetToolbarBitmapFolderSettings(const CString& path){ m_sToolbarBitmapFolder = path; }
-	static	EToolbarLabelType GetToolbarLabelSettings()			{ return m_nToolbarLabels; }
-	static	void	SetToolbarLabelSettings(EToolbarLabelType eLabelType) { m_nToolbarLabels = eLabelType; }
 	static	bool	GetReBarToolbar()							{ return m_bReBarToolbar; }
 	static	bool	GetUseReBarToolbar();
-	static	CSize	GetToolbarIconSize()						{ return m_sizToolbarIconSize; }
-	static	void	SetToolbarIconSize(CSize siz)				{ m_sizToolbarIconSize = siz; }
 
 	static	bool	IsTransToolbarEnabled()						{ return m_bWinaTransToolbar; }
 

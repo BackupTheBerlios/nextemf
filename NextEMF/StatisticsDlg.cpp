@@ -134,9 +134,6 @@ void CStatisticsDlg::SetAllIcons()
 	COLORREF crBk = GetSysColor(COLOR_WINDOW);
 	COLORREF crFg = GetSysColor(COLOR_WINDOWTEXT);
 
-	theApp.LoadSkinColorAlt(_T("StatisticsTvBk"), _T("DefLvBk"), crBk);
-	theApp.LoadSkinColorAlt(_T("StatisticsTvFg"), _T("DefLvFg"), crFg);
-
 	stattree.SetBkColor(crBk);
 	stattree.SetTextColor(crFg);
 	// can't use 'TVM_SETLINECOLOR' because the color may not match that one used in "StatsGeneric" item image.
