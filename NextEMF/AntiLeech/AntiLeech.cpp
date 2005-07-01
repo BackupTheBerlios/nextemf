@@ -117,9 +117,9 @@ void	CAntiLeech::UnInit()
 //>>> AntiNickThief
 void CAntiLeech::CreateAntiNickThiefTag()
 {
-	//if we have an old string, cache it
-	if(!m_sAntiNickThiefTag.IsEmpty())
-		m_sAntiNickThiefUpdate = m_sAntiNickThiefTag;
+	// don't run this untill it's neccessary - Stulle
+	if(::GetTickCount() < m_uiAntiNickThiefCreateTimer)
+		return;
 
 	CString nick = _T("");	
 	uint8 maxchar = MIN_LENGTH+rand()%MAX_ADD; //BuGFiX: d'oh - stupid me!!
@@ -137,6 +137,8 @@ void CAntiLeech::CreateAntiNickThiefTag()
 CString	CAntiLeech::GetAntiNickThiefNick()
 {
 	CString ret;
+	if(m_sAntiNickThiefTag.IsEmpty()) // no tag¿ - Stulle
+		CreateAntiNickThiefTag(); // create a tag! - Stulle
 	if(::GetTickCount() > m_uiAntiNickThiefCreateTimer)
 		CreateAntiNickThiefTag();
 	ret.Format(_T("%s %s"), thePrefs.GetUserNick(), m_sAntiNickThiefTag);
@@ -145,6 +147,8 @@ CString	CAntiLeech::GetAntiNickThiefNick()
 
 bool CAntiLeech::FindOurTagIn(const CString& tocomp)
 {
+	if(m_sAntiNickThiefTag.IsEmpty()) // no tag¿ - Stulle
+		CreateAntiNickThiefTag(); // create a tag! - Stulle
 	//is he mirroring our current tag?
 	if(tocomp.Find(GetAntiNickThiefNick()) != -1)
 		return true;
@@ -152,8 +156,6 @@ bool CAntiLeech::FindOurTagIn(const CString& tocomp)
 	//if we are below the timelimit, then also check for the old string!
 	if(m_uiAntiNickThiefCreateTimer > ::GetTickCount() //should always be true...
 		&& !m_sAntiNickThiefUpdate.IsEmpty() //just to be sure... :)
-		//is usually+1Day, let's check if we have changed the string below MAX_RECHECK
-		&& m_uiAntiNickThiefCreateTimer - GetTickCount() > MAX_VALID-MAX_RECHECK
 		//and we find the old string...		
 		&& tocomp.Find(m_sAntiNickThiefUpdate) != -1)
 		return true;

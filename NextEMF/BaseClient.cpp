@@ -244,7 +244,6 @@ void CUpDownClient::Init()
 	m_bIsNextEMF = false;
 #endif //Modversion
 //<==Modversion [shadow2004]
-
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -676,7 +675,13 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	//WiZaRd - Anti Mod Faker Version
 	if(thePrefs.GetAntiModThief())
 	{
+//==>Modfaker by MORPH [cyrex2001]
+#ifdef ANTI_MODFAKER
+		if (StrStrI(m_strModVersion,theApp.m_strModVersion) &&  m_nClientVersion < MAKE_CLIENT_VERSION(CemuleApp::m_nVersionMjr, CemuleApp::m_nVersionMin, CemuleApp::m_nVersionUpd))
+#else
 		if(theAntiLeechClass.CheckForModThief(this))
+#endif //Modfaker by MORPH
+//<==Modfaker by MORPH [cyrex2001]
 		{
 			AddLeecherLogLine(false,_T("%s banned Client %s"),_T("[Modfaker]"), DbgGetClientInfo());
 			Ban();
@@ -917,7 +922,13 @@ void CUpDownClient::ProcessMuleInfoPacket(const uchar* pachPacket, uint32 nSize)
 	//WiZaRd - Anti Mod Faker Version
 	if(thePrefs.GetAntiModThief())
 	{
+//==>Modfaker by MORPH [cyrex2001]
+#ifdef ANTI_MODFAKER
+	if (StrStrI(m_strModVersion,theApp.m_strModVersion) &&  m_nClientVersion < MAKE_CLIENT_VERSION(CemuleApp::m_nVersionMjr, CemuleApp::m_nVersionMin, CemuleApp::m_nVersionUpd))
+#else
 		if(theAntiLeechClass.CheckForModThief(this))
+#endif //Modfaker by MORPH
+//<==Modfaker by MORPH [cyrex2001]
 		{
 			AddLeecherLogLine(false,_T("%s banned Client %s"),_T("[Modfaker]"), DbgGetClientInfo());
 			Ban();

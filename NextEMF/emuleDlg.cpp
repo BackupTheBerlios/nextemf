@@ -2657,7 +2657,9 @@ void CemuleDlg::ShowSplash()
 			{
 				m_pSplashWnd->SetBitmap(IDB_SPLASH,0,255,0);
 				m_pSplashWnd->SetTextFont(_T("Tahoma"),100,CSS_TEXT_BOLD);
-				m_pSplashWnd->SetTextRect(CRect(230,150,340,185));
+				//m_pSplashWnd->SetTextRect(CRect(230,150,340,185));
+				CRect x=CRect(230,150,340,185); //fix [cyrex2001]
+				m_pSplashWnd->SetTextRect(x); //fix [cyrex2001]
 				m_pSplashWnd->SetTextColor(RGB(252,191,111));
 				m_pSplashWnd->SetTextFormat(DT_SINGLELINE | DT_CENTER | DT_VCENTER);
 				m_pSplashWnd->Show();

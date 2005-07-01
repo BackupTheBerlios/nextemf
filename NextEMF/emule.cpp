@@ -233,14 +233,14 @@ CemuleApp::CemuleApp(LPCTSTR lpszAppName)
 	m_bGuardClipboardPrompt = false;
 
 	EnableHtmlHelp();
-//==>Modversion [shadow2004]
+//==>Modversion [shadow2004][cyrex2001]
 #ifdef MODVERSION
-	m_strModVersion = MOD_VERSION;
-	m_strModVersion.AppendFormat(_T(" %u.%u"), MOD_VERSION_MJR, MOD_VERSION_MIN);
-	m_strModLongVersion = MOD_LONG_VERSION;
-	m_strModLongVersion.AppendFormat(_T("%u.%u"), MOD_VERSION_MJR, MOD_VERSION_MIN);
+	m_strModVersion = CemuleApp::m_szMVersion;
+	m_strModVersion.AppendFormat(_T(" %u.%u"), CemuleApp::m_nMVersionMjr, CemuleApp::m_nMVersionMin);
+	m_strModLongVersion = CemuleApp::m_szMVersionLong;
+	m_strModLongVersion.AppendFormat(_T("%u.%u"), CemuleApp::m_nMVersionMjr, CemuleApp::m_nMVersionMin);
 #endif //Modversion
-//<==Modversion [shadow2004]
+//<==Modversion [shadow2004][cyrex2001]
 }
 
 

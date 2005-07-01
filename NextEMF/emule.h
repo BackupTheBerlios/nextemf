@@ -24,11 +24,6 @@
 #include ".\Optimizer\cpu_info.h" 
 #endif
 //<== Optimizer [shadow2004]
-//==>Modversion [shadow2004]
-#ifdef MODVERSION
-#include "ModVersion.h"
-#endif //Modversion
-//<==Modversion [shadow2004]
 
 #define	DEFAULT_NICK		thePrefs.GetHomepageBaseURL()
 #define	DEFAULT_TCP_PORT	4662
@@ -122,6 +117,18 @@ public:
 	CMutex				hashing_mut;
 	CString*			pendinglink;
 	COPYDATASTRUCT		sendstruct;
+
+	//==>Modversion [shadow2004][cyrex2001]
+#ifdef MODVERSION
+	static const UINT	m_nMVersionMjr;
+	static const UINT	m_nMVersionMin;
+	static const UINT	m_nMVersionBld;
+	static const TCHAR	m_szMVersionLong[];
+	static const TCHAR	m_szMVersion[];
+	CString		m_strModVersion;
+	CString		m_strModLongVersion;
+#endif //Modversion
+	//<==Modversion [shadow2004][cyrex2001]
 
 // Implementierung
 	virtual BOOL InitInstance();
@@ -228,17 +235,6 @@ public:
 	WSADATA				m_wsaData;
 #endif //WINSOCK2
 //<== WINSOCK2 [shadow2004]
-
-//==>Modversion [shadow2004]
-#ifdef MODVERSION
-public:
-	static const UINT	m_nMVersionMjr;
-	static const UINT	m_nMVersionMin;
-	static const UINT	m_nMVersionBld;
-	CString		m_strModVersion;
-	CString		m_strModLongVersion;
-#endif //Modversion
-//<==Modversion [shadow2004]
 
 };
 
