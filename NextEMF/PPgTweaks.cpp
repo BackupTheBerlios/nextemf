@@ -487,7 +487,7 @@ BOOL CPPgTweaks::OnApply()
 	{
 		thePrefs.autotakeed2klinks = m_bAutoTakeEd2kLinks;
 		if (thePrefs.AutoTakeED2KLinks())
-			Ask4RegFix(false, true);
+			Ask4RegFix(false, true, false);
 		else
 			RevertReg();
 	}

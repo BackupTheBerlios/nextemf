@@ -102,8 +102,6 @@ public:
 #endif
 //<== Linear Prio [shadow2004]
 
-	void	DisableAllA4AFAuto(void);
-
 	// sources
 	CUpDownClient* GetDownloadClientByIP(uint32 dwIP);
 	CUpDownClient* GetDownloadClientByIP_UDP(uint32 dwIP, uint16 nUDPPort);
@@ -156,6 +154,8 @@ public:
 	void	OnConnectionState(bool bConnected);
 
 	void	AddToResolved( CPartFile* pFile, SUnresolvedHostname* pUH );
+
+	CString GetOptimalTempDir(uint8 nCat, uint32 nFileSize);
 
 	CServer* cur_udpserver;
 

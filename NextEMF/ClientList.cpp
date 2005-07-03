@@ -66,14 +66,7 @@ CClientList::CClientList(){
 }
 
 CClientList::~CClientList(){
-	POSITION pos = m_trackedClientsList.GetStartPosition();
-	uint32 nKey;
-	CDeletedClient* pResult;
-	while (pos != NULL){
-		m_trackedClientsList.GetNextAssoc( pos, nKey, pResult );
-		m_trackedClientsList.RemoveKey(nKey);
-		delete pResult;
-	}
+	RemoveAllTrackedClients();
 }
 
 void CClientList::GetStatistics(uint32 &ruTotalClients, int stats[NUM_CLIENTLIST_STATS], 
@@ -100,14 +93,10 @@ void CClientList::GetStatistics(uint32 &ruTotalClients, int stats[NUM_CLIENTLIST
 		switch (cur_client->GetClientSoft())
 		{
 			case SO_EMULE:
-			case SO_OLDEMULE:{
+			case SO_OLDEMULE:
 				stats[2]++;
-				//uint8 version = cur_client->GetMuleVersion();
-				//if (version == 0xFF || version == 0x66 || version==0x69 || version==0x90 || version==0x33 || version==0x60)
-				//	continue;
 				clientVersionEMule[cur_client->GetVersion()]++;
 				break;
-			}
 
 			case SO_EDONKEYHYBRID : 
 				stats[4]++;
@@ -266,17 +255,11 @@ bool CClientList::GiveClientsForTraceRoute() {
 void CClientList::RemoveClient(CUpDownClient* toremove, LPCTSTR pszReason){
 	POSITION pos = list.Find(toremove);
 	if (pos){
-		//just to be sure...
-		/*CString strInfo(_T("Client removed from CClientList::RemoveClient()."));
-		if (pszReason){
-			strInfo += _T(" Reason: ");
-			strInfo += pszReason;
-		}*/
 //==> Extended Failed/Success Statistic by NetF [shadow2004]
 #ifdef FSSTATS
 		theApp.uploadqueue->RemoveFromUploadQueue(toremove, pszReason, true, false, REASON_Other);
 #else
-		theApp.uploadqueue->RemoveFromUploadQueue(toremove, /*strInfo*/pszReason);
+		theApp.uploadqueue->RemoveFromUploadQueue(toremove, pszReason);
 #endif
 //<== Extended Failed/Success Statistic by NetF [shadow2004]
 		theApp.uploadqueue->RemoveFromWaitingQueue(toremove);
@@ -304,7 +287,7 @@ bool CClientList::AttachToAlreadyKnown(CUpDownClient** client, CClientReqSocket*
 	CUpDownClient* tocheck = (*client);
 	CUpDownClient* found_client = NULL;
 	CUpDownClient* found_client2 = NULL;
-	for (pos1 = list.GetHeadPosition();( pos2 = pos1 ) != NULL;){	//
+	for (pos1 = list.GetHeadPosition(); (pos2 = pos1) != NULL; ){
 		list.GetNext(pos1);
 		CUpDownClient* cur_client =	list.GetAt(pos2);
 		if (tocheck->Compare(cur_client,false)){ //matching userhash
@@ -433,18 +416,6 @@ CUpDownClient* CClientList::FindClientByIP_KadPort(uint32 ip, uint16 port) const
 	return 0;
 }
 
-//TODO: This needs to change to a random Kad user.
-CUpDownClient* CClientList::GetRandomKadClient() const
-{
-	for (POSITION pos = list.GetHeadPosition(); pos != NULL;)
-	{
-		CUpDownClient* cur_client =	list.GetNext(pos);
-		if (cur_client->GetKadPort())
-			return cur_client;
-	}
-	return 0;
-}
-
 CUpDownClient* CClientList::FindClientByServerID(uint32 uServerIP, uint32 uED2KUserID) const
 {
 	uint32 uHybridUserID = ntohl(uED2KUserID);
@@ -457,6 +428,10 @@ CUpDownClient* CClientList::FindClientByServerID(uint32 uServerIP, uint32 uED2KU
 	return 0;
 }
 
+
+///////////////////////////////////////////////////////////////////////////////
+// Banned clients
+
 void CClientList::AddBannedClient(uint32 dwIP){
 	m_bannedList.SetAt(dwIP, ::GetTickCount());
 }
@@ -467,7 +442,6 @@ bool CClientList::IsBannedClient(uint32 dwIP) const
 	if (m_bannedList.Lookup(dwIP, dwBantime)){
 		if (dwBantime + CLIENTBANTIME > ::GetTickCount())
 			return true;
-		//RemoveBannedClient(dwIP);
 	}
 	return false; 
 }
@@ -476,8 +450,14 @@ void CClientList::RemoveBannedClient(uint32 dwIP){
 	m_bannedList.RemoveKey(dwIP);
 }
 
-////////////////////////////////////////
-/// Tracked clients
+void CClientList::RemoveAllBannedClients(){
+	m_bannedList.RemoveAll();
+}
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Tracked clients
+
 void CClientList::AddTrackClient(CUpDownClient* toadd){
 	CDeletedClient* pResult = 0;
 	if (m_trackedClientsList.Lookup(toadd->GetIP(), pResult)){
@@ -552,8 +532,22 @@ uint32 CClientList::GetBadRequests(const CUpDownClient* upcClient) const{
 		return 0;
 }
 
+void CClientList::RemoveAllTrackedClients(){
+	POSITION pos = m_trackedClientsList.GetStartPosition();
+	uint32 nKey;
+	CDeletedClient* pResult;
+	while (pos != NULL){
+		m_trackedClientsList.GetNextAssoc(pos, nKey, pResult);
+		m_trackedClientsList.RemoveKey(nKey);
+		delete pResult;
+	}
+}
+
 void CClientList::Process()
 {
+	///////////////////////////////////////////////////////////////////////////
+	// Cleanup banned client list
+	//
 	const uint32 cur_tick = ::GetTickCount();
 	if (m_dwLastBannCleanUp + BAN_CLEANUP_TIME < cur_tick)
 	{
@@ -570,6 +564,9 @@ void CClientList::Process()
 		}
 	}
 
+	///////////////////////////////////////////////////////////////////////////
+	// Cleanup tracked client list
+	//
 	if (m_dwLastTrackedCleanUp + TRACKED_CLEANUP_TIME < cur_tick)
 	{
 		m_dwLastTrackedCleanUp = cur_tick;
@@ -602,6 +599,9 @@ void CClientList::Process()
 //<== Anti-Leecher-Log [cyrex2001]
 	}
 
+	///////////////////////////////////////////////////////////////////////////
+	// Process Kad client list
+	//
 	//We need to try to connect to the clients in m_KadList
 	//If connected, remove them from the list and send a message back to Kad so we can send a ACK.
 	//If we don't connect, we need to remove the client..
@@ -770,11 +770,15 @@ void CClientList::Process()
 		}
 	}
 
+	///////////////////////////////////////////////////////////////////////////
+	// Cleanup client list
+	//
 	CleanUpClientList();
 }
 
 #ifdef _DEBUG
-void CClientList::Debug_SocketDeleted(CClientReqSocket* deleted){
+void CClientList::Debug_SocketDeleted(CClientReqSocket* deleted) const
+{
 	for (POSITION pos = list.GetHeadPosition(); pos != NULL;){
 		CUpDownClient* cur_client =	list.GetNext(pos);
 		if (!AfxIsValidAddress(cur_client, sizeof(CUpDownClient))) {
@@ -789,12 +793,16 @@ void CClientList::Debug_SocketDeleted(CClientReqSocket* deleted){
 }
 #endif
 
-bool CClientList::IsValidClient(CUpDownClient* tocheck)
+bool CClientList::IsValidClient(CUpDownClient* tocheck) const
 {
 	if (thePrefs.m_iDbgHeap >= 2)
 		ASSERT_VALID(tocheck);
 	return list.Find(tocheck)!=NULL;
 }
+
+
+///////////////////////////////////////////////////////////////////////////////
+// Kad client list
 
 void CClientList::RequestTCP(Kademlia::CContact* contact)
 {
@@ -930,7 +938,7 @@ CDeletedClient::CDeletedClient(const CUpDownClient* pClient)
 }
 
 // ZZ:DownloadManager -->
-void CClientList::ProcessA4AFClients() {
+void CClientList::ProcessA4AFClients() const {
     //if(thePrefs.GetLogA4AF()) AddDebugLogLine(false, _T(">>> Starting A4AF check"));
 	POSITION pos1, pos2;
 	for (pos1 = list.GetHeadPosition();( pos2 = pos1 ) != NULL;){

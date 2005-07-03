@@ -25,6 +25,8 @@
 #include "Pinger.h"
 #include "emuledlg.h"
 
+#include <algorithm>
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -54,6 +56,8 @@ LastCommonRouteFinder::LastCommonRouteFinder() {
 	newTraceRouteHostEvent = new CEvent(0, 0);
 	prefsEvent = new CEvent(0, 0);
 
+    m_initiateFastReactionPeriod = false;
+
 	m_enabled = false;
 	doRun = true;
 	AfxBeginThread(RunProc, (LPVOID)this);
@@ -65,102 +69,122 @@ LastCommonRouteFinder::~LastCommonRouteFinder() {
 	delete prefsEvent;
 }
 
+bool LastCommonRouteFinder::AddHostToCheck(uint32 ip) {
+    bool gotEnoughHosts = true;
+
+	if(needMoreHosts && IsGoodIP(ip, true)) {
+		addHostLocker.Lock();
+
+		if(needMoreHosts) {
+            gotEnoughHosts = AddHostToCheckNoLock(ip);
+		}
+
+        addHostLocker.Unlock();
+    }
+
+    return gotEnoughHosts;
+}
+
+bool LastCommonRouteFinder::AddHostToCheckNoLock(uint32 ip) {
+    if(needMoreHosts && IsGoodIP(ip, true)) {
+	    //hostsToTraceRoute.AddTail(ip);
+	    hostsToTraceRoute.SetAt(ip, 0);
+
+        if(hostsToTraceRoute.GetCount() >= 10) {
+			needMoreHosts = false;
+
+			// Signal that there's hosts to fetch.
+			newTraceRouteHostEvent->SetEvent();
+        }
+    }
+
+    return !needMoreHosts;
+}
+
 bool LastCommonRouteFinder::AddHostsToCheck(CTypedPtrList<CPtrList, CServer*> &list) {
+    bool gotEnoughHosts = true;
+
 	if(needMoreHosts) {
 		addHostLocker.Lock();
 
 		if(needMoreHosts) {
-			if(list.GetCount() >= 10) {
-				hostsToTraceRoute.RemoveAll();
+			POSITION pos = list.GetHeadPosition();
 				
-				uint32 startPos = rand()/(RAND_MAX/list.GetCount());
+            if(pos) {
+				uint32 startPos = rand()/(RAND_MAX/(min(list.GetCount(), 100)));
 
-				POSITION pos = list.GetHeadPosition();
-				for(uint32 skipCounter = startPos; skipCounter < (uint32)list.GetCount() && pos != NULL; skipCounter++) {
+				for(uint32 skipCounter = 0; skipCounter < startPos && pos != NULL; skipCounter++) {
 					list.GetNext(pos);
                 }
 
+                if(!pos) {
+                    pos = list.GetHeadPosition();
+                }
+
 				uint32 tryCount = 0;
-				while(pos != NULL && hostsToTraceRoute.GetCount() < 10 && tryCount <= (uint32)list.GetCount()) {
+			    while(needMoreHosts && tryCount < (uint32)list.GetCount()) {
 					tryCount++;
 					CServer* server = list.GetNext(pos);
+                    if(!pos) {
+                        pos = list.GetHeadPosition();
+                    }
 
 					uint32 ip = server->GetIP();
 
-					if(IsGoodIP(ip, true)) {
-						hostsToTraceRoute.AddTail(ip);
+				    AddHostToCheckNoLock(ip);
                     }
                 }
             }
 
-			if(hostsToTraceRoute.GetCount() >= 10) {
-				needMoreHosts = false;
-
-				// Signal that there's hosts to fetch.
-				newTraceRouteHostEvent->SetEvent();
+        gotEnoughHosts = !needMoreHosts;
 
 				addHostLocker.Unlock();
-				return true; // got enough hosts
-			} else {
-				addHostLocker.Unlock();
-				return false; // didn't get enough hosts
-			}
-		} else {
-			addHostLocker.Unlock();
-			return true; // allready got enough hosts, don't need more
-		}
-	} else {
-		return true; // allready got enough hosts, don't need more
     }
+
+    return gotEnoughHosts;
 }
 
 bool LastCommonRouteFinder::AddHostsToCheck(CUpDownClientPtrList &list) {
+    bool gotEnoughHosts = true;
+
 	if(needMoreHosts) {
 		addHostLocker.Lock();
 
 		if(needMoreHosts) {
-			if(list.GetCount() >= 10) {
-				hostsToTraceRoute.RemoveAll();
+			POSITION pos = list.GetHeadPosition();
 
-				uint32 startPos = rand()/(RAND_MAX/list.GetCount());
+            if(pos) {
+				uint32 startPos = rand()/(RAND_MAX/(min(list.GetCount(), 100)));
 
-				POSITION pos = list.GetHeadPosition();
-				for(uint32 skipCounter = startPos; skipCounter < (uint32)list.GetCount() && pos != NULL; skipCounter++) {
+				for(uint32 skipCounter = 0; skipCounter < startPos && pos != NULL; skipCounter++) {
                     list.GetNext(pos);
                 }
 
+                if(!pos) {
+                    pos = list.GetHeadPosition();
+                }
+
 				uint32 tryCount = 0;
-				while(pos != NULL && hostsToTraceRoute.GetCount() < 10 && tryCount <= (uint32)list.GetCount()) {
+			    while(needMoreHosts && tryCount < (uint32)list.GetCount()) {
 					tryCount++;
 					CUpDownClient* client = list.GetNext(pos);
+                    if(!pos) {
+                        pos = list.GetHeadPosition();
+                    }
 
 					uint32 ip = client->GetIP();
 
-					if(IsGoodIP(ip, true)) {
-						hostsToTraceRoute.AddTail(ip);
+				    AddHostToCheckNoLock(ip);
                     }
 				}
 			}
 
-			if(hostsToTraceRoute.GetCount() >= 10) {
-				needMoreHosts = false;
-
-				// Signal that there's hosts to fetch.
-				newTraceRouteHostEvent->SetEvent();
+        gotEnoughHosts = !needMoreHosts;
 
 				addHostLocker.Unlock();
-				return true; // got enough hosts
-			} else {
-				addHostLocker.Unlock();
-				return false; // didn't get enough hosts
-			}
-		} else {
-			addHostLocker.Unlock();
-			return true; // allready got enough hosts, don't need more
-		}
-	} else {
-		return true; // allready got enough hosts, don't need more
     }
+
+    return gotEnoughHosts;
 }
 
 CurrentPingStruct LastCommonRouteFinder::GetCurrentPing() {
@@ -247,6 +271,14 @@ void LastCommonRouteFinder::SetPrefs(bool pEnabled, uint32 pCurUpload, uint32 pM
 	if(sendEvent) {
 		prefsEvent->SetEvent();
     }
+}
+
+void LastCommonRouteFinder::InitiateFastReactionPeriod() {
+	prefsLocker.Lock();
+
+    m_initiateFastReactionPeriod = true;
+
+    prefsLocker.Unlock();
 }
 
 uint32 LastCommonRouteFinder::GetUpload() {
@@ -353,11 +385,12 @@ UINT LastCommonRouteFinder::RunInternal() {
 
 					theApp.QueueDebugLogLine(false,_T("UploadSpeedSense: Got enough hosts. Listing the hosts that will be tracerouted:"));
 
-					POSITION pos = hostsToTraceRoute.GetHeadPosition();
+					POSITION pos = hostsToTraceRoute.GetStartPosition();
 					int counter = 0;
 					while(pos != NULL) {
 						counter++;
-						uint32 hostToTraceRoute = hostsToTraceRoute.GetNext(pos);
+						uint32 hostToTraceRoute, dummy;
+                        hostsToTraceRoute.GetNextAssoc(pos, hostToTraceRoute, dummy);
 						IN_ADDR stDestAddr;
 						stDestAddr.s_addr = hostToTraceRoute;
 
@@ -392,13 +425,11 @@ UINT LastCommonRouteFinder::RunInternal() {
                         uint32 lastDestinationAddress = 0;
                         uint32 hostsToTraceRouteCounter = 0;
                         bool failedThisTtl = false;
-						POSITION pos = hostsToTraceRoute.GetHeadPosition();
+						POSITION pos = hostsToTraceRoute.GetStartPosition();
                         while(doRun && enabled && failed == false && failedThisTtl == false && pos != NULL &&
                               ( lastDestinationAddress == 0 || lastDestinationAddress == curHost)) // || pingStatus.success == false && pingStatus.error == IP_REQ_TIMED_OUT ))
 						{
     						PingStatus pingStatus = {0};
-
-							POSITION lastPos = pos;
 
                             hostsToTraceRouteCounter++;
 
@@ -406,7 +437,8 @@ UINT LastCommonRouteFinder::RunInternal() {
 							// PENDING: Don't confuse this with curHost, which is unfortunately almost
 							// the same name. Will rename one of these variables as soon as possible, to
 							// get more different names.
-							uint32 curAddress = hostsToTraceRoute.GetNext(pos);
+							uint32 curAddress, dummy;
+                            hostsToTraceRoute.GetNextAssoc(pos, curAddress, dummy);
 
 							pingStatus.success = false;
 							for(int counter = 0; doRun && enabled && counter < 2 && (pingStatus.success == false || pingStatus.success == true && pingStatus.status != IP_SUCCESS && pingStatus.status != IP_TTL_EXPIRED_TRANSIT); counter++) {
@@ -450,13 +482,12 @@ UINT LastCommonRouteFinder::RunInternal() {
 								if(pingStatus.success == true && pingStatus.status == IP_SUCCESS) {
 									theApp.QueueDebugLogLine(false,_T("UploadSpeedSense: Host was too close! Removing this host. (TTL: %i IP: %s status: %i). Removing this host and restarting host collection."), ttl, ipstr(stDestAddr), pingStatus.status);
 
-									hostsToTraceRoute.RemoveAt(lastPos);
-									//failed = true;
+									hostsToTraceRoute.RemoveKey(curAddress);
 								} else if(pingStatus.success == true && pingStatus.status == IP_DEST_HOST_UNREACHABLE) {
 									theApp.QueueDebugLogLine(false,_T("UploadSpeedSense: Host unreacheable! (TTL: %i IP: %s status: %i). Removing this host. Status info follows."), ttl, ipstr(stDestAddr), pingStatus.status);
 									pinger.PIcmpErr(pingStatus.status);
 
-									hostsToTraceRoute.RemoveAt(lastPos);
+									hostsToTraceRoute.RemoveKey(curAddress);
                                 } else if(pingStatus.success == true) {
 									theApp.QueueDebugLogLine(false,_T("UploadSpeedSense: Unknown ping status! (TTL: %i IP: %s status: %i). Reason follows. Changing ping method to see if it helps."), ttl, ipstr(stDestAddr), pingStatus.status);
 									pinger.PIcmpErr(pingStatus.status);
@@ -556,6 +587,7 @@ UINT LastCommonRouteFinder::RunInternal() {
 					    theApp.QueueDebugLogLine(false,_T("UploadSpeedSense: Found last common host. HostToPing: %s"), ipstr(stHostToPingAddr));
 				    } else {
 					    theApp.QueueDebugLogLine(false,_T("UploadSpeedSense: Tracerouting failed too many times. Disabling Upload SpeedSense."));
+					    theApp.QueueLogLine(true,_T("UploadSpeedSense: Tracerouting failed too many times. Disabling Upload SpeedSense."));
 					    enabled = false;
 
 					    pingLocker.Lock();
@@ -648,7 +680,8 @@ UINT LastCommonRouteFinder::RunInternal() {
             }
 
 			if(doRun && enabled) {
-				theApp.QueueDebugLogLine(false,_T("UploadSpeedSense: Done with preparations. Starting control of upload speed."));
+				theApp.QueueDebugLogLine(false,_T("UploadSpeedSense: Done with preparations. Starting control of upload speed. (First 60 seconds will be in fast reaction mode)"));
+				theApp.QueueLogLine(true,_T("UploadSpeedSense: Done with preparations. Starting control of upload speed. (First 60 seconds will be in fast reaction mode)"));
             }
 
 			pingLocker.Lock();
@@ -695,13 +728,33 @@ UINT LastCommonRouteFinder::RunInternal() {
 				uint32 goingDownDivider = m_goingDownDivider;
 				uint32 numberOfPingsForAverage = m_iNumberOfPingsForAverage;
 				lowestInitialPingAllowed = m_LowestInitialPingAllowed; // PENDING
+
+                bool initiateFastReactionPeriod = m_initiateFastReactionPeriod;
+                m_initiateFastReactionPeriod = false;
 				prefsLocker.Unlock();
+
+                if(initiateFastReactionPeriod) {
+                    theApp.QueueDebugLogLine(false,_T("UploadSpeedSense: Raised upload limit in prefs detected. Going into fast reaction mode for 60 seconds."));
+                    theApp.QueueLogLine(true,_T("UploadSpeedSense: Raised upload limit in prefs detected. Going into fast reaction mode for 60 seconds."));
+
+                    // the first 60 seconds will use hardcoded up/down slowness that is faster
+                    initTime = ::GetTickCount();
+                }
 
 				DWORD tempTick = ::GetTickCount();
 
-				if(tempTick - initTime < SEC2MS(60)) {
+				if(tempTick - initTime < SEC2MS(20)) {
 					goingUpDivider = 1;
 					goingDownDivider = 1;
+                } else if(tempTick - initTime < SEC2MS(30)) {
+                    goingUpDivider *= 0.25;
+                    goingDownDivider *= 0.25;
+                } else if(tempTick - initTime < SEC2MS(40)) {
+                    goingUpDivider *= 0.5;
+                    goingDownDivider *= 0.5;
+                } else if(tempTick - initTime < SEC2MS(60)) {
+                    goingUpDivider *= 0.75;
+                    goingDownDivider *= 0.75;
 				} else if(tempTick - initTime < SEC2MS(61)) {
 					lastUploadReset = tempTick;
 					prefsLocker.Lock();
@@ -709,14 +762,15 @@ UINT LastCommonRouteFinder::RunInternal() {
 					prefsLocker.Unlock();
 				}
 
+                goingDownDivider = max(goingDownDivider, 1);
+                goingUpDivider = max(goingUpDivider, 1);
+
 				uint32 soll_ping = (UINT)(initial_ping*pingTolerance);
-				// EastShare START - Add by TAHO, USS limit
 				if ( useMillisecondPingTolerance ) {
 					soll_ping = pingToleranceMilliseconds; 
 				} else {
-					soll_ping = (UINT)(initial_ping*pingTolerance); // ZZ, USS
+					soll_ping = (UINT)(initial_ping*pingTolerance);
                 }
-				// EastShare END - Add by TAHO, USS limit
 
 				uint32 raw_ping = soll_ping; // this value will cause the upload speed not to change at all.
 
@@ -788,18 +842,24 @@ UINT LastCommonRouteFinder::RunInternal() {
 						pingDelaysTotal -= pingDelay;
 					}
 
-					uint32 normalized_ping = 0;
-					if((pingDelaysTotal/pingDelays.GetCount()) > initial_ping) {
-						normalized_ping = (UINT)((pingDelaysTotal/pingDelays.GetCount()) - initial_ping);
-                    }
+                    uint32 pingAverage = Median(pingDelays); //(pingDelaysTotal/pingDelays.GetCount());
+					sint32 normalized_ping = pingAverage - initial_ping;
+
+                    //{
+                    //    prefsLocker.Lock();
+                    //    uint32 tempCurUpload = m_CurUpload;
+                    //    prefsLocker.Unlock();
+
+                    //    theApp.QueueDebugLogLine(false, _T("USS-Debug: %i %i %i"), raw_ping, upload, tempCurUpload);
+                    //}
 
 					pingLocker.Lock();
-					m_pingAverage = (UINT)(pingDelaysTotal/pingDelays.GetCount());
+					m_pingAverage = (UINT)pingAverage;
 					m_lowestPing = initial_ping;
 					pingLocker.Unlock();
 
 					// Calculate Waiting Time
-					sint64 hping = (soll_ping - (sint64)normalized_ping);
+					sint64 hping = ((sint32)soll_ping) - normalized_ping;
 
 					// Calculate change of upload speed
 					if(hping < 0) {
@@ -849,4 +909,38 @@ UINT LastCommonRouteFinder::RunInternal() {
 	threadEndedEvent->SetEvent();
 
 	return 0;
+}
+uint32 LastCommonRouteFinder::Median(UInt32Clist& list) {
+    uint32 size = list.GetCount();
+
+    if(size == 1) {
+        return list.GetHead();
+    } else if(size == 2) {
+        return (list.GetHead()+list.GetTail())/2;
+    } else if(size > 2) {
+        // if more than 2 elements, we need to sort them to find the middle.
+        uint32* arr = new uint32[size];
+
+        uint32 counter = 0;
+        for(POSITION pos = list.GetHeadPosition(); pos; list.GetNext(pos)) {
+            arr[counter] = list.GetAt(pos);
+            counter++;
+        }
+
+        std::sort(arr, arr+size);
+
+        double returnVal;
+
+        if(size%2)
+            returnVal = arr[size/2];
+        else
+            returnVal = (arr[size/2-1] + arr[size/2])/2;
+
+        delete arr;
+
+        return returnVal;
+    } else {
+        // Undefined! Shouldn't be called with no elements in list.
+        return 0;
+    }
 }

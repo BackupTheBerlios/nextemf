@@ -693,20 +693,21 @@ BOOL CChatSelector::OnCommand(WPARAM wParam, LPARAM lParam)
 
 void CChatSelector::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 {
-
 	const CChatItem* ci = GetCurrentChatItem();
-	CFriend* fr=theApp.friendlist->SearchFriend(ci->client->GetUserHash(),0,0);
+	if (ci == NULL)
+		return;
+	CFriend* pFriend = theApp.friendlist->SearchFriend(ci->client->GetUserHash(), 0, 0);
 
 	CTitleMenu menu;
 	menu.CreatePopupMenu();
 	menu.AddMenuTitle( GetResString(IDS_CLIENT) ,true );
 
-	menu.AppendMenu(MF_STRING,MP_REMOVE, GetResString(IDS_FD_CLOSE), /*_T("CLIENTDETAILS")*/ 0);
+	menu.AppendMenu(MF_STRING, MP_REMOVE, GetResString(IDS_FD_CLOSE));
 	menu.AppendMenu(MF_STRING,MP_DETAIL, GetResString(IDS_SHOWDETAILS), _T("CLIENTDETAILS"));
 	menu.SetDefaultItem(MP_DETAIL);
 
 	GetCurrentChatItem();
-	
+
 	m_ptCtxMenu = point;
 	ScreenToClient(&m_ptCtxMenu);
 	menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);

@@ -20,6 +20,7 @@
 #include "IconStatic.h"
 #include "RichEditCtrlX.h"
 #include "ClosableTabCtrl.h"
+#include "SplitterControl.h"
 
 class CHTRichEditCtrl;
 class CCustomAutoComplete;
@@ -72,8 +73,16 @@ public:
 #endif
 //<== Anti-Leecher-Log [cyrex2001]
 	CClosableTabCtrl StatusSelector;
+	CSplitterControl m_wndSplitter;
 
 private:
+	void	DoResize(int delta);
+	void	UpdateSplitterRange();
+	void	DoSplitResize(int delta);
+	void	ShowSplitWindow(bool bReDraw = false);
+	void	InitSplitter();
+	void	ReattachAnchors();
+
 	CIconStatic m_ctrlNewServerFrm;
 	CIconStatic m_ctrlUpdateServerFrm;
 	CIconStatic m_ctrlMyInfoFrm;
@@ -93,6 +102,7 @@ protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual BOOL OnInitDialog();
 	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	virtual LRESULT DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam);
 
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnBnClickedAddserver();
@@ -106,4 +116,6 @@ protected:
 	afx_msg void OnSvrTextChange();
 	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
 	afx_msg void OnStnDblclickServlstIco();
+	afx_msg void OnSplitterMoved(NMHDR *pNMHDR, LRESULT *pResult);
+	afx_msg void OnWindowPosChanged(WINDOWPOS* lpwndpos);
 };

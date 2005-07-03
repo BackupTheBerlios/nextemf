@@ -64,9 +64,11 @@
 #include "FirewallOpener.h"
 #include "StringConversion.h"
 #include "Log.h"
+#include "Collection.h"
 
 CLogFile theLog;
 CLogFile theVerboseLog;
+bool g_bLowColorDesktop = false;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -217,6 +219,9 @@ CemuleApp::CemuleApp(LPCTSTR lpszAppName)
 #ifdef _DEBUG
 	m_strCurVersionLong += _T(" DEBUG");
 #endif
+#ifdef _BETA
+	m_strCurVersionLong += _T(" BETA");
+#endif
 
 	// create the protocol version number
 	CString strTmp;
@@ -322,6 +327,10 @@ BOOL CemuleApp::InitInstance()
 	VERIFY( GetModuleFileName(m_hInstance, szAppDir, ARRSIZE(szAppDir)) );
 	VERIFY( PathRemoveFileSpec(szAppDir) );
 	
+	TCHAR szConfigDir[MAX_PATH];
+	PathCombine(szConfigDir, szAppDir, CONFIGFOLDER);
+	::CreateDirectory(szConfigDir, NULL);
+	
 	TCHAR szPrefFilePath[MAX_PATH];
 	PathCombine(szPrefFilePath, szAppDir, CONFIGFOLDER _T("preferences.ini"));
 	if (m_pszProfileName)
@@ -341,7 +350,9 @@ BOOL CemuleApp::InitInstance()
 	///////////////////////////////////////////////////////////////////////////
 	// Install crash dump creation
 	//
+#ifndef _BETA
 	if (GetProfileInt(_T("eMule"), _T("CreateCrashDump"), 0))
+#endif
 		theCrashDumper.Enable(_T("eMule ") + m_strCurVersionLong, true);
 
 
@@ -354,7 +365,7 @@ BOOL CemuleApp::InitInstance()
 
 	AfxOleInit();
 
-	pendinglink = 0;
+	pstrPendingLink = NULL;
 	if (ProcessCommandline())
 		return false;
 
@@ -381,17 +392,38 @@ BOOL CemuleApp::InitInstance()
 		}
 	}
 
+	DWORD dwShellMjr = 4;
+	DWORD dwShellMin = 0;
+	AtlGetShellVersion(&dwShellMjr, &dwShellMin);
+	ULONGLONG ullShellVer = MAKEDLLVERULL(dwShellMjr,dwShellMin,0,0);
+	if (ullShellVer < MAKEDLLVERULL(4,7,0,0))
+	{
+		if (GetProfileInt(_T("eMule"), _T("CheckShell32"), 1)) // just in case some user's can not install that package and have to survive without it..
+		{
+			AfxMessageBox(_T("Windows Shell library (SHELL32.DLL) is too old!\r\n\r\neMule detected a version of the \"Windows Shell library (SHELL32.DLL)\" which is too old to be properly used by eMule. To ensure full and flawless functionality of eMule we strongly recommend to update the \"Windows Shell library (SHELL32.DLL)\" to at least version 4.7.\r\n\r\nDownload and install an update of the \"Windows Shell library (SHELL32.DLL)\" at Microsoft (R) Download Center."), MB_ICONSTOP);
+
+			// No need to exit eMule, it will most likely work as expected but it will have some GUI glitches here and there..
+		}
+	}
+
 	m_sizSmallSystemIcon.cx = GetSystemMetrics(SM_CXSMICON);
 	m_sizSmallSystemIcon.cy = GetSystemMetrics(SM_CYSMICON);
+	UpdateDesktopColorDepth();
 
+	if (g_bLowColorDesktop)
+	{
+		m_iDfltImageListColorFlags = ILC_COLOR4;
+	}
+	else
+	{
 	m_iDfltImageListColorFlags = GetAppImageListColorFlag();
-
 	// don't use 32bit color resources if not supported by commctl
 	if (m_iDfltImageListColorFlags == ILC_COLOR32 && m_ullComCtrlVer < MAKEDLLVERULL(6,0,0,0))
 		m_iDfltImageListColorFlags = ILC_COLOR16;
 	// don't use >8bit color resources with OSs with restricted memory for GDI resources
 	if (afxData.bWin95)
 		m_iDfltImageListColorFlags = ILC_COLOR8;
+	}
 
 	CWinApp::InitInstance();
 
@@ -410,7 +442,7 @@ BOOL CemuleApp::InitInstance()
 #ifdef OPTIM
 			memzero(&m_wsaData, sizeof(WSADATA));
 #else
-		memset(&m_wsaData, 0, sizeof(WSADATA));
+			memset(&m_wsaData, 0, sizeof(WSADATA));
 #endif
 //<== Optimizer [shadow2004]
 
@@ -455,9 +487,10 @@ BOOL CemuleApp::InitInstance()
 	// check if we have to restart eMule as Secure user
 	if (thePrefs.IsRunAsUserEnabled()){
 		CSecRunAsUser rau;
-		if ( rau.PrepareUser() && rau.RestartAsUser() )
+		eResult res = rau.RestartSecure();
+		if (res == RES_OK_NEED_RESTART)
 			return FALSE; // emule restart as secure user, kill this instance
-		else if ( !rau.IsRunningEmuleAccount() ){
+		else if (res == RES_FAILED){
 			// something went wrong
 			theApp.QueueLogLine(false, GetResString(IDS_RAU_FAILED), rau.GetCurrentUserW()); 
 		}
@@ -497,7 +530,7 @@ BOOL CemuleApp::InitInstance()
 
 	// Barry - Auto-take ed2k links
 	if (thePrefs.AutoTakeED2KLinks())
-		Ask4RegFix(false, true);
+		Ask4RegFix(false, true, false);
 
 	if (thePrefs.GetAutoStart())
 		::AddAutoStart();
@@ -661,23 +694,38 @@ bool CemuleApp::ProcessCommandline()
 	}
 
     if (cmdInfo.m_nShellCommand == CCommandLineInfo::FileOpen) {
-		CString command = cmdInfo.m_strFileName;
-		if (command.Find(_T("://"))>0) {
-			sendstruct.cbData = (command.GetLength() + 1)*sizeof(TCHAR);
+		CString* command = new CString(cmdInfo.m_strFileName);
+		if (command->Find(_T("://"))>0) {
+			sendstruct.cbData = (command->GetLength() + 1)*sizeof(TCHAR);
 			sendstruct.dwData = OP_ED2KLINK; 
-			sendstruct.lpData = command.GetBuffer(); 
+			sendstruct.lpData = command->GetBuffer(); 
     		if (maininst){
       			SendMessage(maininst, WM_COPYDATA, (WPARAM)0, (LPARAM)(PCOPYDATASTRUCT)&sendstruct);
+				delete command;
       			return true; 
 			} 
     		else 
-      			pendinglink = new CString(command);
-		} else {
-			sendstruct.cbData = (command.GetLength() + 1)*sizeof(TCHAR);
-			sendstruct.dwData = OP_CLCOMMAND;
-			sendstruct.lpData = command.GetBuffer(); 
+      			pstrPendingLink = command;
+		}
+		else if (CCollection::HasCollectionExtention(*command)){
+			sendstruct.cbData = (command->GetLength() + 1)*sizeof(TCHAR);
+			sendstruct.dwData = OP_COLLECTION; 
+			sendstruct.lpData = command->GetBuffer(); 
     		if (maininst){
       			SendMessage(maininst, WM_COPYDATA, (WPARAM)0, (LPARAM)(PCOPYDATASTRUCT)&sendstruct);
+      			delete command;
+      			return true; 
+			} 
+    		else 
+      			pstrPendingLink = command;
+		}
+		else {
+			sendstruct.cbData = (command->GetLength() + 1)*sizeof(TCHAR);
+			sendstruct.dwData = OP_CLCOMMAND;
+			sendstruct.lpData = command->GetBuffer(); 
+    		if (maininst){
+      			SendMessage(maininst, WM_COPYDATA, (WPARAM)0, (LPARAM)(PCOPYDATASTRUCT)&sendstruct);
+      			delete command;
       			return true; 
 			}
 		}
@@ -1591,6 +1639,11 @@ void CemuleApp::CreateBackwardDiagonalBrush()
 		logBrush.lbColor = RGB(0, 0, 0);
 		VERIFY( m_brushBackwardDiagonal.CreateBrushIndirect(&logBrush) );
 	}
+}
+
+void CemuleApp::UpdateDesktopColorDepth()
+{
+	g_bLowColorDesktop = (GetDesktopColorDepth() <= 8);
 }
 
 //==> Optimizer [shadow2004]

@@ -127,7 +127,7 @@ void CSearch::go(void)
 	{
 		CUInt128 distance(CKademlia::getPrefs()->getKadID());
 		distance.xor(m_target);
-		CKademlia::getRoutingZone()->getClosestTo(1, distance, 50, &m_possible, true, true);
+		CKademlia::getRoutingZone()->getClosestTo(1, m_target, distance, 50, &m_possible, true, true);
 	}
 	if (m_possible.empty())
 		return;
@@ -212,24 +212,6 @@ void CSearch::jumpStart(void)
 		return;
 	}
 
-	CUInt128 best;
-	// Remove any obsolete possible contacts
-	if (!m_responded.empty())
-	{
-		best = m_responded.begin()->first;
-		ContactMap::iterator it = m_possible.begin();
-		while (it != m_possible.end())
-		{
-			if (it->first < best)
-				it = m_possible.erase(it);
-			else
-				it++;
-		}
-	}
-
-	if (m_possible.empty())
-		return;
-
 	// Move to tried
 	CContact *c = m_possible.begin()->second;
 	m_tried[m_possible.begin()->first] = c;
@@ -301,7 +283,10 @@ void CSearch::processResponse(uint32 fromIP, uint16 fromPort, ContactList *resul
 						// If in top 3 responses
 						bool top = false;
 						if (m_best.size() < ALPHA_QUERY)
+						{
 							top = true;
+							m_best[distance] = c;
+						}
 						else
 						{
 							ContactMap::iterator it = m_best.end();
@@ -396,11 +381,11 @@ void CSearch::processResponse(uint32 fromIP, uint16 fromPort, ContactList *resul
 									{
 										CUInt128 buddyID(true);
 										buddyID.xor(CKademlia::getPrefs()->getKadID());
-										taglist.push_back(new CTagUInt8(TAG_SOURCETYPE, 3));
-										taglist.push_back(new CTagUInt32(TAG_SERVERIP, theApp.clientlist->GetBuddy()->GetIP()));
-										taglist.push_back(new CTagUInt16(TAG_SERVERPORT, theApp.clientlist->GetBuddy()->GetUDPPort()));
-										taglist.push_back(new CTagStr(TAG_BUDDYHASH, CStringW(md4str(buddyID.getData()))));
-										taglist.push_back(new CTagUInt16(TAG_SOURCEPORT, thePrefs.GetPort()));
+										taglist.push_back(new CKadTagUInt8(TAG_SOURCETYPE, 3));
+										taglist.push_back(new CKadTagUInt32(TAG_SERVERIP, theApp.clientlist->GetBuddy()->GetIP()));
+										taglist.push_back(new CKadTagUInt16(TAG_SERVERPORT, theApp.clientlist->GetBuddy()->GetUDPPort()));
+										taglist.push_back(new CKadTagStr(TAG_BUDDYHASH, CStringW(md4str(buddyID.getData()))));
+										taglist.push_back(new CKadTagUInt16(TAG_SOURCEPORT, thePrefs.GetPort()));
 									}
 									else
 									{
@@ -410,8 +395,8 @@ void CSearch::processResponse(uint32 fromIP, uint16 fromPort, ContactList *resul
 								}
 								else
 								{
-									taglist.push_back(new CTagUInt8(TAG_SOURCETYPE, 1));
-									taglist.push_back(new CTagUInt16(TAG_SOURCEPORT, thePrefs.GetPort()));
+									taglist.push_back(new CKadTagUInt8(TAG_SOURCETYPE, 1));
+									taglist.push_back(new CKadTagUInt16(TAG_SOURCEPORT, thePrefs.GetPort()));
 								}
 
 								CKademlia::getUDPListener()->publishPacket(from->getIPAddress(), from->getUDPPort(),m_target,id, taglist);
@@ -470,16 +455,16 @@ void CSearch::processResponse(uint32 fromIP, uint16 fromPort, ContactList *resul
 									tagcount++;
 								//Number of tags.
 								bio.writeUInt8(tagcount);
-								CTagStr fileName(TAG_FILENAME, file->GetFileName());
+								CKadTagStr fileName(TAG_FILENAME, file->GetFileName());
 								bio.writeTag(&fileName);
 								if(file->GetFileRating() != 0)
 								{
-									CTagUInt16 rating(TAG_FILERATING, file->GetFileRating());
+									CKadTagUInt16 rating(TAG_FILERATING, file->GetFileRating());
 									bio.writeTag(&rating);
 								}
 								if(file->GetFileComment() != "")
 								{
-									CTagStr description(TAG_DESCRIPTION, file->GetFileComment());
+									CKadTagStr description(TAG_DESCRIPTION, file->GetFileComment());
 									bio.writeTag(&description);
 								}
 
@@ -565,7 +550,7 @@ void CSearch::processResultFile(uint32 fromIP, uint16 fromPort, const CUInt128 &
 	uchar buddyhash[16];
 	CUInt128 buddy;
 
-	CTag *tag;
+	CKadTag *tag;
 	TagList::const_iterator it;
 	for (it = info->begin(); it != info->end(); it++)
 	{
@@ -616,8 +601,9 @@ void CSearch::processResultNotes(uint32 fromIP, uint16 fromPort, const CUInt128 
 	CEntry* entry = new CEntry();
 	entry->keyID.setValue(m_target);
 	entry->sourceID.setValue(answer);
+	bool bFilterComment = false;
 
-	CTag *tag;
+	CKadTag *tag;
 	TagList::const_iterator it;
 	for (it = info->begin(); it != info->end(); it++)
 	{
@@ -638,24 +624,71 @@ void CSearch::processResultNotes(uint32 fromIP, uint16 fromPort, const CUInt128 
 			delete tag;
 		}
 		else if (!tag->m_name.Compare(TAG_DESCRIPTION))
+		{
 			entry->taglist.push_front(tag);
+
+			// test if comment is filtered
+			if (!thePrefs.GetCommentFilter().IsEmpty())
+			{
+				CString strCommentLower(tag->GetStr());
+				strCommentLower.MakeLower();
+
+				int iPos = 0;
+				CString strFilter(thePrefs.GetCommentFilter().Tokenize(_T("|"), iPos));
+				while (!strFilter.IsEmpty())
+				{
+					// comment filters are already in lowercase, compare with temp. lowercased received comment
+					if (strCommentLower.Find(strFilter) >= 0)
+					{
+						bFilterComment = true;
+						break;
+					}
+					strFilter = thePrefs.GetCommentFilter().Tokenize(_T("|"), iPos);
+				}
+			}
+		}
 		else if (!tag->m_name.Compare(TAG_FILERATING))
 			entry->taglist.push_front(tag);
 		else 
 			delete tag;
 	}
 	delete info;
+
+	if(bFilterComment)
+	{
+		delete entry;
+		return;
+	}
+
 	uchar fileid[16];
 	m_target.toByteArray(fileid);
-	CKnownFile* file = theApp.sharedfiles->GetFileByID(fileid);
-	if(!file)
-		file = (CKnownFile*)theApp.downloadqueue->GetFileByID(fileid);
 
-	if(file)
+	//Add notes to any searches we have done.
+	//The returned entry object will never be attached
+	//to anything. So you can delete the entry object
+	//at any time after this call..
+	bool flag = theApp.searchlist->AddNotes(entry, fileid);
+
+	//Check if this hash is in our shared files..
+	CAbstractFile* file = (CAbstractFile*)theApp.sharedfiles->GetFileByID(fileid);
+
+	//If we didn't find anything check if it's in our download queue.
+	if(!file)
+		file = (CAbstractFile*)theApp.downloadqueue->GetFileByID(fileid);
+
+	//If file->AddNote is successfull, we can just increase the count and exit..
+	if( file && file->AddNote(entry) )
 	{
 		m_count++;
-		file->AddNote(entry);
+		return;
 	}
+
+	//If file->AddNote fails, we check if searchlist->AddNotes was successfull to increase counter.
+	if (flag)
+		m_count++;
+
+	//We always delete the entry object if file->AddNote failes..
+	delete entry;
 }
 
 void CSearch::processResultKeyword(uint32 fromIP, uint16 fromPort, const CUInt128 &answer, TagList *info)
@@ -673,7 +706,7 @@ void CSearch::processResultKeyword(uint32 fromIP, uint16 fromPort, const CUInt12
 	uint32 bitrate = 0;
 	uint32 availability = 0;
 
-	CTag *tag;
+	CKadTag *tag;
 	TagList::const_iterator it;
 	for (it = info->begin(); it != info->end(); it++)
 	{
@@ -850,15 +883,15 @@ void CSearch::PreparePacketForTags( CByteIO *bio, CKnownFile *file)
 			TagList taglist;
 			
 			// Name, Size
-			taglist.push_back(new CTagStr(TAG_FILENAME, file->GetFileName()));
-			taglist.push_back(new CTagUInt(TAG_FILESIZE, file->GetFileSize()));
-			taglist.push_back(new CTagUInt(TAG_SOURCES, (uint32)file->m_nCompleteSourcesCount));
+			taglist.push_back(new CKadTagStr(TAG_FILENAME, file->GetFileName()));
+			taglist.push_back(new CKadTagUInt(TAG_FILESIZE, file->GetFileSize()));
+			taglist.push_back(new CKadTagUInt(TAG_SOURCES, (uint32)file->m_nCompleteSourcesCount));
 			
 			// eD2K file type (Audio, Video, ...)
 			// NOTE: Archives and CD-Images are published with file type "Pro"
 			CString strED2KFileType(GetED2KFileTypeSearchTerm(GetED2KFileTypeID(file->GetFileName())));
 			if (!strED2KFileType.IsEmpty())
-				taglist.push_back(new CTagStr(TAG_FILETYPE, strED2KFileType));
+				taglist.push_back(new CKadTagStr(TAG_FILETYPE, strED2KFileType));
 			
 			// file format (filename extension)
 			int iExt = file->GetFileName().ReverseFind(_T('.'));
@@ -869,7 +902,7 @@ void CSearch::PreparePacketForTags( CByteIO *bio, CKnownFile *file)
 				{
 					strExt = strExt.Mid(1);
 					if (!strExt.IsEmpty())
-						taglist.push_back(new CTagStr(TAG_FILEFORMAT, strExt));
+						taglist.push_back(new CKadTagStr(TAG_FILEFORMAT, strExt));
 				}
 			}
 
@@ -904,9 +937,9 @@ void CSearch::PreparePacketForTags( CByteIO *bio, CKnownFile *file)
 						szKadTagName[0] = pTag->GetNameID();
 						szKadTagName[1] = '\0';
 						if (pTag->IsStr())
-							taglist.push_back(new CTagStr(szKadTagName, pTag->GetStr()));
+							taglist.push_back(new CKadTagStr(szKadTagName, pTag->GetStr()));
 						else
-							taglist.push_back(new CTagUInt(szKadTagName, pTag->GetInt()));
+							taglist.push_back(new CKadTagUInt(szKadTagName, pTag->GetInt()));
 					}
 				}
 			}

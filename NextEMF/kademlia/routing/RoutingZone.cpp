@@ -335,19 +335,19 @@ CContact *CRoutingZone::getContact(const CUInt128 &id) const
 		return m_subZones[id.getBitNumber(m_level)]->getContact(id);
 }
 
-int CRoutingZone::getClosestTo(int maxType, const CUInt128 &target, int maxRequired, ContactMap *result, bool emptyFirst, bool inUse) const
+uint32 CRoutingZone::getClosestTo(uint32 maxType, const CUInt128 &target, const CUInt128 &distance, uint32 maxRequired, ContactMap *result, bool emptyFirst, bool inUse) const
 {
 	// If leaf zone, do it here
 	if (isLeaf())
-		return m_bin->getClosestTo(maxType, target, maxRequired, result, emptyFirst, inUse);
+		return m_bin->getClosestTo(maxType, target, distance, maxRequired, result, emptyFirst, inUse);
 	
 	// otherwise, recurse in the closer-to-the-target subzone first
-	int closer = target.getBitNumber(m_level);
-	int found = m_subZones[closer]->getClosestTo(maxType, target, maxRequired, result, emptyFirst, inUse);
+	int closer = distance.getBitNumber(m_level);
+	uint32 found = m_subZones[closer]->getClosestTo(maxType, target, distance, maxRequired, result, emptyFirst, inUse);
 
 	// if still not enough tokens found, recurse in the other subzone too
 	if (found < maxRequired)
-		found += m_subZones[1-closer]->getClosestTo(maxType, target, maxRequired-found, result, false, inUse);
+		found += m_subZones[1-closer]->getClosestTo(maxType, target, distance, maxRequired-found, result, false, inUse);
 	
 	return found;
 }

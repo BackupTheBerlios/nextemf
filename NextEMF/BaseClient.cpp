@@ -39,6 +39,7 @@
 #include "Sockets.h"
 #include "DownloadQueue.h"
 #include "UploadQueue.h"
+#include "SearchFile.h"
 #include "SearchList.h"
 #include "SharedFileList.h"
 #include "Kademlia/Kademlia/Kademlia.h"
@@ -238,12 +239,14 @@ void CUpDownClient::Init()
 	m_byKadVersion = 0;
 	SetLastBuddyPingPongTime();
 	m_fSentOutOfPartReqs = 0;
+	m_bCollectionUploadSlot = false;
 //==>Modversion [shadow2004]
 #ifdef MODVERSION
 	m_strModVersion.Empty();
 	m_bIsNextEMF = false;
 #endif //Modversion
 //<==Modversion [shadow2004]
+
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -365,12 +368,12 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	m_fNoViewSharedFiles = 0;
 	m_bUnicodeSupport = false;
 
-	//==>Modversion [shadow2004]
+//==>Modversion [shadow2004]
 #ifdef MODVERSION
 	m_strModVersion.Empty();//fix [cyrex2001]
 	m_bIsNextEMF = false;//fix [cyrex2001]
 #endif //Modversion
-	//<==Modversion [shadow2004]
+//<==Modversion [shadow2004]
 
 	data->ReadHash16(m_achUserHash);
 	if (bDbgInfo)
@@ -383,6 +386,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 		m_strHelloInfo.AppendFormat(_T("  Port=%u"), nUserPort);
 	
 	DWORD dwEmuleTags = 0;
+	bool bPrTag = false;
 	uint32 tagcount = data->ReadUInt32();
 	if (bDbgInfo)
 		m_strHelloInfo.AppendFormat(_T("  Tags=%u"), tagcount);
@@ -531,6 +535,11 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 					m_strHelloInfo.AppendFormat(_T("\n  ClientVer=%u.%u.%u.%u  Comptbl=%u"), (m_nClientVersion >> 17) & 0x7f, (m_nClientVersion >> 10) & 0x7f, (m_nClientVersion >> 7) & 0x07, m_nClientVersion & 0x7f, m_byCompatibleClient);
 				break;
 			default:
+				// Since eDonkeyHybrid 1.3 is no longer sending the additional Int32 at the end of the Hello packet,
+				// we use the "pr=1" tag to determine them.
+				if (temptag.GetName() && temptag.GetName()[0]=='p' && temptag.GetName()[1]=='r') {
+					bPrTag = true;
+				}
 //==>SNAFU [shadow2004]
 #ifdef SNAFU
 				if (!((temptag.GetNameID() & 0xF0)==0xF0))
@@ -546,8 +555,12 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	m_nServerPort = data->ReadUInt16();
 	if (bDbgInfo)
 		m_strHelloInfo.AppendFormat(_T("\n  Server=%s:%u"), ipstr(m_dwServerIP), m_nServerPort);
-	// Hybrid now has an extra uint32.. What is it for?
-	// Also, many clients seem to send an extra 6? These are not eDonkeys or Hybrids..
+
+	// Check for additional data in Hello packet to determine client's software version.
+	//
+	// *) eDonkeyHybrid 0.40 - 1.2 sends an additional Int32. (Since 1.3 they don't send it any longer.)
+	// *) MLdonkey sends an additional Int32
+	//
 	if ( data->GetLength() - data->GetPosition() == sizeof(uint32) ){
 		uint32 test = data->ReadUInt32();
 		if (test == 'KDLM') 
@@ -558,7 +571,6 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 		}
 		else{
 			m_bIsHybrid = true;
-			m_fSharedDirectories = 1;
 			if (bDbgInfo)
 				m_strHelloInfo.AppendFormat(_T("\n  ***AddData: uint32=%u (0x%08x)"), test, test);
 		}
@@ -583,7 +595,7 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 	socket->GetPeerName((SOCKADDR*)&sockAddr, &nSockAddrLen);
 	SetIP(sockAddr.sin_addr.S_un.S_addr);
 
-	if (thePrefs.AddServersFromClient() && m_dwServerIP && m_nServerPort){
+	if (thePrefs.GetAddServersFromClients() && m_dwServerIP && m_nServerPort){
 		CServer* addsrv = new CServer(m_nServerPort, ipstr(m_dwServerIP));
 		addsrv->SetListName(addsrv->GetAddress());
 		if (!theApp.emuledlg->serverwnd->serverlistctrl.AddServer(addsrv, true))
@@ -643,8 +655,6 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 		m_bGPLEvildoer = true;  
 	}
 
-	ReGetClientSoft();
-
 	m_byInfopacketsReceived |= IP_EDONKEYPROTPACK;
 	// check if at least CT_EMULEVERSION was received, all other tags are optional
 	bool bIsMule = (dwEmuleTags & 0x04) == 0x04;
@@ -652,14 +662,18 @@ bool CUpDownClient::ProcessHelloTypePacket(CSafeMemFile* data)
 		m_bEmuleProtocol = true;
 		m_byInfopacketsReceived |= IP_EMULEPROTPACK;
 	}
+	else if (bPrTag){
+		m_bIsHybrid = true;
+	}
+
+	InitClientSoftwareVersion();
+
+	if (m_bIsHybrid)
+		m_fSharedDirectories = 1;
 
 	if (thePrefs.GetVerbose() && GetServerIP() == INADDR_NONE)
 		AddDebugLogLine(false, _T("Received invalid server IP %s from %s"), ipstr(GetServerIP()), DbgGetClientInfo());
 
-	if( GetKadPort() )
-	{
-		Kademlia::CKademlia::bootstrap(ntohl(GetIP()), GetKadPort());
-	}
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS
 	//WiZaRd - AntiNickThief start
@@ -804,7 +818,6 @@ void CUpDownClient::ProcessMuleInfoPacket(const uchar* pachPacket, uint32 nSize)
 	} else {
 		return;
 	}
-	m_bEmuleProtocol = true;
 
 	uint32 tagcount = data.ReadUInt32();
 	if (bDbgInfo)
@@ -912,8 +925,9 @@ void CUpDownClient::ProcessMuleInfoPacket(const uchar* pachPacket, uint32 nSize)
 		m_strMuleInfo.AppendFormat(_T("\n  ***AddData: %u bytes"), data.GetLength() - data.GetPosition());
 	}
 
-	ReGetClientSoft();
+	m_bEmuleProtocol = true;
 	m_byInfopacketsReceived |= IP_EMULEPROTPACK;
+	InitClientSoftwareVersion();
 
 	if (thePrefs.GetVerbose() && GetServerIP() == INADDR_NONE)
 		AddDebugLogLine(false, _T("Received invalid server IP %s from %s"), ipstr(GetServerIP()), DbgGetClientInfo());
@@ -989,6 +1003,7 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 
 	data->WriteUInt32(clientid);
 	data->WriteUInt16(thePrefs.GetPort());
+
 	uint32 tagcount = 6;
 
 	if( theApp.clientlist->GetBuddy() && theApp.IsFirewalled() )
@@ -1011,7 +1026,6 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 	CTag tagName(CT_NAME, (!m_bGPLEvildoer) ? thePrefs.GetUserNick() : _T("Please use a GPL-conform version of eMule") );
 #endif //WiZaRd AntiLeechClass
 //<==WiZaRd AntiLeechClass [cyrex2001]
-	// TODO implement multi language website which informs users of the effects of bad mods
 	tagName.WriteTagToFile(data, utf8strRaw);
 
 //==> Emulate others by WiZaRd & Spike [shadow2004]
@@ -1050,12 +1064,12 @@ void CUpDownClient::SendHelloTypePacket(CSafeMemFile* data)
 	
 	if( theApp.clientlist->GetBuddy() && theApp.IsFirewalled() )
 	{
-		CTag tagBuddyIP(CT_EMULE_BUDDYIP, theApp.clientlist->GetBuddy()->GetBuddyIP() ); 
+		CTag tagBuddyIP(CT_EMULE_BUDDYIP, theApp.clientlist->GetBuddy()->GetIP() ); 
 		tagBuddyIP.WriteTagToFile(data);
 	
 		CTag tagBuddyPort(CT_EMULE_BUDDYUDP, 
 //					( RESERVED												)
-					((uint32)theApp.clientlist->GetBuddy()->GetBuddyPort()  ) 
+					((uint32)theApp.clientlist->GetBuddy()->GetUDPPort()  ) 
 					);
 		tagBuddyPort.WriteTagToFile(data);
 	}
@@ -1299,7 +1313,7 @@ bool CUpDownClient::Disconnected(LPCTSTR pszReason, bool bFromSocket)
 	switch(m_nUploadState){
 		case US_CONNECTING:
 			if (thePrefs.GetLogUlDlEvents())
-	            AddDebugLogLine(DLP_VERYLOW, true,_T("---- %s: Removing connecting client from upload list. Reason: %s ----"), DbgGetClientInfo(), pszReason);
+                AddDebugLogLine(DLP_VERYLOW, true,_T("Removing connecting client from upload list: %s Client: %s"), pszReason, DbgGetClientInfo());
 		case US_WAITCALLBACK:
 		case US_ERROR:
 			theApp.clientlist->m_globDeadSourceList.AddDeadSource(this);
@@ -1689,7 +1703,7 @@ void CUpDownClient::ConnectionEstablished()
 
 }
 
-void CUpDownClient::ReGetClientSoft()
+void CUpDownClient::InitClientSoftwareVersion()
 {
 	if (m_pszUsername == NULL){
 		m_clientSoft = SO_UNKNOWN;
@@ -1697,7 +1711,7 @@ void CUpDownClient::ReGetClientSoft()
 	}
 
 	int iHashType = GetHashType();
-	if (iHashType == SO_EMULE){
+	if (m_bEmuleProtocol || iHashType == SO_EMULE){
 		LPCTSTR pszSoftware;
 		switch(m_byCompatibleClient){
 			case SO_CDONKEY:
@@ -1780,6 +1794,8 @@ void CUpDownClient::ReGetClientSoft()
 		// seen:
 		// 105010	0.50.10
 		// 10501	0.50.1
+		// 10300	1.3.0
+		// 10201	1.2.1
 		// 10103	1.1.3
 		// 10102	1.1.2
 		// 10100	1.1
@@ -1797,10 +1813,11 @@ void CUpDownClient::ReGetClientSoft()
 			nClientMinVersion = (m_nClientVersion - uMaj*100000) / 100;
 			nClientUpVersion = m_nClientVersion % 100;
 		}
-		else if (m_nClientVersion >= 10100 && m_nClientVersion <= 10109){
-			nClientMajVersion = 1;
-			nClientMinVersion = 1;
-			nClientUpVersion = m_nClientVersion % 10;
+		else if (m_nClientVersion >= 10100 && m_nClientVersion <= 10309){
+			UINT uMaj = m_nClientVersion/10000;
+			nClientMajVersion = uMaj;
+			nClientMinVersion = (m_nClientVersion - uMaj*10000) / 100;
+			nClientUpVersion = m_nClientVersion % 10; 
 		}
 		else if (m_nClientVersion > 10000){
 			UINT uMaj = m_nClientVersion/10000;
@@ -1919,7 +1936,7 @@ int CUpDownClient::GetHashType() const
 			 (m_achUserHash[5] == 'M' && m_achUserHash[14] == 'L'))
 		return SO_MLDONKEY;
 #else
- 	else if (m_achUserHash[5] == 'M' && m_achUserHash[14] == 'L')
+	else if (m_achUserHash[5] == 'M' && m_achUserHash[14] == 'L')
 		return SO_MLDONKEY;
 #endif
 //<== Emulate others by WiZaRd & Spike [shadow2004]       
@@ -2368,11 +2385,6 @@ bool CUpDownClient::SafeSendPacket(Packet* packet){
 	}
 }
 
-bool CUpDownClient::HasLowID() const
-{
-	return IsLowID(m_nUserIDHybrid);
-}
-
 #ifdef _DEBUG
 void CUpDownClient::AssertValid() const
 {
@@ -2474,6 +2486,7 @@ void CUpDownClient::AssertValid() const
 	ASSERT( m_nChatstate >= MS_NONE && m_nChatstate <= MS_UNABLETOCONNECT );
 	(void)m_strFileComment;
 	(void)m_uFileRating;
+	CHECK_BOOL(m_bCollectionUploadSlot);
 #undef CHECK_PTR
 #undef CHECK_BOOL
 }

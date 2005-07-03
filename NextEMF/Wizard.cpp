@@ -46,7 +46,6 @@ END_MESSAGE_MAP()
 CConnectionWizardDlg::CConnectionWizardDlg(CWnd* pParent /*=NULL*/)
 	: CDialog(CConnectionWizardDlg::IDD, pParent)
 {
-	m_iBitByte = 0;
 	m_iOS = 0;
 	m_iTotalDownload = 0;
 	m_icnWnd = NULL;
@@ -64,7 +63,6 @@ void CConnectionWizardDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PROVIDERS, m_provider);
 	DDX_Radio(pDX, IDC_WIZ_XP_RADIO, m_iOS);
 	DDX_Radio(pDX, IDC_WIZ_LOWDOWN_RADIO, m_iTotalDownload);
-	DDX_Radio(pDX, IDC_KBITS, m_iBitByte);
 }
 
 void CConnectionWizardDlg::OnBnClickedApply()
@@ -93,8 +91,13 @@ void CConnectionWizardDlg::OnBnClickedApply()
 
 	if (IsDlgButtonChecked(IDC_KBITS) == 1)
 	{
-		upload /= 8;
-		download /= 8;
+		upload = (((upload / 8) * 1000) + 512) / 1024;
+		download = (((download / 8) * 1000) + 512) / 1024;
+	}
+	else
+	{
+		upload = ((upload * 1000) + 512) / 1024;
+		download = ((download * 1000) + 512) / 1024;
 	}
 
 	thePrefs.maxGraphDownloadRate = download;
@@ -270,8 +273,8 @@ BOOL CConnectionWizardDlg::OnInitDialog()
 	CheckRadioButton(IDC_WIZ_LOWDOWN_RADIO, IDC_WIZ_HIGHDOWN_RADIO, IDC_WIZ_LOWDOWN_RADIO);
 	CheckRadioButton(IDC_KBITS, IDC_KBYTES, IDC_KBITS);
 
-	SetDlgItemInt(IDC_WIZ_TRUEDOWNLOAD_BOX, thePrefs.maxGraphDownloadRate * 8, FALSE);
-	SetDlgItemInt(IDC_WIZ_TRUEUPLOAD_BOX, thePrefs.maxGraphUploadRate * 8, FALSE);
+	SetDlgItemInt(IDC_WIZ_TRUEDOWNLOAD_BOX, ((thePrefs.maxGraphDownloadRate * 1024) + 500) / 1000 * 8, FALSE);
+	SetDlgItemInt(IDC_WIZ_TRUEUPLOAD_BOX, ((thePrefs.maxGraphUploadRate * 1024) + 500) / 1000 * 8, FALSE);
 
 	m_provider.InsertColumn(0, GetResString(IDS_PW_CONNECTION), LVCFMT_LEFT, 150);
 	m_provider.InsertColumn(1, GetResString(IDS_WIZ_DOWN), LVCFMT_LEFT, 85);

@@ -215,7 +215,7 @@ public:
 							m_dwUserIP = val;
 							m_nConnectIP = val;
 						}
-	bool			HasLowID() const;
+	__inline bool	HasLowID() const								{ return (m_nUserIDHybrid < 16777216); }
 	uint32			GetConnectIP() const							{ return m_nConnectIP; }
 	uint16			GetUserPort() const								{ return m_nUserPort; }
 	void			SetUserPort(uint16 val)							{ m_nUserPort = val; }
@@ -242,7 +242,7 @@ public:
 	EClientSoftware	GetClientSoft() const							{ return (EClientSoftware)m_clientSoft; }
 	const CString&	GetClientSoftVer() const						{ return m_strClientSoftware; }
 	const CString&	GetClientModVer() const							{ return m_strModVersion; }
-	void			ReGetClientSoft();
+	void			InitClientSoftwareVersion();
 	uint32			GetVersion() const								{ return m_nClientVersion; }
 	uint8			GetMuleVersion() const							{ return m_byEmuleVersion; }
 	bool			ExtProtocolAvailable() const					{ return m_bEmuleProtocol; }
@@ -357,6 +357,8 @@ public:
 	void			FlushSendBlocks(); // call this when you stop upload, or the socket might be not able to send
 	uint32			GetLastUpRequest() const						{ return m_dwLastUpRequest; }
 	void			SetLastUpRequest()								{ m_dwLastUpRequest = ::GetTickCount(); }
+	void			SetCollectionUploadSlot(bool bValue);
+	bool			HasCollectionUploadSlot() const					{ return m_bCollectionUploadSlot; }
 
 	uint32			GetSessionUp() const							{ return m_nTransferredUp - m_nCurSessionUp; }
 	void			ResetSessionUp() {
@@ -696,6 +698,7 @@ protected:
 	uint16		m_nUpCompleteSourcesCount;
 	uchar		requpfileid[16];
     uint32      m_slotNumber;
+	bool		m_bCollectionUploadSlot;
 
 	typedef struct TransferredData {
 		uint32	datalen;

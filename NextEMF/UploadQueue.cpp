@@ -46,6 +46,7 @@
 #include "Kademlia/Kademlia/Kademlia.h"
 #include "Kademlia/Kademlia/Prefs.h"
 #include "Log.h"
+#include "collection.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -202,6 +203,11 @@ bool CUploadQueue::AddUpNextClient(LPCTSTR pszReason, CUpDownClient* directadd){
 
     if(pszReason && thePrefs.GetLogUlDlEvents())
         AddDebugLogLine(false, _T("Adding client to upload list: %s Client: %s"), pszReason, newclient->DbgGetClientInfo());
+
+	if (newclient->HasCollectionUploadSlot() && directadd == NULL){
+		ASSERT( false );
+		newclient->SetCollectionUploadSlot(false);
+	}
 
 	// tell the client that we are now ready to upload
 	if (!newclient->socket || !newclient->socket->IsConnected())
@@ -539,10 +545,10 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 				//Special care is given to lowID clients that missed their upload slot
 				//due to the saving bandwidth on callbacks.
 				if(thePrefs.GetLogUlDlEvents())
-					AddDebugLogLine(true, _T("Adding ****lowid when reconneting. Client: %s"), client->DbgGetClientInfo());
+					AddDebugLogLine(true, _T("Adding ****lowid when reconnecting. Client: %s"), client->DbgGetClientInfo());
 				client->m_bAddNextConnect = false;
 				RemoveFromWaitingQueue(client, true);
-				AddUpNextClient(_T("Adding ****lowid when reconneting."), client);
+				AddUpNextClient(_T("Adding ****lowid when reconnecting."), client);
 				return;
 			}
 			client->SendRankingInfo();
@@ -613,6 +619,17 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 	CKnownFile* reqfile = theApp.sharedfiles->GetFileByID((uchar*)client->GetUploadFileID());
 	if (reqfile)
 		reqfile->statistic.AddRequest();
+
+	// emule collection will bypass the queue
+	if (reqfile != NULL && CCollection::HasCollectionExtention(reqfile->GetFileName()) && reqfile->GetFileSize() < MAXPRIORITYCOLL_SIZE
+		&& !client->IsDownloading() && client->socket != NULL && client->socket->IsConnected())
+	{
+		client->SetCollectionUploadSlot(true);
+		RemoveFromWaitingQueue(client, true);
+		AddUpNextClient(_T("Collection Priority Slot"), client);
+	}
+	else
+		client->SetCollectionUploadSlot(false);
 
    // cap the list
     // the queue limit in prefs is only a soft limit. Hard limit is 25% higher, to let in powershare clients and other
@@ -720,6 +737,7 @@ bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReaso
 #endif
 //<== Extended Failed/Success Statistic by NetF [shadow2004]
 			client->ClearUploadBlockRequests();
+			client->SetCollectionUploadSlot(false);
 
             m_iHighestNumberOfFullyActivatedSlotsSinceLastCall = 0;
 
@@ -775,6 +793,20 @@ bool CUploadQueue::CheckForTimeOver(CUpDownClient* client){
 	//This will save some bandwidth and some unneeded swapping from upload/queue/upload..
 	if ( waitinglist.IsEmpty() || client->GetFriendSlot() )
 		return false;
+	
+	if(client->HasCollectionUploadSlot()){
+		CKnownFile* pDownloadingFile = theApp.sharedfiles->GetFileByID(client->requpfileid);
+		if(pDownloadingFile == NULL)
+			return true;
+		if (CCollection::HasCollectionExtention(pDownloadingFile->GetFileName()) && pDownloadingFile->GetFileSize() < MAXPRIORITYCOLL_SIZE)
+			return false;
+		else{
+			if (thePrefs.GetLogUlDlEvents())
+				AddDebugLogLine(DLP_HIGH, false, _T("%s: Upload session ended - client with Collection Slot tried to request blocks from another file"), client->GetUserName());
+			return true;
+		}
+	}
+	
 	if (!thePrefs.TransferFullChunks()){
 	    if( client->GetUpStartTimeDelay() > SESSIONMAXTIME){ // Try to keep the clients from downloading for ever
 		    if (thePrefs.GetLogUlDlEvents())

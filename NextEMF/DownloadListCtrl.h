@@ -28,6 +28,7 @@
 class CPartFile;
 class CUpDownClient;
 class CDownloadListCtrl;
+class CToolTipCtrlX;
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -119,6 +120,7 @@ protected:
 	typedef std::multimap<void*, CtrlItem_Struct*> ListItems;
     ListItems	m_ListItems;
 	CFont		m_fontBold;
+	CToolTipCtrlX* m_tooltip;
 
 	void ShowFileDialog(CPartFile* pFile, UINT uInvokePage = 0);
 	void ShowClientDialog(CUpDownClient* pClient);

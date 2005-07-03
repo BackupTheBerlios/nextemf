@@ -31,6 +31,9 @@ private:
 	//a second string
 	static	CString	m_sAntiNickThiefUpdate;
 //<<< AntiNickThief
+
+//==>Modfaker by MORPH [cyrex2001]
+#ifndef ANTI_MODFAKER
 //>>> AntiModThief
 public:
 	//this returns if we have a modthief
@@ -39,6 +42,8 @@ public:
 private:
 	static	CString m_sMyVersion;
 //<<< AntiModThief
+#endif //Modfaker by MORPH
+//<==Modfaker by MORPH [cyrex2001]
 };
 
 extern CAntiLeech theAntiLeechClass;

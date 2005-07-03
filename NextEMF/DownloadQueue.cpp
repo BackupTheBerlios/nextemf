@@ -16,13 +16,12 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #include "stdafx.h"
 #include <io.h>
-
 #include "emule.h"
 #include "DownloadQueue.h"
 #include "UpDownClient.h"
 #include "PartFile.h"
 #include "ed2kLink.h"
-#include "SearchList.h"
+#include "SearchFile.h"
 #include "ClientList.h"
 #include "Statistics.h"
 #include "SharedFileList.h"
@@ -65,7 +64,6 @@ CDownloadQueue::CDownloadQueue()
 	m_nFailedUDPFileReasks = 0;
 	m_dwNextTCPSrcReq = 0;
 	m_cRequestsSentToServer = 0;
-
     m_dwLastA4AFtime = 0; // ZZ:DownloadManager
 }
 
@@ -84,8 +82,10 @@ void CDownloadQueue::Init(){
 	CFileFind ff;
 	int count = 0;
 
-	CString searchPath(thePrefs.GetTempDir());
-	searchPath += "\\*.part.met";
+	for (int i=0;i<thePrefs.tempdir.GetCount();i++) {
+		CString searchPath=thePrefs.GetTempDir(i);
+
+		searchPath += _T("\\*.part.met");
 
 	//check all part.met files
 	bool end = !ff.FindFile(searchPath, 0);
@@ -94,7 +94,7 @@ void CDownloadQueue::Init(){
 		if (ff.IsDirectory())
 			continue;
 		CPartFile* toadd = new CPartFile();
-		if (toadd->LoadPartFile(thePrefs.GetTempDir(),ff.GetFileName().GetBuffer())){
+			if (toadd->LoadPartFile(thePrefs.GetTempDir(i),ff.GetFileName().GetBuffer())){
 			count++;
 			filelist.AddTail(toadd);			// to downloadqueue
 			if (toadd->GetStatus(true) == PS_READY)
@@ -107,14 +107,14 @@ void CDownloadQueue::Init(){
 	ff.Close();
 
 	//try recovering any part.met files
-	searchPath += ".backup";
+		searchPath += _T(".backup");
 	end = !ff.FindFile(searchPath, 0);
 	while (!end){
 		end = !ff.FindNextFile();
 		if (ff.IsDirectory())
 			continue;
 		CPartFile* toadd = new CPartFile();
-		if (toadd->LoadPartFile(thePrefs.GetTempDir(),ff.GetFileName().GetBuffer())){
+			if (toadd->LoadPartFile(thePrefs.GetTempDir(i),ff.GetFileName().GetBuffer())){
 			toadd->SavePartFile(); // resave backup
 			count++;
 			filelist.AddTail(toadd);			// to downloadqueue
@@ -129,7 +129,7 @@ void CDownloadQueue::Init(){
 		}
 	}
 	ff.Close();
-
+}
 	if(count == 0) {
 		AddLogLine(false,GetResString(IDS_NOPARTSFOUND));
 	} else {
@@ -155,14 +155,15 @@ void CDownloadQueue::AddSearchToDownload(CSearchFile* toadd,uint8 paused,uint8 c
 void CDownloadQueue::AddSearchToDownload(CSearchFile* toadd,uint8 paused,uint8 cat){
 #endif
 //<== Linear Prio [shadow2004]
-	if (IsFileExisting(toadd->GetFileHash()))
+	if (toadd->GetFileSize()==0 || IsFileExisting(toadd->GetFileHash()))
 		return;
-	CPartFile* newfile = new CPartFile(toadd);
+
+	CPartFile* newfile = new CPartFile(toadd,cat);
 	if (newfile->GetStatus() == PS_ERROR){
 		delete newfile;
 		return;
 	}
-	newfile->SetCategory(cat);
+
 //==> Linear Prio [shadow2004]
 #ifdef LINPRIO
 	newfile->SetCatResumeOrder(useOrder);
@@ -214,12 +215,12 @@ void CDownloadQueue::AddSearchToDownload(CString link,uint8 paused, uint8 cat, u
 void CDownloadQueue::AddSearchToDownload(CString link,uint8 paused, uint8 cat){
 #endif
 //<== Linear Prio [shadow2004]
-	CPartFile* newfile = new CPartFile(link);
+	CPartFile* newfile = new CPartFile(link, cat);
 	if (newfile->GetStatus() == PS_ERROR){
 		delete newfile;
 		return;
 	}
-	newfile->SetCategory(cat);
+
 //==> Linear Prio [shadow2004]
 #ifdef LINPRIO
 	newfile->SetCatResumeOrder(useOrder);
@@ -275,13 +276,12 @@ void CDownloadQueue::StartNextFile(int cat, bool force){
 
 void CDownloadQueue::AddFileLinkToDownload(CED2KFileLink* pLink,uint8 cat)
 {
-	CPartFile* newfile = new CPartFile(pLink);
+	CPartFile* newfile = new CPartFile(pLink, cat);
 	if (newfile->GetStatus() == PS_ERROR){
 		delete newfile;
 		newfile=NULL;
 	}
 	else {
-		newfile->SetCategory(cat);
 //==> Linear Prio [shadow2004]
 #ifdef LINPRIO
 		if (thePrefs.AutoSetResumeOrder())
@@ -442,10 +442,10 @@ void CDownloadQueue::Process(){
 	CheckDiskspaceTimed();
 
 // ZZ:DownloadManager -->
-    //if((!m_dwLastA4AFtime) || (::GetTickCount() - m_dwLastA4AFtime) > 2*60*1000) {
-    //    theApp.clientlist->ProcessA4AFClients();
-    //    m_dwLastA4AFtime = ::GetTickCount();
-    //}
+    if((!m_dwLastA4AFtime) || (::GetTickCount() - m_dwLastA4AFtime) > 2*60*1000) {
+        theApp.clientlist->ProcessA4AFClients();
+        m_dwLastA4AFtime = ::GetTickCount();
+    }
 // <-- ZZ:DownloadManager
 }
 
@@ -706,7 +706,11 @@ bool CDownloadQueue::RemoveSource(CUpDownClient* toremove, bool bDoStatsUpdate)
 	}
 
 	if (bRemovedSrcFromPartFile && (toremove->HasFileRating() || !toremove->GetFileComment().IsEmpty()))
-		toremove->GetRequestFile()->UpdateFileRatingCommentAvail();
+	{
+		CPartFile* pFile = toremove->GetRequestFile();
+		if(pFile)
+			pFile->UpdateFileRatingCommentAvail();
+	}
 
 	toremove->SetDownloadState(DS_NONE);
 	theApp.emuledlg->transferwnd->downloadlistctrl.RemoveSource(toremove,0);
@@ -1063,13 +1067,18 @@ void CDownloadQueue::CheckDiskspace(bool bNotEnoughSpaceLeft)
 		return;
 	}
 
+	uint64 nTotalAvailableSpaceMain = bNotEnoughSpaceLeft ? 0 : GetFreeDiskSpaceX(thePrefs.GetTempDir());
+
 	// 'bNotEnoughSpaceLeft' - avoid worse case, if we already had 'disk full'
-	uint64 nTotalAvailableSpace = bNotEnoughSpaceLeft ? 0 : GetFreeDiskSpaceX(thePrefs.GetTempDir());
 	if (thePrefs.GetMinFreeDiskSpace() == 0)
 	{
 		for( POSITION pos1 = filelist.GetHeadPosition(); pos1 != NULL; )
 		{
 			CPartFile* cur_file = filelist.GetNext(pos1);
+
+			uint64 nTotalAvailableSpace = bNotEnoughSpaceLeft ? 0 : 
+				((thePrefs.GetTempDirCount()==1)?nTotalAvailableSpaceMain:GetFreeDiskSpaceX(cur_file->GetTempPath()));
+
 			switch(cur_file->GetStatus())
 			{
 			case PS_PAUSED:
@@ -1104,6 +1113,8 @@ void CDownloadQueue::CheckDiskspace(bool bNotEnoughSpaceLeft)
 				continue;
 			}
 
+			uint64 nTotalAvailableSpace = bNotEnoughSpaceLeft ? 0 : 
+				((thePrefs.GetTempDirCount()==1)?nTotalAvailableSpaceMain:GetFreeDiskSpaceX(cur_file->GetTempPath()));
 			if (nTotalAvailableSpace < thePrefs.GetMinFreeDiskSpace())
 			{
 				if (cur_file->IsNormalFile())
@@ -1363,12 +1374,6 @@ UINT CDownloadQueue::GetPausedFileCount() const
 			result++;
 	}
 	return result;
-}
-
-void CDownloadQueue::DisableAllA4AFAuto(void)
-{
-	for (POSITION pos = filelist.GetHeadPosition(); pos != NULL; )
-		filelist.GetNext(pos)->SetA4AFAuto(false);
 }
 
 void CDownloadQueue::SetAutoCat(CPartFile* newfile){
@@ -1771,6 +1776,7 @@ void CDownloadQueue::ExportPartMetFilesOverview() const
 	try
 	{
 		file.printf(_T("Date:      %s\r\n"), CTime::GetCurrentTime().Format(_T("%c")));
+		if (thePrefs.GetTempDirCount()==1)
 		file.printf(_T("Directory: %s\r\n"), thePrefs.GetTempDir());
 		file.printf(_T("\r\n"));
 		file.printf(_T("Part file\teD2K link\r\n"));
@@ -1784,7 +1790,10 @@ void CDownloadQueue::ExportPartMetFilesOverview() const
 				TCHAR szNam[_MAX_FNAME];
 				TCHAR szExt[_MAX_EXT];
 				_tsplitpath(strPartFilePath, NULL, NULL, szNam, szExt);
+				if (thePrefs.GetTempDirCount()==1)
 				file.printf(_T("%s%s\t%s\r\n"), szNam, szExt, CreateED2kLink(pPartFile));
+				else
+					file.printf(_T("%s\t%s\r\n"), pPartFile->GetFullName(), CreateED2kLink(pPartFile));
 			}
 		}
 
@@ -1827,5 +1836,101 @@ void CDownloadQueue::OnConnectionState(bool bConnected)
 		CPartFile* pPartFile = filelist.GetNext(pos);
 		if (pPartFile->IsPartFile())
 			pPartFile->SetActive(bConnected);
+	}
+}
+
+CString CDownloadQueue::GetOptimalTempDir(uint8 nCat, uint32 nFileSize){
+	// shortcut
+	if (thePrefs.tempdir.GetCount() == 1)
+		return thePrefs.GetTempDir();
+
+	CMap<int, int, sint64, sint64> mapNeededSpaceOnDrive;
+	CMap<int, int, sint64, sint64> mapFreeSpaceOnDrive;
+	
+	sint64 llBuffer = 0;
+	sint64 llHighestFreeSpace = 0;
+	int	nHighestFreeSpaceDrive = -1;
+	// first collect the free space on drives
+	for (int i = 0; i < thePrefs.tempdir.GetCount(); i++) {
+		const int nDriveNumber = GetPathDriveNumber(thePrefs.GetTempDir(i));
+		if (mapFreeSpaceOnDrive.Lookup(nDriveNumber, llBuffer))
+			continue;
+		llBuffer = GetFreeDiskSpaceX(thePrefs.GetTempDir(i)) - thePrefs.GetMinFreeDiskSpace();
+		mapFreeSpaceOnDrive.SetAt(nDriveNumber, llBuffer);
+		if (llBuffer > llHighestFreeSpace){
+			nHighestFreeSpaceDrive = nDriveNumber;
+			llHighestFreeSpace = llBuffer;
+		}
+		
+	}
+
+	// now get the space we would need to download all files in the current queue
+	POSITION pos = filelist.GetHeadPosition();
+	while (pos != NULL){
+		CPartFile* pCurFile =  filelist.GetNext(pos);
+		const int nDriveNumber = GetPathDriveNumber(pCurFile->GetTempPath());
+
+		sint64 llNeededForCompletion = 0;
+		switch(pCurFile->GetStatus(false)){
+			case PS_READY:
+			case PS_EMPTY:
+			case PS_WAITINGFORHASH:
+			case PS_INSUFFICIENT:
+				llNeededForCompletion = pCurFile->GetFileSize() - pCurFile->GetRealFileSize();
+				if (llNeededForCompletion < 0)
+					llNeededForCompletion = 0;
+		}
+		llBuffer = 0;
+		mapNeededSpaceOnDrive.Lookup(nDriveNumber, llBuffer);
+		llBuffer += llNeededForCompletion;
+		mapNeededSpaceOnDrive.SetAt(nDriveNumber, llBuffer);
+	}
+
+	sint64 llHighestTotalSpace = 0;
+	int	nHighestTotalSpaceDir = -1;
+	int	nHighestFreeSpaceDir = -1;
+	// first round (0): on same drive as incomming and enough space for all downloading
+	// second round (1): enough space for all downloading
+	// third round (2): most actual free space
+	for (int i = 0; i < thePrefs.tempdir.GetCount(); i++) {
+		const int nDriveNumber = GetPathDriveNumber(thePrefs.GetTempDir(i));
+		llBuffer = 0;
+
+		sint64 llAvailableSpace = 0;
+		mapFreeSpaceOnDrive.Lookup(nDriveNumber, llAvailableSpace);
+		mapNeededSpaceOnDrive.Lookup(nDriveNumber, llBuffer);
+		llAvailableSpace -= llBuffer;
+
+		// condition 0
+		// needs to be same drive and enough space
+		if (GetPathDriveNumber(thePrefs.GetCatPath(nCat)) == nDriveNumber &&
+			llAvailableSpace > nFileSize)
+		{
+			//this one is perfect
+			return thePrefs.GetTempDir(i);
+		}
+		// condition 1
+		// needs to have enough space for downloading
+		if (llAvailableSpace > nFileSize && llAvailableSpace > llHighestTotalSpace){
+			llHighestTotalSpace = llAvailableSpace;
+			nHighestTotalSpaceDir = i;
+		}
+		// condition 2
+		// first one which has the highest actualy free space
+		if ( nDriveNumber == nHighestFreeSpaceDrive && nHighestFreeSpaceDir == (-1)){
+			nHighestFreeSpaceDir = i;
+		}
+
+	}
+
+	if (nHighestTotalSpaceDir != (-1)){	 //condtion 0 was apperently too much, take 1
+		return thePrefs.GetTempDir(nHighestTotalSpaceDir);
+	}
+	else if (nHighestFreeSpaceDir != (-1)){ // condtion 1 could not be met too, take 2
+		return thePrefs.GetTempDir(nHighestFreeSpaceDir);
+	}
+	else{ // so was condtion 2, take 3.. wait there is no 3 - this must be a bug
+		ASSERT( false );
+		return thePrefs.GetTempDir();
 	}
 }

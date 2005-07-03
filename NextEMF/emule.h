@@ -115,10 +115,10 @@ public:
 	ULONGLONG			m_ullComCtrlVer;
 	AppState			m_app_state; // defines application state for shutdown 
 	CMutex				hashing_mut;
-	CString*			pendinglink;
+	CString*			pstrPendingLink;
 	COPYDATASTRUCT		sendstruct;
 
-	//==>Modversion [shadow2004][cyrex2001]
+//==>Modversion [shadow2004][cyrex2001]
 #ifdef MODVERSION
 	static const UINT	m_nMVersionMjr;
 	static const UINT	m_nMVersionMin;
@@ -128,7 +128,7 @@ public:
 	CString		m_strModVersion;
 	CString		m_strModLongVersion;
 #endif //Modversion
-	//<==Modversion [shadow2004][cyrex2001]
+//<==Modversion [shadow2004][cyrex2001]
 
 // Implementierung
 	virtual BOOL InitInstance();
@@ -175,6 +175,7 @@ public:
 	HBITMAP		LoadImage(UINT nIDResource, LPCTSTR pszResourceType) const;
 	void		EnableRTLWindowsLayout();
 	void		DisableRTLWindowsLayout();
+	void		UpdateDesktopColorDepth();
 
 	bool		GetLangHelpFilePath(CString& strResult);
 	void		SetHelpFilePath(LPCTSTR pszHelpFilePath);

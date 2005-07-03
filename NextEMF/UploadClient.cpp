@@ -38,6 +38,7 @@
 #include "emuledlg.h"
 #include "TransferWnd.h"
 #include "Log.h"
+#include "Collection.h"
 //==> Extended Failed/Success Statistic by NetF [shadow2004]
 #ifdef FSSTATS
 #include "NextEMF/NextEMF.h"
@@ -404,13 +405,13 @@ void CUpDownClient::CreateNextBlockPackage(){
 
 			SetUploadFileID(srcfile);
 
-			// check extention to decide whether to compress or not
+			// check extension to decide whether to compress or not
 			CString ext = srcfile->GetFileName();
 			ext.MakeLower();
 			int pos = ext.ReverseFind(_T('.'));
 			if (pos>-1)
 				ext = ext.Mid(pos);
-			bool compFlag = (ext!=_T(".zip") && ext!=_T(".rar") && ext!=_T(".ace") && ext!=_T(".ogm"));
+			bool compFlag = (ext!=_T(".zip") && ext!=_T(".cbz") && ext!=_T(".rar") && ext!=_T(".cbr") && ext!=_T(".ace") && ext!=_T(".ogm"));
 			if (ext==_T(".avi") && thePrefs.GetDontCompressAvi())
 				compFlag=false;
 
@@ -682,6 +683,19 @@ void CUpDownClient::AddReqBlock(Requested_Block_Struct* reqblock)
 		delete reqblock;
         return;
     }
+
+	if(HasCollectionUploadSlot()){
+		CKnownFile* pDownloadingFile = theApp.sharedfiles->GetFileByID(reqblock->FileID);
+		if(pDownloadingFile != NULL){
+			if ( !(CCollection::HasCollectionExtention(pDownloadingFile->GetFileName()) && pDownloadingFile->GetFileSize() < MAXPRIORITYCOLL_SIZE) ){
+				AddDebugLogLine(DLP_HIGH, false, _T("UploadClient: Client tried to add req block for non collection while having a collection slot! Prevented req blocks from being added. %s"), DbgGetClientInfo());
+				delete reqblock;
+				return;
+			}
+		}
+		else
+			ASSERT( false );
+	}
 
     for (POSITION pos = m_DoneBlocks_list.GetHeadPosition(); pos != 0; ){
         const Requested_Block_Struct* cur_reqblock = m_DoneBlocks_list.GetNext(pos);
@@ -1015,4 +1029,9 @@ CEMSocket* CUpDownClient::GetFileUploadSocket(bool bLog)
             AddDebugLogLine(false, _T("%s got normal socket."), DbgGetClientInfo());
         return socket;
     }
+}
+
+void CUpDownClient::SetCollectionUploadSlot(bool bValue){
+	ASSERT( !IsDownloading() || bValue == m_bCollectionUploadSlot );
+	m_bCollectionUploadSlot = bValue;
 }

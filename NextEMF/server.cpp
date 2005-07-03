@@ -253,3 +253,14 @@ void CServer::SetLastDescPingedCount(bool bReset)
 	else
 		lastdescpingedcout++;
 }
+
+bool CServer::IsEqual(const CServer* pServer) const
+{
+	if (GetPort() != pServer->GetPort())
+		return false;
+	if (HasDynIP() && pServer->HasDynIP())
+		return (GetDynIP().CompareNoCase(pServer->GetDynIP()) == 0);
+	if (HasDynIP() || pServer->HasDynIP())
+		return false;
+	return (GetIP() == pServer->GetIP());
+}

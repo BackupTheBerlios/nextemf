@@ -386,6 +386,20 @@ CKnownFile* CKnownFileList::FindKnownFile(LPCTSTR filename, uint32 date, uint32 
 	return NULL;
 }
 
+CKnownFile* CKnownFileList::FindKnownFileByPath(const CString& sFilePath) const
+{
+	POSITION pos = m_Files_map.GetStartPosition();
+	while (pos != NULL)
+	{
+		CKnownFile* cur_file;
+		CCKey key;
+		m_Files_map.GetNextAssoc(pos, key, cur_file);
+		if (!cur_file->GetFilePath().CompareNoCase(sFilePath))
+			return cur_file;
+	}
+	return NULL;
+}
+
 CKnownFile* CKnownFileList::FindKnownFileByID(const uchar* hash) const
 {
 	if (hash)
@@ -437,4 +451,19 @@ bool CKnownFileList::IsCancelledFileByID(const uchar* hash) const
 		}
 	}
 	return false;
+}
+
+void CKnownFileList::CopyKnownFileMap(CMap<CCKey,const CCKey&,CKnownFile*,CKnownFile*> &Files_Map)
+{
+	if (!m_Files_map.IsEmpty())
+	{
+		POSITION pos = m_Files_map.GetStartPosition();
+		while (pos)
+		{
+			CCKey key;
+			CKnownFile* cur_file;
+			m_Files_map.GetNextAssoc(pos, key, cur_file);
+			Files_Map.SetAt(key, cur_file);
+		}
+	}
 }

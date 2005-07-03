@@ -38,6 +38,7 @@
 #include "StringConversion.h"
 #include "ClientList.h"
 #include "Log.h"
+#include "Collection.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -220,7 +221,14 @@ void CPublishKeywordList::AddKeywords(CKnownFile* pFile)
 			m_lstKeywords.AddTail(pPubKw);
 			SetNextPublishTime(0);
 		}
-		pPubKw->AddRef(pFile);
+		if(pPubKw->AddRef(pFile) && pPubKw->GetNextPublishTime() > MIN2S(30))
+		{
+			// User may be adding and removing files, so if this is a keyword that
+			// has already been published, we reduce the time, but still give the user
+			// enough time to finish what they are doing.
+			// If this is a hot node, the Load list will prevent from republishing.
+			pPubKw->SetNextPublishTime(MIN2S(30));
+		}
 	}
 }
 
@@ -329,6 +337,21 @@ CSharedFileList::~CSharedFileList(){
 	}
 	// SLUGFILLER: SafeHash
 	delete m_keywords;
+}
+
+void CSharedFileList::CopySharedFileMap(CMap<CCKey,const CCKey&,CKnownFile*,CKnownFile*> &Files_Map)
+{
+	if (!m_Files_map.IsEmpty())
+	{
+		POSITION pos = m_Files_map.GetStartPosition();
+		while (pos)
+		{
+			CCKey key;
+			CKnownFile* cur_file;
+			m_Files_map.GetNextAssoc(pos, key, cur_file);
+			Files_Map.SetAt(key, cur_file);
+		}
+	}
 }
 
 void CSharedFileList::FindSharedFiles()
@@ -519,6 +542,20 @@ void CSharedFileList::AddFilesFromDirectory(const CString& rstrDirectory)
 	ff.Close();
 }
 
+void CSharedFileList::AddFileFromNewlyCreatedCollection(const CString& path, const CString& fileName)
+{
+	//JOHNTODO: I do not have much knowledge on the hashing 
+	//          process.. Is this safe for me to do??
+	if (!IsHashing(path, fileName))
+	{
+		UnknownFile_Struct* tohash = new UnknownFile_Struct;
+		tohash->strDirectory = path;
+		tohash->strName = fileName;
+		waitingforhash_list.AddTail(tohash);
+		HashNextFile();
+	}
+}
+
 bool CSharedFileList::SafeAddKFile(CKnownFile* toadd, bool bOnlyAdd)
 {
 	bool bAdded = false;
@@ -563,6 +600,32 @@ bool CSharedFileList::AddFile(CKnownFile* pFile)
 	listlock.Lock();	
 	m_Files_map.SetAt(key, pFile);
 	listlock.Unlock();
+
+	bool bKeywordsNeedUpdated = true;
+
+	if(!pFile->IsPartFile() && !pFile->m_pCollection && CCollection::HasCollectionExtention(pFile->GetFileName()))
+	{
+		pFile->m_pCollection = new CCollection();
+		if(!pFile->m_pCollection->InitCollectionFromFile(pFile->GetFilePath(), pFile->GetFileName()))
+		{
+			delete pFile->m_pCollection;
+			pFile->m_pCollection = NULL;
+		}
+		else if (!pFile->m_pCollection->GetCollectionAuthorKeyString().IsEmpty())
+		{
+			//If the collection has a key, resetting the file name will
+			//cause the key to be added into the wordlist to be stored
+			//into Kad.
+			pFile->SetFileName(pFile->GetFileName());
+			//During the initial startup, sharedfiles is not accessable
+			//to SetFileName which will then not call AddKeywords..
+			//But when it is accessable, we don't allow it to readd them.
+			if(theApp.sharedfiles)
+				bKeywordsNeedUpdated = false;
+		}
+	}
+
+	if(bKeywordsNeedUpdated)
 	m_keywords->AddKeywords(pFile);
 
 	return true;

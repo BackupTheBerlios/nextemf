@@ -28,6 +28,7 @@
 #include "ServerWnd.h"
 #include "Opcodes.h"
 #include "Log.h"
+#include "ToolTipCtrlX.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -44,20 +45,31 @@ BEGIN_MESSAGE_MAP(CServerListCtrl, CMuleListCtrl)
 	ON_NOTIFY_REFLECT(LVN_GETINFOTIP, OnLvnGetInfoTip)
 	ON_WM_CONTEXTMENU()
 	ON_WM_SYSCOLORCHANGE()
+	ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, OnNMCustomdraw)
 END_MESSAGE_MAP()
 
 CServerListCtrl::CServerListCtrl()
 {
 	server_list = NULL;
 	SetGeneralPurposeFind(true);
+	m_tooltip = new CToolTipCtrlX;
 }
 
 bool CServerListCtrl::Init(CServerList* in_list)
 {
+	SetName(_T("ServerListCtrl"));
 	server_list = in_list;
 	ModifyStyle(0,LVS_SINGLESEL|LVS_REPORT);
 	ModifyStyle(LVS_SINGLESEL|LVS_LIST|LVS_ICON|LVS_SMALLICON,LVS_REPORT); //here the CListCtrl is set to report-style
 	SetExtendedStyle(GetExtendedStyle() | LVS_EX_INFOTIP);
+
+	CToolTipCtrl* tooltip = GetToolTips();
+	if (tooltip) {
+		m_tooltip->SubclassWindow(*tooltip);
+		tooltip->ModifyStyle(0, TTS_NOPREFIX);
+		tooltip->SetDelayTime(TTDT_AUTOPOP, 20000);
+		tooltip->SetDelayTime(TTDT_INITIAL, thePrefs.GetToolTipDelay()*1000);
+	}
 
 	InsertColumn(0, GetResString(IDS_SL_SERVERNAME),LVCFMT_LEFT, 150);
 	InsertColumn(1, GetResString(IDS_IP),			LVCFMT_LEFT, 140);
@@ -76,20 +88,20 @@ bool CServerListCtrl::Init(CServerList* in_list)
 
 	SetAllIcons();
 	Localize();
-	LoadSettings(CPreferences::tableServer);
+	LoadSettings();
 
 	// Barry - Use preferred sort order from preferences
-	int iSortItem = thePrefs.GetColumnSortItem(CPreferences::tableServer);
-	bool bSortAscending = thePrefs.GetColumnSortAscending(CPreferences::tableServer);
-	SetSortArrow(iSortItem, bSortAscending);
-	SortItems(SortProc, MAKELONG(iSortItem, (bSortAscending ? 0 : 0x0001)));
+	SetSortArrow();
+	SortItems(SortProc, MAKELONG(GetSortItem(), (GetSortAscending()? 0 : 0x0001)));
 
 	ShowServerCount();
 
 	return true;
 } 
 
-CServerListCtrl::~CServerListCtrl() {
+CServerListCtrl::~CServerListCtrl()
+{
+	delete m_tooltip;
 }
 
 void CServerListCtrl::OnSysColorChange()
@@ -192,26 +204,27 @@ void CServerListCtrl::Localize()
 		RefreshServer((CServer*)GetItemData(i));
 }
 
-void CServerListCtrl::RemoveServer(CServer* todel)
+void CServerListCtrl::RemoveServer(const CServer* pServer)
 {
 	LVFINDINFO find;
 	find.flags = LVFI_PARAM;
-	find.lParam = (LPARAM)todel;
-	sint32 result = FindItem(&find);
-	if (result != (-1) ){
-		server_list->RemoveServer((CServer*)GetItemData(result));
-		DeleteItem(result); 
+	find.lParam = (LPARAM)pServer;
+	int iItem = FindItem(&find);
+	if (iItem != -1) {
+		server_list->RemoveServer(pServer);
+		DeleteItem(iItem); 
 		ShowServerCount();
 	}
-	return;
 }
 
 void CServerListCtrl::RemoveAllDeadServers()
 {
 	ShowWindow(SW_HIDE);
-	for(POSITION pos = server_list->list.GetHeadPosition(); pos != NULL;server_list->list.GetNext(pos)) {
-		CServer* cur_server = server_list->list.GetAt(pos);
-		if (cur_server->GetFailedCount() >= thePrefs.GetDeadServerRetries()){
+	for(POSITION pos = server_list->list.GetHeadPosition(); pos != NULL; server_list->list.GetNext(pos))
+	{
+		const CServer* cur_server = server_list->list.GetAt(pos);
+		if (cur_server->GetFailedCount() >= thePrefs.GetDeadServerRetries())
+		{
 			RemoveServer(cur_server);
 			pos = server_list->list.GetHeadPosition();
 		}
@@ -219,15 +232,14 @@ void CServerListCtrl::RemoveAllDeadServers()
 	ShowWindow(SW_SHOW);
 }
 
-bool CServerListCtrl::AddServer(CServer* toadd, bool bAddToList)
+bool CServerListCtrl::AddServer(const CServer* pServer, bool bAddToList)
 {
-	if (!server_list->AddServer(toadd))
+	if (!server_list->AddServer(pServer))
 		return false;
 	if (bAddToList)
 	{
-		uint32 itemnr = GetItemCount();
-		InsertItem(LVIF_TEXT|LVIF_PARAM,itemnr,toadd->GetListName(),0,0,1,(LPARAM)toadd);
-		RefreshServer( toadd );
+		InsertItem(LVIF_TEXT | LVIF_PARAM, GetItemCount(), pServer->GetListName(), 0, 0, 1, (LPARAM)pServer);
+		RefreshServer(pServer);
 	}
 	ShowServerCount();
 	return true;
@@ -244,15 +256,6 @@ void CServerListCtrl::RefreshServer(const CServer* server)
 	int itemnr = FindItem(&find);
 	if (itemnr == -1)
 		return;
-
-	const CServer* cur_srv;
-	if (theApp.serverconnect->IsConnected()
-		&& (cur_srv = theApp.serverconnect->GetCurrentServer()) != NULL
-		&& cur_srv->GetPort() == server->GetPort()
-		&& _tcsicmp(cur_srv->GetAddress(), server->GetAddress()) == 0)
-		SetItemState(itemnr,LVIS_GLOW,LVIS_GLOW);
-	else
-		SetItemState(itemnr, 0, LVIS_GLOW);
 
 	CString temp;
 	temp.Format(_T("%s : %i"), server->GetAddress(), server->GetPort());
@@ -346,8 +349,6 @@ void CServerListCtrl::RefreshServer(const CServer* server)
 		SetItemText(itemnr, 13,_T(""));
 }
 
-// CServerListCtrl message handlers
-
 void CServerListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 { 
 	// get merged settings
@@ -402,10 +403,10 @@ void CServerListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	ServerMenu.AppendMenu(MF_STRING | (iStaticServers > 0 ? MF_ENABLED : MF_GRAYED), MP_REMOVEFROMSTATIC, GetResString(IDS_REMOVEFROMSTATIC), _T("ListRemove"));
 	ServerMenu.AppendMenu(MF_SEPARATOR);
 
+	ServerMenu.AppendMenu(MF_STRING | (iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED), MP_GETED2KLINK, GetResString(IDS_DL_LINK1), _T("ED2KLINK"));
+	ServerMenu.AppendMenu(MF_STRING | (theApp.IsEd2kServerLinkInClipboard() ? MF_ENABLED : MF_GRAYED), MP_PASTE, GetResString(IDS_SW_DIRECTDOWNLOAD), _T("PASTELINK"));
 	ServerMenu.AppendMenu(MF_STRING | (iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED), MP_REMOVE, GetResString(IDS_REMOVETHIS), _T("DELETESELECTED"));
 	ServerMenu.AppendMenu(MF_STRING | (GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED), MP_REMOVEALL, GetResString(IDS_REMOVEALL), _T("DELETE"));
-	ServerMenu.AppendMenu(MF_STRING | (iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED), MP_GETED2KLINK, GetResString(IDS_DL_LINK1), _T("ED2KLINK"));
-	ServerMenu.AppendMenu(MF_STRING | (theApp.IsEd2kServerLinkInClipboard() ? MF_ENABLED : MF_GRAYED), MP_PASTE, GetResString(IDS_PASTE), _T("PASTELINK"));
 
 	ServerMenu.AppendMenu(MF_SEPARATOR);
 	ServerMenu.AppendMenu(MF_ENABLED | (GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED), MP_FIND, GetResString(IDS_FIND), _T("Search"));
@@ -594,20 +595,12 @@ void CServerListCtrl::OnColumnClick(NMHDR *pNMHDR, LRESULT *pResult)
 
 	// Barry - Store sort order in preferences
 	// Determine ascending based on whether already sorted on this column
-	int iSortItem = thePrefs.GetColumnSortItem(CPreferences::tableServer);
-	bool bOldSortAscending = thePrefs.GetColumnSortAscending(CPreferences::tableServer);
-	bool bSortAscending = (iSortItem != pNMListView->iSubItem) ? true : !bOldSortAscending;
-
-	// Item is column clicked
-	iSortItem = pNMListView->iSubItem;
-
-	// Save new preferences
-	thePrefs.SetColumnSortItem(CPreferences::tableServer, iSortItem);
-	thePrefs.SetColumnSortAscending(CPreferences::tableServer, bSortAscending);
+	bool bSortAscending = (GetSortItem()!= pNMListView->iSubItem) ? true : !GetSortAscending();
 
 	// Sort table
-	SetSortArrow(iSortItem, bSortAscending);
-	SortItems(SortProc, MAKELONG(iSortItem, (bSortAscending ? 0 : 0x0001)));
+	UpdateSortHistory(MAKELONG(pNMListView->iSubItem, (bSortAscending ? 0 : 0x0001)));
+	SetSortArrow(pNMListView->iSubItem, bSortAscending);
+	SortItems(SortProc, MAKELONG(pNMListView->iSubItem, (bSortAscending ? 0 : 0x0001)));
 
 	Invalidate();
 	*pResult = 0;
@@ -733,6 +726,14 @@ int CServerListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 	  default: 
 		  iResult = 0;
 	} 
+
+	int dwNextSort;
+	//call secondary sortorder, if this one results in equal
+	//(Note: yes I know this call is evil OO wise, but better than changing a lot more code, while we have only one instance anyway - might be fixed later)
+	if (iResult == 0 && (dwNextSort = theApp.emuledlg->serverwnd->serverlistctrl.GetNextSortOrder(lParamSort)) != (-1)){
+		iResult= SortProc(lParam1, lParam2, dwNextSort);
+	}
+
 	if (HIWORD(lParamSort))
 		iResult = -iResult;
 	return iResult;
@@ -919,4 +920,32 @@ void CServerListCtrl::OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult)
 	}
 
 	*pResult = 0;
+}
+
+void CServerListCtrl::OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *plResult)
+{
+	LPNMLVCUSTOMDRAW pnmlvcd = (LPNMLVCUSTOMDRAW)pNMHDR;
+
+	if (pnmlvcd->nmcd.dwDrawStage == CDDS_PREPAINT)
+	{
+		*plResult = CDRF_NOTIFYITEMDRAW;
+		return;
+	}
+
+	if (pnmlvcd->nmcd.dwDrawStage == CDDS_ITEMPREPAINT)
+	{
+		const CServer* pServer = (const CServer*)pnmlvcd->nmcd.lItemlParam;
+		const CServer* pConnectedServer = theApp.serverconnect->GetCurrentServer();
+		// the server which we are connected to always has a valid numerical IP member assigned,
+		// therefor we do not need to call CServer::IsEqual (which is little expensive)
+		//if (pConnectedServer && pConnectedServer->IsEqual(pServer))
+		if (pConnectedServer && pConnectedServer->GetIP() == pServer->GetIP() && pConnectedServer->GetPort() == pServer->GetPort())
+			pnmlvcd->clrText = RGB(32,32,255);
+		else if (pServer->GetFailedCount() >= thePrefs.GetDeadServerRetries())
+			pnmlvcd->clrText = RGB(192,192,192);
+		else if (pServer->GetFailedCount() >= 2)
+			pnmlvcd->clrText = RGB(128,128,128);
+	}
+
+	*plResult = CDRF_DODEFAULT;
 }

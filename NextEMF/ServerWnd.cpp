@@ -34,6 +34,7 @@
 #include "HelpIDs.h"
 #include "NetworkInfoDlg.h"
 #include "Log.h"
+#include "UserMsgs.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -41,6 +42,8 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+#define	SVWND_SPLITTER_YOFF		10
+#define	SVWND_SPLITTER_HEIGHT	5
 
 #define	SERVERMET_STRINGS_PROFILE	_T("AC_ServerMetURLs.dat")
 #define SZ_DEBUG_LOG_TITLE			GetResString(IDS_VERBOSE_TITLE)//string for language [cyrex2001]
@@ -64,6 +67,7 @@ BEGIN_MESSAGE_MAP(CServerWnd, CResizableDialog)
 	ON_EN_CHANGE(IDC_SNAME, OnSvrTextChange)
 	ON_EN_CHANGE(IDC_SERVERMETURL, OnSvrTextChange)
 	ON_STN_DBLCLK(IDC_SERVLST_ICO, OnStnDblclickServlstIco)
+	ON_NOTIFY(UM_SPN_SIZED, IDC_SPLITTER_SERVER, OnSplitterMoved)
 END_MESSAGE_MAP()
 
 CServerWnd::CServerWnd(CWnd* pParent /*=NULL*/)
@@ -321,6 +325,15 @@ BOOL CServerWnd::OnInitDialog()
 
 	InitWindowStyles(this);
 
+	// splitter
+	CRect rcSpl;
+	rcSpl.left = 55;
+	rcSpl.right = 300;//rcDlgItem.right;
+	rcSpl.top = 55;
+	rcSpl.bottom = rcSpl.top + SVWND_SPLITTER_HEIGHT;
+	m_wndSplitter.Create(WS_CHILD | WS_VISIBLE, rcSpl, this, IDC_SPLITTER_SERVER);
+	InitSplitter();
+
 	return true;
 }
 
@@ -543,7 +556,7 @@ bool CServerWnd::AddServer(uint16 nPort, CString strIP, CString strName, bool bS
 	CServer* toadd = new CServer(nPort, strIP);
 
 	// Barry - Default all manually added servers to high priority
-	if (thePrefs.GetManualHighPrio())
+	if (thePrefs.GetManualAddedServersHighPriority())
 		toadd->SetPreference(SRV_PR_HIGH);
 
 	if (strName.IsEmpty())
@@ -871,7 +884,6 @@ void CServerWnd::OnBnConnect()
 void CServerWnd::SaveAllSettings()
 {
 	thePrefs.SetLastLogPaneID(StatusSelector.GetCurSel());
-	serverlistctrl.SaveSettings(CPreferences::tableServer);
 	SaveServerMetStrings();
 }
 
@@ -906,4 +918,195 @@ void CServerWnd::OnSvrTextChange()
 void CServerWnd::OnStnDblclickServlstIco()
 {
 	theApp.emuledlg->ShowPreferences(IDD_PPG_SERVER);
+}
+
+void CServerWnd::DoResize(int delta)
+{
+	CSplitterControl::ChangeHeight( GetDlgItem(IDC_SERVLIST) , delta);
+
+	CSplitterControl::ChangeHeight( GetDlgItem(IDC_TAB3) , -delta,CW_BOTTOMALIGN);
+	CSplitterControl::ChangeHeight( GetDlgItem(IDC_SERVMSG) , -delta,CW_BOTTOMALIGN);
+	CSplitterControl::ChangeHeight(GetDlgItem(IDC_LOGBOX), -delta, CW_BOTTOMALIGN);
+	CSplitterControl::ChangeHeight(GetDlgItem(IDC_DEBUG_LOG), -delta, CW_BOTTOMALIGN);
+//==>Anti-Leecher-Log [cyrex2001][shadow2004]
+#ifdef ANTI_LEECHER_LOG
+	CSplitterControl::ChangeHeight(GetDlgItem(IDC_LEECHERLOG), -delta, CW_BOTTOMALIGN);
+#endif
+//<== Anti-Leecher-Log [cyrex2001][shadow2004]
+
+	UpdateSplitterRange();
+}
+
+void CServerWnd::InitSplitter()
+{
+	CRect rcWnd;
+	GetWindowRect(rcWnd);
+	ScreenToClient(rcWnd);
+
+	m_wndSplitter.SetRange(rcWnd.top+100,rcWnd.bottom-50);
+	LONG splitpos = 5+(thePrefs.GetSplitterbarPositionServer() * rcWnd.Height()) / 100;
+
+	CRect rcDlgItem;
+
+	serverlistctrl.GetWindowRect(rcDlgItem);
+	ScreenToClient(rcDlgItem);
+	rcDlgItem.bottom=splitpos-10;
+	serverlistctrl.MoveWindow(rcDlgItem);
+
+	GetDlgItem(IDC_LOGRESET)->GetWindowRect(rcDlgItem);
+	ScreenToClient(rcDlgItem);
+	rcDlgItem.top = splitpos + 9;
+	rcDlgItem.bottom = splitpos + 30;
+	GetDlgItem(IDC_LOGRESET)->MoveWindow(rcDlgItem);
+
+	GetDlgItem(IDC_TAB3)->GetWindowRect(rcDlgItem);
+	ScreenToClient(rcDlgItem);
+	rcDlgItem.top = splitpos + 10;
+	rcDlgItem.bottom = rcWnd.bottom-5;
+	GetDlgItem(IDC_TAB3)->MoveWindow(rcDlgItem);
+
+	servermsgbox->GetWindowRect(rcDlgItem);
+	ScreenToClient(rcDlgItem);
+	rcDlgItem.top=splitpos+35;
+	rcDlgItem.bottom = rcWnd.bottom-12;
+	servermsgbox->MoveWindow(rcDlgItem);
+
+	logbox->GetWindowRect(rcDlgItem);
+	ScreenToClient(rcDlgItem);
+	rcDlgItem.top=splitpos+35;
+	rcDlgItem.bottom = rcWnd.bottom-12;
+	logbox->MoveWindow(rcDlgItem);
+
+	debuglog->GetWindowRect(rcDlgItem);
+	ScreenToClient(rcDlgItem);
+	rcDlgItem.top=splitpos+35;
+	rcDlgItem.bottom = rcWnd.bottom-12;
+	debuglog->MoveWindow(rcDlgItem);
+
+//==>Anti-Leecher-Log [cyrex2001][shadow2004]
+#ifdef ANTI_LEECHER_LOG
+	leecherlog->GetWindowRect(rcDlgItem);
+	ScreenToClient(rcDlgItem);
+	rcDlgItem.top=splitpos+35;
+	rcDlgItem.bottom = rcWnd.bottom-12;
+	leecherlog->MoveWindow(rcDlgItem);
+#endif
+//<== Anti-Leecher-Log [cyrex2001][shadow2004]
+
+	long right=rcDlgItem.right;
+	GetDlgItem(IDC_SPLITTER_SERVER)->GetWindowRect(rcDlgItem);
+	ScreenToClient(rcDlgItem);
+	rcDlgItem.right=right;
+	GetDlgItem(IDC_SPLITTER_SERVER)->MoveWindow(rcDlgItem);
+
+	ReattachAnchors();
+}
+
+void CServerWnd::ReattachAnchors() {
+	RemoveAnchor(IDC_SERVLIST);
+	RemoveAnchor(StatusSelector);
+	RemoveAnchor(IDC_LOGRESET);
+	RemoveAnchor(*servermsgbox);
+	RemoveAnchor(*logbox);
+	RemoveAnchor(*debuglog);
+//==>Anti-Leecher-Log [cyrex2001][shadow2004]
+#ifdef ANTI_LEECHER_LOG
+        RemoveAnchor(*leecherlog);
+#endif
+//<== Anti-Leecher-Log [cyrex2001][shadow2004]
+
+	AddAnchor(IDC_SERVLIST, TOP_LEFT, CSize(100, thePrefs.GetSplitterbarPositionServer()));
+	AddAnchor(StatusSelector, CSize(0, thePrefs.GetSplitterbarPositionServer()), BOTTOM_RIGHT);
+	AddAnchor(IDC_LOGRESET,  BOTTOM_RIGHT);
+	AddAnchor(*servermsgbox,  CSize(0, thePrefs.GetSplitterbarPositionServer()), BOTTOM_RIGHT);
+	AddAnchor(*logbox,  CSize(0, thePrefs.GetSplitterbarPositionServer()), BOTTOM_RIGHT);
+	AddAnchor(*debuglog,  CSize(0, thePrefs.GetSplitterbarPositionServer()), BOTTOM_RIGHT);
+//==>Anti-Leecher-Log [cyrex2001][shadow2004]
+#ifdef ANTI_LEECHER_LOG
+	AddAnchor(*leecherlog,  CSize(0, thePrefs.GetSplitterbarPositionServer()), BOTTOM_RIGHT);
+#endif
+//<== Anti-Leecher-Log [cyrex2001][shadow2004]
+
+}
+
+void CServerWnd::UpdateSplitterRange()
+{
+	CRect rcWnd;
+	GetWindowRect(rcWnd);
+	ScreenToClient(rcWnd);
+
+	CRect rcDlgItem;
+
+	serverlistctrl.GetWindowRect(rcDlgItem);
+	ScreenToClient(rcDlgItem);
+
+	m_wndSplitter.SetRange(rcWnd.top+100,rcWnd.bottom-50);  //(rcDlgItem.top,rcDlgItem2.bottom-50);
+
+	LONG splitpos = rcDlgItem.bottom + SVWND_SPLITTER_YOFF;
+	thePrefs.SetSplitterbarPositionServer( (splitpos  * 100) / rcWnd.Height());
+
+	GetDlgItem(IDC_TAB3)->GetWindowRect(rcDlgItem);
+	ScreenToClient(rcDlgItem);
+	rcDlgItem.bottom = rcWnd.bottom-5;
+	rcDlgItem.top = splitpos + 10;
+	GetDlgItem(IDC_TAB3)->MoveWindow(rcDlgItem);
+
+	GetDlgItem(IDC_LOGRESET)->GetWindowRect(rcDlgItem);
+	ScreenToClient(rcDlgItem);
+	rcDlgItem.top = splitpos + 9;
+	rcDlgItem.bottom = splitpos + 30;
+	GetDlgItem(IDC_LOGRESET)->MoveWindow(rcDlgItem);
+
+	ReattachAnchors();
+}
+
+LRESULT CServerWnd::DefWindowProc(UINT message, WPARAM wParam, LPARAM lParam) 
+{
+	switch (message)
+	{
+		// arrange transferwindow layout
+		case WM_PAINT:
+			if (m_wndSplitter)
+			{
+				CRect rcWnd;
+				GetWindowRect(rcWnd);
+				if (rcWnd.Height() > 0)
+				{
+					CRect rcDown;
+					serverlistctrl.GetWindowRect(rcDown);
+					ScreenToClient(rcDown);
+
+					// splitter paint update
+					CRect rcSpl;
+					rcSpl.left = 10;
+					rcSpl.right = rcDown.right;
+					rcSpl.top = rcDown.bottom + SVWND_SPLITTER_YOFF;
+					rcSpl.bottom = rcSpl.top + SVWND_SPLITTER_HEIGHT;
+					m_wndSplitter.MoveWindow(rcSpl, TRUE);
+					UpdateSplitterRange();
+				}
+			}
+			break;
+
+	}
+
+	return CResizableDialog::DefWindowProc(message, wParam, lParam);
+}
+
+void CServerWnd::OnWindowPosChanged(WINDOWPOS* lpwndpos)
+{
+	if (m_wndSplitter)
+	{
+		CRect rcWnd;
+		GetWindowRect(rcWnd);
+		if (rcWnd.Height() > 0)
+			Invalidate();
+	}
+	CResizableDialog::OnWindowPosChanged(lpwndpos);
+}
+
+void CServerWnd::OnSplitterMoved(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	SPC_NMHDR* pHdr = (SPC_NMHDR*)pNMHDR;
+	DoResize(pHdr->delta);
 }

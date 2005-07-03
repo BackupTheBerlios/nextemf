@@ -106,6 +106,10 @@
 #define HDF_SORTDOWN            0x0200
 #endif
 
+#ifndef COLOR_GRADIENTACTIVECAPTION
+#define COLOR_GRADIENTACTIVECAPTION 27
+#endif
+
 
 
 // Enable warnings which were disabled for Windows/MFC/ATL headers

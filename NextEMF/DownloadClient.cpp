@@ -570,9 +570,11 @@ void CUpDownClient::ProcessFileStatus(bool bUdpPacket, CSafeMemFile* data, CPart
 	if (!bUdpPacket)
 	{
 		if (!bPartsNeeded)
+        {
 			SetDownloadState(DS_NONEEDEDPARTS);
-		//If we are using the eMule filerequest packets, this is taken care of in the Multipacket!
-		else if (reqfile->hashsetneeded)
+            SwapToAnotherFile(_T("A4AF for NNP file. CUpDownClient::ProcessFileStatus() TCP"), true, false, false, NULL, true, true);
+        }
+        else if (reqfile->hashsetneeded) //If we are using the eMule filerequest packets, this is taken care of in the Multipacket!
 		{
 			if (socket)
 			{
@@ -597,7 +599,10 @@ void CUpDownClient::ProcessFileStatus(bool bUdpPacket, CSafeMemFile* data, CPart
 	else
 	{
 		if (!bPartsNeeded)
+        {
 			SetDownloadState(DS_NONEEDEDPARTS);
+            //SwapToAnotherFile(_T("A4AF for NNP file. CUpDownClient::ProcessFileStatus() UDP"), true, false, false, NULL, true, false);
+        }
 		else
 			SetDownloadState(DS_ONQUEUE);
 	}
@@ -669,6 +674,11 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason
 			case DS_WAITCALLBACKKAD:
 			case DS_WAITCALLBACK:
 				break;
+            case DS_NONEEDEDPARTS:
+                // Since tcp asks never sets reask time if the result is DS_NONEEDEDPARTS
+                // If we set this, we will not reask for that file until some time has passed.
+                SetLastAskedTime();
+                //DontSwapTo(reqfile);
 			default:
 				switch( m_nDownloadState )
 				{
@@ -837,7 +847,13 @@ void CUpDownClient::CreateBlockRequests(int iMaxBlocks)
 	ASSERT( iMaxBlocks >= 1 /*&& iMaxBlocks <= 3*/ );
 	if (m_DownloadBlocks_list.IsEmpty())
 	{
-		uint16 count = iMaxBlocks - m_PendingBlocks_list.GetCount();
+		uint16 count;
+        if(iMaxBlocks > m_PendingBlocks_list.GetCount()) {
+            count = iMaxBlocks - m_PendingBlocks_list.GetCount();
+        } else {
+            count = 0;
+        }
+
 		Requested_Block_Struct** toadd = new Requested_Block_Struct*[count];
 		if (reqfile->GetNextRequestedBlock(this,toadd,&count)){
 			for (int i = 0; i < count; i++)
@@ -862,7 +878,19 @@ void CUpDownClient::SendBlockRequests()
 	m_dwLastBlockReceived = ::GetTickCount();
 	if (!reqfile)
 		return;
-	CreateBlockRequests(3);
+
+    // prevent locking of too many blocks when we are on a slow (probably standby/trickle) slot
+    int blockCount = 3;
+    if(IsEmuleClient() && m_byCompatibleClient==0) {
+        // Only trust eMule clients to be able to handle less blocks than three
+        if(GetDatarate() < 600) {
+            blockCount = 1;
+        } else if(GetDatarate() < 1200) {
+            blockCount = 2;
+        }
+    }
+	CreateBlockRequests(blockCount);
+
 	if (m_PendingBlocks_list.IsEmpty()){
 		SendCancelTransfer();
 //==> Extended Failed/Success Statistic by NetF [shadow2004]
@@ -872,6 +900,7 @@ void CUpDownClient::SendBlockRequests()
 		SetDownloadState(DS_NONEEDEDPARTS);
 #endif
 //<== Extended Failed/Success Statistic by NetF [shadow2004]
+        SwapToAnotherFile(_T("A4AF for NNP file. CUpDownClient::SendBlockRequests()"), true, false, false, NULL, true, true);
 		return;
 	}
 	const int iPacketSize = 16+(3*4)+(3*4); // 40
@@ -1248,7 +1277,7 @@ int CUpDownClient::unzip(Pending_Block_Struct* block, const BYTE* zipped, uint32
 				if (zS->msg)
 					strZipError.Format(_T(" %d: '%hs'"), err, zS->msg);
 				else if (err != Z_OK)
-					strZipError.Format(_T(" %d"), err);
+					strZipError.Format(_T(" %d: '%hs'"), err, zError(err));
 				TRACE_UNZIP("; Error: %s\n", strZipError);
 				DebugLogError(_T("Unexpected zip error%s in file \"%s\""), strZipError, reqfile ? reqfile->GetFileName() : NULL);
 			}
@@ -1514,14 +1543,15 @@ const bool CUpDownClient::SwapToRightFile(CPartFile* SwapTo, CPartFile* cur_file
 
                 DWORD tempTick = ::GetTickCount();
                 bool rightFileHasHigherPrio = CPartFile::RightFileHasHigherPrio(SwapTo, cur_file);
-                uint32 allNnpReaskTime = FILEREASKTIME*2*(m_OtherNoNeeded_list.GetSize() + (GetDownloadState() == DS_NONEEDEDPARTS)?1:0); // wait two reask interval for each nnp file before reasking an nnp file
+                uint32 allNnpReaskTime = FILEREASKTIME*2*(m_OtherNoNeeded_list.GetSize() + ((GetDownloadState() == DS_NONEEDEDPARTS)?1:0)); // wait two reask interval for each nnp file before reasking an nnp file
+
                 if(!SwapToIsNNPFile && (!curFileisNNPFile || GetLastAskedTime(cur_file) == 0 || tempTick-GetLastAskedTime(cur_file) > allNnpReaskTime) && rightFileHasHigherPrio ||
                    SwapToIsNNPFile && curFileisNNPFile &&
                    (
                     GetLastAskedTime(SwapTo) != 0 &&
                     (
                      GetLastAskedTime(cur_file) == 0 ||
-                     tempTick-GetLastAskedTime(SwapTo) < tempTick-GetLastAskedTime(cur_file)
+                     tempTick-GetLastAskedTime(SwapTo) < tempTick-GetLastAskedTime(cur_file) && (tempTick-GetLastAskedTime(cur_file) > allNnpReaskTime || rightFileHasHigherPrio && tempTick-GetLastAskedTime(SwapTo) < allNnpReaskTime)
                     ) ||
                     rightFileHasHigherPrio && GetLastAskedTime(SwapTo) == 0 && GetLastAskedTime(cur_file) == 0
                    ) ||
@@ -1534,7 +1564,7 @@ const bool CUpDownClient::SwapToRightFile(CPartFile* SwapTo, CPartFile* cur_file
                         else if(GetLastAskedTime(SwapTo) != 0 &&
                                 (
                                  GetLastAskedTime(cur_file) == 0 ||
-                                 tempTick-GetLastAskedTime(SwapTo) < tempTick-GetLastAskedTime(cur_file)
+                                 tempTick-GetLastAskedTime(SwapTo) < tempTick-GetLastAskedTime(cur_file) && (tempTick-GetLastAskedTime(cur_file) > allNnpReaskTime || rightFileHasHigherPrio && tempTick-GetLastAskedTime(SwapTo) < allNnpReaskTime)
                                 )
                                )
                             AddDebugLogLine(DLP_VERYLOW, false, _T("oooo Debug: Both nnp and cur_file has longer time since reasked."));
@@ -1596,14 +1626,14 @@ bool CUpDownClient::SwapToAnotherFile(LPCTSTR reason, bool bIgnoreNoNeeded, bool
     if(printDebug)
         AddDebugLogLine(DLP_LOW, false, _T("ooo Debug: doAgressiveSwapping: %s"), doAgressiveSwapping?_T("true"):_T("false"));
 
-    if(!bRemoveCompletely && !ignoreSuspensions && allowSame && IsSwapSuspended(reqfile, doAgressiveSwapping, false)) {
+    if(!bRemoveCompletely && !ignoreSuspensions && allowSame && GetTimeUntilReask(reqfile, doAgressiveSwapping, true, false) > 0 && (GetDownloadState() != DS_NONEEDEDPARTS || m_OtherRequests_list.IsEmpty())) {
         if(printDebug)
-            AddDebugLogLine(DLP_LOW, false, _T("ooo Debug: return false due to IsSwapSuspended(reqfile)."));
+            AddDebugLogLine(DLP_LOW, false, _T("ooo Debug: return false due to not reached reask time: GetTimeUntilReask(...) > 0"));
 
         return false;
     }
 
-    if(!bRemoveCompletely && allowSame && m_OtherRequests_list.IsEmpty() && (!bIgnoreNoNeeded || m_OtherNoNeeded_list.IsEmpty())) {
+    if(!bRemoveCompletely && allowSame && m_OtherRequests_list.IsEmpty() && (/* !bIgnoreNoNeeded ||*/ m_OtherNoNeeded_list.IsEmpty())) {
         // no file to swap too, and it's ok to keep it
         if(printDebug)
             AddDebugLogLine(DLP_LOW, false, _T("ooo Debug: return false due to no file to swap too, and it's ok to keep it."));
@@ -1642,7 +1672,6 @@ bool CUpDownClient::SwapToAnotherFile(LPCTSTR reason, bool bIgnoreNoNeeded, bool
         if(printDebug)
             AddDebugLogLine(DLP_VERYLOW, false, _T("ooo Debug: m_OtherRequests_list"));
 
-        usedList = &m_OtherRequests_list;
 		for (POSITION pos = m_OtherRequests_list.GetHeadPosition();pos != 0;m_OtherRequests_list.GetNext(pos)){
 			cur_file = m_OtherRequests_list.GetAt(pos);
 
@@ -1668,6 +1697,7 @@ bool CUpDownClient::SwapToAnotherFile(LPCTSTR reason, bool bIgnoreNoNeeded, bool
 
                         SwapTo = cur_file;
                         SwapToIsNNP = false;
+                		usedList = &m_OtherRequests_list;
 						finalpos = pos;
 						break;
 					}
@@ -1690,6 +1720,7 @@ bool CUpDownClient::SwapToAnotherFile(LPCTSTR reason, bool bIgnoreNoNeeded, bool
 
                         SwapTo = cur_file;
                         SwapToIsNNP = false;
+                		usedList = &m_OtherRequests_list;
 					    finalpos=pos;
                     } else {
                         if(printDebug)
@@ -1711,11 +1742,10 @@ bool CUpDownClient::SwapToAnotherFile(LPCTSTR reason, bool bIgnoreNoNeeded, bool
 		}
 	}
 
-    if ((!SwapTo || SwapTo == reqfile && GetDownloadState() == DS_NONEEDEDPARTS) && bIgnoreNoNeeded){
+    //if ((!SwapTo || SwapTo == reqfile && GetDownloadState() == DS_NONEEDEDPARTS) && bIgnoreNoNeeded){
         if(printDebug)
             AddDebugLogLine(DLP_VERYLOW, false, _T("ooo Debug: m_OtherNoNeeded_list"));
 
-        usedList = &m_OtherNoNeeded_list;
 		for (POSITION pos = m_OtherNoNeeded_list.GetHeadPosition();pos != 0;m_OtherNoNeeded_list.GetNext(pos)){
 			cur_file = m_OtherNoNeeded_list.GetAt(pos);
 
@@ -1740,6 +1770,7 @@ bool CUpDownClient::SwapToAnotherFile(LPCTSTR reason, bool bIgnoreNoNeeded, bool
                             AddDebugLogLine(DLP_VERYLOW, false, _T("ooo Debug: Found toFile."));
     
                         SwapTo = cur_file;
+                		usedList = &m_OtherNoNeeded_list;
 						finalpos = pos;
 						break;
 					}
@@ -1763,6 +1794,7 @@ bool CUpDownClient::SwapToAnotherFile(LPCTSTR reason, bool bIgnoreNoNeeded, bool
 
                         SwapTo = cur_file;
                         SwapToIsNNP = true;
+                		usedList = &m_OtherNoNeeded_list;
 					    finalpos=pos;
                     } else {
                         if(printDebug)
@@ -1781,7 +1813,7 @@ bool CUpDownClient::SwapToAnotherFile(LPCTSTR reason, bool bIgnoreNoNeeded, bool
 				}
 			}
 		}
-	}
+	//}
 
     if (SwapTo){
         if(printDebug) {
@@ -1815,7 +1847,9 @@ bool CUpDownClient::SwapToAnotherFile(LPCTSTR reason, bool bIgnoreNoNeeded, bool
 
 		if (SwapTo != reqfile && DoSwap(SwapTo,bRemoveCompletely, strInfo)){
             if(debug && thePrefs.GetLogA4AF()) AddDebugLogLine(DLP_LOW, false, _T("ooo Debug: Swap successful."));
+            if(usedList && finalpos) {
 			usedList->RemoveAt(finalpos);
+            }
 			return true;
         } else if(printDebug) {
             AddDebugLogLine(DLP_LOW, false, _T("ooo Debug: Swap didn't happen."));
@@ -1902,6 +1936,10 @@ void CUpDownClient::DontSwapTo(/*const*/ CPartFile* file)
 
 bool CUpDownClient::IsSwapSuspended(const CPartFile* file, const bool allowShortReaskTime, const bool fileIsNNP)
 {
+    if(file == reqfile) {
+        return false;
+    }
+
     // Don't swap if we have reasked this client too recently
     if(GetTimeUntilReask(file, allowShortReaskTime, true, fileIsNNP) > 0)
         return true;
@@ -1931,7 +1969,7 @@ uint32 CUpDownClient::GetTimeUntilReask(const CPartFile* file, const bool allowS
         DWORD tick = ::GetTickCount();
 
         DWORD reaskTime;
-        if(allowShortReaskTime) {
+        if(allowShortReaskTime || file == reqfile && GetDownloadState() == DS_NONE) {
             reaskTime = MIN_REQUESTTIME;
         } else if(useGivenNNP && givenNNP ||
                   file == reqfile && GetDownloadState() == DS_NONEEDEDPARTS ||

@@ -35,13 +35,12 @@ there client on the eMule forum..
 
 class CKnownFile;
 class CSafeMemFile;
-class CTag;
 
 ////////////////////////////////////////
 namespace Kademlia {
 ////////////////////////////////////////
 
-typedef std::list<CTag*> TagList;
+typedef std::list<CKadTag*> TagList;
 void deleteTagListEntries(TagList* taglist);
 
 class CSearch

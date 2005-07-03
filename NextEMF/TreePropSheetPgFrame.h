@@ -8,9 +8,9 @@
 * Redistribution is appreciated.
 *
 * $Workfile:$
-* $Revision: 1.1 $
+* $Revision: 1.2 $
 * $Modtime:$
-* $Author: cyrex2001 $
+* $Author: shadow2004 $
 *
 * Revision History:
 *	$History:$

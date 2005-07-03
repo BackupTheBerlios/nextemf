@@ -85,22 +85,14 @@ BEGIN
     IDS_HTTPDOWNLOAD_PERCENTAGE "Download: %s%% von %s fertig"
     IDS_HTTPDOWNLOAD_RETREIVEING_FILE "Datei wird empfangen"
     IDS_HTTPDOWNLOAD_OF     "%s von %s"
-    IDS_FILELINK            "Datei Link"
-    IDS_LD_BASICOPT         "Grundlegende Optionen"
-    IDS_LD_ADDSOURCE        "Mich selber als Quelle hinzufügen"
-    IDS_LD_EMULEHASH        "Füge eMule AICH Hash für bessere Korruptionsbehandlung hinzu"
-    IDS_LD_ADVANCEDOPT      "Erweiterte Optionen"
     IDS_CANCEL              "Abbruch"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_LD_ADDHTML          "Füge HTML-Tags hinzu"
     IDS_HTTP_CAPTION        "Aktualisiere Serverliste"
     IDS_HTTPDOWNLOAD_TIMELEFT "%s (%s kopiert)"
-    IDS_LD_ADDHASHSET       "Füge kompletten Hashset hinzu"
     IDS_HSAV                "Hashset vorhanden"
-    IDS_DL_SHOWED2KLINK     "Zeige eD2K Link..."
     IDS_FD_CORR             "Korrupt"
     IDS_HTTPDOWNLOAD_OK_TO_OVERWRITE 
                             "Die Datei '%s' existiert bereits.\nSoll sie überschrieben werden?"
@@ -112,7 +104,6 @@ BEGIN
     IDS_WIZARD_NETWORK      "Welche Netzwerke sollen benutzt werden?"
     IDS_MAIN_READY          "eMule Version %s bereit"
     IDS_WIZARD_ED2K         "eD2K-Netz Einstellungen"
-    IDS_SEL_SKIN            "Wähle Skin..."
 END
 
 STRINGTABLE 
@@ -406,9 +397,7 @@ BEGIN
     IDS_ERR_METCORRUPT      "Fehler: %s (%s) ist beschädigt, Datei kann nicht geladen werden"
     IDS_ERR_FILEERROR       "Unerwarteter Dateifehler beim Lesen von %s (%s): %s"
     IDS_ERR_FILEOPEN        "Datei konnte nicht geöffnet werden: %s (%s)"
-    IDS_SEL_SKINDIR         "Wähle Skin-Verzeichnis..."
     IDS_ERR_REHASH          "Warnung: %s ist möglicherweise beschädigt, vollständig geladene Teile werden überprüft"
-    IDS_SKIN_PROF           "Skin Profile"
     IDS_ERR_PART_FNF        ".part Datei konnte nicht gefunden werden"
     IDS_ERR_OPENMETFILE     ".part Datei konnte nicht geöffnet werden"
     IDS_KADOPEN             "Offen"
@@ -447,7 +436,7 @@ BEGIN
     IDS_SW_DOWNLOAD         "Auswahl downloaden"
     IDS_SV_SERVERLIST       "Serverliste"
     IDS_SV_SERVERINFO       "Serverinfo"
-    IDS_SV_LOG              "Meldungen"
+    IDS_SV_LOG              "Log"
     IDS_SV_NEWSERVER        "Neuer Server"
     IDS_SV_ADDRESS          "IP oder Adresse"
     IDS_SV_PORT             "Port"
@@ -669,7 +658,7 @@ BEGIN
     IDS_SERVER              "Server"
     IDS_SOURCEINFO          "Gefragt: %dx - Verfügbare Abschnitte: %d"
     IDS_CLIENTSOURCENAME    "\nClient's Dateiname: "
-    IDS_USERINFO            "NickName: %s\n"
+    IDS_USERINFO            "Benutzername: %s\n"
     IDS_FILESTATS_SESSION   "Dateistatistiken dieser Sitzung: %d von %d Anfragen akzeptiert, %s übertragen\n"
     IDS_FILESTATS_TOTAL     "Dateistatistiken für alle Sitzungen: %d von %d Anfragen akzeptiert, %s übertragen"
     IDS_REQ_UNKNOWNFILE     "Unbekannte Datei angefordert"
@@ -692,7 +681,7 @@ BEGIN
     IDS_SF_USER             "Gesamte Benutzeranzahl"
     IDS_SF_FILE             "Gesamte Dateianzahl"
     IDS_UPLOADTIME          "Upload Zeit"
-    IDS_LASTSEENCOMPL       "Zuletzt komplett entdeckt:"
+    IDS_LASTSEENCOMPL       "Komplett entdeckt:"
     IDS_YES                 "Ja"
     IDS_NO                  "Nein"
     IDS_UNBAN               "Unban"
@@ -799,9 +788,6 @@ END
 STRINGTABLE 
 BEGIN
     IDS_PW_CON_CAPFRM       "Kapazitäten"
-    IDS_SOURCEEXCHANGESWAP  "Temporärer Quellenaustausch-Swap"
-    IDS_DL_TRY_TO_GET_PREVIEW_PARTS 
-                            "Zuerst Teile für eine Vorschau downloaden"
 END
 
 STRINGTABLE 
@@ -1024,7 +1010,7 @@ BEGIN
     IDS_IPFILTERED          "Gefilterte IP: %s (%s)"
     IDS_DL_TRANSFCOMPL      "Fertiggestellt"
     IDS_DL_ACTIVE_TIME      "Downloadzeit"
-    IDS_STATS_FILTEREDCLIENTS "Gefiltert: %u"
+    IDS_STATS_FILTEREDCLIENTS "Gefiltert: %i"
     IDS_FILTERLABEL         "Filtere Nachrichten mit folgenden Strings: (Trennzeichen | )"
     IDS_ERR_LARGEREQBLOCK   "Client fragte einen zu großen Block an."
     IDS_SHOWRATEONTITLE     "Zeige Transferraten im Titel"
@@ -1091,7 +1077,7 @@ BEGIN
     IDS_FIRSTSAFECON        "Soll eMule beim Verbinden zum Server ""Sicheres Verbinden"" aktivieren?\r\rWird diese Option deaktiviert, kann eMule etwas schneller zu Servern Verbindung aufnehmen, aber kann auch mehr falsche niedrige IDs hervorrufen."
     IDS_FIRSTRUNASSIST      "Möchtest Du den Setup-Assistenten starten?"
     IDS_FIRSTAUTOCON        "Soll eMule sich beim Programmstart mit einem Server verbinden?"
-    IDS_FIRSTCOMPLETE       "Der Startassistent wurde nun durchgeführt.\r\rAlle diese Einstellungen und mehr können geändert werden, klicke dazu auf das Einstellungen-Symbol oben rechts in der Toolbar. Für Erklärungen und weitere Informationen schaue in die Hilfe, durch drücken der F1-Taste!"
+    IDS_FIRSTCOMPLETE       "Der Startassistent wurde nun durchgeführt.\r\rAlle diese Einstellungen und mehr können geändert werden, klicke dazu auf das Einstellungen-Symbol oben rechts in der Toolbar. Für Erklärungen und weitere Informationen schaue in die Hilfe, durch Drücken der F1-Taste!"
 END
 
 STRINGTABLE 
@@ -1184,7 +1170,7 @@ BEGIN
     IDS_WIZ1_WELCOME_BTN_HINT "Klicke ''Weiter''  um fortzufahren"
     IDS_WIZ1_END_TITLE      "Den Assistenten fertigstellen"
     IDS_WIZ1                "eMule - Erst-Start-Assistent"
-    IDS_WIZ1_END_BTN_HINT   "Klicke Beenden, um den Assistenten zu Schließen."
+    IDS_WIZ1_END_BTN_HINT   "Klicke Beenden, um den Assistenten zu schließen."
     IDS_WIZ1_UPLOAD_SUBTITLE "Voller Chunk Transfer"
     IDS_DL_RESUMENEXT       "Nächste pausierte Datei fortsetzen"
     IDS_DONTCHANGE          "Nicht ändern"
@@ -1280,7 +1266,7 @@ BEGIN
     IDS_STATS_PROBLEMATIC   "Problematisch"
     IDS_LONGHRS             "Stunden"
     IDS_STATS_LARGESTFILE   "Größte freigegebene Datei"
-    IDS_SPLIT_WINDOW        "Split Window"
+    IDS_SPLIT_WINDOW        "geteiltes Fenster"
     IDS_STATS_DSPF          "Downloaddatei"
     IDS_STATS_DATASOURCE    "Datenquelle"
     IDS_STATS_DSFILE        "Fertige Datei"
@@ -1304,7 +1290,6 @@ BEGIN
     IDS_STATS_MNUTREECPYALL "Kopiere alle Statistiken"
     IDS_STATS_MNUTREEHTML   "HTML Funktionen"
     IDS_STATS_EXPORT2HTML   "Exportiere alle Statistiken"
-    IDS_CONDTCPACCEPT       "schnelle Verbindungszurückweisung"
     IDS_STATS_MNUTREECPYVIS "Kopiere alles sichtbare"
     IDS_STATS_MNUTREEEXPANDALL "Alle Knoten aufklappen"
     IDS_STATS_MNUTREECOLLAPSEALL "Alle Knoten schließen"
@@ -1358,12 +1343,7 @@ END
 STRINGTABLE 
 BEGIN
     IDS_VERSION             "Version"
-    IDS_ALL_A4AF_TO_THIS    "Alle Quellen zu dieser Datei"
     IDS_PASTE               "Einfügen"
-    IDS_ALL_A4AF_TO_OTHER   "Alle Quellen zu einer anderen Datei"
-    IDS_ALL_A4AF_AUTO       "Automatisches Zuweisen von Quellen zu dieser Datei"
-    IDS_SWAP_A4AF_TO_THIS   "Quelle zu dieser Datei"
-    IDS_SWAP_A4AF_TO_OTHER  "Quelle zu anderer Datei"
     IDS_A4AF                "Quellen-Kontrolle"
     IDS_AUTOCAT_LABEL       "Autom. Kategorien-Zuweisung ( | trennt Muster)"
     IDS_SHOWEXTSETTINGS     "Zusätzliche Kontrollen anzeigen (für Fortgeschrittene)"
@@ -1524,18 +1504,10 @@ BEGIN
     IDS_EM_KADEMLIA         "&Kad"
     IDS_VIAKAD              "via Kad"
     IDS_VIASE               "via Quellenaustausch"
-    IDS_SELECTTOOLBARBITMAP "Wähle Bitmap für die Toolbar"
-    IDS_SELECTTOOLBARBITMAPDIR "Wähle das Bitmap-Verzeichnis"
-    IDS_TOOLBARSKINS        "Toolbar Skins"
-    IDS_NOTEXTLABELS        "Keine Symboltitel"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_TEXTLABELSONRIGHT   "Symboltitel rechts"
-    IDS_TEXTLABELS          "Textoptionen"
-    IDS_ENABLETEXTLABELS    "Symboltitel anzeigen"
-    IDS_CUSTOMIZETOOLBAR    "Toolbar anpassen..."
     IDS_MINBITRATE          "Min. Bitrate [kBit/s]"
     IDS_KAD_RECHECKFW       "Firewall neu prüfen"
     IDS_SHAREDTITLE         "Freigegeben eD2K|Kad"
@@ -1582,10 +1554,10 @@ BEGIN
     IDS_METATAGS            "Meta Tag Anzahl:"
     IDS_FILEFORMAT          "Dateiformat"
     IDS_UDPREASKS           "UDP Datei-Neuanfragen"
-    IDS_DYNUP_PINGTOLERANCE_MS 			"Ping-Toleranz (ms)"
-    IDS_DYNUP_RADIO_PINGTOLERANCE_HEADER 	"Methode der Ping-Toleranz"
-    IDS_DYNUP_RADIO_PINGTOLERANCE_MS 		"Millisekunden (ms)"
-    IDS_DYNUP_RADIO_PINGTOLERANCE_PERCENT 	"Prozent (%)"
+    IDS_DYNUP_PINGTOLERANCE_MS "Ping-Toleranz (ms)"
+    IDS_DYNUP_RADIO_PINGTOLERANCE_HEADER "Methode der Ping-Toleranz"
+    IDS_DYNUP_RADIO_PINGTOLERANCE_MS "Millisekunden (ms)"
+    IDS_DYNUP_RADIO_PINGTOLERANCE_PERCENT "Prozent (%)"
 END
 
 STRINGTABLE 
@@ -1593,27 +1565,17 @@ BEGIN
     IDS_LOG_A4AF            "Logge A4AF Aktionen"
     IDS_A4AF_SAVE_CPU       "A4AF-Prüfungen deaktivieren (CPU schonen)"
     IDS_SEARCH_DOC          "Dokument"
+    IDS_DOWNLOAD_ALPHABETICAL "Download in alphabetischer Reihenfolge"
     IDS_INSTALL_SKIN        "Installiere eMule Skin"
     IDS_INSTALL_SKIN_NODIR  "Kein eMule Skin Verzeichnis ausgewählt oder Verzeichnis ist nicht zugreifbar!"
     IDS_INSTALL_SKIN_DIR_ERROR 
                             "Das Verzeichnis ""%s"" konnte nicht für das eMule Skin - %s erzeugt werden."
     IDS_INSTALL_SKIN_FILE_ERROR 
                             "Die Datei ""%s"" konnte nicht vom eMule Skin zur lokalent Datei ""%s"" entpackt werden - %s"
-    IDS_INSTALL_SKIN_PKG_ERROR 
-                            "Dies ist keine gültiges eMule Skin - Paketdatei."
-    IDS_NEXT_REASK          "Nächste Anfrage zu diesem Client"
+    IDS_NEXT_REASK          "Nächste Anfrage"
     IDS_A4AF_FILES          "A4AF Datei"
-    IDS_FO_TEMPTCP_S        "Port %u (TCP) der WinXP-internen Firewall für diese eMulesitzung geöffnet"
-    IDS_FO_TEMPTCP_F        "Port %u (TCP) der WinXP-internen Firewall konnte nicht für diese eMulesitzung geöffnet werden"
-    IDS_FO_TEMPUDP_S        "Port %u (UDP) der WinXP-internen Firewall für diese eMulesitzung geöffnet"
-    IDS_FO_TEMPUDP_F        "Port %u (UDP) der WinXP-internen Firewall konnte für diese eMulesitzung nicht geöffnet werden"
-    IDS_FO_PREFBUTTON       "Öffne diese Ports an WinXP-interner Firewall"
-    IDS_FO_PREF_SUCCCEEDED  "Die gewählten Ports wurden erfolgreich an der WinXP-internen Firewall geöffnet.\nBeachte, dass Desktopfirewalls von Drittherstellern und Router von diesen Massnahmen nicht betroffen sind!"
-END
-
-STRINGTABLE 
-BEGIN
-    IDS_DOWNLOAD_ALPHABETICAL "Download in alphabetischer Reihenfolge"
+    IDS_STATS_FRATIO        "Session UL:DL Verhältnis (ohne Freundesupload):"
+    IDS_STATS_UDATA_FRIENDS "Hochgeladene Daten durch Freundesuploads (Session): %s"
 END
 
 STRINGTABLE 
@@ -1623,15 +1585,20 @@ BEGIN
     IDS_FO_PREF_STARTUP     "Ports bei der WinXP Firewall beim Starten/Beenden automatisch öffnen/schliessen"
     IDS_LOG_LEVEL           "Log Level"
     IDS_DISABLEPEERACHE     "Download von PeerCache deaktivieren"
+    IDS_FO_TEMPTCP_S        "Port %u (TCP) der WinXP-internen Firewall für diese eMulesitzung geöffnet"
+    IDS_FO_TEMPTCP_F        "Port %u (TCP) der WinXP-internen Firewall konnte nicht für diese eMulesitzung geöffnet werden"
+    IDS_FO_TEMPUDP_S        "Port %u (UDP) der WinXP-internen Firewall für diese eMulesitzung geöffnet"
+    IDS_FO_TEMPUDP_F        "Port %u (UDP) der WinXP-internen Firewall konnte für diese eMulesitzung nicht geöffnet werden"
+    IDS_FO_PREFBUTTON       "Öffne diese Ports an WinXP-interner Firewall"
+    IDS_FO_PREF_SUCCCEEDED  "Die gewählten Ports wurden erfolgreich an der WinXP-internen Firewall geöffnet.\nBeachte, dass Desktopfirewalls von Drittherstellern und Router von diesen Massnahmen nicht betroffen sind!"
+    IDS_SOURCESWAPBLOCKED   "Swap blockiert"
+    IDS_A4AF_CHECK_THIS_NOW "Jetzt diese Quelle prüfen (debug)"
+    IDS_SOURCEEXCHANGESWAP  "Temporärer Quellenaustausch-Swap"
     IDS_NEWMSG              "Neue Nachricht von '%s' (IP:%s)"
     IDS_PREF_STARTNEXTFILECATONLY "Nur aus gleicher Kategorie"
     IDS_LOG_ULDL_EVENTS     "Logge Upload/Download Ereignisse"
     IDS_PEERCACHE_ENABLED   "Dein ISP unterstützt die PeerCache Technologie. Cache Downloads aktiviert."
-    IDS_SOURCESWAPBLOCKED   "Swap blockiert"
-    IDS_TRICKLING           "Wartend"
-    IDS_A4AF_CHECK_THIS_NOW "Jetzt diese Quelle prüfen (debug)"
-    IDS_STATS_FRATIO        "Session UL:DL Verhältnis (ohne Freundesupload):"
-    IDS_STATS_UDATA_FRIENDS "Hochgeladene Daten durch Freundesuploads (Session): %s"
+    IDS_DL_TRY_TO_GET_PREVIEW_PARTS "Zuerst Teile für eine Vorschau downloaden"
 END
 
 STRINGTABLE 
@@ -1708,7 +1675,6 @@ BEGIN
     IDS_META_SRCIP          "Quelle IP"
     IDS_META_SRCTYPE        "Quellentyp"
     IDS_SEARCH_UNICODE      "Suche mit Unicode"
-    IDS_PF_ADVANCEDCALC     "Nutze fortgeschrittene Methode für Restzeitbestimmung"
     IDS_PERSEC              "/s"
     IDS_LD_ED2KLINK         "eD2K Link"
     IDS_LD_COPYCLIPBOARD    "In Zwischenablage kopieren"
@@ -1725,10 +1691,20 @@ BEGIN
     IDS_GBYTESPERSEC        "GB/s"
     IDS_TBYTESPERSEC        "TB/s"
     IDS_STATS_MINORCLIENTS  "Weitere"
+    IDS_LD_BASICOPT         "Grundlegende Optionen"
+    IDS_LD_ADDSOURCE        "Mich selber als Quelle hinzufügen"
+    IDS_LD_EMULEHASH        "Füge eMule AICH Hash für bessere Korruptionsbehandlung hinzu"
+    IDS_LD_ADVANCEDOPT      "Erweiterte Optionen"
+    IDS_LD_ADDHTML          "Füge HTML-Tags hinzu"
+    IDS_LD_ADDHASHSET       "Füge kompletten Hashset hinzu"
+    IDS_FILELINK            "Datei Link"
+    IDS_PF_ADVANCEDCALC     "Nutze fortgeschrittene Methode für Restzeitbestimmung"
+    IDS_DL_SHOWED2KLINK     "Zeige eD2K Link..."
     IDS_AICH_SYNCTOTAL      "%i Dateien ohne gültigen AICH Hashset gefunden - werden jetzt gehasht"
     IDS_AICH_CALCFILE       "Berechne AICH Hash für Datei %s"
     IDS_AICH_WARNUSER       "Seit Version 0.44a nutzt eMule einen weiteren Dateihash, welcher den Datenverlust bei Datenkorruption drastisch senkt. Da du von einer früheren Version aktualisiert hast, muss eMule nun alle freigegebenen Dateien berechnen. Dies kann etwas dauern, ist aber ein einmaliger Vorgang."
     IDS_AICH_WORKED         "AICH hat erfolgreich %s von %s von Teil %u der Datei %s wiederhergestellt"
+    IDS_TRICKLING           "Wartend"
     IDS_SOURCECLIENT        "Quell-Client"
     IDS_USERSIP             "Nutzers IP"
     IDS_FEATURES            "Features"
@@ -1783,24 +1759,23 @@ BEGIN
     IDS_WEB_MAIN_CLOSE      "Soll eMule wirklich beendet werden?"
     IDS_WEB_MAIN_REBOOT     "Bist du dir sicher, dass der Rechner neu gestartet werden soll?"
     IDS_WEB_MAIN_SHUTDOWN   "Bist du dir sicher, dass der Rechner heruntergefahren werden soll?"
-    IDS_WEB_SHOW_UPLOAD_QUEUE_BANNED 
-                            "Zeige gebannte Clients der Warteschlange"
+    IDS_WEB_SHOW_UPLOAD_QUEUE_BANNED "Zeige gebannte Clients der Warteschlange"
     IDS_WEB_SHOW_UPLOAD_QUEUE_FRIEND "Zeige Freunde in der Warteschlange"
     IDS_WEB_SESSIONTIMEOUT  "Session Timeout"
-    IDS_WEB_ALLOWHILEVFUNC  "Erlaube das Beenden von eMule und Computer-Neustart & -Herunterfahren"
+    IDS_WEB_ALLOWHILEVFUNC  "Erlaube eMule beenden, System Neustart und Herunterfahren"
     IDS_SETPFSLIMIT         "Setze Quellenlimit..."
     IDS_SETPFSLIMITEXPLAINED 
                             "Bitte ein neues Quellenlimit für die ausgewählte(n) Datei(en) eingeben! \n(setze es auf 0 um die globale Einstellung zu nutzen)"
     IDS_UPDATECATINCOMINGDIRS 
                             "Sollen im Eingangsverzeichnis enthaltene Kategorienverzeichnisse der neuen Einstellung angepasst werden?"
+    IDS_CONDTCPACCEPT       "schnelle Verbindungszurückweisung"
     IDS_TCPIP_CONNS         "TCP/IP Verbindungen"
-    IDS_MANUAL_FILENAMECLEANUP 
-                            "Sollen die Dateiname der ausgewählten Dateien bereinigt werden?"
+    IDS_ERR_DELFILE         "Datei konnte nicht gelöscht werden: ""%s"""
+    IDS_MANUAL_FILENAMECLEANUP "Sollen die Dateiname der ausgewählten Dateien bereinigt werden?"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_ERR_DELFILE         "Datei konnte nicht gelöscht werden: ""%s"""
     IDS_ERR_CONFIGCORRUPT   "%s scheint defekt zu sein und wird deshalb ersetzt"
     IDS_UPLOADING           "Hochladend"
     IDS_CANCELLED           "Abgebrochen"
@@ -1815,6 +1790,39 @@ BEGIN
     IDS_PW_ENABLEEMAIL      "Aktiviere Emailbenachrichtigung"
     IDS_EMULENOTIFICATION   "eMule Benachrichtigung"
     IDS_PW_SHOWTRANSTOOLBAR "Zeige zusätzliche Toolbar im Transferfenster"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_SHARED_STATUS       "freigegebene Teile"
+    IDS_INCOMING_FILES      "fertige Dateien"
+    IDS_INCOMPLETE_FILES    "ladende Dateien"
+    IDS_SHARED_DIRECTORIES  "freigegebene Verzeichnisse"
+    IDS_SHAREDIR            "Verzeichnis freigeben"
+    IDS_SHAREDIRSUB         "mit Unterverzeichnissen freigeben"
+    IDS_UNSHAREDIR          "Freigabe des Verzeichnisses aufheben"
+    IDS_UNSHAREDIRSUB       "Freigabe samt Unterverzeichnisse aufheben "
+    IDS_ALLSHAREDFILES      "Alle freigegebenen Dateien "
+    IDS_ALLDIRECTORIES      "Alle Verzeichnisse"
+    IDS_SEARCHRELATED       "Suche zugehörige Dateien "
+    IDS_RELATED             "zugehörig"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_COLLECTIONLIST      "Kollektions-Liste"
+    IDS_SEARCH_EMULECOLLECTION "Kollektion"
+    IDS_COLL_REPLACEEXISTING "Soll die existierende Datei überschrieben werden?"
+    IDS_COLL_ERR_DELETING   "Ein unbekannter Fehler trat beim Löschen einer alten Datei auf. Soll ohne zu speichern beendet werden?"
+    IDS_CREATECOLLECTION    "Kollektion erstellen"
+    IDS_COLL_SIGN           "Kollektion mit Namen und Schlüssel signieren"
+    IDS_AUTHOR              "Autor"
+    IDS_AUTHORKEY           "Autor Schlüssel"
+    IDS_COLL_ADDINCAT       "Neue Downloads in einer Kollektions-Kategorie ablegen"
+    IDS_MODIFYCOLLECTION    "Kollektion bearbeiten"
+    IDS_VIEWCOLLECTION      "Kollektion ansehen"
+    IDS_COLL_TEXTFORMAT     "Kollektion im einfachen Textformat speichern"
+    IDS_SEARCHAUTHORCOLLECTION "Suche Kollektionen des Autors"
 END
 
 STRINGTABLE 

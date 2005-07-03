@@ -589,6 +589,7 @@ bool CUpDownClient::SendHttpBlockRequests()
 		SetDownloadState(DS_NONEEDEDPARTS);
 #endif
 //<== Extended Failed/Success Statistic by NetF [shadow2004]
+        SwapToAnotherFile(_T("A4AF for NNP file. CUpDownClient::SendHttpBlockRequests()"), true, false, false, NULL, true, true);
 		return false;
 	}
 

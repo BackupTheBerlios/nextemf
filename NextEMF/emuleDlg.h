@@ -49,9 +49,9 @@ class CMiniMule;
 // emuleapp <-> emuleapp
 #define OP_ED2KLINK				12000
 #define OP_CLCOMMAND			12001
+#define OP_COLLECTION			12002
 
 #define	EMULE_HOTMENU_ACCEL		'x'
-#define	EMULSKIN_BASEEXT		_T("eMuleSkin")
 
 class CemuleDlg : public CTrayDialog
 {
@@ -164,10 +164,6 @@ protected:
 	CMiniMule* m_pMiniMule;
 	void DestroyMiniMule();
 
-	//CMap<UINT, UINT, LPCTSTR, LPCTSTR> m_mapCmdToIcon;
-	//void CreateMenuCmdIconMap();
-	//LPCTSTR GetIconFromCmdId(UINT uId);
-
 	// Startup Timer
 	UINT_PTR m_hTimer;
 	static void CALLBACK StartupTimer(HWND hwnd, UINT uiMsg, UINT idEvent, DWORD dwTime);
@@ -208,6 +204,7 @@ protected:
 	afx_msg void OnBnClickedHotmenu();
 	afx_msg LRESULT OnMenuChar(UINT nChar, UINT nFlags, CMenu* pMenu);
 	afx_msg void OnSysColorChange();
+	afx_msg void OnSettingChange(UINT uFlags, LPCTSTR lpszSection);
 	afx_msg BOOL OnQueryEndSession();
 	afx_msg void OnEndSession(BOOL bEnding);
 	afx_msg LRESULT OnKickIdle(UINT nWhy, long lIdleCount);

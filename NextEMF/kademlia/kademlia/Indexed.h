@@ -85,7 +85,7 @@ struct SSearchTerm
 		OpNotEqual
 	} type;
 	
-	Kademlia::CTag* tag;
+	Kademlia::CKadTag* tag;
 	CStringWArray* astr;
 
 	SSearchTerm* left;

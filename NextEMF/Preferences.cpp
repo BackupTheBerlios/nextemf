@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( devs@emule-project.net / http://www.emule-project.net )
+//Copyright (C)2002-2005 Merkur ( devs@emule-project.net / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -14,6 +14,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
 #include "stdafx.h"
 #include <io.h>
 #include <share.h>
@@ -60,20 +61,20 @@ bool	CPreferences::m_bConditionalTCPAccept;
 bool	CPreferences::reconnect;
 bool	CPreferences::m_bUseServerPriorities;
 TCHAR	CPreferences::incomingdir[MAX_PATH];
-TCHAR	CPreferences::tempdir[MAX_PATH];
+CStringArray CPreferences::tempdir;
 bool	CPreferences::ICH;
-bool	CPreferences::autoserverlist;
+bool	CPreferences::m_bAutoUpdateServerList;
 bool	CPreferences::updatenotify;
 bool	CPreferences::mintotray;
 bool	CPreferences::autoconnect;
-bool	CPreferences::autoconnectstaticonly;
+bool	CPreferences::m_bAutoConnectToStaticServersOnly;
 bool	CPreferences::autotakeed2klinks;
 bool	CPreferences::addnewfilespaused;
 bool	CPreferences::m_bEnableMiniMule;
 int		CPreferences::m_iStraightWindowStyles;
 bool	CPreferences::m_bRTLWindowsLayout;
-bool	CPreferences::addserversfromserver;
-bool	CPreferences::addserversfromclient;
+bool	CPreferences::m_bAddServersFromServer;
+bool	CPreferences::m_bAddServersFromClients;
 uint16	CPreferences::maxsourceperfile;
 uint16	CPreferences::trafficOMeterInterval;
 uint16	CPreferences::statsInterval;
@@ -83,10 +84,7 @@ int		CPreferences::maxGraphDownloadRate;
 int		CPreferences::maxGraphUploadRate;
 bool	CPreferences::beepOnError;
 bool	CPreferences::confirmExit;
-uint16	CPreferences::downloadColumnWidths[13];
-BOOL	CPreferences::downloadColumnHidden[13];
-INT		CPreferences::downloadColumnOrder[13];
-//==>Modversion [shadow2004]
+/*//==>Modversion [shadow2004]
 #ifdef MODVERSION
 uint16	CPreferences::uploadColumnWidths[9]; //+1 Modversion
 BOOL	CPreferences::uploadColumnHidden[9]; //+1 Modversion
@@ -102,25 +100,7 @@ uint16	CPreferences::queueColumnWidths[10];
 BOOL	CPreferences::queueColumnHidden[10];
 INT		CPreferences::queueColumnOrder[10];
 #endif //Modversion
-//<==Modversion [shadow2004]
-uint16	CPreferences::searchColumnWidths[14];
-BOOL	CPreferences::searchColumnHidden[14];
-INT		CPreferences::searchColumnOrder[14];
-uint16	CPreferences::sharedColumnWidths[12];
-BOOL	CPreferences::sharedColumnHidden[12];
-INT		CPreferences::sharedColumnOrder[12];
-uint16	CPreferences::serverColumnWidths[14];
-BOOL	CPreferences::serverColumnHidden[14];
-INT		CPreferences::serverColumnOrder[14];
-uint16	CPreferences::clientListColumnWidths[8];
-BOOL	CPreferences::clientListColumnHidden[8];
-INT		CPreferences::clientListColumnOrder[8];
-uint16	CPreferences::FilenamesListColumnWidths[2];
-BOOL	CPreferences::FilenamesListColumnHidden[2];
-INT		CPreferences::FilenamesListColumnOrder[2];
-uint16	CPreferences::downloadClientsColumnWidths[8];
-BOOL	CPreferences::downloadClientsColumnHidden[8];
-INT		CPreferences::downloadClientsColumnOrder[8];
+//<==Modversion [shadow2004]*/
 DWORD	CPreferences::m_adwStatsColors[15];
 bool	CPreferences::splashscreen;
 bool	CPreferences::filterLANIPs;
@@ -244,12 +224,15 @@ EViewSharedFilesAccess CPreferences::m_iSeeShares;
 UINT	CPreferences::m_iToolDelayTime;
 bool	CPreferences::bringtoforeground;
 UINT	CPreferences::splitterbarPosition;
+UINT	CPreferences::splitterbarPositionSvr;
 UINT	CPreferences::splitterbarPositionStat;
 UINT	CPreferences::splitterbarPositionStat_HL;
 UINT	CPreferences::splitterbarPositionStat_HR;
 UINT	CPreferences::splitterbarPositionFriend;
+UINT	CPreferences::splitterbarPositionShared;
+UINT	CPreferences::m_uTransferWnd1;
 UINT	CPreferences::m_uTransferWnd2;
-uint16	CPreferences::deadserverretries;
+UINT	CPreferences::m_uDeadServerRetries;
 DWORD	CPreferences::m_dwServerKeepAliveTimeout;
 uint16	CPreferences::statsMax;
 uint8	CPreferences::statsAverageMinutes;
@@ -267,9 +250,9 @@ bool	CPreferences::m_bircaddtimestamp;
 bool	CPreferences::m_bRemove2bin;
 bool	CPreferences::m_bShowCopyEd2kLinkCmd;
 bool	CPreferences::m_bpreviewprio;
-bool	CPreferences::smartidcheck;
+bool	CPreferences::m_bSmartServerIdCheck;
 uint8	CPreferences::smartidstate;
-bool	CPreferences::safeServerConnect;
+bool	CPreferences::m_bSafeServerConnect;
 bool	CPreferences::startMinimized;
 bool	CPreferences::m_bAutoStart;
 bool	CPreferences::m_bRestoreLastMainWndDlg;
@@ -306,7 +289,7 @@ int		CPreferences::m_iDebugClientUDPLevel;
 int		CPreferences::m_iDebugClientKadUDPLevel;
 int		CPreferences::m_iDebugSearchResultDetailLevel;
 bool	CPreferences::m_bupdatequeuelist;
-bool	CPreferences::m_bmanualhighprio;
+bool	CPreferences::m_bManualAddedServersHighPriority;
 bool	CPreferences::m_btransferfullchunks;
 int		CPreferences::m_istartnextfile;
 bool	CPreferences::m_bshowoverhead;
@@ -317,24 +300,6 @@ bool	CPreferences::m_bDisableQueueList;
 bool	CPreferences::m_bExtControls;
 bool	CPreferences::m_bTransflstRemain;
 uint8	CPreferences::versioncheckdays;
-int		CPreferences::tableSortItemDownload;
-int		CPreferences::tableSortItemUpload;
-int		CPreferences::tableSortItemQueue;
-int		CPreferences::tableSortItemSearch;
-int		CPreferences::tableSortItemShared;
-int		CPreferences::tableSortItemServer;
-int		CPreferences::tableSortItemClientList;
-int		CPreferences::tableSortItemFilenames;
-int		CPreferences::tableSortItemDownloadClients;
-bool	CPreferences::tableSortAscendingDownload;
-bool	CPreferences::tableSortAscendingUpload;
-bool	CPreferences::tableSortAscendingQueue;
-bool	CPreferences::tableSortAscendingSearch;
-bool	CPreferences::tableSortAscendingShared;
-bool	CPreferences::tableSortAscendingServer;
-bool	CPreferences::tableSortAscendingClientList;
-bool	CPreferences::tableSortAscendingFilenames;
-bool	CPreferences::tableSortAscendingDownloadClients;
 bool	CPreferences::showRatesInTitle;
 TCHAR	CPreferences::TxtEditor[256];
 TCHAR	CPreferences::VideoPlayer[256];
@@ -385,6 +350,7 @@ int		CPreferences::m_nWebPageRefresh;
 bool	CPreferences::m_bWebLowEnabled;
 TCHAR	CPreferences::m_sWebResDir[MAX_PATH];
 int		CPreferences::m_iWebTimeoutMins;
+int		CPreferences::m_iWebFileUploadSizeLimitMB;
 bool	CPreferences::m_bAllowAdminHiLevFunc;
 TCHAR	CPreferences::m_sTemplateFile[MAX_PATH];
 bool	CPreferences::showCatTabInfos;
@@ -429,6 +395,7 @@ WORD	CPreferences::m_wWinVer;
 CArray<Category_Struct*,Category_Struct*> CPreferences::catMap;
 uint8	CPreferences::m_nWebMirrorAlertLevel;
 bool	CPreferences::m_bRunAsUser;
+bool	CPreferences::m_bPreferRestrictedOverUser;
 bool	CPreferences::m_bUseOldTimeRemaining;
 uint32	CPreferences::m_uPeerCacheLastSearch;
 bool	CPreferences::m_bPeerCacheWasFound;
@@ -593,7 +560,7 @@ void CPreferences::Init()
 				if (PathCanonicalize(szFullPath, toadd))
 					toadd = szFullPath;
 
-				if (IsInstallationDirectory(toadd))
+				if (!IsShareableDirectory(toadd) )
 					continue;
 
 				if (_taccess(toadd, 0) == 0) { // only add directories which still exist
@@ -666,7 +633,8 @@ void CPreferences::Init()
 		CString strError;
 		strError.Format(GetResString(IDS_ERR_CREATE_DIR), GetResString(IDS_PW_TEMP), GetTempDir(), GetErrorMessage(GetLastError()));
 		AfxMessageBox(strError, MB_ICONERROR);
-		_stprintf(tempdir,_T("%stemp"),appdir);
+		
+		tempdir.SetAt(0,appdir + _T("temp") );
 		if (!PathFileExists(GetTempDir()) && !::CreateDirectory(GetTempDir(),0)){
 			strError.Format(GetResString(IDS_ERR_CREATE_DIR), GetResString(IDS_PW_TEMP), GetTempDir(), GetErrorMessage(GetLastError()));
 			AfxMessageBox(strError, MB_ICONERROR);
@@ -704,7 +672,8 @@ void CPreferences::SetStandartValues()
 
 bool CPreferences::IsTempFile(const CString& rstrDirectory, const CString& rstrName)
 {
-	if (CompareDirectories(rstrDirectory, GetTempDir()))
+	for (int i=0;i<tempdir.GetCount();i++)
+		if (CompareDirectories(rstrDirectory, GetTempDir(i) ))
 		return false;
 
 	// do not share a file from the temp directory, if it matches one of the following patterns
@@ -1553,177 +1522,6 @@ void CPreferences::CreateUserHash()
 	userhash[14] = 111;
 }
 
-int CPreferences::GetColumnWidth(Table t, int index)
-{
-	switch(t) {
-		case tableDownload:
-			return downloadColumnWidths[index];
-		case tableUpload:
-			return uploadColumnWidths[index];
-		case tableQueue:
-			return queueColumnWidths[index];
-		case tableSearch:
-			return searchColumnWidths[index];
-		case tableShared:
-			return sharedColumnWidths[index];
-		case tableServer:
-			return serverColumnWidths[index];
-		case tableClientList:
-			return clientListColumnWidths[index];
-		case tableFilenames:
-			return FilenamesListColumnWidths[index];
-		case tableDownloadClients:
-			return downloadClientsColumnWidths[index];
-	}
-	return 0;
-}
-
-void CPreferences::SetColumnWidth(Table t, int index, int width) {
-	switch(t) {
-		case tableDownload:
-			downloadColumnWidths[index] = width;
-			break;
-		case tableUpload:
-			uploadColumnWidths[index] = width;
-			break;
-		case tableQueue:
-			queueColumnWidths[index] = width;
-			break;
-		case tableSearch:
-			searchColumnWidths[index] = width;
-			break;
-		case tableShared:
-			sharedColumnWidths[index] = width;
-			break;
-		case tableServer:
-			serverColumnWidths[index] = width;
-			break;
-		case tableClientList:
-			clientListColumnWidths[index] = width;
-			break;
-		case tableFilenames:
-			FilenamesListColumnWidths[index] = width;
-			break;
-		case tableDownloadClients:
-			downloadClientsColumnWidths[index] = width;
-			break;
-	}
-}
-
-BOOL CPreferences::GetColumnHidden(Table t, int index)
-{
-	switch(t) {
-		case tableDownload:
-			return downloadColumnHidden[index];
-		case tableUpload:
-			return uploadColumnHidden[index];
-		case tableQueue:
-			return queueColumnHidden[index];
-		case tableSearch:
-			return searchColumnHidden[index];
-		case tableShared:
-			return sharedColumnHidden[index];
-		case tableServer:
-			return serverColumnHidden[index];
-		case tableClientList:
-			return clientListColumnHidden[index];
-		case tableFilenames:
-			return FilenamesListColumnHidden[index];
-		case tableDownloadClients:
-			return downloadClientsColumnHidden[index];
-	}
-	return FALSE;
-}
-
-void CPreferences::SetColumnHidden(Table t, int index, BOOL bHidden) {
-	switch(t) {
-		case tableDownload:
-			downloadColumnHidden[index] = bHidden;
-			break;
-		case tableUpload:
-			uploadColumnHidden[index] = bHidden;
-			break;
-		case tableQueue:
-			queueColumnHidden[index] = bHidden;
-			break;
-		case tableSearch:
-			searchColumnHidden[index] = bHidden;
-			break;
-		case tableShared:
-			sharedColumnHidden[index] = bHidden;
-			break;
-		case tableServer:
-			serverColumnHidden[index] = bHidden;
-			break;
-		case tableClientList:
-			clientListColumnHidden[index] = bHidden;
-			break;
-		case tableFilenames:
-			FilenamesListColumnHidden[index] = bHidden;
-			break;
-		case tableDownloadClients:
-			downloadClientsColumnHidden[index] = bHidden;
-			break;
-	}
-}
-
-int CPreferences::GetColumnOrder(Table t, int index)
-{
-	switch(t) {
-		case tableDownload:
-			return downloadColumnOrder[index];
-		case tableUpload:
-			return uploadColumnOrder[index];
-		case tableQueue:
-			return queueColumnOrder[index];
-		case tableSearch:
-			return searchColumnOrder[index];
-		case tableShared:
-			return sharedColumnOrder[index];
-		case tableServer:
-			return serverColumnOrder[index];
-		case tableClientList:
-			return clientListColumnOrder[index];
-		case tableFilenames:
-			return FilenamesListColumnOrder[index];
-		case tableDownloadClients:
-			return downloadClientsColumnOrder[index];
-	}
-	return 0;
-}
-
-void CPreferences::SetColumnOrder(Table t, INT *piOrder) {
-	switch(t) {
-		case tableDownload:
-			memcpy(downloadColumnOrder, piOrder, sizeof(downloadColumnOrder));
-			break;
-		case tableUpload:
-			memcpy(uploadColumnOrder, piOrder, sizeof(uploadColumnOrder));
-			break;
-		case tableQueue:
-			memcpy(queueColumnOrder, piOrder, sizeof(queueColumnOrder));
-			break;
-		case tableSearch:
-			memcpy(searchColumnOrder, piOrder, sizeof(searchColumnOrder));
-			break;
-		case tableShared:
-			memcpy(sharedColumnOrder, piOrder, sizeof(sharedColumnOrder));
-			break;
-		case tableServer:
-			memcpy(serverColumnOrder, piOrder, sizeof(serverColumnOrder));
-			break;
-		case tableClientList:
-			memcpy(clientListColumnOrder, piOrder, sizeof(clientListColumnOrder));
-			break;
-		case tableFilenames:
-			memcpy(FilenamesListColumnOrder, piOrder, sizeof(FilenamesListColumnOrder));
-			break;
-		case tableDownloadClients:
-			memcpy(downloadClientsColumnOrder, piOrder, sizeof(downloadClientsColumnOrder));
-			break;
-	}
-}
-
 int CPreferences::GetRecommendedMaxConnections() {
 	int iRealMax = ::GetMaxWindowsTCPConnections();
 	if(iRealMax == -1 || iRealMax > 520)
@@ -1754,7 +1552,16 @@ void CPreferences::SavePreferences()
 
 	ini.WriteStringUTF8(_T("Nick"), strNick);
 	ini.WriteString(_T("IncomingDir"), incomingdir);
-	ini.WriteString(_T("TempDir"), tempdir);
+	
+	ini.WriteString(_T("TempDir"), tempdir.GetAt(0));
+
+	CString tempdirs;
+	for (int i=1;i<tempdir.GetCount();i++) {
+		tempdirs.Append(tempdir.GetAt(i) );
+		if (i+1<tempdir.GetCount())
+			tempdirs.Append(_T("|"));
+	}
+	ini.WriteString(_T("TempDirs"), tempdirs);
 
     ini.WriteInt(_T("MinUpload"), minupload);
 	ini.WriteInt(_T("MaxUpload"),maxupload);
@@ -1773,13 +1580,16 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("StatsInterval"),statsInterval);
 	ini.WriteInt(_T("DownloadCapacity"),maxGraphDownloadRate);
 	ini.WriteInt(_T("UploadCapacity"),maxGraphUploadRate);
-	ini.WriteInt(_T("DeadServerRetry"),deadserverretries);
+	ini.WriteInt(_T("DeadServerRetry"),m_uDeadServerRetries);
 	ini.WriteInt(_T("ServerKeepAliveTimeout"),m_dwServerKeepAliveTimeout);
 	ini.WriteInt(_T("SplitterbarPosition"),splitterbarPosition+2);
-	ini.WriteInt(_T("SplitterbarPositionStat"),splitterbarPositionStat+1,_T("eMule"));
-	ini.WriteInt(_T("SplitterbarPositionStat_HL"),splitterbarPositionStat_HL+1,_T("eMule"));
-	ini.WriteInt(_T("SplitterbarPositionStat_HR"),splitterbarPositionStat_HR+1,_T("eMule"));
-	ini.WriteInt(_T("SplitterbarPositionFriend"),splitterbarPositionFriend,_T("eMule"));
+	ini.WriteInt(_T("SplitterbarPositionServer"),splitterbarPositionSvr);
+	ini.WriteInt(_T("SplitterbarPositionStat"),splitterbarPositionStat+1);
+	ini.WriteInt(_T("SplitterbarPositionStat_HL"),splitterbarPositionStat_HL+1);
+	ini.WriteInt(_T("SplitterbarPositionStat_HR"),splitterbarPositionStat_HR+1);
+	ini.WriteInt(_T("SplitterbarPositionFriend"),splitterbarPositionFriend);
+	ini.WriteInt(_T("SplitterbarPositionShared"),splitterbarPositionShared);
+	ini.WriteInt(_T("TransferWnd1"),m_uTransferWnd1);
 	ini.WriteInt(_T("TransferWnd2"),m_uTransferWnd2);
 	ini.WriteInt(_T("VariousStatisticsMaxValue"),statsMax);
 	ini.WriteInt(_T("StatsAverageMinutes"),statsAverageMinutes);
@@ -1788,11 +1598,11 @@ void CPreferences::SavePreferences()
 
 	ini.WriteBool(_T("Reconnect"),reconnect);
 	ini.WriteBool(_T("Scoresystem"),m_bUseServerPriorities);
-	ini.WriteBool(_T("Serverlist"),autoserverlist);
+	ini.WriteBool(_T("Serverlist"),m_bAutoUpdateServerList);
 	ini.WriteBool(_T("UpdateNotifyTestClient"),updatenotify);
 	ini.WriteBool(_T("MinToTray"),mintotray);
-	ini.WriteBool(_T("AddServersFromServer"),addserversfromserver);
-	ini.WriteBool(_T("AddServersFromClient"),addserversfromclient);
+	ini.WriteBool(_T("AddServersFromServer"),m_bAddServersFromServer);
+	ini.WriteBool(_T("AddServersFromClient"),m_bAddServersFromClients);
 	ini.WriteBool(_T("Splashscreen"),splashscreen);
 	ini.WriteBool(_T("BringToFront"),bringtoforeground);
 	ini.WriteBool(_T("TransferDoubleClick"),transferDoubleclick);
@@ -1805,7 +1615,7 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("AutoStart"),m_bAutoStart);
 	ini.WriteInt(_T("LastMainWndDlgID"),m_iLastMainWndDlgID);
 	ini.WriteInt(_T("LastLogPaneID"),m_iLastLogPaneID);
-	ini.WriteBool(_T("SafeServerConnect"),safeServerConnect);
+	ini.WriteBool(_T("SafeServerConnect"),m_bSafeServerConnect);
 	ini.WriteBool(_T("ShowRatesOnTitle"),showRatesInTitle);
 	ini.WriteBool(_T("IndicateRatings"),indicateratings);
 	ini.WriteBool(_T("WatchClipboard4ED2kFilelinks"),watchclipboard);
@@ -1816,7 +1626,7 @@ void CPreferences::SavePreferences()
 	ini.WriteString(_T("YourHostname"),m_strYourHostname);
 
 	// Barry - New properties...
-    ini.WriteBool(_T("AutoConnectStaticOnly"), autoconnectstaticonly);
+    ini.WriteBool(_T("AutoConnectStaticOnly"), m_bAutoConnectToStaticServersOnly);
 	ini.WriteBool(_T("AutoTakeED2KLinks"), autotakeed2klinks);
     ini.WriteBool(_T("AddNewFilesPaused"), addnewfilespaused);
 
@@ -1840,9 +1650,7 @@ void CPreferences::SavePreferences()
 	ini.WriteString(_T("WebTemplateFile"),m_sTemplateFile);
 	ini.WriteString(_T("FilenameCleanups"),filenameCleanups);
 	ini.WriteInt(_T("ExtractMetaData"),m_iExtractMetaData);
-	ini.WriteBool(_T("AddTimestamp"), m_bircaddtimestamp);
 
-	ini.WriteBool(_T("SmartIdCheck"), smartidcheck);
 	ini.WriteBool(_T("Verbose"), m_bVerbose);
 	ini.WriteBool(_T("DebugSourceExchange"), m_bDebugSourceExchange);	// do *not* use the according 'Get...' function here!
 	ini.WriteBool(_T("LogBannedClients"), m_bLogBannedClients);			// do *not* use the according 'Get...' function here!
@@ -1864,7 +1672,7 @@ void CPreferences::SavePreferences()
 #endif
 	ini.WriteBool(_T("PreviewPrio"), m_bpreviewprio);
 	ini.WriteBool(_T("UpdateQueueListPref"), m_bupdatequeuelist);
-	ini.WriteBool(_T("ManualHighPrio"), m_bmanualhighprio);
+	ini.WriteBool(_T("ManualHighPrio"), m_bManualAddedServersHighPriority);
 	ini.WriteBool(_T("FullChunkTransfers"), m_btransferfullchunks);
 	ini.WriteBool(_T("ShowOverhead"), m_bshowoverhead);
 	ini.WriteBool(_T("VideoPreviewBackupped"), moviePreviewBackup);
@@ -1911,97 +1719,20 @@ void CPreferences::SavePreferences()
 	// Toolbar
 	ini.WriteString(_T("ToolbarSetting"), m_sToolbarSettings);
 
-	ini.SerGet(false, downloadColumnWidths,
-		ARRSIZE(downloadColumnWidths), _T("DownloadColumnWidths"));
-	ini.SerGet(false, downloadColumnHidden,
-		ARRSIZE(downloadColumnHidden), _T("DownloadColumnHidden"));
-	ini.SerGet(false, downloadColumnOrder,
-		ARRSIZE(downloadColumnOrder), _T("DownloadColumnOrder"));
-	ini.SerGet(false, uploadColumnWidths,
-		ARRSIZE(uploadColumnWidths), _T("UploadColumnWidths"));
-	ini.SerGet(false, uploadColumnHidden,
-		ARRSIZE(uploadColumnHidden), _T("UploadColumnHidden"));
-	ini.SerGet(false, uploadColumnOrder,
-		ARRSIZE(uploadColumnOrder), _T("UploadColumnOrder"));
-	ini.SerGet(false, queueColumnWidths,
-		ARRSIZE(queueColumnWidths), _T("QueueColumnWidths"));
-	ini.SerGet(false, queueColumnHidden,
-		ARRSIZE(queueColumnHidden), _T("QueueColumnHidden"));
-	ini.SerGet(false, queueColumnOrder,
-		ARRSIZE(queueColumnOrder), _T("QueueColumnOrder"));
-	ini.SerGet(false, searchColumnWidths,
-		ARRSIZE(searchColumnWidths), _T("SearchColumnWidths"));
-	ini.SerGet(false, searchColumnHidden,
-		ARRSIZE(searchColumnHidden), _T("SearchColumnHidden"));
-	ini.SerGet(false, searchColumnOrder,
-		ARRSIZE(searchColumnOrder), _T("SearchColumnOrder"));
-	ini.SerGet(false, sharedColumnWidths,
-		ARRSIZE(sharedColumnWidths), _T("SharedColumnWidths"));
-	ini.SerGet(false, sharedColumnHidden,
-		ARRSIZE(sharedColumnHidden), _T("SharedColumnHidden"));
-	ini.SerGet(false, sharedColumnOrder,
-		ARRSIZE(sharedColumnOrder), _T("SharedColumnOrder"));
-	ini.SerGet(false, serverColumnWidths,
-		ARRSIZE(serverColumnWidths), _T("ServerColumnWidths"));
-	ini.SerGet(false, serverColumnHidden,
-		ARRSIZE(serverColumnHidden), _T("ServerColumnHidden"));
-	ini.SerGet(false, serverColumnOrder,
-		ARRSIZE(serverColumnOrder), _T("ServerColumnOrder"));
-	ini.SerGet(false, clientListColumnWidths,
-		ARRSIZE(clientListColumnWidths), _T("ClientListColumnWidths"));
-	ini.SerGet(false, clientListColumnHidden,
-		ARRSIZE(clientListColumnHidden), _T("ClientListColumnHidden"));
-	ini.SerGet(false, clientListColumnOrder,
-		ARRSIZE(clientListColumnOrder), _T("ClientListColumnOrder"));
-	
-	ini.SerGet(false, FilenamesListColumnWidths,
-		ARRSIZE(FilenamesListColumnWidths), _T("FilenamesListColumnWidths"));
-	ini.SerGet(false, FilenamesListColumnHidden,
-		ARRSIZE(FilenamesListColumnHidden), _T("FilenamesListColumnHidden"));
-	ini.SerGet(false, FilenamesListColumnOrder,
-		ARRSIZE(FilenamesListColumnOrder), _T("FilenamesListColumnOrder"));
-	
-	ini.SerGet(false, downloadClientsColumnWidths,
-		ARRSIZE(downloadClientsColumnWidths), _T("DownloadClientsColumnWidths"));
-	ini.SerGet(false, downloadClientsColumnHidden,
-		ARRSIZE(downloadClientsColumnHidden), _T("DownloadClientsColumnHidden"));
-	ini.SerGet(false, downloadClientsColumnOrder,
-		ARRSIZE(downloadClientsColumnOrder), _T("DownloadClientsColumnOrder"));
-
-
-	// Barry - Provide a mechanism for all tables to store/retrieve sort order
-	ini.WriteInt(_T("TableSortItemDownload"), tableSortItemDownload);
-	ini.WriteInt(_T("TableSortItemUpload"), tableSortItemUpload);
-	ini.WriteInt(_T("TableSortItemQueue"), tableSortItemQueue);
-	ini.WriteInt(_T("TableSortItemSearch"), tableSortItemSearch);
-	ini.WriteInt(_T("TableSortItemShared"), tableSortItemShared);
-	ini.WriteInt(_T("TableSortItemServer"), tableSortItemServer);
-	ini.WriteInt(_T("TableSortItemClientList"), tableSortItemClientList);
-	ini.WriteInt(_T("TableSortItemFilenames"), tableSortItemFilenames);
-	ini.WriteBool(_T("TableSortAscendingDownload"), tableSortAscendingDownload);
-	ini.WriteBool(_T("TableSortAscendingUpload"), tableSortAscendingUpload);
-	ini.WriteBool(_T("TableSortAscendingQueue"), tableSortAscendingQueue);
-	ini.WriteBool(_T("TableSortAscendingSearch"), tableSortAscendingSearch);
-	ini.WriteBool(_T("TableSortAscendingShared"), tableSortAscendingShared);
-	ini.WriteBool(_T("TableSortAscendingServer"), tableSortAscendingServer);
-	ini.WriteBool(_T("TableSortAscendingClientList"), tableSortAscendingClientList);
-	ini.WriteBool(_T("TableSortAscendingFilenames"), tableSortAscendingFilenames);
-	ini.WriteInt(_T("TableSortItemDownloadClients"), tableSortItemDownloadClients);
-
 	ini.WriteBinary(_T("HyperTextFont"), (LPBYTE)&m_lfHyperText, sizeof m_lfHyperText);
 	ini.WriteBinary(_T("LogTextFont"), (LPBYTE)&m_lfLogText, sizeof m_lfLogText);
 
 	// ZZ:UploadSpeedSense -->
-    ini.WriteBool(_T("USSEnabled"), m_bDynUpEnabled, _T("eMule"));
+    ini.WriteBool(_T("USSEnabled"), m_bDynUpEnabled);
     ini.WriteBool(_T("USSUseMillisecondPingTolerance"), m_bDynUpUseMillisecondPingTolerance);
-    ini.WriteInt(_T("USSPingTolerance"), m_iDynUpPingTolerance, _T("eMule"));
+    ini.WriteInt(_T("USSPingTolerance"), m_iDynUpPingTolerance);
 	ini.WriteInt(_T("USSPingToleranceMilliseconds"), m_iDynUpPingToleranceMilliseconds); // EastShare - Add by TAHO, USS limit
-    ini.WriteInt(_T("USSGoingUpDivider"), m_iDynUpGoingUpDivider, _T("eMule"));
-    ini.WriteInt(_T("USSGoingDownDivider"), m_iDynUpGoingDownDivider, _T("eMule"));
-    ini.WriteInt(_T("USSNumberOfPings"), m_iDynUpNumberOfPings, _T("eMule"));
+    ini.WriteInt(_T("USSGoingUpDivider"), m_iDynUpGoingUpDivider);
+    ini.WriteInt(_T("USSGoingDownDivider"), m_iDynUpGoingDownDivider);
+    ini.WriteInt(_T("USSNumberOfPings"), m_iDynUpNumberOfPings);
 	// ZZ:UploadSpeedSense <--
 
-    ini.WriteBool(_T("A4AFSaveCpu"), m_bA4AFSaveCpu, _T("eMule")); // ZZ:DownloadManager
+    ini.WriteBool(_T("A4AFSaveCpu"), m_bA4AFSaveCpu); // ZZ:DownloadManager
 	ini.WriteInt(_T("WebMirrorAlertLevel"), m_nWebMirrorAlertLevel);
 	ini.WriteBool(_T("RunAsUnprivilegedUser"), m_bRunAsUser);
 	ini.WriteBool(_T("OpenPortsOnStartUp"), m_bOpenPortsOnStartUp);
@@ -2041,6 +1772,7 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("PageRefreshTime"), m_nWebPageRefresh);
 	ini.WriteBool(_T("UseLowRightsUser"), m_bWebLowEnabled);
 	ini.WriteBool(_T("AllowAdminHiLevelFunc"),m_bAllowAdminHiLevFunc);
+	ini.WriteInt(_T("WebTimeoutMins"), m_iWebTimeoutMins);
 
 
 	///////////////////////////////////////////////////////////////////////////
@@ -2141,12 +1873,91 @@ bool CPreferences::SetAllStatsColors(int iCount, const DWORD* pdwColors)
 	return bModified;
 }
 
+void CPreferences::IniCopy(CString si, CString di) {
+	CIni ini(GetConfigFile(), _T("eMule"));
+	
+	CString s=ini.GetString(si);
+
+	ini.SetSection(_T("ListControlSetup"));
+	
+	ini.WriteString(di,s);
+}
+
+// Imports the tablesetups of emuleversions (.ini) <0.46b		- temporary
+void CPreferences::ImportOldTableSetup() {
+
+	IniCopy(_T("DownloadColumnHidden") ,	_T("DownloadListCtrlColumnHidden") );
+	IniCopy(_T("DownloadColumnWidths") ,	_T("DownloadListCtrlColumnWidths") );
+	IniCopy(_T("DownloadColumnOrder") ,		_T("DownloadListCtrlColumnOrders") );
+	IniCopy(_T("TableSortItemDownload") ,	_T("DownloadListCtrlTableSortItem") );
+	IniCopy(_T("TableSortAscendingDownload") , _T("DownloadListCtrlTableSortAscending") );
+
+	IniCopy(_T("ONContactListCtrlColumnHidden") ,	_T("ONContactListCtrlColumnHidden") );
+	IniCopy(_T("ONContactListCtrlColumnWidths") ,	_T("ONContactListCtrlColumnWidths") );
+	IniCopy(_T("ONContactListCtrlColumnOrders") ,		_T("ONContactListCtrlColumnOrders") );
+
+	IniCopy(_T("KadSearchListCtrlColumnHidden") ,	_T("KadSearchListCtrlColumnHidden") );
+	IniCopy(_T("KadSearchListCtrlColumnWidths") ,	_T("KadSearchListCtrlColumnWidths") );
+	IniCopy(_T("KadSearchListCtrlColumnOrders") ,		_T("KadSearchListCtrlColumnOrders") );
+	
+	IniCopy(_T("UploadColumnHidden") ,		_T("UploadListCtrlColumnHidden") );
+	IniCopy(_T("UploadColumnWidths") ,		_T("UploadListCtrlColumnWidths") );
+	IniCopy(_T("UploadColumnOrder") ,		_T("UploadListCtrlColumnOrders") );
+	IniCopy(_T("TableSortItemUpload") ,		_T("UploadListCtrlTableSortItem") );
+	IniCopy(_T("TableSortAscendingUpload"), _T("UploadListCtrlTableSortAscending") );
+
+	IniCopy(_T("QueueColumnHidden") ,		_T("QueueListCtrlColumnHidden") );
+	IniCopy(_T("QueueColumnWidths") ,		_T("QueueListCtrlColumnWidths") );
+	IniCopy(_T("QueueColumnOrder") ,		_T("QueueListCtrlColumnOrders") );
+	IniCopy(_T("TableSortItemQueue") ,		_T("QueueListCtrlTableSortItem") );
+	IniCopy(_T("TableSortAscendingQueue") , _T("QueueListCtrlTableSortAscending") );
+
+	IniCopy(_T("SearchColumnHidden") ,		_T("SearchListCtrlColumnHidden") );
+	IniCopy(_T("SearchColumnWidths") ,		_T("SearchListCtrlColumnWidths") );
+	IniCopy(_T("SearchColumnOrder") ,		_T("SearchListCtrlColumnOrders") );
+	IniCopy(_T("TableSortItemSearch") ,		_T("SearchListCtrlTableSortItem") );
+	IniCopy(_T("TableSortAscendingSearch"), _T("SearchListCtrlTableSortAscending") );
+
+	IniCopy(_T("SharedColumnHidden") ,		_T("SharedFilesCtrlColumnHidden") );
+	IniCopy(_T("SharedColumnWidths") ,		_T("SharedFilesCtrlColumnWidths") );
+	IniCopy(_T("SharedColumnOrder") ,		_T("SharedFilesCtrlColumnOrders") );
+	IniCopy(_T("TableSortItemShared") ,		_T("SharedFilesCtrlTableSortItem") );
+	IniCopy(_T("TableSortAscendingShared"), _T("SharedFilesCtrlTableSortAscending") );
+
+	IniCopy(_T("ServerColumnHidden") ,		_T("ServerListCtrlColumnHidden") );
+	IniCopy(_T("ServerColumnWidths") ,		_T("ServerListCtrlColumnWidths") );
+	IniCopy(_T("ServerColumnOrder") ,		_T("ServerListCtrlColumnOrders") );
+	IniCopy(_T("TableSortItemServer") ,		_T("ServerListCtrlTableSortItem") );
+	IniCopy(_T("TableSortAscendingServer"), _T("ServerListCtrlTableSortAscending") );
+
+	IniCopy(_T("ClientListColumnHidden") ,		_T("ClientListCtrlColumnHidden") );
+	IniCopy(_T("ClientListColumnWidths") ,		_T("ClientListCtrlColumnWidths") );
+	IniCopy(_T("ClientListColumnOrder") ,		_T("ClientListCtrlColumnOrders") );
+	IniCopy(_T("TableSortItemClientList") ,		_T("ClientListCtrlTableSortItem") );
+	IniCopy(_T("TableSortAscendingClientList"), _T("ClientListCtrlTableSortAscending") );
+
+	IniCopy(_T("FilenamesListColumnHidden") ,	_T("FileDetailDlgNameColumnHidden") );
+	IniCopy(_T("FilenamesListColumnWidths") ,	_T("FileDetailDlgNameColumnWidths") );
+	IniCopy(_T("FilenamesListColumnOrder") ,	_T("FileDetailDlgNameColumnOrders") );
+	IniCopy(_T("TableSortItemFilenames") ,		_T("FileDetailDlgNameTableSortItem") );
+	IniCopy(_T("TableSortAscendingFilenames"),  _T("FileDetailDlgNameTableSortAscending") );
+
+	IniCopy(_T("DownloadClientsColumnHidden") ,		_T("DownloadClientsCtrlColumnHidden") );
+	IniCopy(_T("DownloadClientsColumnWidths") ,		_T("DownloadClientsCtrlColumnWidths") );
+	IniCopy(_T("DownloadClientsColumnOrder") ,		_T("DownloadClientsCtrlColumnOrders") );
+}
+
 void CPreferences::LoadPreferences()
 {
 	USES_CONVERSION;
 	TCHAR buffer[256];
 
 	CIni ini(GetConfigFile(), _T("eMule"));
+
+	// import old (<0.46b) table setups - temporary
+	if (ini.GetInt(_T("SearchListCtrlTableSortItem"),-1,_T("ListControlSetup"))==-1)
+		ImportOldTableSetup();
+	ini.SetSection(_T("eMule"));
 
 	CString strCurrVersion, strPrefsVersion;
 
@@ -2165,8 +1976,8 @@ void CPreferences::LoadPreferences()
 	m_iDbgHeap = 0;
 #endif
 
-	m_nWebMirrorAlertLevel = ini.GetInt(_T("WebMirrorAlertLevel"),0,_T("eMule"));
-	updatenotify=ini.GetBool(_T("UpdateNotifyTestClient"),true, _T("eMule"));
+	m_nWebMirrorAlertLevel = ini.GetInt(_T("WebMirrorAlertLevel"),0);
+	updatenotify=ini.GetBool(_T("UpdateNotifyTestClient"),true);
 
 	SetUserNick(ini.GetStringUTF8(_T("Nick"), DEFAULT_NICK));
 	if (strNick.IsEmpty() || IsDefaultNick(strNick))
@@ -2176,9 +1987,40 @@ void CPreferences::LoadPreferences()
 	_stprintf(incomingdir,_T("%s"),ini.GetString(_T("IncomingDir"),buffer ));
 	MakeFoldername(incomingdir);
 
+	// load tempdir(s) setting
 	_stprintf(buffer,_T("%sTemp"),appdir);
-	_stprintf(tempdir,_T("%s"),ini.GetString(_T("TempDir"),buffer));
-	MakeFoldername(tempdir);
+
+	CString tempdirs;
+	tempdirs=ini.GetString(_T("TempDir"),buffer);
+	tempdirs+= _T("|") + ini.GetString(_T("TempDirs"));
+
+	int curPos=0;
+	bool doubled;
+	CString atmp=tempdirs.Tokenize(_T("|"), curPos);
+	while (!atmp.IsEmpty())
+	{
+		atmp.Trim();
+		if (!atmp.IsEmpty()) {
+			MakeFoldername(atmp.GetBuffer(MAX_PATH));
+			atmp.ReleaseBuffer();
+			doubled=false;
+			for (int i=0;i<tempdir.GetCount();i++)	// avoid double tempdirs
+				if (atmp.CompareNoCase(GetTempDir(i))==0) {
+					doubled=true;
+					break;
+				}
+			if (!doubled) {
+				if (PathFileExists(atmp)==FALSE) {
+					CreateDirectory(atmp,NULL);
+					if (PathFileExists(atmp)==TRUE || tempdir.GetCount()==0)
+						tempdir.Add(atmp);
+				}
+				else
+					tempdir.Add(atmp);
+			}
+		}
+		atmp = tempdirs.Tokenize(_T("|"), curPos);
+	}
 
 	maxGraphDownloadRate=ini.GetInt(_T("DownloadCapacity"),96);
 	if (maxGraphDownloadRate==0) maxGraphDownloadRate=96;
@@ -2214,9 +2056,9 @@ void CPreferences::LoadPreferences()
 	statsInterval=ini.GetInt(_T("statsInterval"),5);
 	dontcompressavi=ini.GetBool(_T("DontCompressAvi"),false);
 
-	deadserverretries=ini.GetInt(_T("DeadServerRetry"),1);
-	if (deadserverretries > MAX_SERVERFAILCOUNT)
-		deadserverretries = MAX_SERVERFAILCOUNT;
+	m_uDeadServerRetries=ini.GetInt(_T("DeadServerRetry"),1);
+	if (m_uDeadServerRetries > MAX_SERVERFAILCOUNT)
+		m_uDeadServerRetries = MAX_SERVERFAILCOUNT;
 	m_dwServerKeepAliveTimeout=ini.GetInt(_T("ServerKeepAliveTimeout"),0);
 	splitterbarPosition=ini.GetInt(_T("SplitterbarPosition"),75);
 	if (splitterbarPosition < 9)
@@ -2231,7 +2073,12 @@ void CPreferences::LoadPreferences()
 		splitterbarPositionStat_HR = 33;
 	}
 	splitterbarPositionFriend=ini.GetInt(_T("SplitterbarPositionFriend"),300);
+	splitterbarPositionShared=ini.GetInt(_T("SplitterbarPositionShared"),179);
+	splitterbarPositionSvr=ini.GetInt(_T("SplitterbarPositionServer"),75);
+	if (splitterbarPositionSvr>90 || splitterbarPositionSvr<10)
+		splitterbarPositionSvr=75;
 
+	m_uTransferWnd1 = ini.GetInt(_T("TransferWnd1"),0);
 	m_uTransferWnd2 = ini.GetInt(_T("TransferWnd2"),0);
 
 	statsMax=ini.GetInt(_T("VariousStatisticsMaxValue"),100);
@@ -2241,11 +2088,11 @@ void CPreferences::LoadPreferences()
 	reconnect = ini.GetBool(_T("Reconnect"), true);
 	m_bUseServerPriorities = ini.GetBool(_T("Scoresystem"), true);
 	ICH = ini.GetBool(_T("ICH"), true);
-	autoserverlist = ini.GetBool(_T("Serverlist"), false);
+	m_bAutoUpdateServerList = ini.GetBool(_T("Serverlist"), false);
 
 	mintotray=ini.GetBool(_T("MinToTray"),false);
-	addserversfromserver=ini.GetBool(_T("AddServersFromServer"),true);
-	addserversfromclient=ini.GetBool(_T("AddServersFromClient"),true);
+	m_bAddServersFromServer=ini.GetBool(_T("AddServersFromServer"),true);
+	m_bAddServersFromClients=ini.GetBool(_T("AddServersFromClient"),true);
 	splashscreen=ini.GetBool(_T("Splashscreen"),true);
 	bringtoforeground=ini.GetBool(_T("BringToFront"),true);
 	transferDoubleclick=ini.GetBool(_T("TransferDoubleClick"),true);
@@ -2263,7 +2110,7 @@ void CPreferences::LoadPreferences()
 	m_iLastMainWndDlgID=ini.GetInt(_T("LastMainWndDlgID"),0);
 	m_bRestoreLastLogPane=ini.GetBool(_T("RestoreLastLogPane"),false);
 	m_iLastLogPaneID=ini.GetInt(_T("LastLogPaneID"),0);
-	safeServerConnect =ini.GetBool(_T("SafeServerConnect"),false);
+	m_bSafeServerConnect =ini.GetBool(_T("SafeServerConnect"),false);
 
 	m_bTransflstRemain =ini.GetBool(_T("TransflstRemainOrder"),false);
 	filterserverbyip=ini.GetBool(_T("FilterServersByIP"),false);
@@ -2274,7 +2121,7 @@ void CPreferences::LoadPreferences()
 	m_strYourHostname=ini.GetString(_T("YourHostname"), _T(""));
 
 	// Barry - New properties...
-	autoconnectstaticonly = ini.GetBool(_T("AutoConnectStaticOnly"),false); 
+	m_bAutoConnectToStaticServersOnly = ini.GetBool(_T("AutoConnectStaticOnly"),false); 
 	autotakeed2klinks = ini.GetBool(_T("AutoTakeED2KLinks"),true); 
 	addnewfilespaused = ini.GetBool(_T("AddNewFilesPaused"),false); 
 	m_bEnableMiniMule = ini.GetBool(_T("MiniMule"), true);
@@ -2295,9 +2142,8 @@ void CPreferences::LoadPreferences()
 	if (_tcslen(datetimeformat)==0) _tcscpy(datetimeformat,_T("%A, %x, %X"));
 	_stprintf(datetimeformat4log,_T("%s"),ini.GetString(_T("DateTimeFormat4Log"),_T("%c")));
 	if (_tcslen(datetimeformat4log)==0) _tcscpy(datetimeformat4log,_T("%c"));
-	m_bircaddtimestamp=ini.GetBool(_T("AddTimestamp"),true);
 
-	smartidcheck=ini.GetBool(_T("SmartIdCheck"),true);
+	m_bSmartServerIdCheck=ini.GetBool(_T("SmartIdCheck"),true);
 
 	log2disk = ini.GetBool(_T("SaveLogToDisk"),false);
 	uMaxLogFileSize = ini.GetInt(_T("MaxLogFileSize"), 1024*1024);
@@ -2347,7 +2193,7 @@ void CPreferences::LoadPreferences()
 
 	m_bpreviewprio=ini.GetBool(_T("PreviewPrio"),false);
 	m_bupdatequeuelist=ini.GetBool(_T("UpdateQueueListPref"),false);
-	m_bmanualhighprio=ini.GetBool(_T("ManualHighPrio"),false);
+	m_bManualAddedServersHighPriority=ini.GetBool(_T("ManualHighPrio"),false);
 	m_btransferfullchunks=ini.GetBool(_T("FullChunkTransfers"),true);
 	m_istartnextfile=ini.GetInt(_T("StartNextFile"),0);
 	m_bshowoverhead=ini.GetBool(_T("ShowOverhead"),false);
@@ -2432,84 +2278,6 @@ void CPreferences::LoadPreferences()
 	m_iStraightWindowStyles=ini.GetInt(_T("StraightWindowStyles"),0);
 	m_bRTLWindowsLayout = ini.GetBool(_T("RTLWindowsLayout"));
 
-	ini.SerGet(true, downloadColumnWidths,
-		ARRSIZE(downloadColumnWidths), _T("DownloadColumnWidths"));
-	ini.SerGet(true, downloadColumnHidden,
-		ARRSIZE(downloadColumnHidden), _T("DownloadColumnHidden"));
-	ini.SerGet(true, downloadColumnOrder,
-		ARRSIZE(downloadColumnOrder), _T("DownloadColumnOrder"));
-	ini.SerGet(true, uploadColumnWidths,
-		ARRSIZE(uploadColumnWidths), _T("UploadColumnWidths"));
-	ini.SerGet(true, uploadColumnHidden,
-		ARRSIZE(uploadColumnHidden), _T("UploadColumnHidden"));
-	ini.SerGet(true, uploadColumnOrder,
-		ARRSIZE(uploadColumnOrder), _T("UploadColumnOrder"));
-	ini.SerGet(true, queueColumnWidths,
-		ARRSIZE(queueColumnWidths), _T("QueueColumnWidths"));
-	ini.SerGet(true, queueColumnHidden,
-		ARRSIZE(queueColumnHidden), _T("QueueColumnHidden"));
-	ini.SerGet(true, queueColumnOrder,
-		ARRSIZE(queueColumnOrder), _T("QueueColumnOrder"));
-	ini.SerGet(true, searchColumnWidths,
-		ARRSIZE(searchColumnWidths), _T("SearchColumnWidths"));
-	ini.SerGet(true, searchColumnHidden,
-		ARRSIZE(searchColumnHidden), _T("SearchColumnHidden"));
-	ini.SerGet(true, searchColumnOrder,
-		ARRSIZE(searchColumnOrder), _T("SearchColumnOrder"));
-	ini.SerGet(true, sharedColumnWidths,
-		ARRSIZE(sharedColumnWidths), _T("SharedColumnWidths"));
-	ini.SerGet(true, sharedColumnHidden,
-		ARRSIZE(sharedColumnHidden), _T("SharedColumnHidden"));
-	ini.SerGet(true, sharedColumnOrder,
-		ARRSIZE(sharedColumnOrder), _T("SharedColumnOrder"));
-	ini.SerGet(true, serverColumnWidths,
-		ARRSIZE(serverColumnWidths), _T("ServerColumnWidths"));
-	ini.SerGet(true, serverColumnHidden,
-		ARRSIZE(serverColumnHidden), _T("ServerColumnHidden"));
-	ini.SerGet(true, serverColumnOrder,
-		ARRSIZE(serverColumnOrder), _T("ServerColumnOrder"));
-	ini.SerGet(true, clientListColumnWidths,
-		ARRSIZE(clientListColumnWidths), _T("ClientListColumnWidths"));
-	ini.SerGet(true, clientListColumnHidden,
-		ARRSIZE(clientListColumnHidden), _T("ClientListColumnHidden"));
-	ini.SerGet(true, clientListColumnOrder,
-		ARRSIZE(clientListColumnOrder), _T("ClientListColumnOrder"));
-	ini.SerGet(true, FilenamesListColumnWidths,
-		ARRSIZE(FilenamesListColumnWidths), _T("FilenamesListColumnWidths"));
-	ini.SerGet(true, FilenamesListColumnHidden,
-		ARRSIZE(FilenamesListColumnHidden), _T("FilenamesListColumnHidden"));
-	ini.SerGet(true, FilenamesListColumnOrder,
-		ARRSIZE(FilenamesListColumnOrder), _T("FilenamesListColumnOrder"));
-
-	ini.SerGet(true, downloadClientsColumnWidths,
-		ARRSIZE(downloadClientsColumnWidths), _T("DownloadClientsColumnWidths"));
-	ini.SerGet(true, downloadClientsColumnHidden,
-		ARRSIZE(downloadClientsColumnHidden), _T("DownloadClientsColumnHidden"));
-	ini.SerGet(true, downloadClientsColumnOrder,
-		ARRSIZE(downloadClientsColumnOrder), _T("DownloadClientsColumnOrder"));
-
-
-	// Barry - Provide a mechanism for all tables to store/retrieve sort order
-	tableSortItemDownload = ini.GetInt(_T("TableSortItemDownload"), 0);
-	tableSortItemUpload = ini.GetInt(_T("TableSortItemUpload"), 0);
-	tableSortItemQueue = ini.GetInt(_T("TableSortItemQueue"), 0);
-	tableSortItemSearch = ini.GetInt(_T("TableSortItemSearch"), 0);
-	tableSortItemShared = ini.GetInt(_T("TableSortItemShared"), 0);
-	tableSortItemServer = ini.GetInt(_T("TableSortItemServer"), 0);
-	tableSortItemClientList = ini.GetInt(_T("TableSortItemClientList"), 0);
-	tableSortItemFilenames = ini.GetInt(_T("TableSortItemFilenames"), 1);
-	tableSortItemDownloadClients = ini.GetInt(_T("TableSortItemDownloadClients"), 0);
-
-	tableSortAscendingDownload = ini.GetBool(_T("TableSortAscendingDownload"), true);
-	tableSortAscendingUpload = ini.GetBool(_T("TableSortAscendingUpload"), true);
-	tableSortAscendingQueue = ini.GetBool(_T("TableSortAscendingQueue"), true);
-	tableSortAscendingSearch = ini.GetBool(_T("TableSortAscendingSearch"), true);
-	tableSortAscendingShared = ini.GetBool(_T("TableSortAscendingShared"), true);
-	tableSortAscendingServer = ini.GetBool(_T("TableSortAscendingServer"), true);
-	tableSortAscendingClientList = ini.GetBool(_T("TableSortAscendingClientList"), true);
-	tableSortAscendingFilenames = ini.GetBool(_T("TableSortAscendingFilenames"), false);
-	tableSortAscendingDownloadClients = ini.GetBool(_T("TableSortAscendingDownloadClients"), true);
-
 	LPBYTE pData = NULL;
 	UINT uSize = sizeof m_lfHyperText;
 	if (ini.GetBinary(_T("HyperTextFont"), &pData, &uSize) && uSize == sizeof m_lfHyperText)
@@ -2546,22 +2314,21 @@ void CPreferences::LoadPreferences()
 		statsAverageMinutes = 5;
 
 	// ZZ:UploadSpeedSense -->
-    m_bDynUpEnabled = ini.GetBool(_T("USSEnabled"), false, _T("eMule"));
+    m_bDynUpEnabled = ini.GetBool(_T("USSEnabled"), false);
     m_bDynUpUseMillisecondPingTolerance = ini.GetBool(_T("USSUseMillisecondPingTolerance"), false);
-    m_iDynUpPingTolerance = ini.GetInt(_T("USSPingTolerance"), 500, _T("eMule"));
+    m_iDynUpPingTolerance = ini.GetInt(_T("USSPingTolerance"), 500);
 	m_iDynUpPingToleranceMilliseconds = ini.GetInt(_T("USSPingToleranceMilliseconds"), 200);
 	if( minupload < 1 )
-	{
 		minupload = 1;
-	}
-	m_iDynUpGoingUpDivider = ini.GetInt(_T("USSGoingUpDivider"), 1000, _T("eMule"));
-    m_iDynUpGoingDownDivider = ini.GetInt(_T("USSGoingDownDivider"), 1000, _T("eMule"));
-    m_iDynUpNumberOfPings = ini.GetInt(_T("USSNumberOfPings"), 1, _T("eMule"));
+	m_iDynUpGoingUpDivider = ini.GetInt(_T("USSGoingUpDivider"), 1000);
+    m_iDynUpGoingDownDivider = ini.GetInt(_T("USSGoingDownDivider"), 1000);
+    m_iDynUpNumberOfPings = ini.GetInt(_T("USSNumberOfPings"), 1);
 	// ZZ:UploadSpeedSense <--
 
-    m_bA4AFSaveCpu = ini.GetBool(_T("A4AFSaveCpu"), false, _T("eMule")); // ZZ:DownloadManager
+    m_bA4AFSaveCpu = ini.GetBool(_T("A4AFSaveCpu"), false); // ZZ:DownloadManager
 
 	m_bRunAsUser = ini.GetBool(_T("RunAsUnprivilegedUser"), false);
+	m_bPreferRestrictedOverUser = ini.GetBool(_T("PreferRestrictedOverUser"), false);
 	m_bOpenPortsOnStartUp = ini.GetBool(_T("OpenPortsOnStartUp"), false);
 	m_byLogLevel = ini.GetInt(_T("DebugLogLevel"), DLP_VERYLOW);
 	m_bTrustEveryHash = ini.GetBool(_T("AICHTrustEveryHash"), false);
@@ -2608,6 +2375,7 @@ void CPreferences::LoadPreferences()
 	m_bWebLowEnabled=ini.GetBool(_T("UseLowRightsUser"), false);
 	m_nWebPageRefresh=ini.GetInt(_T("PageRefreshTime"), 120);
 	m_iWebTimeoutMins=ini.GetInt(_T("WebTimeoutMins"), 5 );
+	m_iWebFileUploadSizeLimitMB=ini.GetInt(_T("MaxFileUploadSizeMB"), 5 );
 	m_bAllowAdminHiLevFunc=ini.GetBool(_T("AllowAdminHiLevelFunc"), false);
 	buffer2 = ini.GetString(_T("AllowedIPs"));
 	int iPos = 0;
@@ -2695,130 +2463,6 @@ uint16 CPreferences::GetDefaultMaxConperFive(){
 			return MAXCONPER5SEC;
 		default:
 			return MAXCONPER5SEC;
-	}
-}
-
-// Barry - Provide a mechanism for all tables to store/retrieve sort order
-int CPreferences::GetColumnSortItem(Table t)
-{
-	switch(t) 
-	{
-		case tableDownload:
-			return tableSortItemDownload;
-		case tableUpload:
-			return tableSortItemUpload;
-		case tableQueue:
-			return tableSortItemQueue;
-		case tableSearch:
-			return tableSortItemSearch;
-		case tableShared:
-			return tableSortItemShared;
-		case tableServer:
-			return tableSortItemServer;
-		case tableClientList:
-			return tableSortItemClientList;
-		case tableFilenames:
-			return tableSortItemFilenames;
-		case tableDownloadClients:
-			return tableSortItemDownloadClients;
-	}
-	return 0;
-}
-
-// Barry - Provide a mechanism for all tables to store/retrieve sort order
-bool CPreferences::GetColumnSortAscending(Table t)
-{
-	switch(t) 
-	{
-		case tableDownload:
-			return tableSortAscendingDownload;
-		case tableUpload:
-			return tableSortAscendingUpload;
-		case tableQueue:
-			return tableSortAscendingQueue;
-		case tableSearch:
-			return tableSortAscendingSearch;
-		case tableShared:
-			return tableSortAscendingShared;
-		case tableServer:
-			return tableSortAscendingServer;
-		case tableClientList:
-			return tableSortAscendingClientList;
-		case tableFilenames:
-			return tableSortAscendingFilenames;
-		case tableDownloadClients:
-			return tableSortAscendingDownloadClients;
-	}
-	return true;
-}
-
-// Barry - Provide a mechanism for all tables to store/retrieve sort order
-void CPreferences::SetColumnSortItem(Table t, int sortItem)
-{
-	switch(t) 
-	{
-		case tableDownload:
-			tableSortItemDownload = sortItem;
-			break;
-		case tableUpload:
-			tableSortItemUpload = sortItem;
-			break;
-		case tableQueue:
-			tableSortItemQueue = sortItem;
-			break;
-		case tableSearch:
-			tableSortItemSearch = sortItem;
-			break;
-		case tableShared:
-			tableSortItemShared = sortItem;
-			break;
-		case tableServer:
-			tableSortItemServer = sortItem;
-			break;
-		case tableClientList:
-			tableSortItemClientList = sortItem;
-			break;
-		case tableFilenames:
-			tableSortItemFilenames = sortItem;
-			break;
-		case tableDownloadClients:
-			tableSortItemDownloadClients = sortItem;
-			break;
-	}
-}
-
-// Barry - Provide a mechanism for all tables to store/retrieve sort order
-void CPreferences::SetColumnSortAscending(Table t, bool sortAscending)
-{
-	switch(t) 
-	{
-		case tableDownload:
-			tableSortAscendingDownload = sortAscending;
-			break;
-		case tableUpload:
-			tableSortAscendingUpload = sortAscending;
-			break;
-		case tableQueue:
-			tableSortAscendingQueue = sortAscending;
-			break;
-		case tableSearch:
-			tableSortAscendingSearch = sortAscending;
-			break;
-		case tableShared:
-			tableSortAscendingShared = sortAscending;
-			break;
-		case tableServer:
-			tableSortAscendingServer = sortAscending;
-			break;
-		case tableClientList:
-			tableSortAscendingClientList = sortAscending;
-			break;
-		case tableFilenames:
-			tableSortAscendingFilenames= sortAscending;
-			break;
-		case tableDownloadClients:
-			tableSortAscendingDownloadClients = sortAscending;
-			break;
 	}
 }
 
@@ -2990,7 +2634,8 @@ bool CPreferences::IsShareableDirectory(const CString& rstrDir)
 		strFullPath = rstrDir;
 	
 	// skip sharing of several special eMule folders
-	if (!CompareDirectories(strFullPath, GetTempDir()))			// ".\eMule\temp"
+	for (int i=0;i<GetTempDirCount();i++)
+		if (!CompareDirectories(strFullPath, GetTempDir(i)))			// ".\eMule\temp"
 		return false;
 
 	return true;

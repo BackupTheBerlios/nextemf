@@ -74,11 +74,6 @@ BOOL CKademliaWnd::SaveAllSettings()
 	if (m_pacONBSIPs)
 		m_pacONBSIPs->SaveList(thePrefs.GetConfigDir() + ONBOOTSTRAP_STRINGS_PROFILE);
 
-	CIni ini(thePrefs.GetConfigFile(), _T("eMule"));
-
-	m_contactListCtrl->SaveAllSettings(&ini);
-	searchList->SaveAllSettings(&ini);
-
 	return TRUE;
 }
 

@@ -51,6 +51,7 @@ CClientListCtrl::CClientListCtrl()
 
 void CClientListCtrl::Init()
 {
+	SetName(_T("ClientListCtrl"));
 	CImageList ilDummyImageList; //dummy list for getting the proper height of listview entries
 	ilDummyImageList.Create(1, theApp.GetSmallSytemIconSize().cy,theApp.m_iDfltImageListColorFlags|ILC_MASK, 1, 1); 
 	SetImageList(&ilDummyImageList, LVSIL_SMALL);
@@ -71,11 +72,9 @@ void CClientListCtrl::Init()
 	
 	SetAllIcons();
 	Localize();
-	LoadSettings(CPreferences::tableClientList);
-	int sortItem = thePrefs.GetColumnSortItem(CPreferences::tableClientList);
-	bool sortAscending = thePrefs.GetColumnSortAscending(CPreferences::tableClientList);
-	SetSortArrow(sortItem, sortAscending);
-	SortItems(SortProc, sortItem + (sortAscending ? 0:100));
+	LoadSettings();
+	SetSortArrow();
+	SortItems(SortProc, GetSortItem()+ (GetSortAscending()? 0:100));
 }
 
 CClientListCtrl::~CClientListCtrl()
@@ -230,7 +229,7 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 		return;
 	CDC* odc = CDC::FromHandle(lpDrawItemStruct->hDC);
 	BOOL bCtrlFocused = ((GetFocus() == this ) || (GetStyle() & LVS_SHOWSELALWAYS));
-	if( (lpDrawItemStruct->itemAction | ODA_SELECT) && (lpDrawItemStruct->itemState & ODS_SELECTED )){
+	if (lpDrawItemStruct->itemState & ODS_SELECTED) {
 		if(bCtrlFocused)
 			odc->SetBkColor(m_crHighlight);
 		else
@@ -239,10 +238,10 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	else
 		odc->SetBkColor(GetBkColor());
 	const CUpDownClient* client = (CUpDownClient*)lpDrawItemStruct->itemData;
-	CMemDC dc(CDC::FromHandle(lpDrawItemStruct->hDC), &lpDrawItemStruct->rcItem);
+	CMemDC dc(odc, &lpDrawItemStruct->rcItem);
 	CFont* pOldFont = dc.SelectObject(GetFont());
-	RECT cur_rec = lpDrawItemStruct->rcItem;
-	COLORREF crOldTextColor = dc.SetTextColor(m_crWindowText);
+	CRect cur_rec(lpDrawItemStruct->rcItem);
+	COLORREF crOldTextColor = dc.SetTextColor((lpDrawItemStruct->itemState & ODS_SELECTED) ? m_crHighlightText : m_crWindowText);
 
 	int iOldBkMode;
 	if (m_crWindowTextBk == CLR_NONE){
@@ -252,13 +251,11 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 	else
 		iOldBkMode = OPAQUE;
 
-	CString Sbuffer;
-
 	CHeaderCtrl *pHeaderCtrl = GetHeaderCtrl();
 	int iCount = pHeaderCtrl->GetItemCount();
 	cur_rec.right = cur_rec.left - 8;
 	cur_rec.left += 4;
-
+	CString Sbuffer;
 	for(int iCurrent = 0; iCurrent < iCount; iCurrent++){
 		int iColumn = pHeaderCtrl->OrderToIndex(iCurrent);
 		if( !IsColumnHidden(iColumn) ){
@@ -298,7 +295,7 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					else
 						Sbuffer = client->GetUserName();
 					cur_rec.left +=20;
-					dc->DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
+					dc.DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
 					cur_rec.left -=20;
 					break;
 				}
@@ -345,27 +342,28 @@ void CClientListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					break;
 			}
 			if( iColumn != 0)
-				dc->DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
+				dc.DrawText(Sbuffer,Sbuffer.GetLength(),&cur_rec,DLC_DT_TEXT);
 			cur_rec.left += GetColumnWidth(iColumn);
 		}
 	}
+
 //draw rectangle around selected item(s)
-	if ((lpDrawItemStruct->itemAction | ODA_SELECT) && (lpDrawItemStruct->itemState & ODS_SELECTED))
+	if (lpDrawItemStruct->itemState & ODS_SELECTED)
 	{
 		RECT outline_rec = lpDrawItemStruct->rcItem;
 
 		outline_rec.top--;
 		outline_rec.bottom++;
-		dc->FrameRect(&outline_rec, &CBrush(GetBkColor()));
+		dc.FrameRect(&outline_rec, &CBrush(GetBkColor()));
 		outline_rec.top++;
 		outline_rec.bottom--;
 		outline_rec.left++;
 		outline_rec.right--;
 
 		if(bCtrlFocused)
-			dc->FrameRect(&outline_rec, &CBrush(m_crFocusLine));
+			dc.FrameRect(&outline_rec, &CBrush(m_crFocusLine));
 		else
-			dc->FrameRect(&outline_rec, &CBrush(m_crNoFocusLine));
+			dc.FrameRect(&outline_rec, &CBrush(m_crNoFocusLine));
 	}
 
 	if (m_crWindowTextBk == CLR_NONE)
@@ -445,17 +443,12 @@ void CClientListCtrl::OnColumnClick( NMHDR* pNMHDR, LRESULT* pResult){
 	NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
 	// Barry - Store sort order in preferences
 	// Determine ascending based on whether already sorted on this column
-	int sortItem = thePrefs.GetColumnSortItem(CPreferences::tableClientList);
-	bool m_oldSortAscending = thePrefs.GetColumnSortAscending(CPreferences::tableClientList);
-	bool sortAscending = (sortItem != pNMListView->iSubItem) ? true : !m_oldSortAscending;
-	// Item is column clicked
-	sortItem = pNMListView->iSubItem;
-	// Save new preferences
-	thePrefs.SetColumnSortItem(CPreferences::tableClientList, sortItem);
-	thePrefs.SetColumnSortAscending(CPreferences::tableClientList, sortAscending);
+	bool sortAscending = (GetSortItem()!= pNMListView->iSubItem) ? true : !GetSortAscending();
+
 	// Sort table
-	SetSortArrow(sortItem, sortAscending);
-	SortItems(SortProc, sortItem + (sortAscending ? 0:100));
+	UpdateSortHistory(pNMListView->iSubItem + (sortAscending ? 0:100), 100);
+	SetSortArrow(pNMListView->iSubItem, sortAscending);
+	SortItems(SortProc, pNMListView->iSubItem + (sortAscending ? 0:100));
 
 	*pResult = 0;
 }
@@ -464,108 +457,123 @@ int CClientListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 {
 	const CUpDownClient* item1 = (CUpDownClient*)lParam1;
 	const CUpDownClient* item2 = (CUpDownClient*)lParam2;
+	
+	int iResult=0;
 	switch (lParamSort) {
 	    case 0:
 		    if (item1->GetUserName() && item2->GetUserName())
-				return CompareLocaleStringNoCase(item1->GetUserName(), item2->GetUserName());
+				iResult=CompareLocaleStringNoCase(item1->GetUserName(), item2->GetUserName());
 		    else if (!item1->GetUserName() && !item2->GetUserName())
-				return 0;
+				iResult=0;
 			else {
 				// place clients with no usernames at bottom
 				if (!item1->GetUserName())
-					return 1;
+					iResult=1;
 				else
-					return -1;
+					iResult=-1;
 			}
+			break;
 	    case 100:
 		    if (item1->GetUserName() && item2->GetUserName())
-				return CompareLocaleStringNoCase(item2->GetUserName(), item1->GetUserName());
+				iResult=CompareLocaleStringNoCase(item2->GetUserName(), item1->GetUserName());
 		    else if (!item1->GetUserName() && !item2->GetUserName())
-				return 0;
+				iResult=0;
 			else {
 				// place clients with no usernames at bottom
 				if (!item1->GetUserName())
-					return 1;
+					iResult=1;
 				else
-					return -1;
+					iResult=-1;
 			}
+			break;
 
 		case 1:
-		    return item1->GetUploadState() - item2->GetUploadState();
+		    iResult=item1->GetUploadState() - item2->GetUploadState();
+			break;
 	    case 101:
-		    return item2->GetUploadState() - item1->GetUploadState();
+		    iResult=item2->GetUploadState() - item1->GetUploadState();
+			break;
 
 		case 2:
 		    if (item1->credits && item2->credits)
-				return CompareUnsigned64(item1->credits->GetUploadedTotal(), item2->credits->GetUploadedTotal());
+				iResult=CompareUnsigned64(item1->credits->GetUploadedTotal(), item2->credits->GetUploadedTotal());
 		    else if (!item1->credits)
-			    return 1;
+			    iResult=1;
 		    else
-			    return -1;
+				iResult=-1;
+			break;
 	    case 102:
 		    if (item1->credits && item2->credits)
-				return CompareUnsigned64(item2->credits->GetUploadedTotal(), item1->credits->GetUploadedTotal());
+				iResult=CompareUnsigned64(item2->credits->GetUploadedTotal(), item1->credits->GetUploadedTotal());
 		    else if (!item1->credits)
-			    return 1;
+				iResult=1;
 		    else
-			    return -1;
+			    iResult=-1;
+			break;
 
 		case 3:
 		    if (item1->GetDownloadState() == item2->GetDownloadState()) {
 			    if (item1->IsRemoteQueueFull() && item2->IsRemoteQueueFull())
-				    return 0;
+				    iResult=0;
 			    else if (item1->IsRemoteQueueFull())
-				    return 1;
+				    iResult=1;
 			    else if (item2->IsRemoteQueueFull())
-				    return -1;
+				    iResult=-1;
 			    else
-				    return 0;
-		    }
-		    return item1->GetDownloadState() - item2->GetDownloadState();
+				    iResult=0;
+		    } else
+				iResult=item1->GetDownloadState() - item2->GetDownloadState();
+			break;
 	    case 103:
 		    if (item2->GetDownloadState() == item1->GetDownloadState()) {
 			    if (item2->IsRemoteQueueFull() && item1->IsRemoteQueueFull())
-				    return 0;
+				    iResult=0;
 			    else if (item2->IsRemoteQueueFull())
-				    return 1;
+				    iResult=1;
 			    else if (item1->IsRemoteQueueFull())
-				    return -1;
+				    iResult=-1;
 			    else
-				    return 0;
-		    }
-		    return item2->GetDownloadState() - item1->GetDownloadState();
+				    iResult=0;
+		    } else
+				iResult=item2->GetDownloadState() - item1->GetDownloadState();
+			break;
 
 		case 4:
 		    if (item1->credits && item2->credits)
-				return CompareUnsigned64(item1->credits->GetDownloadedTotal(), item2->credits->GetDownloadedTotal());
+				iResult=CompareUnsigned64(item1->credits->GetDownloadedTotal(), item2->credits->GetDownloadedTotal());
 		    else if (!item1->credits)
-			    return 1;
+			    iResult=1;
 		    else
-			    return -1;
+				iResult=-1;
+			break;
 	    case 104:
 		    if (item1->credits && item2->credits)
-				return CompareUnsigned64(item2->credits->GetDownloadedTotal(), item1->credits->GetDownloadedTotal());
+				iResult=CompareUnsigned64(item2->credits->GetDownloadedTotal(), item1->credits->GetDownloadedTotal());
 		    else if (!item1->credits)
-			    return 1;
+			    iResult=1;
 		    else
-			    return -1;
+			    iResult=-1;
+			break;
 //==>Modversion [shadow2004]
 #ifdef MODVERSION
 		case 5:
 		    if (item1->GetClientSoft() == item2->GetClientSoft())
 				if(item2->GetVersion() == item1->GetVersion() && item1->GetClientSoft() == SO_EMULE){
-					return CompareOptLocaleStringNoCase(item2->GetClientSoftVer(), item1->GetClientSoftVer());
+					iResult=CompareOptLocaleStringNoCase(item2->GetClientSoftVer(), item1->GetClientSoftVer());
 				}
 				else {
-			    return item2->GetVersion() - item1->GetVersion();
+			    iResult=item2->GetVersion() - item1->GetVersion();
 				}
 			else
-				return item1->GetClientSoft() - item2->GetClientSoft();
+				iResult=item1->GetClientSoft() - item2->GetClientSoft();
+                      break;
 #else //Modversion
 		case 5:
 		    if (item1->GetClientSoft() == item2->GetClientSoft())
-			    return item2->GetVersion() - item1->GetVersion();
-		    return item1->GetClientSoft() - item2->GetClientSoft();
+			    iResult=item2->GetVersion() - item1->GetVersion();
+		    else 
+				iResult=item1->GetClientSoft() - item2->GetClientSoft();
+			break;
 #endif //Modversion
 //<==Modversion [shadow2004]
 //==>Modversion [shadow2004]
@@ -573,43 +581,59 @@ int CClientListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 	    case 105:
 		    if (item1->GetClientSoft() == item2->GetClientSoft())
 				if(item2->GetVersion() == item1->GetVersion() && item1->GetClientSoft() == SO_EMULE){
-					return CompareOptLocaleStringNoCase(item1->GetClientSoftVer(), item2->GetClientSoftVer());
+					iResult=CompareOptLocaleStringNoCase(item1->GetClientSoftVer(), item2->GetClientSoftVer());
 				}
 				else {
-			    return item1->GetVersion() - item2->GetVersion();
+			    iResult=item1->GetVersion() - item2->GetVersion();
 				}
 			else
-		    return item2->GetClientSoft() - item1->GetClientSoft();
+		    iResult=item2->GetClientSoft() - item1->GetClientSoft();
+                    break;
 #else //Modversion
-		case 105:
-			if( item1->GetClientSoft() == item2->GetClientSoft() )
-				return item1->GetVersion() - item2->GetVersion();
-		    return item2->GetClientSoft() - item1->GetClientSoft();
+	    case 105:
+		    if (item1->GetClientSoft() == item2->GetClientSoft())
+			    iResult=item1->GetVersion() - item2->GetVersion();
+		    else
+				iResult=item2->GetClientSoft() - item1->GetClientSoft();
+			break;
 #endif //Modversion
 //<==Modversion [shadow2004]
 		case 6:
 		    if (item1->socket && item2->socket)
-			    return item1->socket->IsConnected() - item2->socket->IsConnected();
+			    iResult=item1->socket->IsConnected() - item2->socket->IsConnected();
 		    else if (!item1->socket)
-			    return -1;
+			    iResult=-1;
 		    else
-			    return 1;
+			    iResult=1;
+			break;
 	    case 106:
 		    if (item1->socket && item2->socket)
-			    return item2->socket->IsConnected() - item1->socket->IsConnected();
+			    iResult=item2->socket->IsConnected() - item1->socket->IsConnected();
 		    else if (!item2->socket)
-			    return -1;
+			    iResult=-1;
 		    else
-			    return 1;
+			    iResult=1;
+			break;
 
 		case 7:
-		    return memcmp(item1->GetUserHash(), item2->GetUserHash(), 16);
+		    iResult=memcmp(item1->GetUserHash(), item2->GetUserHash(), 16);
+			break;
 	    case 107:
-		    return memcmp(item2->GetUserHash(), item1->GetUserHash(), 16);
+		    iResult=memcmp(item2->GetUserHash(), item1->GetUserHash(), 16);
+			break;
 
 		default:
-			return 0;
+			iResult=0;
 	}
+
+	int dwNextSort;
+	//call secondary sortorder, if this one results in equal
+	//(Note: yes I know this call is evil OO wise, but better than changing a lot more code, while we have only one instance anyway - might be fixed later)
+	if (iResult == 0 && (dwNextSort = theApp.emuledlg->transferwnd->clientlistctrl.GetNextSortOrder(lParamSort)) != (-1)){
+		iResult= SortProc(lParam1, lParam2, dwNextSort);
+	}
+
+	return iResult;
 }
 
 void CClientListCtrl::ShowSelectedUserDetails()

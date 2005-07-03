@@ -102,7 +102,11 @@ CString	CAntiLeech::m_sAntiNickThiefTag;
 uint32	CAntiLeech::m_uiAntiNickThiefCreateTimer = NULL;
 CString	CAntiLeech::m_sAntiNickThiefUpdate = NULL;
 //<<< AntiNickThief
+//==>Modfaker by MORPH [cyrex2001]
+#ifndef ANTI_MODFAKER
 CString	CAntiLeech::m_sMyVersion; //>>> AntiModThief
+#endif //Modfaker by MORPH
+//<==Modfaker by MORPH [cyrex2001]
 //>>> Global functions
 void	CAntiLeech::Init()
 {
@@ -164,6 +168,9 @@ bool CAntiLeech::FindOurTagIn(const CString& tocomp)
 	return false;
 }
 //<<< AntiNickThief
+
+//==>Modfaker by MORPH [cyrex2001]
+#ifndef ANTI_MODFAKER
 //>>> AntiModThief
 bool CAntiLeech::CheckForModThief(const CUpDownClient* client)
 {	
@@ -181,3 +188,5 @@ bool CAntiLeech::CheckForModThief(const CUpDownClient* client)
 		));
 }
 //<<< AntiModThief
+#endif //Modfaker by MORPH
+//<==Modfaker by MORPH [cyrex2001]

@@ -447,30 +447,6 @@ CED2KLink::LinkType CED2KFileLink::GetKind() const
 	return kFile;
 }
 
-CString GetNextString(const CString& rstr, LPCTSTR pszTokens, int& riStart)
-{
-	CString strResult;
-	if (pszTokens != NULL && riStart != -1)
-	{
-		int iToken = rstr.Find(pszTokens, riStart);
-		if (iToken != -1)
-		{
-			int iLen = iToken - riStart;
-			if (iLen >= 0)
-			{
-				strResult = rstr.Mid(riStart, iLen);
-				riStart += iLen + 1;
-			}
-		}
-		else
-		{
-			strResult = rstr.Mid(riStart);
-			riStart = -1;
-		}
-	}
-	return strResult;
-}
-
 CED2KLink* CED2KLink::CreateLinkFromUrl(const TCHAR* uri)
 {
 	CString strURI(uri);

@@ -87,7 +87,7 @@ void CClientUDPSocket::OnReceive(int nErrorCode)
 					if (length >= 2)
 						ProcessPacket(buffer+2, length-2, buffer[1], sockAddr.sin_addr.S_un.S_addr, ntohs(sockAddr.sin_port));
 					else
-						throw CString(_T("Packet too short"));
+						throw CString(_T("eMule packet too short"));
 					break;
 				}
 				case OP_KADEMLIAPACKEDPROT:
@@ -98,8 +98,8 @@ void CClientUDPSocket::OnReceive(int nErrorCode)
 						uint32 nNewSize = length*10+300;
 						byte* unpack = new byte[nNewSize];
 						uLongf unpackedsize = nNewSize-2;
-						uint16 result = uncompress(unpack+2, &unpackedsize, buffer+2, length-2);
-						if (result == Z_OK)
+						int iZLibResult = uncompress(unpack+2, &unpackedsize, buffer+2, length-2);
+						if (iZLibResult == Z_OK)
 						{
 							unpack[0] = OP_KADEMLIAHEADER;
 							unpack[1] = buffer[1];
@@ -116,12 +116,14 @@ void CClientUDPSocket::OnReceive(int nErrorCode)
 						else
 						{
 							delete[] unpack;
-							throw CString(_T("Failed to uncompress Kademlia packet"));
+							CString strError;
+							strError.Format(_T("Failed to uncompress Kad packet: zip error: %d (%hs)"), iZLibResult, zError(iZLibResult));
+							throw strError;
 						}
 						delete[] unpack;
 					}
 					else
-						throw CString(_T("Packet too short"));
+						throw CString(_T("Kad packet (compressed) too short"));
 					break;
 				}
 				case OP_KADEMLIAHEADER:
@@ -130,13 +132,13 @@ void CClientUDPSocket::OnReceive(int nErrorCode)
 					if (length >= 2)
 						Kademlia::CKademlia::processPacket(buffer, length, ntohl(sockAddr.sin_addr.S_un.S_addr), ntohs(sockAddr.sin_port));
 					else
-						throw CString(_T("Packet too short"));
+						throw CString(_T("Kad packet too short"));
 					break;
 				}
 				default:
 				{
 					CString strError;
-					strError.Format(_T("Unknown protocol %02x"), buffer[0]);
+					strError.Format(_T("Unknown protocol 0x%02x"), buffer[0]);
 					throw strError;
 				}
 			}
@@ -184,7 +186,7 @@ void CClientUDPSocket::OnReceive(int nErrorCode)
 			else
 				strClientInfo.Format(_T("%s:%u"), ipstr(sockAddr.sin_addr), ntohs(sockAddr.sin_port));
 
-			DebugLogWarning(_T("Client UDP socket: prot=%02x  opcode=%02x  %s: %s"), buffer[0], buffer[1], strError, strClientInfo);
+			DebugLogWarning(_T("Client UDP socket: prot=0x%02x  opcode=0x%02x  size=%u  %s: %s"), buffer[0], buffer[1], length, strError, strClientInfo);
 		}
     }
 	else if (length == SOCKET_ERROR)
@@ -193,11 +195,11 @@ void CClientUDPSocket::OnReceive(int nErrorCode)
 		if (dwError == WSAECONNRESET)
 		{
 			// Depending on local and remote OS and depending on used local (remote?) router we may receive
-			// WSAECONNRESET errors. According some KB articels, this is a special way of winsock to report 
+			// WSAECONNRESET errors. According some KB articles, this is a special way of winsock to report 
 			// that a sent UDP packet was not received by the remote host because it was not listening on 
 			// the specified port -> no eMule running there.
 			//
-			// TODO: So, actually we should to something with this information and drop the related Kad node 
+			// TODO: So, actually we should do something with this information and drop the related Kad node 
 			// or eMule client...
 			;
 		}

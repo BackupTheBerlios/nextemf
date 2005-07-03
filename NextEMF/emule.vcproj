@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding = "Windows-1252"?>
+<?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="7.10"
@@ -149,6 +149,9 @@
 				RelativePath="AICHSyncThread.cpp">
 			</File>
 			<File
+				RelativePath="AbstractFile.cpp">
+			</File>
+			<File
 				RelativePath="ArchiveRecovery.cpp">
 			</File>
 			<File
@@ -171,6 +174,15 @@
 			</File>
 			<File
 				RelativePath="ClientUDPSocket.cpp">
+			</File>
+			<File
+				RelativePath="Collection.cpp">
+			</File>
+			<File
+				RelativePath="CollectionFile.cpp">
+			</File>
+			<File
+				RelativePath="CommentListCtrl.cpp">
 			</File>
 			<File
 				RelativePath="CorruptionBlackBox.cpp">
@@ -376,6 +388,9 @@
 				RelativePath="Scheduler.cpp">
 			</File>
 			<File
+				RelativePath="SearchFile.cpp">
+			</File>
+			<File
 				RelativePath="SearchList.cpp">
 			</File>
 			<File
@@ -428,6 +443,9 @@
 				RelativePath="Sockets.cpp">
 			</File>
 			<File
+				RelativePath="StatisticFile.cpp">
+			</File>
+			<File
 				RelativePath="Statistics.cpp">
 			</File>
 			<File
@@ -455,6 +473,9 @@
 				RelativePath="UDPSocket.cpp">
 			</File>
 			<File
+				RelativePath="URLClient.cpp">
+			</File>
+			<File
 				RelativePath="UploadBandwidthThrottler.cpp">
 			</File>
 			<File
@@ -462,9 +483,6 @@
 			</File>
 			<File
 				RelativePath="UploadQueue.cpp">
-			</File>
-			<File
-				RelativePath="URLClient.cpp">
 			</File>
 			<File
 				RelativePath="Version.cpp">
@@ -488,13 +506,16 @@
 					RelativePath="kademlia\io\DataIO.cpp">
 				</File>
 				<File
+					RelativePath="kademlia\kademlia\Entry.cpp">
+				</File>
+				<File
 					RelativePath="kademlia\io\FileIO.cpp">
 				</File>
 				<File
-					RelativePath="kademlia\kademlia\Indexed.cpp">
+					RelativePath="kademlia\io\IOException.cpp">
 				</File>
 				<File
-					RelativePath="kademlia\io\IOException.cpp">
+					RelativePath="kademlia\kademlia\Indexed.cpp">
 				</File>
 				<File
 					RelativePath="kademlia\kademlia\Kademlia.cpp">
@@ -538,6 +559,9 @@
 				RelativePath="AICHSyncThread.h">
 			</File>
 			<File
+				RelativePath="AbstractFile.h">
+			</File>
+			<File
 				RelativePath="ArchiveRecovery.h">
 			</File>
 			<File
@@ -560,6 +584,15 @@
 			</File>
 			<File
 				RelativePath="ClientVersionInfo.h">
+			</File>
+			<File
+				RelativePath="Collection.h">
+			</File>
+			<File
+				RelativePath="CollectionFile.h">
+			</File>
+			<File
+				RelativePath="CommentListCtrl.h">
 			</File>
 			<File
 				RelativePath="CorruptionBlackBox.h">
@@ -614,9 +647,6 @@
 			</File>
 			<File
 				RelativePath="KnownFileList.h">
-			</File>
-			<File
-				RelativePath="langids.h">
 			</File>
 			<File
 				RelativePath="LastCommonRouteFinder.h">
@@ -691,6 +721,9 @@
 				RelativePath="Scheduler.h">
 			</File>
 			<File
+				RelativePath="SearchFile.h">
+			</File>
+			<File
 				RelativePath="SearchFrm.h">
 			</File>
 			<File
@@ -724,6 +757,9 @@
 				RelativePath="Sockets.h">
 			</File>
 			<File
+				RelativePath="StatisticFile.h">
+			</File>
+			<File
 				RelativePath="Statistics.h">
 			</File>
 			<File
@@ -745,6 +781,9 @@
 				RelativePath="UDPSocket.h">
 			</File>
 			<File
+				RelativePath="URLClient.h">
+			</File>
+			<File
 				RelativePath="UpdownClient.h">
 			</File>
 			<File
@@ -754,9 +793,6 @@
 				RelativePath="UploadQueue.h">
 			</File>
 			<File
-				RelativePath="URLClient.h">
-			</File>
-			<File
 				RelativePath="Version.h">
 			</File>
 			<File
@@ -764,6 +800,9 @@
 			</File>
 			<File
 				RelativePath="ZIPFile.h">
+			</File>
+			<File
+				RelativePath="langids.h">
 			</File>
 			<Filter
 				Name="Kademlia"
@@ -867,6 +906,12 @@
 				RelativePath="ClosableTabCtrl.cpp">
 			</File>
 			<File
+				RelativePath="CollectionCreateDialog.cpp">
+			</File>
+			<File
+				RelativePath="CollectionViewDialog.cpp">
+			</File>
+			<File
 				RelativePath="ColorButton.cpp">
 			</File>
 			<File
@@ -922,6 +967,12 @@
 			</File>
 			<File
 				RelativePath="FileDetailDialog.cpp">
+			</File>
+			<File
+				RelativePath="FileDetailDialogInfo.cpp">
+			</File>
+			<File
+				RelativePath="FileDetailDialogName.cpp">
 			</File>
 			<File
 				RelativePath="FileInfoDialog.cpp">
@@ -985,9 +1036,6 @@
 			</File>
 			<File
 				RelativePath="MiniMule.cpp">
-			</File>
-			<File
-				RelativePath="MuleListCtrl.cpp">
 			</File>
 			<File
 				RelativePath="MuleStatusBarCtrl.cpp">
@@ -1068,6 +1116,9 @@
 				RelativePath="ServerWnd.cpp">
 			</File>
 			<File
+				RelativePath="SharedDirsTreeCtrl.cpp">
+			</File>
+			<File
 				RelativePath="SharedFilesWnd.cpp">
 			</File>
 			<File
@@ -1090,6 +1141,12 @@
 			</File>
 			<File
 				RelativePath="TitleMenu.cpp">
+			</File>
+			<File
+				RelativePath="ToolBarCtrlX.cpp">
+			</File>
+			<File
+				RelativePath="ToolTipCtrlX.cpp">
 			</File>
 			<File
 				RelativePath="TransferWnd.cpp">
@@ -1125,6 +1182,9 @@
 					RelativePath="ClientListCtrl.cpp">
 				</File>
 				<File
+					RelativePath="CollectionListCtrl.cpp">
+				</File>
+				<File
 					RelativePath="DownloadClientsCtrl.cpp">
 				</File>
 				<File
@@ -1138,6 +1198,9 @@
 				</File>
 				<File
 					RelativePath="KadSearchListCtrl.cpp">
+				</File>
+				<File
+					RelativePath="MuleListCtrl.cpp">
 				</File>
 				<File
 					RelativePath="QueueListCtrl.cpp">
@@ -1206,6 +1269,12 @@
 				RelativePath="ClosableTabCtrl.h">
 			</File>
 			<File
+				RelativePath="CollectionCreateDialog.h">
+			</File>
+			<File
+				RelativePath="CollectionViewDialog.h">
+			</File>
+			<File
 				RelativePath="ColorButton.h">
 			</File>
 			<File
@@ -1264,6 +1333,12 @@
 			</File>
 			<File
 				RelativePath="FileDetailDialog.h">
+			</File>
+			<File
+				RelativePath="FileDetailDialogInfo.h">
+			</File>
+			<File
+				RelativePath="FileDetailDialogName.h">
 			</File>
 			<File
 				RelativePath="FileInfoDialog.h">
@@ -1353,9 +1428,6 @@
 				RelativePath="OScopeCtrl.h">
 			</File>
 			<File
-				RelativePath="Parser.hpp">
-			</File>
-			<File
 				RelativePath="PPgConnection.h">
 			</File>
 			<File
@@ -1395,6 +1467,9 @@
 				RelativePath="PPgWebServer.h">
 			</File>
 			<File
+				RelativePath="Parser.hpp">
+			</File>
+			<File
 				RelativePath="PreferencesDlg.h">
 			</File>
 			<File
@@ -1428,6 +1503,9 @@
 				RelativePath="ServerWnd.h">
 			</File>
 			<File
+				RelativePath="SharedDirsTreeCtrl.h">
+			</File>
+			<File
 				RelativePath="SharedFilesWnd.h">
 			</File>
 			<File
@@ -1450,6 +1528,12 @@
 			</File>
 			<File
 				RelativePath="TitleMenu.h">
+			</File>
+			<File
+				RelativePath="ToolBarCtrlX.h">
+			</File>
+			<File
+				RelativePath="ToolTipCtrlX.h">
 			</File>
 			<File
 				RelativePath="TransferWnd.h">
@@ -1486,6 +1570,9 @@
 				Filter="">
 				<File
 					RelativePath="ClientListCtrl.h">
+				</File>
+				<File
+					RelativePath="CollectionListCtrl.h">
 				</File>
 				<File
 					RelativePath="DownloadClientsCtrl.h">
@@ -1587,18 +1674,6 @@
 				RelativePath="res\ClientDefaultPlus.ico">
 			</File>
 			<File
-				RelativePath="res\ClienteDonkeyHybrid.ico">
-			</File>
-			<File
-				RelativePath="res\ClienteDonkeyHybridPlus.ico">
-			</File>
-			<File
-				RelativePath="res\ClientlPhant.ico">
-			</File>
-			<File
-				RelativePath="res\ClientlPhantPlus.ico">
-			</File>
-			<File
 				RelativePath="res\ClientMLDonkey.ico">
 			</File>
 			<File
@@ -1612,6 +1687,24 @@
 			</File>
 			<File
 				RelativePath="res\ClientShareazaPlus.ico">
+			</File>
+			<File
+				RelativePath="res\ClientaMule.ico">
+			</File>
+			<File
+				RelativePath="res\ClientaMulePlus.ico">
+			</File>
+			<File
+				RelativePath="res\ClienteDonkeyHybrid.ico">
+			</File>
+			<File
+				RelativePath="res\ClienteDonkeyHybridPlus.ico">
+			</File>
+			<File
+				RelativePath="res\ClientlPhant.ico">
+			</File>
+			<File
+				RelativePath="res\ClientlPhantPlus.ico">
 			</File>
 			<File
 				RelativePath="res\ClientsKnown.ico">
@@ -1633,6 +1726,9 @@
 			</File>
 			<File
 				RelativePath="res\ConnectDrop.ico">
+			</File>
+			<File
+				RelativePath="res\ConnectStop.ico">
 			</File>
 			<File
 				RelativePath="res\Connected.gif">
@@ -1695,9 +1791,6 @@
 				RelativePath="res\Connection.ico">
 			</File>
 			<File
-				RelativePath="res\ConnectStop.ico">
-			</File>
-			<File
 				RelativePath="res\Contact0.ico">
 			</File>
 			<File
@@ -1752,25 +1845,7 @@
 				RelativePath="res\DownloadFiles.ico">
 			</File>
 			<File
-				RelativePath="res\eD2kLink.ico">
-			</File>
-			<File
-				RelativePath="res\eD2kLinkPaste.ico">
-			</File>
-			<File
 				RelativePath="res\Empty.ico">
-			</File>
-			<File
-				RelativePath=".\res\Emulate_Settings_Tree.ico">
-			</File>
-			<File
-				RelativePath="res\emule.manifest">
-			</File>
-			<File
-				RelativePath="emule.rc">
-			</File>
-			<File
-				RelativePath="res\emule.rc2">
 			</File>
 			<File
 				RelativePath="res\Exit.ico">
@@ -1851,6 +1926,9 @@
 				RelativePath="res\FileTypeDocument.ico">
 			</File>
 			<File
+				RelativePath="res\FileTypeEmuleCollection.ico">
+			</File>
+			<File
 				RelativePath="res\FileTypePicture.ico">
 			</File>
 			<File
@@ -1872,6 +1950,9 @@
 				RelativePath="res\Friend.ico">
 			</File>
 			<File
+				RelativePath="res\FriendSlot.ico">
+			</File>
+			<File
 				RelativePath="res\Friends1.ico">
 			</File>
 			<File
@@ -1879,9 +1960,6 @@
 			</File>
 			<File
 				RelativePath="res\Friends3.ico">
-			</File>
-			<File
-				RelativePath="res\FriendSlot.ico">
 			</File>
 			<File
 				RelativePath="res\Global.ico">
@@ -1987,12 +2065,6 @@
 				RelativePath="res\Mule.ico">
 			</File>
 			<File
-				RelativePath="res\mule_wiz.gif">
-			</File>
-			<File
-				RelativePath="res\mule_wiz_hdr.gif">
-			</File>
-			<File
 				RelativePath="res\NavigateBack.ico">
 			</File>
 			<File
@@ -2029,13 +2101,13 @@
 				RelativePath="res\PriorityNormal.ico">
 			</File>
 			<File
-				RelativePath="res\queue.ico">
-			</File>
-			<File
 				RelativePath="res\Rating.ico">
 			</File>
 			<File
 				RelativePath="res\RatingBad.ico">
+			</File>
+			<File
+				RelativePath="res\Records.ico">
 			</File>
 			<File
 				RelativePath="res\Rename.ico">
@@ -2158,9 +2230,6 @@
 				RelativePath="res\Transfer.ico">
 			</File>
 			<File
-				RelativePath="res\transfers.ico">
-			</File>
-			<File
 				RelativePath="res\TransferUpDown.ico">
 			</File>
 			<File
@@ -2241,6 +2310,57 @@
 			<File
 				RelativePath="res\Wizzard.ico">
 			</File>
+			<File
+				RelativePath="res\all.ico">
+			</File>
+			<File
+				RelativePath="res\eD2kLink.ico">
+			</File>
+			<File
+				RelativePath="res\eD2kLinkPaste.ico">
+			</File>
+			<File
+				RelativePath="res\emule.manifest">
+			</File>
+			<File
+				RelativePath="emule.rc">
+			</File>
+			<File
+				RelativePath="res\emule.rc2">
+			</File>
+			<File
+				RelativePath="res\emuleColl.ico">
+			</File>
+			<File
+				RelativePath="res\emuleCollAdd.ico">
+			</File>
+			<File
+				RelativePath="res\emuleCollEdit.ico">
+			</File>
+			<File
+				RelativePath="res\emuleCollSearch.ico">
+			</File>
+			<File
+				RelativePath="res\emuleCollView.ico">
+			</File>
+			<File
+				RelativePath="res\emuleCollectionFileType.ico">
+			</File>
+			<File
+				RelativePath="res\incomplete.ico">
+			</File>
+			<File
+				RelativePath="res\mule_wiz.gif">
+			</File>
+			<File
+				RelativePath="res\mule_wiz_hdr.gif">
+			</File>
+			<File
+				RelativePath="res\queue.ico">
+			</File>
+			<File
+				RelativePath="res\transfers.ico">
+			</File>
 		</Filter>
 		<Filter
 			Name="Templates"
@@ -2249,16 +2369,13 @@
 				RelativePath="..\setup\eMule.tmpl">
 			</File>
 			<File
-				RelativePath="..\setup\eMule_Chicane.tmpl">
+				RelativePath="..\setup\eMule Light.tmpl">
 			</File>
 			<File
 				RelativePath="..\setup\staticservers.dat">
 			</File>
 			<File
 				RelativePath="..\setup\Template.eMuleSkin.ini">
-			</File>
-			<File
-				RelativePath="..\setup\webservices.dat">
 			</File>
 		</Filter>
 		<Filter
@@ -2279,6 +2396,7 @@
 			<File
 				RelativePath=".\SplashScreenEx.h">
 			</File>
+
 		</Filter>
 		<Filter
 			Name="NextEMF-Mod"
@@ -2319,6 +2437,16 @@
 			</File>
 			<File
 				RelativePath=".\Optimizer\optimize.h">
+			</File>
+		</Filter>
+		<Filter
+			Name="Documents"
+			Filter="">
+			<File
+				RelativePath="..\docs\kademlia\changelog.txt">
+			</File>
+			<File
+				RelativePath="..\docs\readme.txt">
 			</File>
 		</Filter>
 	</Files>

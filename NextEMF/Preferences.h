@@ -80,20 +80,20 @@ public:
 	static	bool	reconnect;
 	static	bool	m_bUseServerPriorities;
 	static	TCHAR	incomingdir[MAX_PATH];
-	static	TCHAR	tempdir[MAX_PATH];
+	static	CStringArray	tempdir;
 	static	bool	ICH;
-	static	bool	autoserverlist;
+	static	bool	m_bAutoUpdateServerList;
 	static	bool	updatenotify;
 	static	bool	mintotray;
 	static	bool	autoconnect;
-	static	bool	autoconnectstaticonly; // Barry
+	static	bool	m_bAutoConnectToStaticServersOnly; // Barry
 	static	bool	autotakeed2klinks;	   // Barry
 	static	bool	addnewfilespaused;	   // Barry
 	static	bool	m_bEnableMiniMule;
 	static	int		m_iStraightWindowStyles;
 	static	bool	m_bRTLWindowsLayout;
-	static	bool	addserversfromserver;
-	static	bool	addserversfromclient;
+	static	bool	m_bAddServersFromServer;
+	static	bool	m_bAddServersFromClients;
 	static	uint16	maxsourceperfile;
 	static	uint16	trafficOMeterInterval;
 	static	uint16	statsInterval;
@@ -103,45 +103,6 @@ public:
 	static	int		maxGraphUploadRate;
 	static	bool	beepOnError;
 	static	bool	confirmExit;
-	static	uint16	downloadColumnWidths[13];
-	static	BOOL	downloadColumnHidden[13];
-	static	INT		downloadColumnOrder[13];
-//==>Modversion [shadow2004]
-#ifdef MODVERSION
-	static	uint16	uploadColumnWidths[9]; //+1 Modversion
-	static	BOOL	uploadColumnHidden[9]; //+1 Modversion
-	static	INT		uploadColumnOrder[9]; //+1 Modversion
-	static	uint16	queueColumnWidths[11]; //+1 Modversion
-	static	BOOL	queueColumnHidden[11]; //+1 Modversion
-	static	INT		queueColumnOrder[11]; //+1 Modversion
-#else //Modversion
-	static	uint16	uploadColumnWidths[8];
-	static	BOOL	uploadColumnHidden[8];
-	static	INT		uploadColumnOrder[8];
-	static	uint16	queueColumnWidths[10];
-	static	BOOL	queueColumnHidden[10];
-	static	INT		queueColumnOrder[10];
-#endif //Modversion
-//<==Modversion [shadow2004]
-	static	uint16	searchColumnWidths[14];
-	static	BOOL	searchColumnHidden[14];
-	static	INT		searchColumnOrder[14];
-	static	uint16	sharedColumnWidths[12];
-	static	BOOL	sharedColumnHidden[12];
-	static	INT		sharedColumnOrder[12];
-	static	uint16	serverColumnWidths[14];
-	static	BOOL	serverColumnHidden[14];
-	static	INT		serverColumnOrder[14];
-	static	uint16	clientListColumnWidths[8];
-	static	BOOL	clientListColumnHidden[8];
-	static	INT		clientListColumnOrder[8];
-	static	uint16	FilenamesListColumnWidths[2];
-	static	BOOL	FilenamesListColumnHidden[2];
-	static	INT		FilenamesListColumnOrder[2];
-	static	uint16	downloadClientsColumnWidths[8];
-	static	BOOL	downloadClientsColumnHidden[8];
-	static	INT		downloadClientsColumnOrder[8];
-
 	static	DWORD	m_adwStatsColors[15];
 
 	static	bool	splashscreen;
@@ -311,14 +272,18 @@ public:
 	static	UINT	m_iToolDelayTime;	// tooltip delay time in seconds
 	static	bool	bringtoforeground;
 	static	UINT	splitterbarPosition;
+	static	UINT	splitterbarPositionSvr;
+
+	static	UINT	m_uTransferWnd1;
 	static	UINT	m_uTransferWnd2;
 	//MORPH START - Added by SiRoB, Splitting Bar [O²]
 	static	UINT	splitterbarPositionStat;
 	static	UINT	splitterbarPositionStat_HL;
 	static	UINT	splitterbarPositionStat_HR;
 	static	UINT	splitterbarPositionFriend;
+	static	UINT	splitterbarPositionShared;
 	//MORPH END - Added by SiRoB, Splitting Bar [O²]
-	static	uint16	deadserverretries;
+	static	UINT	m_uDeadServerRetries;
 	static	DWORD	m_dwServerKeepAliveTimeout;
 	// -khaos--+++> Changed data type to avoid overflows
 	static	uint16	statsMax;
@@ -340,9 +305,9 @@ public:
 	static	bool	m_bRemove2bin;
 	static	bool	m_bShowCopyEd2kLinkCmd;
 	static	bool	m_bpreviewprio;
-	static	bool	smartidcheck;
+	static	bool	m_bSmartServerIdCheck;
 	static	uint8	smartidstate;
-	static	bool	safeServerConnect;
+	static	bool	m_bSafeServerConnect;
 	static	bool	startMinimized;
 	static	bool	m_bAutoStart;
 	static	bool	m_bRestoreLastMainWndDlg;
@@ -376,7 +341,7 @@ public:
 	static	int		m_iDebugClientKadUDPLevel;
 	static	int		m_iDebugSearchResultDetailLevel;
 	static	bool	m_bupdatequeuelist;
-	static	bool	m_bmanualhighprio;
+	static	bool	m_bManualAddedServersHighPriority;
 	static	bool	m_btransferfullchunks;
 	static	int		m_istartnextfile;
 	static	bool	m_bshowoverhead;
@@ -388,28 +353,6 @@ public:
 	static	bool	m_bTransflstRemain;
 
 	static	uint8	versioncheckdays;
-
-	// Barry - Provide a mechanism for all tables to store/retrieve sort order
-	static	int		tableSortItemDownload;
-	static	int		tableSortItemUpload;
-	static	int		tableSortItemQueue;
-	static	int		tableSortItemSearch;
-	static	int		tableSortItemShared;
-	static	int		tableSortItemServer;
-	static	int		tableSortItemClientList;
-	static  int		tableSortItemFilenames;
-	static	int		tableSortItemDownloadClients;
-
-	static	bool	tableSortAscendingDownload;
-	static	bool	tableSortAscendingUpload;
-	static	bool	tableSortAscendingQueue;
-	static	bool	tableSortAscendingSearch;
-	static	bool	tableSortAscendingShared;
-	static	bool	tableSortAscendingServer;
-	static	bool	tableSortAscendingClientList;
-	static  bool	tableSortAscendingFilenames;
-	static	bool	tableSortAscendingDownloadClients;
-
 	static	bool	showRatesInTitle;
 
 	static	TCHAR	TxtEditor[256];
@@ -465,6 +408,7 @@ public:
 	static	bool	m_bWebLowEnabled;
 	static	TCHAR	m_sWebResDir[MAX_PATH];
 	static	int		m_iWebTimeoutMins;
+	static	int		m_iWebFileUploadSizeLimitMB;
 
 	static	TCHAR	m_sTemplateFile[MAX_PATH];
 	static  bool	m_bAllowAdminHiLevFunc;
@@ -516,6 +460,7 @@ public:
 	static	int		m_iDbgHeap;
 	static	uint8	m_nWebMirrorAlertLevel;
 	static	bool	m_bRunAsUser;
+	static	bool	m_bPreferRestrictedOverUser;
 
 	static  bool	m_bUseOldTimeRemaining;
 
@@ -615,7 +560,8 @@ public:
 
 	static	const CString& GetAppDir()				{return appdir;}
 	static	LPCTSTR GetIncomingDir()				{return incomingdir;}
-	static	LPCTSTR GetTempDir()					{return tempdir;}
+	static	LPCTSTR GetTempDir(uint8 id=0)			{return (LPCTSTR)tempdir.GetAt( (id<tempdir.GetCount())?id:0 );}
+	static	uint8	GetTempDirCount()				{return tempdir.GetCount();}
 	static	const CString& GetConfigDir()			{return configdir;}
 	static	LPCTSTR GetConfigFile();
 	static	const CString& GetWebServerDir()		{return m_strWebServerDir;}
@@ -645,13 +591,13 @@ public:
 	// ZZ:UploadSpeedSense <--
 	static	uint16	GetMaxUpload()	{return maxupload;}
 	static	bool	IsICHEnabled()	{return ICH;}
-	static	bool	AutoServerlist(){return autoserverlist;}
+	static	bool	GetAutoUpdateServerList()		{return m_bAutoUpdateServerList;}
 	static	bool	UpdateNotify()	{return updatenotify;}
 	static	bool	DoMinToTray()	{return mintotray;}
 	static	bool	DoAutoConnect() {return autoconnect;}
 	static	void	SetAutoConnect(bool inautoconnect) {autoconnect = inautoconnect;}
-	static	bool	AddServersFromServer()		{return addserversfromserver;}
-	static	bool	AddServersFromClient()		{return addserversfromclient;}
+	static	bool	GetAddServersFromServer()		{return m_bAddServersFromServer;}
+	static	bool	GetAddServersFromClients()		{return m_bAddServersFromClients;}
 	static	bool*	GetMinTrayPTR() {return &mintotray;}
 	static	uint16	GetTrafficOMeterInterval() { return trafficOMeterInterval;}
 	static	void	SetTrafficOMeterInterval(uint16 in) { trafficOMeterInterval=in;}
@@ -914,22 +860,9 @@ public:
 	static	uint16	GetMaxConnections()			{return maxconnections;}
 	static	uint16	GetMaxHalfConnections()		{return maxhalfconnections;}
 	static	uint16	GetMaxSourcePerFileDefault(){return maxsourceperfile;}
-	static	uint16	GetDeadServerRetries()		{return deadserverretries;}
+	static	UINT	GetDeadServerRetries()		{return m_uDeadServerRetries;}
 	static	DWORD	GetServerKeepAliveTimeout() {return m_dwServerKeepAliveTimeout;}
 	static	bool	GetConditionalTCPAccept()	{return m_bConditionalTCPAccept;}
-
-	static	int		GetColumnWidth (Table t, int index);
-	static	BOOL	GetColumnHidden(Table t, int index);
-	static	int		GetColumnOrder (Table t, int index);
-	static	void	SetColumnWidth (Table t, int index, int width);
-	static	void	SetColumnHidden(Table t, int index, BOOL bHidden);
-	static	void	SetColumnOrder (Table t, INT *piOrder);
-
-	// Barry - Provide a mechanism for all tables to store/retrieve sort order
-	static	int		GetColumnSortItem (Table t);
-	static	bool	GetColumnSortAscending (Table t);
-	static	void	SetColumnSortItem (Table t, int sortItem);
-	static	void	SetColumnSortAscending (Table t, bool sortAscending);
 
 	static	WORD	GetLanguageID();
 	static	void	SetLanguageID(WORD lid);
@@ -949,6 +882,10 @@ public:
 
 	static	UINT	GetSplitterbarPosition()			{return splitterbarPosition;}
 	static	void	SetSplitterbarPosition(UINT pos)	{splitterbarPosition=pos;}
+	static	UINT	GetSplitterbarPositionServer()		{return splitterbarPositionSvr;}
+	static	void	SetSplitterbarPositionServer(UINT pos)	{splitterbarPositionSvr=pos;}
+	static	UINT	GetTransferWnd1()					{return m_uTransferWnd1;}
+	static	void	SetTransferWnd1(UINT uWnd1)			{m_uTransferWnd1 = uWnd1;}
 	static	UINT	GetTransferWnd2()					{return m_uTransferWnd2;}
 	static	void	SetTransferWnd2(UINT uWnd2)			{m_uTransferWnd2 = uWnd2;}
 	//MORPH START - Added by SiRoB, Splitting Bar [O²]
@@ -960,6 +897,8 @@ public:
 	static	void	SetSplitterbarPositionStat_HR(UINT pos) {splitterbarPositionStat_HR=pos;}
 	static	UINT	GetSplitterbarPositionFriend()		{return splitterbarPositionFriend;}
 	static	void	SetSplitterbarPositionFriend(UINT pos) {splitterbarPositionFriend=pos;}
+	static	UINT	GetSplitterbarPositionShared()		{return splitterbarPositionShared;}
+	static	void	SetSplitterbarPositionShared(UINT pos) {splitterbarPositionShared=pos;}
 	//MORPH END   - Added by SiRoB, Splitting Bar [O²]
 	// -khaos--+++> Changed datatype to avoid overflows
 	static	uint16	GetStatsMax()						{return statsMax;}
@@ -1001,14 +940,14 @@ public:
 	static	int		GetLastLogPaneID()					{return m_iLastLogPaneID;}
 	static	void	SetLastLogPaneID(int iID)			{m_iLastLogPaneID = iID;}
 
-	static	bool	GetSmartIdCheck()					{return smartidcheck;}
-	static	void	SetSmartIdCheck(bool in_smartidcheck) {smartidcheck = in_smartidcheck;}
+	static	bool	GetSmartIdCheck()					{return m_bSmartServerIdCheck;}
+	static	void	SetSmartIdCheck(bool in_smartidcheck) {m_bSmartServerIdCheck = in_smartidcheck;}
 	static	uint8	GetSmartIdState()					{return smartidstate;}
 	static	void	SetSmartIdState(uint8 in_smartidstate) {smartidstate = in_smartidstate;}
 	static	bool	GetPreviewPrio()					{return m_bpreviewprio;}
 	static	void	SetPreviewPrio(bool in)				{m_bpreviewprio=in;}
 	static	bool	GetUpdateQueueList()				{return m_bupdatequeuelist;}
-	static	bool	GetManualHighPrio()					{return m_bmanualhighprio;}
+	static	bool	GetManualAddedServersHighPriority()	{return m_bManualAddedServersHighPriority;}
 	static	bool	TransferFullChunks()				{return m_btransferfullchunks;}
 	static	void	SetTransferFullChunks( bool m_bintransferfullchunks )				{m_btransferfullchunks = m_bintransferfullchunks;}
 	static	int		StartNextFile()						{return m_istartnextfile;}
@@ -1057,8 +996,8 @@ public:
 	static	uint16	GetMaxConperFive()					{return MaxConperFive;}
 	static	uint16	GetDefaultMaxConperFive();
 
-	static	bool	IsSafeServerConnectEnabled()		{return safeServerConnect;}
-	static	void	SetSafeServerConnectEnabled(bool in){safeServerConnect=in;}
+	static	bool	IsSafeServerConnectEnabled()		{return m_bSafeServerConnect;}
+	static	void	SetSafeServerConnectEnabled(bool in){m_bSafeServerConnect=in;}
 	static	bool	IsMoviePreviewBackup()				{return moviePreviewBackup;}
 	static	int		GetPreviewSmallBlocks()				{return m_iPreviewSmallBlocks;}
 	static	bool	GetPreviewCopiedArchives()			{return m_bPreviewCopiedArchives;}
@@ -1079,7 +1018,7 @@ public:
 	static	WINDOWPLACEMENT GetEmuleWindowPlacement() {return EmuleWindowPlacement; }
 	static	void	SetWindowLayout(WINDOWPLACEMENT in) {EmuleWindowPlacement=in; }
 
-	static	bool	AutoConnectStaticOnly() {return autoconnectstaticonly;}
+	static	bool	GetAutoConnectToStaticServersOnly() {return m_bAutoConnectToStaticServersOnly;}
 	static	uint8	GetUpdateDays()			{return versioncheckdays;}
 	static	uint32	GetLastVC()				{return versioncheckLastAutomatic;}
 	static	void	UpdateLastVC();
@@ -1136,6 +1075,7 @@ public:
 	static  bool	GetWebAdminAllowedHiLevFunc()			{ return m_bAllowAdminHiLevFunc; }
 	static	void	SetWSLowPass(CString strNewPass);
 	static  const CUIntArray& GetAllowedRemoteAccessIPs()	{ return m_aAllowedRemoteAccessIPs; }
+	static	int		GetMaxWebUploadFileSizeMB()				{ return m_iWebFileUploadSizeLimitMB; }
 
 	static	void	SetMaxSourcesPerFile(uint16 in)			{ maxsourceperfile=in;}
 	static	void	SetMaxConnections(uint16 in)			{ maxconnections =in;}
@@ -1208,6 +1148,7 @@ public:
 	static bool		UseSimpleTimeRemainingComputation()			{ return m_bUseOldTimeRemaining;}
 
 	static	bool	IsRunAsUserEnabled();
+	static	bool	IsPreferingRestrictedOverUser()				{return m_bPreferRestrictedOverUser;}
 
 	// PeerCache
 	static	bool	IsPeerCacheDownloadEnabled()				{ return m_bPeerCacheEnabled; }
@@ -1259,6 +1200,8 @@ public:
 	static	CString	GetNotifierMailReceiver()			{return m_strNotifierMailReceiver;}
 
 	static	void	SetNotifierSendMail(bool nv)		{m_bNotifierSendMail = nv;}
+	static  void	ImportOldTableSetup();
+	static  void	IniCopy(CString si, CString di);
 
 //////////////////////////////////////////////////////////////////////////////////////////
 ///// NextEMF-Option
@@ -1308,6 +1251,7 @@ protected:
 	static	CString m_strLogDir;
 	static	Preferences_Ext_Struct* prefsExt;
 	static	WORD m_wWinVer;
+	static	uint16	ListenPort;
 	static	CArray<Category_Struct*,Category_Struct*> catMap;
 
 	static void	CreateUserHash();
@@ -1319,3 +1263,4 @@ protected:
 };
 
 extern CPreferences thePrefs;
+extern bool g_bLowColorDesktop;

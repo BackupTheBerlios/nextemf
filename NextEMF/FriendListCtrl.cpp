@@ -56,13 +56,14 @@ CFriendListCtrl::~CFriendListCtrl()
 void CFriendListCtrl::Init()
 {
 	SetExtendedStyle(LVS_EX_FULLROWSELECT);
+	SetName(_T("FriendListCtrl"));
 
 	RECT rcWindow;
 	GetWindowRect(&rcWindow);
 	InsertColumn(0, GetResString(IDS_QL_USERNAME), LVCFMT_LEFT, rcWindow.right - rcWindow.left - 4, 0);
 	SetAllIcons();
 	theApp.friendlist->SetWindow(this);
-	SetSortArrow(0, true);
+	LoadSettings();
 }
 
 void CFriendListCtrl::OnSysColorChange()
@@ -104,7 +105,7 @@ void CFriendListCtrl::Localize()
 
 void CFriendListCtrl::UpdateFriend(int iItem, const CFriend* pFriend)
 {
-	SetItemText(iItem,0,pFriend->m_strName);
+	SetItemText(iItem, 0, pFriend->m_strName.IsEmpty() ? _T('(') + GetResString(IDS_UNKNOWN) + _T(')') : pFriend->m_strName);
 
 	int iImage;
     if (!pFriend->GetLinkedClient())

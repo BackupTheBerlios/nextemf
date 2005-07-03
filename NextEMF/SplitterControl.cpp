@@ -301,6 +301,7 @@ void CSplitterControl::ChangeHeight(CWnd *pWnd, int dy, DWORD dwFlag)
 			rcWnd.top -= dy;
 		pWnd->MoveWindow(rcWnd);
 	}
+	else ASSERT(0);
 }
 
 void CSplitterControl::ChangePos(CWnd* pWnd, int dx, int dy)

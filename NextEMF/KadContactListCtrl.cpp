@@ -50,7 +50,7 @@ END_MESSAGE_MAP()
 CKadContactListCtrl::CKadContactListCtrl()
 {
 	SetGeneralPurposeFind(true);
-	m_strLVName = _T("ONContactListCtrl");
+	SetName(_T("ONContactListCtrl"));
 }
 
 CKadContactListCtrl::~CKadContactListCtrl()
@@ -68,19 +68,17 @@ void CKadContactListCtrl::Init()
 	SetAllIcons();
 	Localize();
 
-	CIni ini(thePrefs.GetConfigFile(), _T("eMule"));
-	LoadSettings(&ini, m_strLVName);
-	int iSortItem = ini.GetInt(m_strLVName + _T("SortItem"));
-	bool bSortAscending = ini.GetBool(m_strLVName + _T("SortAscending"));
+	LoadSettings();
+	int iSortItem = GetSortItem();
+	bool bSortAscending = GetSortAscending();
+
 	SetSortArrow(iSortItem, bSortAscending);
 	SortItems(SortProc, MAKELONG(iSortItem, (bSortAscending ? 0 : 0x0001)));
 }
 
-void CKadContactListCtrl::SaveAllSettings(CIni* ini)
+void CKadContactListCtrl::SaveAllSettings()
 {
-	SaveSettings(ini, m_strLVName);
-	ini->WriteInt(m_strLVName + _T("SortItem"), GetSortItem());
-	ini->WriteBool(m_strLVName + _T("SortAscending"), GetSortAscending());
+	SaveSettings();
 }
 
 void CKadContactListCtrl::OnSysColorChange()
@@ -235,6 +233,7 @@ void CKadContactListCtrl::OnColumnClick(NMHDR* pNMHDR, LRESULT* pResult)
 	iSortItem = pNMListView->iSubItem;
 
 	// Sort table
+	UpdateSortHistory(MAKELONG(iSortItem, (bSortAscending ? 0 : 0x0001)));
 	SetSortArrow(iSortItem, bSortAscending);
 	SortItems(SortProc, MAKELONG(iSortItem, (bSortAscending ? 0 : 0x0001)));
 

@@ -386,6 +386,11 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 						//	- we have received eMule-OP_HELLO (new eMule)
 						if (client->GetInfoPacketsReceived() == IP_BOTH)
 							client->InfoPacketsReceived();
+
+						if( client->GetKadPort() )
+						{
+							Kademlia::CKademlia::bootstrap(ntohl(client->GetIP()), client->GetKadPort());
+						}
 					}
 					break;
 				}
@@ -2490,7 +2495,7 @@ void CListenSocket::OnAccept(int nErrorCode)
 			    if (theApp.ipfilter->IsFiltered(SockAddr.sin_addr.S_un.S_addr)){
 				    if (thePrefs.GetLogFilteredIPs())
 					    AddDebugLogLine(false, _T("Rejecting connection attempt (IP=%s) - IP filter (%s)"), ipstr(SockAddr.sin_addr.S_un.S_addr), theApp.ipfilter->GetLastHit());
-				    newclient->Safe_Delete();
+                    newclient->Safe_Delete();
 				    theStats.filteredclients++;
 				    continue;
 			    }
