@@ -611,6 +611,17 @@ int CUploadListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			iResult=item2->GetUpPartCount() - item1->GetUpPartCount();
 			break;
 
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+		case 8:
+			iResult=CompareLocaleStringNoCase(item1->GetClientSoftVer(),item2->GetClientSoftVer());
+			break;
+		case 108:
+			iResult=CompareLocaleStringNoCase(item2->GetClientSoftVer(),item1->GetClientSoftVer());
+			break;
+#endif //Modversion
+//<==Modversion [shadow2004]
+
 		default:
 			iResult=0;
 			break;

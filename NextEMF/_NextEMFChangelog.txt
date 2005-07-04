@@ -10,6 +10,7 @@ removed	: Anti-Modfaker by WiZaRd [cyrex2001]
 added   : Anti-Modfaker by MorphXT [cyrex2001]
 
 fixed   : small fix in SplashScreen [cyrex2001]
+fixed	: Sorting-bug in Waiting-Queue an Upload-Queue [shadow2004]
 
 update	: Emulate others (Shareaza2) inspired by Spike2 [shadow2004]
 update	: Leecherlog to work with 46b [shadow2004]

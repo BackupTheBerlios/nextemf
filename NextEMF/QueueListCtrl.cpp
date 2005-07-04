@@ -683,6 +683,17 @@ int CQueueListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 		case 109: 
 			iResult=item2->GetUpPartCount() - item1->GetUpPartCount();
 			break;
+
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+		case 10:
+			iResult=CompareLocaleStringNoCase(item1->GetClientSoftVer(),item2->GetClientSoftVer());
+			break;
+		case 110:
+			iResult=CompareLocaleStringNoCase(item2->GetClientSoftVer(),item1->GetClientSoftVer());
+			break;
+#endif //Modversion
+//<==Modversion [shadow2004]
 		default:
 			iResult=0;
 			break;
