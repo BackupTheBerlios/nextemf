@@ -1011,6 +1011,28 @@ void StripTrailingCollon(CString& rstr)
 	}
 }
 
+CString ValidFilename(CString filename)
+{
+	filename = URLDecode(filename);
+
+	if(filename.GetLength() > 100)
+		filename = filename.Left(100);
+
+	// remove invalid filename characters
+	filename.Replace(_T("\\"), _T(""));
+	filename.Replace(_T("\""), _T(""));
+	filename.Replace(_T("/"), _T(""));
+	filename.Replace(_T(":"), _T(""));
+	filename.Replace(_T("*"), _T(""));
+	filename.Replace(_T("?"), _T(""));
+	filename.Replace(_T("<"), _T(""));
+	filename.Replace(_T(">"), _T(""));
+	filename.Replace(_T("|"), _T(""));
+
+	filename.Trim();
+	return filename;
+}
+
 CString CleanupFilename(CString filename, bool bExtension)
 {
 	filename = URLDecode(filename);

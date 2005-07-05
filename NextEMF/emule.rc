@@ -3904,6 +3904,7 @@ BEGIN
     IDS_OPTIONS             "Options"
     IDS_PASTE               "Paste"
     IDS_SEARCHAUTHORCOLLECTION "Search Author's Collections"
+    IDS_ERR_DUPL_FILES      "Duplicate shared files: ""%s"" and ""%s"""
     IDS_A4AF                "Source Handling"
     IDS_AUTOCAT_LABEL       "Auto cat-assignment (pattern, separated by |)"
     IDS_SHOWEXTSETTINGS     "Show more controls (advanced mode controls)"

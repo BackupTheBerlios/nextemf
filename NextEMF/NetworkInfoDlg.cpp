@@ -91,6 +91,32 @@ void CreateNetworkInfo(CRichEditCtrlX& rCtrl, CHARFORMAT& rcfDef, CHARFORMAT& rc
 {
 	CString buffer;
 
+	if (bFullInfo)
+	{
+
+		///////////////////////////////////////////////////////////////////////////
+		// Ports Info
+		///////////////////////////////////////////////////////////////////////////
+		rCtrl.SetSelectionCharFormat(rcfBold);
+		rCtrl << GetResString(IDS_PW_CLIENTPORT) << _T("\r\n");
+		rCtrl.SetSelectionCharFormat(rcfDef);
+
+		buffer.Format(_T("TCP:\t%i"), thePrefs.GetPort());
+		rCtrl << buffer << _T("\r\n");
+		buffer.Format(_T("UDP:\t%i"), thePrefs.GetUDPPort());
+		rCtrl << buffer << _T("\r\n\r\n");
+
+		///////////////////////////////////////////////////////////////////////////
+		// Hash Info
+		///////////////////////////////////////////////////////////////////////////
+		rCtrl.SetSelectionCharFormat(rcfBold);
+		rCtrl << GetResString(IDS_CD_UHASH) << _T("\r\n");
+		rCtrl.SetSelectionCharFormat(rcfDef);
+
+		buffer.Format(_T("%s"),(LPCTSTR)(md4str((uchar*)thePrefs.GetUserHash())));
+		rCtrl << buffer << _T("\r\n\r\n");
+	}
+
 	///////////////////////////////////////////////////////////////////////////
 	// ED2K
 	///////////////////////////////////////////////////////////////////////////
@@ -106,6 +132,18 @@ void CreateNetworkInfo(CRichEditCtrlX& rCtrl, CHARFORMAT& rcfDef, CHARFORMAT& rc
 	else 
 		rCtrl << GetResString(IDS_DISCONNECTED);
 	rCtrl << _T("\r\n");
+
+	//I only show this in full display as the normal display is not
+	//updated at regular intervals.
+	if (bFullInfo && theApp.serverconnect->IsConnected())
+	{
+		uint32 uTotalUser = 0;
+		uint32 uTotalFile = 0;
+
+		theApp.serverlist->GetUserFileStatus(uTotalUser, uTotalFile);
+		rCtrl << GetResString(IDS_UUSERS) << _T(":\t") << GetFormatedUInt(uTotalUser) << _T("\r\n");
+		rCtrl << GetResString(IDS_PW_FILES) << _T(":\t") << GetFormatedUInt(uTotalFile) << _T("\r\n");
+	}
 
 	if (theApp.serverconnect->IsConnected()){
 		rCtrl << GetResString(IDS_IP) << _T(":") << GetResString(IDS_PORT) << _T(":") ;
@@ -245,10 +283,22 @@ void CreateNetworkInfo(CRichEditCtrlX& rCtrl, CHARFORMAT& rcfDef, CHARFORMAT& rc
 
 		if (bFullInfo)
 		{
+
+			CString sKadID;
+			Kademlia::CKademlia::getPrefs()->getKadID(&sKadID);
+			rCtrl << GetResString(IDS_CD_UHASH) << _T("\t") << sKadID << _T("\r\n");
+
+			rCtrl << GetResString(IDS_UUSERS) << _T(":\t") << GetFormatedUInt(Kademlia::CKademlia::getKademliaUsers()) << _T("\r\n");
+			rCtrl << GetResString(IDS_PW_FILES) << _T(":\t") << GetFormatedUInt(Kademlia::CKademlia::getKademliaFiles()) << _T("\r\n");
+
 			rCtrl <<  GetResString(IDS_INDEXED) << _T(":\r\n");
 			buffer.Format(GetResString(IDS_KADINFO_SRC) , Kademlia::CKademlia::getIndexed()->m_totalIndexSource);
 			rCtrl << buffer;
 			buffer.Format(GetResString(IDS_KADINFO_KEYW), Kademlia::CKademlia::getIndexed()->m_totalIndexKeyword);
+			rCtrl << buffer;
+			buffer.Format(_T("\t%s: %u\r\n"), GetResString(IDS_NOTES), Kademlia::CKademlia::getIndexed()->m_totalIndexNotes);
+			rCtrl << buffer;
+			buffer.Format(_T("\t%s: %u\r\n"), GetResString(IDS_THELOAD), Kademlia::CKademlia::getIndexed()->m_totalIndexLoad);
 			rCtrl << buffer;
 		}
 	}

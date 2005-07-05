@@ -1057,6 +1057,7 @@
 #define IDD_META_DATA                   1170
 #define IDS_PASTE                       1170
 #define IDS_SEARCHAUTHORCOLLECTION      1171
+#define IDS_ERR_DUPL_FILES              1172
 #define IDS_A4AF                        1175
 #define IDS_AUTOCAT_LABEL               1178
 #define IDS_SHOWEXTSETTINGS             1179

@@ -29,7 +29,7 @@ public:
 	CCollectionListCtrl();
 	virtual ~CCollectionListCtrl();
 
-	void Init();
+	void Init(CString strNameAdd);
 	void Localize();
 
 	void AddFileToList(CAbstractFile* pAbstractFile);

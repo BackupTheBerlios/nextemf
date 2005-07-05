@@ -1823,6 +1823,7 @@ BEGIN
     IDS_VIEWCOLLECTION      "Kollektion ansehen"
     IDS_COLL_TEXTFORMAT     "Kollektion im einfachen Textformat speichern"
     IDS_SEARCHAUTHORCOLLECTION "Suche Kollektionen des Autors"
+    IDS_ERR_DUPL_FILES      "Doppelte freigegebene Datei: ""%s"" und ""%s"""
 END
 
 STRINGTABLE 

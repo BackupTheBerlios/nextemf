@@ -71,11 +71,17 @@ void CUpDownClient::DrawStatusBar(CDC* dc, LPCRECT rect, bool onlygreyrect) cons
 		COLORREF crClientOnly;
 		COLORREF crPending;
 		COLORREF crNextPending;
+		if (g_bLowColorDesktop) {
+			crBoth = RGB(0, 0, 0);
+			crClientOnly = RGB(0, 0, 255);
+			crPending = RGB(0, 255, 0);
+			crNextPending = RGB(255, 255, 0);
+		} else {
 		crBoth = RGB(104, 104, 104);
-		crNeither = RGB(240, 240, 240);
 		crClientOnly = RGB(0, 100, 255);
 		crPending = RGB(0, 150, 0);
 		crNextPending = RGB(255,208,0);
+		}
 
 		char* pcNextPendingBlks = NULL;
 		if (m_nDownloadState == DS_DOWNLOADING){

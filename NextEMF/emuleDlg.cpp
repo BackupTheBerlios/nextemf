@@ -358,7 +358,14 @@ BOOL CemuleDlg::OnInitDialog()
 	}
 
 	//set title
-	CString buffer = _T("eMule v"); 
+        SetWindowText(_T("eMule v") + theApp.m_strCurVersionLong
+//==>Modversion [shadow2004]
+#ifdef MODVERSION
+        +_T(" [") + theApp.m_strModLongVersion + _T("]")
+#endif //Modversion
+        );
+        
+/*	CString buffer = _T("eMule v"); 
 	buffer += theApp.m_strCurVersionLong;
 
 //==>Modversion [shadow2004]
@@ -367,7 +374,7 @@ BOOL CemuleDlg::OnInitDialog()
 #endif //Modversion
 //<==Modversion [shadow2004]
 
-	SetWindowText(buffer);
+	SetWindowText(buffer);*/
 
 	// Init taskbar notifier
 	m_wndTaskbarNotifier->Create(this);
@@ -2311,7 +2318,7 @@ BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	switch(wParam)
 	{	
-		case IDC_TOOLBARBUTTON + 0:
+		case TBBTN_CONNECT:
 			OnBnClickedButton2();
 			break;
 		case MP_HM_KAD:
@@ -2338,7 +2345,7 @@ BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 		case MP_HM_MSGS:
 			SetActiveDialog(chatwnd);
 			break;
-		case IDC_TOOLBARBUTTON + 7:
+		case TBBTN_STATS:
 		case MP_HM_STATS:
 			SetActiveDialog(statisticswnd);
 			break;
@@ -2402,6 +2409,10 @@ BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 			break;
 		}
 	}	
+        if (wParam>=MP_SCHACTIONS && wParam<=MP_SCHACTIONS+99) {
+		theApp.scheduler->ActivateSchedule(wParam-MP_SCHACTIONS);
+		theApp.scheduler->SaveOriginals(); // use the new settings as original
+	}
 
 	return CTrayDialog::OnCommand(wParam, lParam);
 }

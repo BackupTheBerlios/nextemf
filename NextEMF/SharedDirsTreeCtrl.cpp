@@ -195,9 +195,18 @@ bool CSharedDirsTreeCtrl::FilterTreeIsSubDirectory(CString strDir, CString strRo
 	POSITION pos = liDirs.GetHeadPosition();
 	strRoot.MakeLower();
 	strDir.MakeLower();
+	if (strDir.Right(1) != _T("\\")){
+		strDir += _T("\\");
+	}
+	if (strRoot.Right(1) != _T("\\")){
+		strRoot += _T("\\");
+	}
 	while (pos){
 		CString strCurrent = thePrefs.shareddir_list.GetNext(pos);
 		strCurrent.MakeLower();
+		if (strCurrent.Right(1) != _T("\\")){
+			strCurrent += _T("\\");
+		}
 		if (strRoot.Find(strCurrent, 0) != 0 && strDir.Find(strCurrent, 0) == 0 && strCurrent != strRoot && strCurrent != strDir)
 			return true;
 	}
@@ -218,7 +227,7 @@ void CSharedDirsTreeCtrl::FilterTreeAddSubDirectories(CDirectoryItem* pDirectory
 		CString strCurrent = thePrefs.shareddir_list.GetNext(pos);
 		CString strCurrentLow = strCurrent;
 		strCurrentLow.MakeLower();
-		if ( (strDirectoryPath.IsEmpty() || strCurrentLow.Find(strDirectoryPath, 0) == 0) && strCurrentLow != strDirectoryPath){
+		if ( (strDirectoryPath.IsEmpty() || strCurrentLow.Find(strDirectoryPath + _T("\\"), 0) == 0) && strCurrentLow != strDirectoryPath){
 			if (!FilterTreeIsSubDirectory(strCurrentLow, strDirectoryPath, liDirs)){
 				CString strName = strCurrent;
 				if (strName.Right(1) == "\\"){
@@ -262,6 +271,7 @@ void CSharedDirsTreeCtrl::FilterTreeReloadTree(){
 					strMainIncDir = strMainIncDir.Left(strMainIncDir.GetLength()-1);
 				}
 				if (thePrefs.GetCatCount() > 1){
+					m_strliCatIncomingDirs.RemoveAll();
 					for (int i = 0; i < thePrefs.GetCatCount(); i++){
 						Category_Struct* pCatStruct = thePrefs.GetCategory(i);
 						if (pCatStruct != NULL){
@@ -269,7 +279,10 @@ void CSharedDirsTreeCtrl::FilterTreeReloadTree(){
 							if (strCatIncomingPath.Right(1) == "\\"){
 								strCatIncomingPath = strCatIncomingPath.Left(strCatIncomingPath.GetLength()-1);
 							}
-							if (!strCatIncomingPath.IsEmpty() && strCatIncomingPath.CompareNoCase(strMainIncDir) != 0){
+							if (!strCatIncomingPath.IsEmpty() && strCatIncomingPath.CompareNoCase(strMainIncDir) != 0
+								&& m_strliCatIncomingDirs.Find(strCatIncomingPath) == NULL)
+							{
+								m_strliCatIncomingDirs.AddTail(strCatIncomingPath);
 								CString strName = strCatIncomingPath;
 								if (strName.Right(1) == "\\"){
 									strName = strName.Left(strName.GetLength()-1);
@@ -429,18 +442,6 @@ void CSharedDirsTreeCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 		m_SharedFilesMenu.EnableMenuItem(thePrefs.GetShowCopyEd2kLinkCmd() ? MP_GETED2KLINK : MP_SHOWED2KLINK, iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED);
 
 
-/*		CTitleMenu WebMenu;
-		WebMenu.CreateMenu();
-		WebMenu.AddMenuTitle(NULL, true);
-		int iWebMenuEntries = theWebServices.GetFileMenuEntries(&WebMenu);
-		UINT flag2 = (iWebMenuEntries == 0 || iSelectedItems != 1) ? MF_GRAYED : MF_STRING;
-		m_SharedFilesMenu.AppendMenu(flag2 | MF_POPUP, (UINT_PTR)WebMenu.m_hMenu, GetResString(IDS_WEBSERVICES), _T("WEB"));
-
-		GetPopupMenuPos(*this, point);
-		m_SharedFilesMenu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON,point.x,point.y,this);
-
-		m_SharedFilesMenu.RemoveMenu(m_SharedFilesMenu.GetMenuItemCount()-1,MF_BYPOSITION);
-		VERIFY( WebMenu.DestroyMenu() );*/
 	}
 	else if(pSelectedDir != NULL && pSelectedDir->m_eItemType == SDI_UNSHAREDDIRECTORY){
 		m_ShareDirsMenu.EnableMenuItem(MP_UNSHAREDIR, FileSystemTreeIsShared(pSelectedDir->m_strFullPath) ? MF_ENABLED : MF_GRAYED);
@@ -629,9 +630,6 @@ BOOL CSharedDirsTreeCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					break;
 				}
 			default:
-//				if (wParam>=MP_WEBURL && wParam<=MP_WEBURL+256){
-//					theWebServices.RunURL(file, wParam);
-//				}
 				break;
 		}
 	}
@@ -989,6 +987,7 @@ void CSharedDirsTreeCtrl::EditSharedDirectories(CDirectoryItem* pDir, bool bAdd,
 void CSharedDirsTreeCtrl::Reload(bool bForce){
 	bool bChanged = false;
 	if (!bForce){
+		// check for changes in shared dirs
 		if (thePrefs.shareddir_list.GetCount() == m_strliSharedDirs.GetCount()){
 			POSITION pos = m_strliSharedDirs.GetHeadPosition();
 			POSITION pos2 = thePrefs.shareddir_list.GetHeadPosition();
@@ -1009,6 +1008,36 @@ void CSharedDirsTreeCtrl::Reload(bool bForce){
 		}
 		else
 			bChanged = true;
+
+		// check for changes in categories incoming dirs
+		CString strMainIncDir = thePrefs.GetIncomingDir();
+		if (strMainIncDir.Right(1) == _T("\\"))
+			strMainIncDir = strMainIncDir.Left(strMainIncDir.GetLength()-1);
+		CStringList strliFound;
+		for (int i = 0; i < thePrefs.GetCatCount(); i++){
+			Category_Struct* pCatStruct = thePrefs.GetCategory(i);
+			if (pCatStruct != NULL){
+				CString strCatIncomingPath = pCatStruct->incomingpath;
+				if (strCatIncomingPath.Right(1) == _T("\\"))
+					strCatIncomingPath = strCatIncomingPath.Left(strCatIncomingPath.GetLength()-1);
+
+				if (!strCatIncomingPath.IsEmpty() && strCatIncomingPath.CompareNoCase(strMainIncDir) != 0
+					&& strliFound.Find(strCatIncomingPath) == NULL)
+				{
+					POSITION pos = m_strliCatIncomingDirs.Find(strCatIncomingPath);
+					if (pos != NULL){
+						strliFound.AddTail(strCatIncomingPath);
+					}
+					else{
+						bChanged = true;
+						break;
+					}
+				}
+			}
+		}
+		if (strliFound.GetCount() != m_strliCatIncomingDirs.GetCount())
+			bChanged = true;
+
 	}
 	if (bChanged || bForce){
 		FetchSharedDirsList();

@@ -2261,7 +2261,7 @@ void CPreferences::LoadPreferences()
 	_stprintf(messageFilter,_T("%s"),ini.GetString(_T("MessageFilter"),_T("Your client has an infinite queue|Your client is connecting too fast|fastest download speed")));
 	commentFilter = ini.GetString(_T("CommentFilter"),_T("http://|https://|www."));
 	commentFilter.MakeLower();
-	_stprintf(filenameCleanups,_T("%s"),ini.GetString(_T("FilenameCleanups"),_T("http|www.|.com|shared|powered|sponsored|sharelive|filedonkey|saugstube|eselfilme|eseldownloads|emulemovies|spanishare|eselpsychos.de|saughilfe.de|goldesel.6x.to|freedivx.org|elitedivx|deviance|-ftv|ftv|-flt|flt")));
+	_stprintf(filenameCleanups,_T("%s"),ini.GetString(_T("FilenameCleanups"),_T("http|www.|.com|.de|.org|.net|shared|powered|sponsored|sharelive|filedonkey|")));
 	m_iExtractMetaData = ini.GetInt(_T("ExtractMetaData"), 1); // 0=disable, 1=mp3, 2=MediaDet
 	if (m_iExtractMetaData > 1)
 		m_iExtractMetaData = 1;

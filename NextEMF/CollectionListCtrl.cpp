@@ -50,15 +50,18 @@ CCollectionListCtrl::~CCollectionListCtrl()
 {
 }
 
-void CCollectionListCtrl::Init(void)
+void CCollectionListCtrl::Init(CString strNameAdd)
 {
-	SetName(_T("CollectionListCtrl"));
+	SetName(_T("CollectionListCtrl") + strNameAdd);
 	ModifyStyle(LVS_SINGLESEL,0);
 	SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_GRIDLINES);
 	InsertColumn(colName,GetResString(IDS_DL_FILENAME),LVCFMT_LEFT,250);
 	InsertColumn(colSize,GetResString(IDS_DL_SIZE),LVCFMT_LEFT,100);
 	InsertColumn(colHash,GetResString(IDS_FILEHASH),LVCFMT_LEFT,250);
 	LoadSettings();
+
+	SetSortArrow();
+	SortItems(SortProc, MAKELONG(GetSortItem(), (GetSortAscending() ? 0:1)));
 }
 
 int CCollectionListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)

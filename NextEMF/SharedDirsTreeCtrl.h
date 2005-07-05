@@ -96,6 +96,7 @@ protected:
 	CDirectoryItem*		m_pDraggingItem;
 	CSharedFilesCtrl*	m_pSharedFilesCtrl;
 	CStringList			m_strliSharedDirs;
+	CStringList			m_strliCatIncomingDirs;
 
 private:
 	void	InitalizeStandardItems();

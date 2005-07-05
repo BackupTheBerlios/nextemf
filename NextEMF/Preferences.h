@@ -1075,7 +1075,7 @@ public:
 	static  bool	GetWebAdminAllowedHiLevFunc()			{ return m_bAllowAdminHiLevFunc; }
 	static	void	SetWSLowPass(CString strNewPass);
 	static  const CUIntArray& GetAllowedRemoteAccessIPs()	{ return m_aAllowedRemoteAccessIPs; }
-	static	int		GetMaxWebUploadFileSizeMB()				{ return m_iWebFileUploadSizeLimitMB; }
+	static	uint32	GetMaxWebUploadFileSizeMB()				{ return m_iWebFileUploadSizeLimitMB; }
 
 	static	void	SetMaxSourcesPerFile(uint16 in)			{ maxsourceperfile=in;}
 	static	void	SetMaxConnections(uint16 in)			{ maxconnections =in;}

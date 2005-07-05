@@ -79,6 +79,7 @@ IMPLEMENT_DYNAMIC(CPartFile, CKnownFile)
 CPartFile::CPartFile(uint8 ucat)
 {
 	Init();
+	m_category=ucat;
 }
 
 CPartFile::CPartFile(CSearchFile* searchresult, uint8 cat)
@@ -4508,7 +4509,7 @@ void CPartFile::GetFilledList(CTypedPtrList<CPtrList, Gap_Struct*> *filled) cons
 void CPartFile::UpdateFileRatingCommentAvail()
 {
 	bool bOldHasComment = m_bHasComment;
-	uint32 bOldUserRatings = m_bUserRating;
+	uint32 uOldUserRatings = m_uUserRating;
 
 	m_bHasComment = false;
 	uint32 uRatings = 0;
@@ -4539,9 +4540,11 @@ void CPartFile::UpdateFileRatingCommentAvail()
 	}
 
 	if(uRatings)
-		m_bUserRating = uUserRatings / uRatings;
+		m_uUserRating = uUserRatings / uRatings;
+	else
+		m_uUserRating = 0;
 
-	if (bOldHasComment != m_bHasComment || bOldUserRatings != m_bUserRating)
+	if (bOldHasComment != m_bHasComment || uOldUserRatings != m_uUserRating)
 		UpdateDisplayedInfo(true);
 }
 

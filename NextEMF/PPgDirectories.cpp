@@ -337,7 +337,7 @@ void CPPgDirectories::OnBnClickedSeltempdiradd()
 	//GetDlgItemText(IDC_TEMPFILES, buffer, ARRSIZE(buffer));
 
 	if(SelectDir(GetSafeHwnd(),buffer,GetResString(IDS_SELECT_TEMPDIR))) {
-		paths.Append(_T(";"));
+		paths.Append(_T("|"));
 		paths.Append(buffer);
 		SetDlgItemText(IDC_TEMPFILES, paths);
 	}

@@ -49,7 +49,6 @@ static char THIS_FILE[] = __FILE__;
 #define HTTPENCODING _T("utf-8")
 
 #define WEB_SERVER_TEMPLATES_VERSION	7
-#define MAX_TRANSFER_FILESIZE	5242880
 
 //SyruS CQArray-Sorting operators
 bool operator > (QueueUsers & first, QueueUsers & second)
@@ -527,7 +526,7 @@ void CWebServer::ProcessURL(ThreadData Data)
 			CKnownFile* kf=theApp.sharedfiles->GetFileByID(_GetFileHash(_ParseURL(Data.sURL, _T("filehash")),FileHash) );
 			
 			if (kf) {
-				if (kf->GetFileSize()>MAX_TRANSFER_FILESIZE)
+				if (thePrefs.GetMaxWebUploadFileSizeMB() != 0 && kf->GetFileSize() > thePrefs.GetMaxWebUploadFileSizeMB()*1024*1024)
 					Data.pSocket->SendReply( "HTTP/1.1 403 Forbidden\r\n" );
 				else {
 					CFile file;
@@ -3583,7 +3582,7 @@ CString CWebServer::_GetSharedFilesList(ThreadData Data)
 		HTTPProcessData.Replace(_T("[FileType]"), SharedArray[i].sFileType);
 		HTTPProcessData.Replace(_T("[FileState]"), SharedArray[i].sFileState);
 		
-		bool downloadable=!cur_file->IsPartFile() && SharedArray[i].m_qwFileSize<=MAX_TRANSFER_FILESIZE;
+		bool downloadable=!cur_file->IsPartFile() && (thePrefs.GetMaxWebUploadFileSizeMB() == 0 || SharedArray[i].m_qwFileSize < thePrefs.GetMaxWebUploadFileSizeMB()*1024*1024);
 		
 		HTTPProcessData.Replace(_T("[Downloadable]"), downloadable?_T("yes"):_T("no") );
 		

@@ -2378,7 +2378,6 @@ void CDownloadListCtrl::CreateMenues()
 	else
 		m_FileMenu.AppendMenu(MF_STRING,MP_SHOWED2KLINK, GetResString(IDS_DL_SHOWED2KLINK), _T("ED2KLINK"));
 	m_FileMenu.AppendMenu(MF_STRING,MP_PASTE, GetResString(IDS_SW_DIRECTDOWNLOAD), _T("PASTELINK"));
-//	m_FileMenu.AppendMenu(MF_SEPARATOR);
 }
 
 CString CDownloadListCtrl::getTextList()

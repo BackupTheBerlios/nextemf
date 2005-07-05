@@ -369,9 +369,9 @@ void CUploadListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 				case 3:
 					// NOTE: If you change (add/remove) anything which is displayed here, update also the sorting part..
 					if (thePrefs.m_bExtControls)
-						Sbuffer.Format( _T("%s (%s)"), CastItoXBytes(client->GetQueueSessionPayloadUp(), false, false), CastItoXBytes(client->GetSessionUp(), false, false));
+						Sbuffer.Format( _T("%s (%s)"), CastItoXBytes(client->GetSessionUp(), false, false), CastItoXBytes(client->GetQueueSessionPayloadUp(), false, false));
 					else
-						Sbuffer = CastItoXBytes(client->GetQueueSessionPayloadUp(), false, false);
+						Sbuffer = CastItoXBytes(client->GetSessionUp(), false, false);
 					break;
 				case 4:
 					if (client->HasLowID())
@@ -563,24 +563,16 @@ int CUploadListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
 			break;
 
 		case 3: 
-			if (thePrefs.m_bExtControls) {
-				int iCmp = CompareUnsigned(item1->GetQueueSessionPayloadUp(), item2->GetQueueSessionPayloadUp());
-				if (iCmp != 0) {
-					iResult=iCmp;
-					break;
-			}
-			}
 			iResult=CompareUnsigned(item1->GetSessionUp(), item2->GetSessionUp());
+			if (iResult == 0 && thePrefs.m_bExtControls) {
+				iResult = CompareUnsigned(item1->GetQueueSessionPayloadUp(), item2->GetQueueSessionPayloadUp());
+			}
 			break;
 		case 103: 
-			if (thePrefs.m_bExtControls) {
-				int iCmp = CompareUnsigned(item2->GetQueueSessionPayloadUp(), item1->GetQueueSessionPayloadUp());
-				if (iCmp != 0) {
-					iResult=iCmp;
-					break;
-				}
-			}
 			iResult=CompareUnsigned(item2->GetSessionUp(), item1->GetSessionUp());
+			if (iResult == 0 && thePrefs.m_bExtControls) {
+				iResult = CompareUnsigned(item2->GetQueueSessionPayloadUp(), item1->GetQueueSessionPayloadUp());
+			}
 			break;
 
 		case 4: 

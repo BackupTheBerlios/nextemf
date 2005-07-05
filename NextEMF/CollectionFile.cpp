@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( merkur-@users.sourceforge.net / http://www.emule-project.net )
+//Copyright (C)2002-2005 Merkur ( devs@emule-project.net / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -14,6 +14,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
 #include "StdAfx.h"
 #include "collectionfile.h"
 #include "OtherFunctions.h"
@@ -158,7 +159,7 @@ void CCollectionFile::WriteCollectionInfo(CFileDataIO *out_data)
 void CCollectionFile::UpdateFileRatingCommentAvail()
 {
 //	bool bOldHasComment = m_bHasComment;
-//	uint32 bOldUserRatings = m_bUserRating;
+//	uint32 uOldUserRatings = m_uUserRating;
 
 	m_bHasComment = false;
 	uint32 uRatings = 0;
@@ -178,8 +179,10 @@ void CCollectionFile::UpdateFileRatingCommentAvail()
 	}
 
 	if(uRatings)
-		m_bUserRating = uUserRatings / uRatings;
+		m_uUserRating = uUserRatings / uRatings;
+	else
+		m_uUserRating = 0;
 
-//	if (bOldHasComment != m_bHasComment || bOldUserRatings != m_bUserRating)
+//	if (bOldHasComment != m_bHasComment || uOldUserRatings != m_uUserRating)
 //		theApp.emuledlg->searchwnd->UpdateSearch(this);
 }

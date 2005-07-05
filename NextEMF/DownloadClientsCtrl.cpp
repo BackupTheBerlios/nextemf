@@ -491,7 +491,7 @@ int CDownloadClientsCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParam
 //			CKnownFile* file2 = theApp.sharedfiles->GetFileByID(item2->GetUploadFileID());
 //<==Bugfix Xman [shadow2004]
 			if( (file1 != NULL) && (file2 != NULL))
-				return CompareLocaleStringNoCase(file2->GetFileName(), file1->GetFileName());
+				iResult=CompareLocaleStringNoCase(file2->GetFileName(), file1->GetFileName());
 			else if( file1 == NULL )
 				iResult=1;
 			else

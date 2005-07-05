@@ -1,7 +1,7 @@
 /////////////////////////////////
 |Changes eMule 0.46a NextEMF v0.5
 |=<|  Beta 2  |>=================
-merged	: eMule v0.46b Beta
+merged	: eMule v0.46b
 
 removed	: Skinsupport [shadow2004]
 removed	: Custom Toolbar [shadow2004]

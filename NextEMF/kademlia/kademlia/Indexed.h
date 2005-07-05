@@ -115,6 +115,8 @@ public:
 	bool SendStoreRequest(const CUInt128& keyID);
 	uint32 m_totalIndexSource;
 	uint32 m_totalIndexKeyword;
+	uint32 m_totalIndexNotes;
+	uint32 m_totalIndexLoad;
 
 private:
 	time_t m_lastClean;

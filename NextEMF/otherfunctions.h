@@ -92,6 +92,7 @@ CString RemoveFileExtension(const CString& rstrFilePath);
 int CompareDirectories(const CString& rstrDir1, const CString& rstrDir2);
 CString StringLimit(CString in,uint16 length);
 CString CleanupFilename(CString filename, bool bExtension = true);
+CString ValidFilename(CString filename);
 bool ExpandEnvironmentStrings(CString& rstrStrings);
 int CompareLocaleString(LPCTSTR psz1, LPCTSTR psz2);
 int CompareLocaleStringNoCase(LPCTSTR psz1, LPCTSTR psz2);

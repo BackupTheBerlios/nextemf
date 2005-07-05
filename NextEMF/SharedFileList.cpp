@@ -515,7 +515,7 @@ void CSharedFileList::AddFilesFromDirectory(const CString& rstrDirectory)
 				TRACE(_T("%hs: File already in shared file list: %s \"%s\"\n"), __FUNCTION__, md4str(pFileInMap->GetFileHash()), pFileInMap->GetFilePath());
 				TRACE(_T("%hs: File to add:                      %s \"%s\"\n"), __FUNCTION__, md4str(toadd->GetFileHash()), ff.GetFilePath());
 				if (!pFileInMap->IsKindOf(RUNTIME_CLASS(CPartFile)) || theApp.downloadqueue->IsPartFile(pFileInMap))
-					LogWarning(_T("Duplicate shared files: \"%s\" and \"%s\""), pFileInMap->GetFilePath(), ff.GetFilePath());
+					LogWarning( GetResString(IDS_ERR_DUPL_FILES) , pFileInMap->GetFilePath(), ff.GetFilePath());
 			}
 			else
 			{
@@ -591,7 +591,7 @@ bool CSharedFileList::AddFile(CKnownFile* pFile)
 		TRACE(_T("%hs: File already in shared file list: %s \"%s\" \"%s\"\n"), __FUNCTION__, md4str(pFileInMap->GetFileHash()), pFileInMap->GetFileName(), pFileInMap->GetFilePath());
 		TRACE(_T("%hs: File to add:                      %s \"%s\" \"%s\"\n"), __FUNCTION__, md4str(pFile->GetFileHash()), pFile->GetFileName(), pFile->GetFilePath());
 		if (!pFileInMap->IsKindOf(RUNTIME_CLASS(CPartFile)) || theApp.downloadqueue->IsPartFile(pFileInMap))
-			LogWarning(_T("Duplicate shared files: \"%s\" and \"%s\""), pFileInMap->GetFilePath(), pFile->GetFilePath());
+			LogWarning(GetResString(IDS_ERR_DUPL_FILES), pFileInMap->GetFilePath(), pFile->GetFilePath());
 		return false;
 	}
 	m_UnsharedFiles_map.RemoveKey(CSKey(pFile->GetFileHash()));
@@ -650,7 +650,7 @@ void CSharedFileList::FileHashingFinished(CKnownFile* file)
 	{
 		TRACE(_T("%hs: File already in shared file list: %s \"%s\"\n"), __FUNCTION__, md4str(found_file->GetFileHash()), found_file->GetFilePath());
 		TRACE(_T("%hs: File to add:                      %s \"%s\"\n"), __FUNCTION__, md4str(file->GetFileHash()), file->GetFilePath());
-		LogWarning(_T("Duplicate shared files: \"%s\" and \"%s\""), found_file->GetFilePath(), file->GetFilePath());
+		LogWarning(GetResString(IDS_ERR_DUPL_FILES), found_file->GetFilePath(), file->GetFilePath());
 
 		RemoveFromHashing(file);
 		if (!IsFilePtrInList(file) && !theApp.knownfiles->IsFilePtrInList(file))
@@ -662,12 +662,17 @@ void CSharedFileList::FileHashingFinished(CKnownFile* file)
 
 void CSharedFileList::RemoveFile(CKnownFile* pFile)
 {
-	output->RemoveFile(pFile);
-	m_UnsharedFiles_map.SetAt(CSKey(pFile->GetFileHash()), true);
+
 	CSingleLock listlock(&m_mutWriteList);
 	listlock.Lock();
-	m_Files_map.RemoveKey(CCKey(pFile->GetFileHash()));
+	BOOL bResult = m_Files_map.RemoveKey(CCKey(pFile->GetFileHash()));
 	listlock.Unlock();
+
+	if (bResult == TRUE){
+		output->RemoveFile(pFile);
+		m_UnsharedFiles_map.SetAt(CSKey(pFile->GetFileHash()), true);
+	}
+
 	m_keywords->RemoveKeywords(pFile);
 
 }

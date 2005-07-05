@@ -41,7 +41,7 @@ CAbstractFile::CAbstractFile()
 	m_nFileSize = 0;
 	m_uRating = 0;
 	m_bCommentLoaded = false;
-	m_bUserRating = 0;
+	m_uUserRating = 0;
 	m_bHasComment = false;
 }
 
@@ -53,7 +53,7 @@ CAbstractFile::CAbstractFile(const CAbstractFile* pAbstractFile)
 	m_strComment = pAbstractFile->m_strComment;
 	m_uRating = pAbstractFile->m_uRating;
 	m_bCommentLoaded = pAbstractFile->m_bCommentLoaded;
-	m_bUserRating = pAbstractFile->m_bUserRating;
+	m_uUserRating = pAbstractFile->m_uUserRating;
 	m_bHasComment = pAbstractFile->m_bHasComment;
 	m_strFileType = pAbstractFile->m_strFileType;
 
@@ -87,7 +87,7 @@ void CAbstractFile::AssertValid() const
 	(void)m_strComment;
 	(void)m_uRating;
 	(void)m_strFileType;
-	(void)(m_bUserRating);
+	(void)(m_uUserRating);
 	CHECK_BOOL(m_bHasComment);
 	CHECK_BOOL(m_bCommentLoaded);
 	taglist.AssertValid();

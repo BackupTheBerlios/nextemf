@@ -79,6 +79,8 @@ CIndexed::CIndexed()
 	m_lastClean = time(NULL) + (60*30);
 	m_totalIndexSource = 0;
 	m_totalIndexKeyword = 0;
+	m_totalIndexNotes = 0;
+	m_totalIndexLoad = 0;
 	readFile();
 }
 
@@ -287,6 +289,7 @@ void CIndexed::readFile(void)
 
 			m_totalIndexSource = totalSource;
 			m_totalIndexKeyword = totalKeyword;
+			m_totalIndexLoad = totalLoad;
 			AddDebugLogLine( false, _T("Read %u source, %u keyword, and %u load entries"), totalSource, totalKeyword, totalLoad);
 		}
 	} 
@@ -687,6 +690,7 @@ bool CIndexed::AddSources(const CUInt128& keyID, const CUInt128& sourceID, Kadem
 					currSource->entryList.AddHead(entry);
 					ASSERT(0);
 					load = (size*100)/KADEMLIAMAXSOUCEPERFILE;
+					m_totalIndexSource++;
 					return true;
 				}
 			}
@@ -741,6 +745,7 @@ bool CIndexed::AddNotes(const CUInt128& keyID, const CUInt128& sourceID, Kademli
 			currNoteHash->m_Source_map.AddHead(currNote);
 			m_Notes_map.SetAt(CCKey(currNoteHash->keyID.getData()), currNoteHash);
 			load = 1;
+			m_totalIndexNotes++;
 			return true;
 		}
 		else
@@ -768,6 +773,7 @@ bool CIndexed::AddNotes(const CUInt128& keyID, const CUInt128& sourceID, Kademli
 					currNote->entryList.AddHead(entry);
 					ASSERT(0);
 					load = (size*100)/KADEMLIAMAXNOTESPERFILE;
+					m_totalIndexKeyword++;
 					return true;
 				}
 			}
@@ -791,6 +797,7 @@ bool CIndexed::AddNotes(const CUInt128& keyID, const CUInt128& sourceID, Kademli
 				currNote->entryList.AddHead(entry);
 				currNoteHash->m_Source_map.AddHead(currNote);
 				load = (size*100)/KADEMLIAMAXNOTESPERFILE;
+				m_totalIndexKeyword++;
 				return true;
 			}
 		}
@@ -816,6 +823,7 @@ bool CIndexed::AddLoad(const CUInt128& keyID, uint32 timet)
 	load->keyID.setValue(keyID);
 	load->time = timet;
 	m_Load_map.SetAt(CCKey(load->keyID.getData()), load);
+	m_totalIndexLoad++;
 	return true;
 }
 
@@ -1259,6 +1267,7 @@ bool CIndexed::SendStoreRequest(const CUInt128& keyID)
 		if(load->time < (uint32)time(NULL))
 		{
 			m_Load_map.RemoveKey(CCKey(keyID.getData()));
+			m_totalIndexLoad--;
 			delete load;
 			return true;
 		}

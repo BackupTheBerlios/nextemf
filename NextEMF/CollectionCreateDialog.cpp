@@ -1,5 +1,5 @@
 //this file is part of eMule
-//Copyright (C)2002 Merkur ( merkur-@users.sourceforge.net / http://www.emule-project.net )
+//Copyright (C)2002-2005 Merkur ( devs@emule-project.net / http://www.emule-project.net )
 //
 //This program is free software; you can redistribute it and/or
 //modify it under the terms of the GNU General Public License
@@ -14,6 +14,7 @@
 //You should have received a copy of the GNU General Public License
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
 #include "stdafx.h"
 #include "emule.h"
 #include "emuledlg.h"
@@ -120,8 +121,8 @@ BOOL CCollectionCreateDialog::OnInitDialog(void)
 	}
 
 	SetWindowText(GetResString(IDS_CREATECOLLECTION));
-	m_CollectionListCtrl.Init();
-	m_CollectionAvailListCtrl.Init();
+	m_CollectionListCtrl.Init(_T("CreateR"));
+	m_CollectionAvailListCtrl.Init(_T("CreateL"));
 
 	m_AddCollectionButton.SetIcon(theApp.LoadIcon(_T("FORWARD")));
 	m_RemoveCollectionButton.SetIcon(theApp.LoadIcon(_T("BACK")));
@@ -206,6 +207,10 @@ void CCollectionCreateDialog::OnBnClickedCollectionadd()
 
 void CCollectionCreateDialog::OnBnClickedOk()
 {
+	//Some users have noted that the collection can at times
+	//save a collection with a invalid name...
+	OnEnKillfocusCollectionnameedit();
+
 	CString sFileName;
 	m_CollectionNameEdit.GetWindowText(sFileName);
 
@@ -377,7 +382,7 @@ void CCollectionCreateDialog::OnEnKillfocusCollectionnameedit()
 	CString sFileName;
 	CString sNewFileName;
 	m_CollectionNameEdit.GetWindowText(sFileName);
-	sNewFileName = ::CleanupFilename(sFileName, false);
+	sNewFileName = ValidFilename(sFileName);
 	if(sNewFileName.Compare(sFileName))
 		m_CollectionNameEdit.SetWindowText(sNewFileName);
 }

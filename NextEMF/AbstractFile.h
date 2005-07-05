@@ -83,10 +83,10 @@ public:
 
 	bool	HasComment() const { return m_bHasComment; }
 	void	SetHasComment(bool in) { m_bHasComment = in; }
-	uint32	UserRating() const { return m_bUserRating; }
-	bool	HasRating()	const { return m_bUserRating > 0; }
-	bool	HasBadRating()	const { return ( HasRating() && (m_bUserRating < 2)); }
-	void	SetUserRating(uint32 in) { m_bUserRating = in; }
+	uint32	UserRating() const { return m_uUserRating; }
+	bool	HasRating()	const { return m_uUserRating > 0; }
+	bool	HasBadRating()	const { return ( HasRating() && (m_uUserRating < 2)); }
+	void	SetUserRating(uint32 in) { m_uUserRating = in; }
 	const CString& GetFileComment() /*const*/;
 	uint8	GetFileRating() /*const*/;
 	void	LoadComment();
@@ -108,7 +108,7 @@ protected:
 	CString m_strComment;
 	uint8	m_uRating;
 	bool	m_bCommentLoaded;
-	uint8	m_bUserRating;
+	uint8	m_uUserRating;
 	bool	m_bHasComment;
 	CString m_strFileType;
 	CArray<CTag*, CTag*> taglist;

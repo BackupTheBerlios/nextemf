@@ -259,7 +259,7 @@ CSearchFile::~CSearchFile()
 void CSearchFile::UpdateFileRatingCommentAvail()
 {
 	bool bOldHasComment = m_bHasComment;
-	uint32 bOldUserRatings = m_bUserRating;
+	uint32 uOldUserRatings = m_uUserRating;
 
 	m_bHasComment = false;
 	uint32 uRatings = 0;
@@ -279,9 +279,11 @@ void CSearchFile::UpdateFileRatingCommentAvail()
 	}
 
 	if(uRatings)
-		m_bUserRating = uUserRatings / uRatings;
+		m_uUserRating = uUserRatings / uRatings;
+	else
+		m_uUserRating = 0;
 
-	if (bOldHasComment != m_bHasComment || bOldUserRatings != m_bUserRating)
+	if (bOldHasComment != m_bHasComment || uOldUserRatings != m_uUserRating)
 		theApp.emuledlg->searchwnd->UpdateSearch(this);
 }
 

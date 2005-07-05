@@ -331,7 +331,7 @@ bool CKnownFileList::SafeAddKFile(CKnownFile* toadd)
 		//Not sure of a good solution yet..
 		if (theApp.sharedfiles)
 		{
-			theApp.sharedfiles->RemoveKeywords(pFileInMap);
+			theApp.sharedfiles->RemoveFile(pFileInMap);
 			ASSERT( !theApp.sharedfiles->IsFilePtrInList(pFileInMap) );
 		}
 		//Double check to make sure this is the same file as it's possible that a two files have the same hash.
