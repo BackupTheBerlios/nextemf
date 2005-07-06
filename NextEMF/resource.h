@@ -1401,7 +1401,6 @@
 #define IDS_PW_RECEIVERADDRESS          1531
 #define IDS_PW_ENABLEEMAIL              1532
 #define IDS_EMULENOTIFICATION           1533
-#define IDS_PW_SHOWTRANSTOOLBAR         1534
 #define IDS_SHARED_STATUS               1535
 #define IDS_SEARCH_EMULECOLLECTION      1536
 #define IDS_INCOMING_FILES              1537
@@ -1534,7 +1533,6 @@
 #define IDC_CONV_PB_CURRENT             2187
 #define IDC_CLEARCOMPL                  2188
 #define IDC_STARTS                      2189
-#define IDC_SHOWTRANSTOOLBAR            2189
 #define IDC_UPDATESERVERCONNECT         2190
 #define IDC_VWIDTH                      2191
 #define IDC_QUEUECOUNT                  2192

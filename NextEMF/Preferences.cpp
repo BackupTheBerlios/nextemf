@@ -414,7 +414,6 @@ CString	CPreferences::m_strNotifierMailServer;
 CString	CPreferences::m_strNotifierMailSender;
 CString	CPreferences::m_strNotifierMailReceiver;
 
-bool	CPreferences::m_bWinaTransToolbar;
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS
 bool	CPreferences::m_bAntiNickThief;
@@ -1746,7 +1745,6 @@ void CPreferences::SavePreferences()
 	ini.WriteString(_T("NotifierMailServer"), m_strNotifierMailServer);
 	ini.WriteString(_T("NotifierMailRecipient"), m_strNotifierMailReceiver);
 
-	ini.WriteBool(_T("WinaTransToolbar"), m_bWinaTransToolbar);
 
 	///////////////////////////////////////////////////////////////////////////
 	// Section: "Statistics"
@@ -2340,7 +2338,6 @@ void CPreferences::LoadPreferences()
 	m_strNotifierMailServer = ini.GetString(_T("NotifierMailServer"), _T(""));
 	m_strNotifierMailReceiver = ini.GetString(_T("NotifierMailRecipient"), _T(""));
 
-	m_bWinaTransToolbar = ini.GetBool(_T("WinaTransToolbar"), false);
 
 	///////////////////////////////////////////////////////////////////////////
 	// Section: "Statistics"

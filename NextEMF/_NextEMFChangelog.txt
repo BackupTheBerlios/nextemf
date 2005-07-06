@@ -6,6 +6,7 @@ merged	: eMule v0.46b
 removed	: Skinsupport [shadow2004]
 removed	: Custom Toolbar [shadow2004]
 removed	: Anti-Modfaker by WiZaRd [cyrex2001]
+removed	: Additional Toolbar [shadow2004]
 
 added   : Anti-Modfaker by MorphXT [cyrex2001]
 
@@ -14,7 +15,6 @@ fixed	: Sorting-bug in Waiting-Queue an Upload-Queue [shadow2004]
 
 update	: Emulate others (Shareaza2) inspired by Spike2 [shadow2004]
 update	: Leecherlog to work with 46b [shadow2004]
-update	: Lib CxImage 5.99c
 
 
 /////////////////////////////////

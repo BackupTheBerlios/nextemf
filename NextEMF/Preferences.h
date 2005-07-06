@@ -437,7 +437,6 @@ public:
 	static	CString	m_sToolbarSettings;
 	static	bool	m_bReBarToolbar;
 
-	static	bool	m_bWinaTransToolbar;
 
 	//preview
 	static	bool	m_bPreviewEnabled;
@@ -1121,7 +1120,6 @@ public:
 	static	bool	GetReBarToolbar()							{ return m_bReBarToolbar; }
 	static	bool	GetUseReBarToolbar();
 
-	static	bool	IsTransToolbarEnabled()						{ return m_bWinaTransToolbar; }
 
 	static	int		GetSearchMethod()							{ return m_iSearchMethod; }
 	static	void	SetSearchMethod(int iMethod)				{ m_iSearchMethod = iMethod; }

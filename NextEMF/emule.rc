@@ -818,9 +818,6 @@ BEGIN
                     BS_FLAT | WS_TABSTOP,7,98,216,10
     CONTROL         "Auto Clear Completed Downloads",IDC_CLEARCOMPL,"Button",
                     BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,7,109,216,10
-    CONTROL         "Show additional toolbar on Transfers window",
-                    IDC_SHOWTRANSTOOLBAR,"Button",BS_AUTOCHECKBOX | BS_FLAT | 
-                    WS_TABSTOP,7,120,216,10
     GROUPBOX        "Lower CPU- && Memoryusage",IDC_STATIC_CPUMEM,7,132,216,
                     60,BS_FLAT
     CONTROL         "Disable Known Clients list",IDC_DISABLEKNOWNLIST,"Button",
@@ -4276,7 +4273,6 @@ BEGIN
     IDS_PW_RECEIVERADDRESS  "Recipient address:"
     IDS_PW_ENABLEEMAIL      "Enable Email Notifications"
     IDS_EMULENOTIFICATION   "eMule Notification"
-    IDS_PW_SHOWTRANSTOOLBAR "Show additional toolbar on Transfers window"
     IDS_SHARED_STATUS       "Shared parts"
 END
 

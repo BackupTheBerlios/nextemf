@@ -59,7 +59,7 @@ public:
 	void VerifyCatTabSize();
 	int	 AddCategory(CString newtitle,CString newincoming,CString newcomment,CString newautocat,bool addTab=true);
 	void SwitchUploadList();
-	void ResetTransToolbar(bool bShowToolbar, bool bResetLists = true);
+	void ResetTransToolbar();
 	void SetToolTipsDelay(DWORD dwDelay);
 
 	// Dialog Data

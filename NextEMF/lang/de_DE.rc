@@ -1789,7 +1789,6 @@ BEGIN
     IDS_PW_RECEIVERADDRESS  "Empfängeradresse:"
     IDS_PW_ENABLEEMAIL      "Aktiviere Emailbenachrichtigung"
     IDS_EMULENOTIFICATION   "eMule Benachrichtigung"
-    IDS_PW_SHOWTRANSTOOLBAR "Zeige zusätzliche Toolbar im Transferfenster"
 END
 
 STRINGTABLE 

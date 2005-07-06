@@ -101,7 +101,7 @@ BOOL CTransferWnd::OnInitDialog()
 	CResizableDialog::OnInitDialog();
 	InitWindowStyles(this);
 
-	ResetTransToolbar(thePrefs.IsTransToolbarEnabled(), false);
+	ResetTransToolbar();
 	m_btnWnd2->Init(true);
 
 	uploadlistctrl.Init();
@@ -1673,7 +1673,7 @@ void CTransferWnd::OnWnd2BtnDropDown(NMHDR *pNMHDR, LRESULT *pResult)
 	menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, rc.left, rc.bottom, this);
 }
 
-void CTransferWnd::ResetTransToolbar(bool bShowToolbar, bool bResetLists)
+void CTransferWnd::ResetTransToolbar()
 {
 	if (m_btnWnd1->m_hWnd)
 		RemoveAnchor(*m_btnWnd1);
@@ -1681,85 +1681,15 @@ void CTransferWnd::ResetTransToolbar(bool bShowToolbar, bool bResetLists)
 	CRect rc;
 	rc.top = 5;
 	rc.left = WND1_BUTTON_XOFF;
-	rc.right = rc.left + WND1_BUTTON_WIDTH + (bShowToolbar ? NUM_WINA_BUTTONS*DFLT_TOOLBAR_BTN_WIDTH : 0);
+	rc.right = rc.left + WND1_BUTTON_WIDTH;
 	rc.bottom = rc.top + WND1_BUTTON_HEIGHT;
-	m_btnWnd1->Init(!bShowToolbar);
+	m_btnWnd1->Init(true);
 	m_btnWnd1->MoveWindow(&rc);
 	SetWnd1Icons();
 
-	if (bShowToolbar)
-	{
-		m_btnWnd1->ModifyStyle(0, TBSTYLE_TOOLTIPS);
-		m_btnWnd1->SetExtendedStyle(m_btnWnd1->GetExtendedStyle() | TBSTYLE_EX_MIXEDBUTTONS);
-
-		TBBUTTON atb[1+NUM_WINA_BUTTONS] = {0};
-		atb[0].iBitmap = w1iDownloadFiles;
-		atb[0].idCommand = IDC_DOWNLOAD_ICO;
-		atb[0].fsState = TBSTATE_ENABLED;
-		atb[0].fsStyle = BTNS_BUTTON | BTNS_SHOWTEXT;
-		atb[0].iString = -1;
-
-		atb[1].iBitmap = w1iSplitWindow;
-		atb[1].idCommand = MP_VIEW1_SPLIT_WINDOW;
-		atb[1].fsState = TBSTATE_ENABLED;
-		atb[1].fsStyle = BTNS_BUTTON | BTNS_CHECKGROUP | BTNS_AUTOSIZE;
-		atb[1].iString = -1;
-
-		atb[2].iBitmap = w1iDownloadFiles;
-		atb[2].idCommand = MP_VIEW1_DOWNLOADS;
-		atb[2].fsState = TBSTATE_ENABLED;
-		atb[2].fsStyle = BTNS_BUTTON | BTNS_CHECKGROUP | BTNS_AUTOSIZE;
-		atb[2].iString = -1;
-
-		atb[3].iBitmap = w1iUploading;
-		atb[3].idCommand = MP_VIEW1_UPLOADING;
-		atb[3].fsState = TBSTATE_ENABLED;
-		atb[3].fsStyle = BTNS_BUTTON | BTNS_CHECKGROUP | BTNS_AUTOSIZE;
-		atb[3].iString = -1;
-
-		atb[4].iBitmap = w1iDownloading;
-		atb[4].idCommand = MP_VIEW1_DOWNLOADING;
-		atb[4].fsState = TBSTATE_ENABLED;
-		atb[4].fsStyle = BTNS_BUTTON | BTNS_CHECKGROUP | BTNS_AUTOSIZE;
-		atb[4].iString = -1;
-
-		atb[5].iBitmap = w1iOnQueue;
-		atb[5].idCommand = MP_VIEW1_ONQUEUE;
-		atb[5].fsState = thePrefs.IsQueueListDisabled() ? 0 : TBSTATE_ENABLED;
-		atb[5].fsStyle = BTNS_BUTTON | BTNS_CHECKGROUP | BTNS_AUTOSIZE;
-		atb[5].iString = -1;
-
-		atb[6].iBitmap = w1iClientsKnown;
-		atb[6].idCommand = MP_VIEW1_CLIENTS;
-		atb[6].fsState = thePrefs.IsKnownClientListDisabled() ? 0 : TBSTATE_ENABLED;
-		atb[6].fsStyle = BTNS_BUTTON | BTNS_CHECKGROUP | BTNS_AUTOSIZE;
-		atb[6].iString = -1;
-		m_btnWnd1->AddButtons(ARRSIZE(atb), atb);
-
-		TBBUTTONINFO tbbi = {0};
-		tbbi.cbSize = sizeof tbbi;
-			tbbi.dwMask = TBIF_SIZE | TBIF_BYINDEX;
-		tbbi.cx = WND1_BUTTON_WIDTH;
-		m_btnWnd1->SetButtonInfo(0, &tbbi);
-
-		CSize size;
-		m_btnWnd1->GetMaxSize(&size);
-		m_btnWnd1->GetWindowRect(&rc);
-		ScreenToClient(&rc);
-		m_btnWnd1->MoveWindow(rc.left, rc.top, size.cx, rc.Height());
-	}
-	else
-	{
 		m_btnWnd1->ModifyStyle(TBSTYLE_TOOLTIPS, 0);
 		m_btnWnd1->SetExtendedStyle(m_btnWnd1->GetExtendedStyle() & ~TBSTYLE_EX_MIXEDBUTTONS);
 		m_btnWnd1->RecalcLayout(true);
-	}
 
 	AddAnchor(*m_btnWnd1, TOP_LEFT);
-
-	if (bResetLists)
-	{
-		ShowSplitWindow(true);
-		VerifyCatTabSize();
-	}
 }
