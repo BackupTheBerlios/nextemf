@@ -50,8 +50,21 @@ CPreferences thePrefs;
 int		CPreferences::m_iDbgHeap;
 CString	CPreferences::strNick;
 uint16	CPreferences::minupload;
+
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+float	CPreferences::maxupload;
+float	CPreferences::maxdownload;
+float	CPreferences::maxGraphDownloadRate;
+float	CPreferences::maxGraphUploadRate;
+#else
 uint16	CPreferences::maxupload;
 uint16	CPreferences::maxdownload;
+int	CPreferences::maxGraphDownloadRate;
+int	CPreferences::maxGraphUploadRate;
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+
 uint16	CPreferences::port;
 uint16	CPreferences::udpport;
 uint16	CPreferences::nServerUDPPort;
@@ -80,8 +93,6 @@ uint16	CPreferences::trafficOMeterInterval;
 uint16	CPreferences::statsInterval;
 uchar	CPreferences::userhash[16];
 WINDOWPLACEMENT CPreferences::EmuleWindowPlacement;
-int		CPreferences::maxGraphDownloadRate;
-int		CPreferences::maxGraphUploadRate;
 bool	CPreferences::beepOnError;
 bool	CPreferences::confirmExit;
 /*//==>Modversion [shadow2004]
@@ -742,6 +753,24 @@ bool CPreferences::IsConfigFile(const CString& rstrDirectory, const CString& rst
 }
 // SLUGFILLER: SafeHash
 
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+float CPreferences::GetMaxDownload() {
+	//dont be a Lam3r :)
+	const float maxUpload = (GetMaxUpload() >= UNLIMITED) ? GetMaxGraphUploadRate() : GetMaxUpload();
+	if(maxUpload < 4.0f)
+		return (3.0f * maxUpload < maxdownload) ? 3.0f * maxUpload : maxdownload;
+	else if(maxUpload < 11.0f) //Xman changed to 11
+		return (4.0f * maxUpload < maxdownload) ? 4.0f * maxUpload : maxdownload;
+	else
+		return maxdownload;
+}
+
+uint64 CPreferences::GetMaxDownloadInBytesPerSec() {
+	//dont be a Lam3r :)
+	return (GetMaxDownload() * 1024);
+}
+#else
 uint16 CPreferences::GetMaxDownload(){
     return (uint16)(GetMaxDownloadInBytesPerSec()/1024);
 }
@@ -759,6 +788,8 @@ uint64 CPreferences::GetMaxDownloadInBytesPerSec(bool dynamic){
 		return (( (maxup < 10*1024) && (maxup*3 < maxdownload*1024) )? maxup*3 : maxdownload*1024);
 	return (( (maxup < 10*1024) && (maxup*4 < maxdownload*1024) )? maxup*4 : maxdownload*1024);
 }
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 
 // -khaos--+++> A whole bunch of methods!  Keep going until you reach the end tag.
 void CPreferences::SaveStats(int bBackUp){
@@ -1563,8 +1594,21 @@ void CPreferences::SavePreferences()
 	ini.WriteString(_T("TempDirs"), tempdirs);
 
     ini.WriteInt(_T("MinUpload"), minupload);
+
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+	ini.WriteFloat(_T("MaxUpload"), maxupload);
+	ini.WriteFloat(_T("MaxDownload"), maxdownload);
+	ini.WriteFloat(_T("DownloadCapacity"), maxGraphDownloadRate);
+	ini.WriteFloat(_T("UploadCapacity"), maxGraphUploadRate);
+#else
 	ini.WriteInt(_T("MaxUpload"),maxupload);
 	ini.WriteInt(_T("MaxDownload"),maxdownload);
+	ini.WriteInt(_T("DownloadCapacity"),maxGraphDownloadRate);
+	ini.WriteInt(_T("UploadCapacity"),maxGraphUploadRate);
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+
 	ini.WriteInt(_T("MaxConnections"),maxconnections);
 	ini.WriteInt(_T("MaxHalfConnections"),maxhalfconnections);
 	ini.WriteBool(_T("ConditionalTCPAccept"), m_bConditionalTCPAccept);
@@ -1577,8 +1621,6 @@ void CPreferences::SavePreferences()
 	ini.WriteInt(_T("ToolTipDelay"),m_iToolDelayTime);
 	ini.WriteInt(_T("StatGraphsInterval"),trafficOMeterInterval);
 	ini.WriteInt(_T("StatsInterval"),statsInterval);
-	ini.WriteInt(_T("DownloadCapacity"),maxGraphDownloadRate);
-	ini.WriteInt(_T("UploadCapacity"),maxGraphUploadRate);
 	ini.WriteInt(_T("DeadServerRetry"),m_uDeadServerRetries);
 	ini.WriteInt(_T("ServerKeepAliveTimeout"),m_dwServerKeepAliveTimeout);
 	ini.WriteInt(_T("SplitterbarPosition"),splitterbarPosition+2);
@@ -2020,15 +2062,32 @@ void CPreferences::LoadPreferences()
 		atmp = tempdirs.Tokenize(_T("|"), curPos);
 	}
 
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+	maxGraphDownloadRate=ini.GetFloat(_T("DownloadCapacity"),96);
+	if (maxGraphDownloadRate==0) maxGraphDownloadRate=96;
+	maxGraphUploadRate=ini.GetFloat(_T("UploadCapacity"),16);
+	if (maxGraphUploadRate==0) maxGraphUploadRate=16;
+	minupload=ini.GetInt(_T("MinUpload"), 1);
+	maxupload=ini.GetFloat(_T("MaxUpload"),12);
+
+	if (maxupload>maxGraphUploadRate && maxupload!=UNLIMITED) maxupload=maxGraphUploadRate*.8f;
+	maxdownload=ini.GetFloat(_T("MaxDownload"),76);
+	if (maxdownload>maxGraphDownloadRate && maxdownload!=UNLIMITED) maxdownload=maxGraphDownloadRate*.8;
+#else
 	maxGraphDownloadRate=ini.GetInt(_T("DownloadCapacity"),96);
 	if (maxGraphDownloadRate==0) maxGraphDownloadRate=96;
 	maxGraphUploadRate=ini.GetInt(_T("UploadCapacity"),16);
 	if (maxGraphUploadRate==0) maxGraphUploadRate=16;
 	minupload=ini.GetInt(_T("MinUpload"), 1);
 	maxupload=ini.GetInt(_T("MaxUpload"),12);
+
 	if (maxupload > maxGraphUploadRate && maxupload != UNLIMITED) maxupload = (uint16)(maxGraphUploadRate * .8);
 	maxdownload=ini.GetInt(_T("MaxDownload"),76);
 	if (maxdownload > maxGraphDownloadRate && maxdownload != UNLIMITED) maxdownload = (uint16)(maxGraphDownloadRate * .8);
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+
 	maxconnections=ini.GetInt(_T("MaxConnections"),GetRecommendedMaxConnections());
 	maxhalfconnections=ini.GetInt(_T("MaxHalfConnections"),9);
 	m_bConditionalTCPAccept = ini.GetBool(_T("ConditionalTCPAccept"), false);
@@ -2653,6 +2712,8 @@ void CPreferences::SetWSLowPass(CString strNewPass)
 	_stprintf(m_sWebLowPassword,_T("%s"),MD5Sum(strNewPass).GetHash().GetBuffer(0));
 }
 
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifndef FAF
 void CPreferences::SetMaxUpload(uint16 in)
 {
 	maxupload = (in) ? in : UNLIMITED;
@@ -2662,6 +2723,8 @@ void CPreferences::SetMaxDownload(uint16 in)
 {
 	maxdownload = (in) ? in : UNLIMITED;
 }
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 
 void CPreferences::SetNetworkKademlia(bool val)
 {

@@ -7,14 +7,6 @@
 *
 * Redistribution is appreciated.
 *
-* $Workfile:$
-* $Revision: 1.3 $
-* $Modtime:$
-* $Author: shadow2004 $
-*
-* Revision History:
-*	$History:$
-*
 *********************************************************************/
 #include "stdafx.h"
 #include "emule.h"

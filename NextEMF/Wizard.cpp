@@ -68,11 +68,23 @@ void CConnectionWizardDlg::DoDataExchange(CDataExchange* pDX)
 void CConnectionWizardDlg::OnBnClickedApply()
 {
 	TCHAR buffer[510];
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+	float upload, download;
+#else
 	int upload, download;
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	if (GetDlgItem(IDC_WIZ_TRUEDOWNLOAD_BOX)->GetWindowTextLength())
 	{ 
 		GetDlgItem(IDC_WIZ_TRUEDOWNLOAD_BOX)->GetWindowText(buffer, 20);
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+		download = _tstof(buffer);
+#else
 		download = _tstoi(buffer);
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	}
 	else
 	{
@@ -82,7 +94,13 @@ void CConnectionWizardDlg::OnBnClickedApply()
 	if (GetDlgItem(IDC_WIZ_TRUEUPLOAD_BOX)->GetWindowTextLength())
 	{ 
 		GetDlgItem(IDC_WIZ_TRUEUPLOAD_BOX)->GetWindowText(buffer, 20);
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+		upload = _tstof(buffer);
+#else
 		upload = _tstoi(buffer);
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	}
 	else
 	{
@@ -91,6 +109,11 @@ void CConnectionWizardDlg::OnBnClickedApply()
 
 	if (IsDlgButtonChecked(IDC_KBITS) == 1)
 	{
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+		upload /= 8;
+		download /= 8;
+#else
 		upload = (((upload / 8) * 1000) + 512) / 1024;
 		download = (((download / 8) * 1000) + 512) / 1024;
 	}
@@ -98,6 +121,8 @@ void CConnectionWizardDlg::OnBnClickedApply()
 	{
 		upload = ((upload * 1000) + 512) / 1024;
 		download = ((download * 1000) + 512) / 1024;
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	}
 
 	thePrefs.maxGraphDownloadRate = download;
@@ -105,7 +130,13 @@ void CConnectionWizardDlg::OnBnClickedApply()
 
 	if (upload > 0 && download > 0)
 	{
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+		thePrefs.maxupload = (float)((upload * 4L) / 5);
+#else
 		thePrefs.maxupload = (uint16)((upload * 4L) / 5);
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 		if (upload < 4 && download > upload*3) {
 			thePrefs.maxdownload = thePrefs.maxupload * 3;
 			download = upload * 3;
@@ -116,7 +147,13 @@ void CConnectionWizardDlg::OnBnClickedApply()
 			download = upload * 4;
 		}
 		else
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+			thePrefs.maxdownload = (float)((download * 9L) / 10);
+#else
 			thePrefs.maxdownload = (uint16)((download * 9L) / 10);
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 
 		theApp.emuledlg->statisticswnd->SetARange(false, thePrefs.maxGraphUploadRate);
 		theApp.emuledlg->statisticswnd->SetARange(true, thePrefs.maxGraphDownloadRate);
@@ -273,8 +310,15 @@ BOOL CConnectionWizardDlg::OnInitDialog()
 	CheckRadioButton(IDC_WIZ_LOWDOWN_RADIO, IDC_WIZ_HIGHDOWN_RADIO, IDC_WIZ_LOWDOWN_RADIO);
 	CheckRadioButton(IDC_KBITS, IDC_KBYTES, IDC_KBITS);
 
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+	SetDlgItemInt(IDC_WIZ_TRUEDOWNLOAD_BOX, thePrefs.maxGraphDownloadRate * 8, FALSE);
+	SetDlgItemInt(IDC_WIZ_TRUEUPLOAD_BOX, thePrefs.maxGraphUploadRate * 8, FALSE);
+#else
 	SetDlgItemInt(IDC_WIZ_TRUEDOWNLOAD_BOX, ((thePrefs.maxGraphDownloadRate * 1024) + 500) / 1000 * 8, FALSE);
 	SetDlgItemInt(IDC_WIZ_TRUEUPLOAD_BOX, ((thePrefs.maxGraphUploadRate * 1024) + 500) / 1000 * 8, FALSE);
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 
 	m_provider.InsertColumn(0, GetResString(IDS_PW_CONNECTION), LVCFMT_LEFT, 150);
 	m_provider.InsertColumn(1, GetResString(IDS_WIZ_DOWN), LVCFMT_LEFT, 85);

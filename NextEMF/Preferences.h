@@ -69,8 +69,6 @@ public:
 	// ZZ:UploadSpeedSense -->
 	static	uint16	minupload;
 	// ZZ:UploadSpeedSense <--
-	static	uint16	maxupload;
-	static	uint16	maxdownload;
 	static	uint16	port;
 	static	uint16	udpport;
 	static	uint16	nServerUDPPort;
@@ -99,8 +97,6 @@ public:
 	static	uint16	statsInterval;
 	static	uchar	userhash[16];
 	static	WINDOWPLACEMENT EmuleWindowPlacement;
-	static	int		maxGraphDownloadRate;
-	static	int		maxGraphUploadRate;
 	static	bool	beepOnError;
 	static	bool	confirmExit;
 	static	DWORD	m_adwStatsColors[15];
@@ -588,7 +584,6 @@ public:
 	// ZZ:UploadSpeedSense -->
 	static	uint16	GetMinUpload()	{return minupload;}
 	// ZZ:UploadSpeedSense <--
-	static	uint16	GetMaxUpload()	{return maxupload;}
 	static	bool	IsICHEnabled()	{return ICH;}
 	static	bool	GetAutoUpdateServerList()		{return m_bAutoUpdateServerList;}
 	static	bool	UpdateNotify()	{return updatenotify;}
@@ -849,13 +844,7 @@ public:
 	static	bool	FilterLANIPs()				{return filterLANIPs;}
 	static	bool	GetAllowLocalHostIP()		{return m_bAllocLocalHostIP;}
 	static	bool	IsOnlineSignatureEnabled()	{return onlineSig;}
-	static	int		GetMaxGraphUploadRate()		{return maxGraphUploadRate;}
-	static	int		GetMaxGraphDownloadRate()		{return maxGraphDownloadRate;}
-	static	void	SetMaxGraphUploadRate(int in)	{maxGraphUploadRate	=(in)?in:16;}
-	static	void	SetMaxGraphDownloadRate(int in) {maxGraphDownloadRate=(in)?in:96;}
 
-	static	uint16	GetMaxDownload();
-	static	uint64	GetMaxDownloadInBytesPerSec(bool dynamic = false);
 	static	uint16	GetMaxConnections()			{return maxconnections;}
 	static	uint16	GetMaxHalfConnections()		{return maxhalfconnections;}
 	static	uint16	GetMaxSourcePerFileDefault(){return maxsourceperfile;}
@@ -1010,9 +999,6 @@ public:
 	static	UINT	GetMinFreeDiskSpace()				{return m_uMinFreeDiskSpace;}
 	static	bool	GetSparsePartFiles()				{return m_bSparsePartFiles;}
 	static	void	SetSparsePartFiles(bool bEnable)	{m_bSparsePartFiles = bEnable;}
-
-	static	void	SetMaxUpload(uint16 in);
-	static	void	SetMaxDownload(uint16 in);
 
 	static	WINDOWPLACEMENT GetEmuleWindowPlacement() {return EmuleWindowPlacement; }
 	static	void	SetWindowLayout(WINDOWPLACEMENT in) {EmuleWindowPlacement=in; }
@@ -1239,6 +1225,48 @@ public:
 	static	bool	AutoSetResumeOrder()	{ return m_bAutoSetResumeOrder; }
 #endif
 //<== Linear Prio [shadow2004]
+
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+	static float	maxupload;
+	static float	maxdownload;
+	static float	maxGraphDownloadRate;
+	static float	maxGraphUploadRate;
+
+	static float	GetMaxUpload()  {return maxupload;}
+	static void	SetMaxUpload(float in)	{maxupload = in;}
+
+	static float	GetMaxDownload() ; // rate limited
+	static void	SetMaxDownload(float in) {maxdownload = in;}
+
+	static float	GetMaxGraphUploadRate()  {return maxGraphUploadRate;}
+	static void	SetMaxGraphUploadRate(float in) {maxGraphUploadRate=in;}
+
+	static float	GetMaxGraphDownloadRate()  {return maxGraphDownloadRate;}
+	static void	SetMaxGraphDownloadRate(float in) {maxGraphDownloadRate=in;}
+
+	static	uint64	GetMaxDownloadInBytesPerSec();
+#else
+	static	uint16	maxupload;
+	static	uint16	maxdownload;
+	static	int	maxGraphDownloadRate;
+	static	int	maxGraphUploadRate;
+
+	static	uint16	GetMaxUpload()	{return maxupload;}
+	static	void	SetMaxUpload(uint16 in);
+
+	static	uint16	GetMaxDownload();
+	static	void	SetMaxDownload(uint16 in);
+
+	static	int	GetMaxGraphUploadRate()		{return maxGraphUploadRate;}
+	static	void	SetMaxGraphUploadRate(int in)	{maxGraphUploadRate	=(in)?in:16;}
+
+	static	int	GetMaxGraphDownloadRate()		{return maxGraphDownloadRate;}
+	static	void	SetMaxGraphDownloadRate(int in) {maxGraphDownloadRate=(in)?in:96;}
+
+	static	uint64	GetMaxDownloadInBytesPerSec(bool dynamic = false);
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 
 protected:
 	static	CString appdir;

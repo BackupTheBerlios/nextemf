@@ -90,7 +90,7 @@
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;MODVERSION;WINSOCK2;ANTI_LEECHER_LOG;ANTI_LEECH_CLASS;FSSTATS;EMULATE;OPTIM;CSP;SNAFU;ANTI_MODFAKER"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;MODVERSION;WINSOCK2;ANTI_LEECHER_LOG;ANTI_LEECH_CLASS;FSSTATS;EMULATE;OPTIM;CSP;SNAFU;ANTI_MODFAKER;FAF"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
 				BufferSecurityCheck="TRUE"
@@ -2389,6 +2389,12 @@
 			</File>
 			<File
 				RelativePath=".\ModVersion.h">
+			</File>
+			<File
+				RelativePath=".\NumEdit.cpp">
+			</File>
+			<File
+				RelativePath=".\NumEdit.h">
 			</File>
 			<File
 				RelativePath=".\SplashScreenEx.cpp">

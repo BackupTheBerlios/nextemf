@@ -56,8 +56,15 @@ BEGIN_MESSAGE_MAP(CPPgConnection, CPropertyPage)
 	ON_BN_CLICKED(IDC_WIZARD, OnBnClickedWizard)
 	ON_BN_CLICKED(IDC_NETWORK_ED2K, OnSettingsChange)
 	ON_BN_CLICKED(IDC_SHOWOVERHEAD, OnSettingsChange)
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+	ON_EN_CHANGE(IDC_MAXDOWN, OnSettingsChange)
+	ON_EN_CHANGE(IDC_MAXUP, OnSettingsChange)
+#else
 	ON_BN_CLICKED(IDC_ULIMIT_LBL, OnLimiterChange)
 	ON_BN_CLICKED(IDC_DLIMIT_LBL, OnLimiterChange)
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	ON_WM_HSCROLL()
 	ON_BN_CLICKED(IDC_NETWORK_KADEMLIA, OnSettingsChange)
 	ON_WM_HELPINFO()
@@ -77,8 +84,18 @@ CPPgConnection::~CPPgConnection()
 void CPPgConnection::DoDataExchange(CDataExchange* pDX)
 {
 	CPropertyPage::DoDataExchange(pDX);
+
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+	DDX_Control(pDX, IDC_MAXUP, m_maxUpload);
+	DDX_Control(pDX, IDC_UPLOAD_CAP, m_maxUploadCapacity);
+	DDX_Control(pDX, IDC_MAXDOWN, m_maxDownload);
+	DDX_Control(pDX, IDC_DOWNLOAD_CAP, m_maxDownloadCapacity);
+#else
 	DDX_Control(pDX, IDC_MAXDOWN_SLIDER, m_ctlMaxDown);
 	DDX_Control(pDX, IDC_MAXUP_SLIDER, m_ctlMaxUp);
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 }
 
 void CPPgConnection::OnEnChangeTCP()
@@ -172,6 +189,34 @@ void CPPgConnection::LoadSettings(void)
 
 		GetDlgItem(IDC_UDPPORT)->EnableWindow(thePrefs.udpport > 0);
 	
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+		strBuffer.Format(_T("%.1f"),(float) thePrefs.maxGraphDownloadRate);
+		GetDlgItem(IDC_DOWNLOAD_CAP)->SetWindowText(strBuffer);
+
+		strBuffer.Format(_T("%.1f"), (float)thePrefs.maxGraphUploadRate);
+		GetDlgItem(IDC_UPLOAD_CAP)->SetWindowText(strBuffer);
+
+		if(thePrefs.GetMaxDownload() >= UNLIMITED){
+			// Maybe a string "unlimited" would be better
+			strBuffer.Format(_T("%.1f"), 0.0f); // To have ',' or '.' (see french)
+			GetDlgItem(IDC_MAXDOWN)->SetWindowText(strBuffer); 
+		}
+		else {
+			strBuffer.Format(_T("%.1f"), (float)thePrefs.GetMaxDownload());
+			GetDlgItem(IDC_MAXDOWN)->SetWindowText(strBuffer);
+		}
+		
+		if(thePrefs.GetMaxUpload() >= UNLIMITED){
+			// Maybe a string "unlimited" would be better
+			strBuffer.Format(_T("%.1f"), 0.0f); // To have ',' or '.' (see french)
+			GetDlgItem(IDC_MAXUP)->SetWindowText(strBuffer); 
+		}
+		else {
+			strBuffer.Format(_T("%.1f"), (float)thePrefs.maxupload);
+			GetDlgItem(IDC_MAXUP)->SetWindowText(strBuffer);
+		}
+#else		
 		strBuffer.Format(_T("%d"), thePrefs.maxGraphDownloadRate);
 		GetDlgItem(IDC_DOWNLOAD_CAP)->SetWindowText(strBuffer);
 
@@ -189,6 +234,8 @@ void CPPgConnection::LoadSettings(void)
 
 		m_ctlMaxDown.SetPos((thePrefs.maxdownload != UNLIMITED) ? thePrefs.maxdownload : thePrefs.maxGraphDownloadRate);
 		m_ctlMaxUp.SetPos((thePrefs.maxupload != UNLIMITED) ? thePrefs.maxupload : thePrefs.maxGraphUploadRate);
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 
 		strBuffer.Format(_T("%d"), thePrefs.port);
 		GetDlgItem(IDC_PORT)->SetWindowText(strBuffer);
@@ -234,32 +281,93 @@ void CPPgConnection::LoadSettings(void)
 			GetDlgItem(IDC_OPENPORTS)->EnableWindow(false);
 
 		ShowLimitValues();
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifndef FAF
 		OnLimiterChange();
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	}
 }
 
 BOOL CPPgConnection::OnApply()
 {
 	TCHAR buffer[510];
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+	float lastMaxGraphUploadRate = thePrefs.GetMaxGraphUploadRate();
+	float lastMaxGraphDownloadRate = thePrefs.GetMaxGraphDownloadRate();
+#else
 	int lastmaxgu = thePrefs.maxGraphUploadRate;
 	int lastmaxgd = thePrefs.maxGraphDownloadRate;
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	bool bRestartApp = false;
 
 	if (GetDlgItem(IDC_DOWNLOAD_CAP)->GetWindowTextLength())
 	{ 
 		GetDlgItem(IDC_DOWNLOAD_CAP)->GetWindowText(buffer, 20);
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+		double download = _tstof(buffer);
+		thePrefs.SetMaxGraphDownloadRate((download <= 0) ? 96.0f : (float)download);
+
+//		thePrefs.SetMaxGraphDownloadRate(_tstof(buffer));
+#else
 		thePrefs.SetMaxGraphDownloadRate(_tstoi(buffer));
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	}
 
-	m_ctlMaxDown.SetRange(1, thePrefs.GetMaxGraphDownloadRate(), TRUE);
-	SetRateSliderTicks(m_ctlMaxDown);
+//	m_ctlMaxDown.SetRange(1, thePrefs.GetMaxGraphDownloadRate(), TRUE);
+//	SetRateSliderTicks(m_ctlMaxDown);
 
 	if (GetDlgItem(IDC_UPLOAD_CAP)->GetWindowTextLength())
 	{
 		GetDlgItem(IDC_UPLOAD_CAP)->GetWindowText(buffer, 20);
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+		double upload = _tstof(buffer);
+		if(upload<= 0.0f || upload >= UNLIMITED)
+			thePrefs.SetMaxGraphUploadRate(16.0f);
+		else if(upload<5.0f)
+			thePrefs.SetMaxGraphUploadRate(5.0f);
+		else
+			thePrefs.SetMaxGraphUploadRate((float)upload);
+//		thePrefs.SetMaxGraphUploadRate(_tstof(buffer));
+#else
 		thePrefs.SetMaxGraphUploadRate(_tstoi(buffer));
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	}
 
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+	if(GetDlgItem(IDC_MAXUP)->GetWindowTextLength())
+	{
+		GetDlgItem(IDC_MAXUP)->GetWindowText(buffer,20);
+		float upload = _tstof(buffer);
+		if(upload<= 0.0f || upload >= UNLIMITED)
+			thePrefs.SetMaxUpload(11.0f);
+		else if(upload<3.0f)
+			thePrefs.SetMaxUpload(3.0f);
+		else
+			thePrefs.SetMaxUpload((float)upload);
+		
+	}
+
+	if(GetDlgItem(IDC_MAXDOWN)->GetWindowTextLength())
+	{
+		GetDlgItem(IDC_MAXDOWN)->GetWindowText(buffer,20);
+		double download = _tstof(buffer);
+		thePrefs.SetMaxDownload((download <= 0.0f || download >= UNLIMITED) ? UNLIMITED : (float)download);
+	}
+
+	if (thePrefs.GetMaxGraphUploadRate() < thePrefs.GetMaxUpload() && thePrefs.GetMaxUpload() != UNLIMITED)
+		thePrefs.SetMaxUpload(thePrefs.GetMaxGraphUploadRate() * 0.8f);
+
+	if (thePrefs.GetMaxGraphDownloadRate() < thePrefs.GetMaxDownload() && thePrefs.GetMaxDownload() != UNLIMITED)
+		thePrefs.SetMaxDownload(thePrefs.GetMaxGraphDownloadRate() * 0.8f);
+#else
 	m_ctlMaxUp.SetRange(1, thePrefs.GetMaxGraphUploadRate(), TRUE);
 	SetRateSliderTicks(m_ctlMaxUp);
 
@@ -295,6 +403,8 @@ BOOL CPPgConnection::OnApply()
 
 	if (thePrefs.GetMaxDownload() != UNLIMITED)
 		m_ctlMaxDown.SetPos(thePrefs.GetMaxDownload());
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 
 	if (GetDlgItem(IDC_PORT)->GetWindowTextLength())
 	{
@@ -360,10 +470,19 @@ BOOL CPPgConnection::OnApply()
 	thePrefs.autoconnect = IsDlgButtonChecked(IDC_AUTOCONNECT)!=0;
 	thePrefs.reconnect = IsDlgButtonChecked(IDC_RECONN)!=0;
 		
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+	if(lastMaxGraphUploadRate != thePrefs.GetMaxGraphUploadRate()) 
+		theApp.emuledlg->statisticswnd->SetARange(false, (int)thePrefs.GetMaxGraphUploadRate());
+	if(lastMaxGraphDownloadRate != thePrefs.GetMaxGraphDownloadRate())
+		theApp.emuledlg->statisticswnd->SetARange(true, (int)thePrefs.GetMaxGraphDownloadRate());
+#else
 	if (lastmaxgu != thePrefs.maxGraphUploadRate) 
 		theApp.emuledlg->statisticswnd->SetARange(false, thePrefs.maxGraphUploadRate);
 	if (lastmaxgd!=thePrefs.maxGraphDownloadRate)
 		theApp.emuledlg->statisticswnd->SetARange(true, thePrefs.maxGraphDownloadRate);
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 
 	uint16 tempcon = thePrefs.maxconnections;
 	if (GetDlgItem(IDC_MAXCON)->GetWindowTextLength())
@@ -410,8 +529,12 @@ void CPPgConnection::Localize(void)
 		GetDlgItem(IDC_DCAP_LBL)->SetWindowText(GetResString(IDS_PW_CON_DOWNLBL));
 		GetDlgItem(IDC_UCAP_LBL)->SetWindowText(GetResString(IDS_PW_CON_UPLBL));
 		GetDlgItem(IDC_LIMITS_FRM)->SetWindowText(GetResString(IDS_PW_CON_LIMITFRM));
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifndef FAF
 		GetDlgItem(IDC_DLIMIT_LBL)->SetWindowText(GetResString(IDS_PW_DOWNL));
 		GetDlgItem(IDC_ULIMIT_LBL)->SetWindowText(GetResString(IDS_PW_UPL));
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 		GetDlgItem(IDC_CONNECTION_NETWORK)->SetWindowText(GetResString(IDS_NETWORK));
 		GetDlgItem(IDC_KBS2)->SetWindowText(GetResString(IDS_KBYTESPERSEC));
 		GetDlgItem(IDC_KBS3)->SetWindowText(GetResString(IDS_KBYTESPERSEC));
@@ -440,7 +563,8 @@ void CPPgConnection::OnBnClickedWizard()
 void CPPgConnection::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar) 
 {
 	SetModified(TRUE);
-
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifndef FAF
 	if (pScrollBar->GetSafeHwnd() == m_ctlMaxUp.m_hWnd)
 	{
 		uint32 maxup = m_ctlMaxUp.GetPos();
@@ -467,7 +591,8 @@ void CPPgConnection::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 			m_ctlMaxUp.SetPos((int)ceil((double)maxdown/4));
 		}
 	}
-
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	ShowLimitValues();
 
 	UpdateData(false); 
@@ -476,6 +601,8 @@ void CPPgConnection::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 void CPPgConnection::ShowLimitValues()
 {
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifndef FAF
 	CString buffer;
 
 	if (!IsDlgButtonChecked(IDC_ULIMIT_LBL))
@@ -489,8 +616,12 @@ void CPPgConnection::ShowLimitValues()
 	else
 		buffer.Format(_T("%u %s"), m_ctlMaxDown.GetPos(), GetResString(IDS_KBYTESPERSEC));
 	GetDlgItem(IDC_KBS1)->SetWindowText(buffer);
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 }
 
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifndef FAF
 void CPPgConnection::OnLimiterChange()
 {
 	m_ctlMaxDown.ShowWindow(IsDlgButtonChecked(IDC_DLIMIT_LBL) ? SW_SHOW : SW_HIDE);
@@ -499,6 +630,8 @@ void CPPgConnection::OnLimiterChange()
 	ShowLimitValues();
 	SetModified(TRUE);	
 }
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 
 void CPPgConnection::OnHelp()
 {
@@ -557,6 +690,8 @@ void CPPgConnection::OnStartPortTest()
 	TriggerPortTest(tcp, udp);
 }
 
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifndef FAF
 void CPPgConnection::SetRateSliderTicks(CSliderCtrl& rRate)
 {
 	rRate.ClearTics();
@@ -591,3 +726,5 @@ void CPPgConnection::SetRateSliderTicks(CSliderCtrl& rRate)
 		}
 	}
 }
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-

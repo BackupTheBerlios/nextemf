@@ -68,8 +68,15 @@ public:
 	void	RestoreOriginals();
 	void	ActivateSchedule(uint8 index,bool makedefault=false);
 	
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+	float	original_upload;
+	float	original_download;
+#else	
 	uint16	original_upload;
 	uint16	original_download;
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	uint16	original_connections;
 	uint16	original_cons5s;
 	uint16	original_sources;

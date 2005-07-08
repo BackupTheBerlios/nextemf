@@ -211,12 +211,23 @@ void CScheduler::ActivateSchedule(uint8 index,bool makedefault) {
 		if (schedule->values[ai]=="" /* maybe ignore in some future cases...*/ ) continue;
 
 		switch (schedule->actions[ai]) {
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+			case 1 : thePrefs.SetMaxUpload(_tstof(schedule->values[ai]));
+				if (makedefault) original_upload=_tstof(schedule->values[ai]); 
+				break;
+			case 2 : thePrefs.SetMaxDownload(_tstof(schedule->values[ai]));
+				if (makedefault) original_download=_tstof(schedule->values[ai]);
+				break;
+#else
 			case 1 : thePrefs.SetMaxUpload(_tstoi(schedule->values[ai]));
 				if (makedefault) original_upload=_tstoi(schedule->values[ai]); 
 				break;
 			case 2 : thePrefs.SetMaxDownload(_tstoi(schedule->values[ai]));
 				if (makedefault) original_download=_tstoi(schedule->values[ai]);
 				break;
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 			case 3 : thePrefs.SetMaxSourcesPerFile(_tstoi(schedule->values[ai]));
 				if (makedefault) original_sources=_tstoi(schedule->values[ai]);
 				break;

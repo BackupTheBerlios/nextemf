@@ -1405,8 +1405,15 @@ LRESULT CemuleDlg::OnWMData(WPARAM wParam,LPARAM lParam)
 				down=up.Mid(pos+1);
 				up=up.Left(pos);
 			}
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+			if (down.GetLength()>0) thePrefs.SetMaxDownload(_tstof(down));
+			if (up.GetLength()>0) thePrefs.SetMaxUpload(_tstof(up));
+#else
 			if (down.GetLength()>0) thePrefs.SetMaxDownload(_tstoi(down));
 			if (up.GetLength()>0) thePrefs.SetMaxUpload(_tstoi(up));
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 
 			return true;
 		}
@@ -2259,6 +2266,16 @@ void CemuleDlg::ShowUserStateIcon()
 void CemuleDlg::QuickSpeedOther(UINT nID)
 {
 	switch (nID) {
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+		case MP_QS_PA: thePrefs.SetMaxUpload((float)(3));
+			thePrefs.SetMaxDownload((float)(1));
+			break ;
+		case MP_QS_UA: 
+			thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate()-2));
+			thePrefs.SetMaxDownload((float)(thePrefs.GetMaxGraphDownloadRate()));
+			break ;
+#else
 		case MP_QS_PA: thePrefs.SetMaxUpload((uint16)(1));
 			thePrefs.SetMaxDownload((uint16)(1));
 			break ;
@@ -2266,6 +2283,8 @@ void CemuleDlg::QuickSpeedOther(UINT nID)
 			thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate()));
 			thePrefs.SetMaxDownload((uint16)(thePrefs.GetMaxGraphDownloadRate()));
 			break ;
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	}
 }
 
@@ -2273,6 +2292,18 @@ void CemuleDlg::QuickSpeedOther(UINT nID)
 void CemuleDlg::QuickSpeedUpload(UINT nID)
 {
 	switch (nID) {
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+		case MP_QS_U10: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate()*0.1)); break ;
+		case MP_QS_U20: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate()*0.2)); break ;
+		case MP_QS_U30: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate()*0.3)); break ;
+		case MP_QS_U40: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate()*0.4)); break ;
+		case MP_QS_U50: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate()*0.5)); break ;
+		case MP_QS_U60: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate()*0.6)); break ;
+		case MP_QS_U70: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate()*0.7)); break ;
+		case MP_QS_U80: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate()*0.8)); break ;
+		case MP_QS_U90: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate()*0.9)); break ;
+#else
 		case MP_QS_U10: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate()*0.1)); break ;
 		case MP_QS_U20: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate()*0.2)); break ;
 		case MP_QS_U30: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate()*0.3)); break ;
@@ -2282,6 +2313,8 @@ void CemuleDlg::QuickSpeedUpload(UINT nID)
 		case MP_QS_U70: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate()*0.7)); break ;
 		case MP_QS_U80: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate()*0.8)); break ;
 		case MP_QS_U90: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate()*0.9)); break ;
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 		case MP_QS_U100: thePrefs.SetMaxUpload(thePrefs.GetMaxGraphUploadRate()); break ;
 //		case MP_QS_UPC: thePrefs.SetMaxUpload(UNLIMITED); break ;
 		case MP_QS_UP10: thePrefs.SetMaxUpload(GetRecMaxUpload()); break ;
@@ -2291,6 +2324,18 @@ void CemuleDlg::QuickSpeedUpload(UINT nID)
 void CemuleDlg::QuickSpeedDownload(UINT nID)
 {
 	switch (nID) {
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+		case MP_QS_D10: thePrefs.SetMaxDownload(0.1f * thePrefs.GetMaxGraphDownloadRate()); break ;
+		case MP_QS_D20: thePrefs.SetMaxDownload(0.2f * thePrefs.GetMaxGraphDownloadRate()); break ;
+		case MP_QS_D30: thePrefs.SetMaxDownload(0.3f * thePrefs.GetMaxGraphDownloadRate()); break ;
+		case MP_QS_D40: thePrefs.SetMaxDownload(0.4f * thePrefs.GetMaxGraphDownloadRate()); break ;
+		case MP_QS_D50: thePrefs.SetMaxDownload(0.5f * thePrefs.GetMaxGraphDownloadRate()); break ;
+		case MP_QS_D60: thePrefs.SetMaxDownload(0.6f * thePrefs.GetMaxGraphDownloadRate()); break ;
+		case MP_QS_D70: thePrefs.SetMaxDownload(0.7f * thePrefs.GetMaxGraphDownloadRate()); break ;
+		case MP_QS_D80: thePrefs.SetMaxDownload(0.8f * thePrefs.GetMaxGraphDownloadRate()); break ;
+		case MP_QS_D90: thePrefs.SetMaxDownload(0.9f * thePrefs.GetMaxGraphDownloadRate()); break ;
+#else
 		case MP_QS_D10: thePrefs.SetMaxDownload((uint16)(thePrefs.GetMaxGraphDownloadRate()*0.1)); break ;
 		case MP_QS_D20: thePrefs.SetMaxDownload((uint16)(thePrefs.GetMaxGraphDownloadRate()*0.2)); break ;
 		case MP_QS_D30: thePrefs.SetMaxDownload((uint16)(thePrefs.GetMaxGraphDownloadRate()*0.3)); break ;
@@ -2300,12 +2345,24 @@ void CemuleDlg::QuickSpeedDownload(UINT nID)
 		case MP_QS_D70: thePrefs.SetMaxDownload((uint16)(thePrefs.GetMaxGraphDownloadRate()*0.7)); break ;
 		case MP_QS_D80: thePrefs.SetMaxDownload((uint16)(thePrefs.GetMaxGraphDownloadRate()*0.8)); break ;
 		case MP_QS_D90: thePrefs.SetMaxDownload((uint16)(thePrefs.GetMaxGraphDownloadRate()*0.9)); break ;
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 		case MP_QS_D100: thePrefs.SetMaxDownload(thePrefs.GetMaxGraphDownloadRate()); break ;
 //		case MP_QS_DC: thePrefs.SetMaxDownload(UNLIMITED); break ;
 	}
 }
 // quick-speed changer -- based on xrmb
 
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+float CemuleDlg::GetRecMaxUpload() {
+	
+	if (thePrefs.GetMaxGraphUploadRate()<7) return 0;
+	if (thePrefs.GetMaxGraphUploadRate()<15) return thePrefs.GetMaxGraphUploadRate()-1.5f;
+	return (thePrefs.GetMaxGraphUploadRate()-2.5f);
+
+}
+#else
 int CemuleDlg::GetRecMaxUpload() {
 	
 	if (thePrefs.GetMaxGraphUploadRate()<7) return 0;
@@ -2313,6 +2370,8 @@ int CemuleDlg::GetRecMaxUpload() {
 	return (thePrefs.GetMaxGraphUploadRate()-4);
 
 }
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 
 BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {

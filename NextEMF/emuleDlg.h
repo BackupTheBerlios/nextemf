@@ -176,7 +176,13 @@ protected:
 	void ShowTransferStateIcon();
 	void ShowUserStateIcon();
 	void AddSpeedSelectorSys(CMenu* addToMenu);
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+	float  GetRecMaxUpload();
+#else
 	int  GetRecMaxUpload();
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	void LoadNotifier(CString configuration);
 	bool notifierenabled;
 	void ShowToolPopup(bool toolsonly = false);

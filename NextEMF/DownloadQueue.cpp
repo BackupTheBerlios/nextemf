@@ -383,7 +383,18 @@ bool CDownloadQueue::IsFileExisting(const uchar* fileid, bool bLogWarnings) cons
 void CDownloadQueue::Process(){
 	
 	ProcessLocalRequests(); // send src requests to local server
-
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+	uint32 downspeed = 0;
+    const float maxDownload = thePrefs.GetMaxDownloadInBytesPerSec();
+	if (maxDownload != UNLIMITED*1024.0f && datarate > 1500){
+		downspeed = (UINT)((maxDownload*100.0f)/(datarate+1));
+		if (downspeed < 50)
+			downspeed = 50;
+		else if (downspeed > 200)
+			downspeed = 200;
+	}
+#else
 	uint32 downspeed = 0;
     uint64 maxDownload = thePrefs.GetMaxDownloadInBytesPerSec(true);
 	if (maxDownload != UNLIMITED*1024 && datarate > 1500){
@@ -393,6 +404,8 @@ void CDownloadQueue::Process(){
 		else if (downspeed > 200)
 			downspeed = 200;
 	}
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 
 	while(avarage_dr_list.GetCount()>0 && (GetTickCount() - avarage_dr_list.GetHead().timestamp > 10*1000) )
 		m_datarateMS-=avarage_dr_list.RemoveHead().datalen;

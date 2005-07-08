@@ -8,6 +8,7 @@ removed	: Custom Toolbar [shadow2004]
 removed	: Anti-Modfaker by WiZaRd [cyrex2001]
 removed	: Additional Toolbar [shadow2004]
 
+added	: Allow Bandwidth Settings in <1KB Incremements by Maella adapted by Xman1 [shadow2004]
 added   : Anti-Modfaker by MorphXT [cyrex2001]
 
 fixed   : small fix in SplashScreen [cyrex2001]

@@ -2147,6 +2147,10 @@
 #define IDS_STATS_OTHER                 3155
 #define IDS_STATS_STILLUP               3156
 #define IDS_STATS_CANCELED              3157
+#define IDC_MAXDOWN                     3200
+#define IDC_MAXUP                       3201
+#define IDC_DCAP_LBL2                   3202
+#define IDC_UCAP_LBL2                   3203
 
 // Next default values for new objects
 // 

@@ -7,14 +7,6 @@
 *
 * Redistribution is appreciated.
 *
-* $Workfile:$
-* $Revision: 1.2 $
-* $Modtime:$
-* $Author: shadow2004 $
-*
-* Revision History:
-*	$History:$
-*
 *********************************************************************/
 #include "stdafx.h"
 #include "TreePropSheetPgFrame.h"
