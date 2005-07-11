@@ -461,6 +461,27 @@ bool	CPreferences::m_bAutoSetResumeOrder;
 #endif
 //<== Linear Prio [shadow2004]
 
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA //Reask sourcen after ip change
+bool	CPreferences::isreaskSourceAfterIPChange;
+bool	CPreferences::m_breaskSourceAfterIPChange;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
+//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+bool	CPreferences::m_bQuickStart;
+bool	CPreferences::isQuickStart;
+uint16  CPreferences::m_iQuickStartMaxTime;
+uint16  CPreferences::QuickStartMaxTime;
+uint16  CPreferences::m_iQuickStartMaxConn;
+uint16  CPreferences::QuickStartMaxConn;
+uint16  CPreferences::m_iQuickStartMaxConnPerFive;
+uint16  CPreferences::QuickStartMaxConnPerFive;
+bool	CPreferences::m_bQuickStartAfterIPChange;
+bool	CPreferences::isQuickStartAfterIPChange;
+#endif //Quickstart
+//<==Quickstart [cyrex2001]
+
 CPreferences::CPreferences()
 {
 #ifdef _DEBUG
@@ -1862,6 +1883,21 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("AutoSetResumeOrder"), m_bAutoSetResumeOrder,_T("NextEMF"));
 #endif
 //<== Linear Prio [shadow2004]
+
+	//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA //Reask sourcen after ip change
+	ini.WriteBool(_T("ReaskSourceAfterIPChange"),isreaskSourceAfterIPChange,_T("NextEMF"));
+#endif //Reask sourcen after ip change
+	//<==Reask sourcen after ip change [cyrex2001]
+	//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+	ini.WriteBool(_T("QuickStart"), isQuickStart,_T("NextEMF"));
+	ini.WriteInt(_T("QuickStartMaxTime"), QuickStartMaxTime,_T("NextEMF"));
+	ini.WriteInt(_T("QuickStartMaxConn"), QuickStartMaxConn,_T("NextEMF"));
+	ini.WriteInt(_T("QuickStartMaxConnPerFive"), QuickStartMaxConnPerFive,_T("NextEMF"));
+	ini.WriteBool(_T("QuickStartAfterIPChange"), isQuickStartAfterIPChange,_T("NextEMF"));
+#endif //Quickstart
+	//<==Quickstart [cyrex2001]
 }
 
 void CPreferences::ResetStatsColor(int index)
@@ -2491,6 +2527,21 @@ void CPreferences::LoadPreferences()
 	m_bAutoSetResumeOrder=ini.GetBool(_T("AutoSetResumeOrder"), true, _T("NextEMF"));
 #endif
 //<== Linear Prio [shadow2004]
+
+	//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA //Reask sourcen after ip change
+	isreaskSourceAfterIPChange = ini.GetBool(_T("ReaskSourceAfterIPChange"),false, _T("NextEMF"));
+#endif //Reask sourcen after ip change
+	//<==Reask sourcen after ip change [cyrex2001]
+	//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+	QuickStartMaxTime=ini.GetInt(_T("QuickStartMaxTime"), 10, _T("NextEMF"));
+	QuickStartMaxConn=ini.GetInt(_T("QuickStartMaxConn"), (maxconnections*3)/*1001*/, _T("NextEMF"));
+	QuickStartMaxConnPerFive=ini.GetInt(_T("QuickStartMaxConnPerFive"), (MaxConperFive*3)/*151*/, _T("NextEMF"));
+	isQuickStart=ini.GetBool(_T("QuickStart"),false, _T("NextEMF"));
+	isQuickStartAfterIPChange=ini.GetBool(_T("QuickStartAfterIPChange"),false, _T("NextEMF"));
+#endif //Quickstart
+//<==Quickstart [cyrex2001]
 
 	LoadCats();
 	SetLanguage();

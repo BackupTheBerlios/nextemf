@@ -955,3 +955,27 @@ void CClientList::ProcessA4AFClients() const {
     //if(thePrefs.GetLogA4AF()) AddDebugLogLine(false, _T(">>> Done with A4AF check"));
 }
 // <-- ZZ:DownloadManager
+
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+void CClientList::TrigReaskForDownload(bool immediate)
+	{
+	for(POSITION pos = list.GetHeadPosition(); pos != NULL;)
+		{
+		const DWORD dwCurTick = ::GetTickCount();				
+		CUpDownClient* cur_client =	list.GetNext(pos);
+		if (!cur_client )
+			continue;
+		if(immediate == true)
+			{
+			if (cur_client->GetTimeUntilReask(cur_client->GetRequestFile()) >= (MIN_REQUESTTIME * 2))
+				cur_client->SetNextTCPAskedTime(dwCurTick + cur_client->GetTimeUntilReask(cur_client->GetRequestFile()) - FILEREASKTIME + MIN_REQUESTTIME);
+			else if (cur_client->GetTimeUntilReask(cur_client->GetRequestFile()) >= (MIN_REQUESTTIME * 1))
+				cur_client->SetNextTCPAskedTime(dwCurTick + cur_client->GetTimeUntilReask(cur_client->GetRequestFile()) + MIN_REQUESTTIME - FILEREASKTIME);
+			}
+		else
+			cur_client->SetNextTCPAskedTime(dwCurTick + cur_client->GetTimeUntilReask(cur_client->GetRequestFile()));
+		}	
+	}
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]

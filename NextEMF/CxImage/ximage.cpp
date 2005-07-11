@@ -1,6 +1,6 @@
 // ximage.cpp : main implementation file
-/* 07/08/2001 v1.00 - ing.davide.pizzolato@libero.it
- * CxImage version 5.71 25/Apr/2003
+/* 07/08/2001 v1.00 - Davide Pizzolato - www.xdp.it
+ * CxImage version 5.99c 17/Oct/2004
  */
 
 #include "ximage.h"
@@ -8,7 +8,9 @@
 ////////////////////////////////////////////////////////////////////////////////
 // CxImage 
 ////////////////////////////////////////////////////////////////////////////////
-// Initialize the internal structures
+/**
+ * Initialize the internal structures
+ */
 void CxImage::Startup(DWORD imagetype)
 {
 	//init pointers
@@ -16,11 +18,10 @@ void CxImage::Startup(DWORD imagetype)
 	pLayers = NULL;
 	//init structures
 	memset(&head,0,sizeof(BITMAPINFOHEADER));
-    head.biSize = sizeof(BITMAPINFOHEADER);
 	memset(&info,0,sizeof(CXIMAGEINFO));
 	//init default attributes
     info.dwType = imagetype;
-	info.nQuality = 75;
+	info.nQuality = 90;
 	info.nAlphaMax = 255;
 	info.nBkgndIndex = -1;
 	info.bEnabled = true;
@@ -28,19 +29,22 @@ void CxImage::Startup(DWORD imagetype)
 	SetYDPI(96);
 }
 ////////////////////////////////////////////////////////////////////////////////
-// Empty image constructor
-// > imagetype: (optional) set the image format (for future use)
+/**
+ * Empty image constructor
+ * \param imagetype: (optional) set the image format, see ENUM_CXIMAGE_FORMATS
+ */
 CxImage::CxImage(DWORD imagetype)
 {
 	Startup(imagetype);
 }
 ////////////////////////////////////////////////////////////////////////////////
-CxImage::~CxImage()
-{
-	Destroy();
-}
-////////////////////////////////////////////////////////////////////////////////
-void CxImage::Destroy()
+/**
+ * Call this function to destroy image pixels, alpha channel, selection and sub layers.
+ * - Attributes are not erased, but IsValid returns false.
+ *
+ * \return true if everything is freed, false if the image is a Ghost
+ */
+bool CxImage::Destroy()
 {
 	//free this only if it's valid and it's not a ghost
 	if (info.pGhost==NULL){
@@ -51,30 +55,45 @@ void CxImage::Destroy()
 		if (pSelection) {free(pSelection); pSelection=0;}
 		if (pAlpha) {free(pAlpha); pAlpha=0;}
 		if (pDib) {free(pDib); pDib=0;}
+		return true;
 	}
+	return false;
 }
 ////////////////////////////////////////////////////////////////////////////////
-// Sized image constructor
-// > dwWidth: width
-// > dwHeight: height
-// > wBpp: bit per pixel
-// > imagetype: (optional) set the image format (for future use)
+/**
+ * Sized image constructor
+ * \param dwWidth: width
+ * \param dwHeight: height
+ * \param wBpp: bit per pixel, can be 1, 4, 8, 24
+ * \param imagetype: (optional) set the image format, see ENUM_CXIMAGE_FORMATS
+ */
 CxImage::CxImage(DWORD dwWidth, DWORD dwHeight, DWORD wBpp, DWORD imagetype)
 {
 	Startup(imagetype);
 	Create(dwWidth,dwHeight,wBpp,imagetype);
 }
 ////////////////////////////////////////////////////////////////////////////////
-// image constructor from existing source
-// > src: source image.
-// > copypixels: copy the pixels from the source image into the new image.
-// > copyselection: copy the selection from src
+/**
+ * image constructor from existing source
+ * \param src: source image.
+ * \param copypixels: copy the pixels from the source image into the new image.
+ * \param copyselection: copy the selection from source
+ * \param copyalpha: copy the alpha channel from source
+ * \sa Copy
+ */
 CxImage::CxImage(const CxImage &src, bool copypixels, bool copyselection, bool copyalpha)
 {
 	Startup(src.GetType());
 	Copy(src,copypixels,copyselection,copyalpha);
 }
 ////////////////////////////////////////////////////////////////////////////////
+/**
+ * Copies the image from an exsisting source
+ * \param src: source image.
+ * \param copypixels: copy the pixels from the source image into the new image.
+ * \param copyselection: copy the selection from source
+ * \param copyalpha: copy the alpha channel from source
+ */
 void CxImage::Copy(const CxImage &src, bool copypixels, bool copyselection, bool copyalpha)
 {
 	//copy the attributes
@@ -99,34 +118,56 @@ void CxImage::Copy(const CxImage &src, bool copypixels, bool copyselection, bool
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////
-// Use it before Create()
+/**
+ * Copies the image attributes from an existing image.
+ * - Works only on an empty image, and the image will be still empty.
+ * - <b> Use it before Create() </b>
+ */
 void CxImage::CopyInfo(const CxImage &src)
 {
 	if (pDib==NULL) memcpy(&info,&src.info,sizeof(CXIMAGEINFO));
 }
 ////////////////////////////////////////////////////////////////////////////////
+/**
+ * \sa Copy
+ */
 CxImage& CxImage::operator = (const CxImage& isrc)
 {
 	if (this != &isrc) Copy(isrc);
 	return *this;
 }
 ////////////////////////////////////////////////////////////////////////////////
-// Initializes or rebuilds the image.
-// Returns the pointer to the internal pDib object
-// > dwWidth: width
-// > dwHeight: height
-// > wBpp: bit per pixel
-// > imagetype: (optional) set the image format (for future use)
+/**
+ * Initializes or rebuilds the image.
+ * \param dwWidth: width
+ * \param dwHeight: height
+ * \param wBpp: bit per pixel, can be 1, 4, 8, 24
+ * \param imagetype: (optional) set the image format, see ENUM_CXIMAGE_FORMATS
+ * \return pointer to the internal pDib object; NULL if an error occurs.
+ */
 void* CxImage::Create(DWORD dwWidth, DWORD dwHeight, DWORD wBpp, DWORD imagetype)
 {
 	// destroy the existing image (if any)
-	Destroy();
+	if (!Destroy())
+		return NULL;
+
+	// prevent further actions if width or height are not vaild <Balabasnia>
+	if ((dwWidth == 0) || (dwHeight == 0)){
+		strcpy(info.szLastError,"CxImage::Create : width and height must be greater than zero");
+		return NULL;
+	}
 
     // Make sure bits per pixel is valid
     if		(wBpp <= 1)	wBpp = 1;
     else if (wBpp <= 4)	wBpp = 4;
     else if (wBpp <= 8)	wBpp = 8;
     else				wBpp = 24;
+
+	// limit memory requirements (and also a check for bad parameters)
+	if (((dwWidth*dwHeight*wBpp)>>8) > CXIMAGE_MAX_MEMORY){
+		strcpy(info.szLastError,"CXIMAGE_MAX_MEMORY exceeded");
+		return NULL;
+	}
 
 	// set the correct bpp value
     switch (wBpp){
@@ -145,6 +186,7 @@ void* CxImage::Create(DWORD dwWidth, DWORD dwHeight, DWORD wBpp, DWORD imagetype
     info.dwType = imagetype;
 
     // initialize BITMAPINFOHEADER
+	head.biSize = sizeof(BITMAPINFOHEADER); //<ralphw>
     head.biWidth = dwWidth;		// fill in width from parameter
     head.biHeight = dwHeight;	// fill in height from parameter
     head.biPlanes = 1;			// must be 1
@@ -156,7 +198,10 @@ void* CxImage::Create(DWORD dwWidth, DWORD dwHeight, DWORD wBpp, DWORD imagetype
     head.biClrImportant = 0;
 
 	pDib = malloc(GetSize()); // alloc memory block to store our bitmap
-    if (!pDib) return NULL;
+    if (!pDib){
+		strcpy(info.szLastError,"CxImage::Create can't allocate memory");
+		return NULL;
+	}
 
 	//clear the palette
 	RGBQUAD* pal=GetPalette();
@@ -181,33 +226,69 @@ void* CxImage::Create(DWORD dwWidth, DWORD dwHeight, DWORD wBpp, DWORD imagetype
     return pDib; //return handle to the DIB
 }
 ////////////////////////////////////////////////////////////////////////////////
-// returns the pointer to the image pixels
-BYTE* CxImage::GetBits()
+/**
+ * \return pointer to the image pixels. <b> USE CAREFULLY </b>
+ */
+BYTE* CxImage::GetBits(DWORD row)
 { 
-	if (pDib)	return ((BYTE*)pDib + *(DWORD*)pDib + GetPaletteSize()); 
+	if (pDib){
+		if (row) {
+			if (row<(DWORD)head.biHeight){
+				return ((BYTE*)pDib + *(DWORD*)pDib + GetPaletteSize() + (info.dwEffWidth * row));
+			} else {
+				return NULL;
+			}
+		} else {
+			return ((BYTE*)pDib + *(DWORD*)pDib + GetPaletteSize());
+		}
+	}
 	return NULL;
 }
 ////////////////////////////////////////////////////////////////////////////////
-// returns the whole pDib dimension
+/**
+ * \return the size in bytes of the internal pDib object
+ */
 long CxImage::GetSize()
 {
 	return head.biSize + head.biSizeImage + GetPaletteSize();
 }
 ////////////////////////////////////////////////////////////////////////////////
+/**
+ * Checks if the coordinates are inside the image
+ * \return true if x and y are both inside the image
+ */
 bool CxImage::IsInside(long x, long y)
 {
   return (0<=y && y<head.biHeight && 0<=x && x<head.biWidth);
 }
 ////////////////////////////////////////////////////////////////////////////////
+/**
+ * Sets the image bits to the specified value
+ * - for indexed images, the output color is set by the palette entries.
+ * - for RGB images, the output color is a shade of gray.
+ */
 void CxImage::Clear(BYTE bval)
 {
-	if (pDib) memset(info.pImage,bval,head.biSizeImage);
+	if (pDib == 0) return;
+
+	if (GetBpp() == 1){
+		if (bval > 0) bval = 255;
+	}
+	if (GetBpp() == 4){
+		bval = (BYTE)(17*(0x0F & bval));
+	}
+
+	memset(info.pImage,bval,head.biSizeImage);
 }
 ////////////////////////////////////////////////////////////////////////////////
-// moves everything from (*from) to (this), (*from) become empty
-void CxImage::Transfer(CxImage &from)
+/**
+ * Transfers the image from an existing source image. The source becomes empty.
+ * \return true if everything is ok
+ */
+bool CxImage::Transfer(CxImage &from)
 {
-	Destroy();
+	if (!Destroy())
+		return false;
 
 	memcpy(&head,&from.head,sizeof(BITMAPINFOHEADER));
 	memcpy(&info,&from.info,sizeof(CXIMAGEINFO));
@@ -221,10 +302,13 @@ void CxImage::Transfer(CxImage &from)
 	memset(&from.info,0,sizeof(CXIMAGEINFO));
 	from.pDib = from.pSelection = from.pAlpha = NULL;
 	from.pLayers = NULL;
+	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
-// (this) points to the same pDib owned by (*from), the image remains in (*from)
-// but (this) has the access to the pixels. Use carefully !!!
+/**
+ * (this) points to the same pDib owned by (*from), the image remains in (*from)
+ * but (this) has the access to the pixels. <b>Use carefully !!!</b>
+ */
 void CxImage::Ghost(CxImage *from)
 {
 	if (from){
@@ -238,7 +322,9 @@ void CxImage::Ghost(CxImage *from)
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////
-// turns a 16 or 32 bit bitfield image into a RGB image
+/**
+ * turns a 16 or 32 bit bitfield image into a RGB image
+ */
 void CxImage::Bitfield2RGB(BYTE *src, WORD redmask, WORD greenmask, WORD bluemask, BYTE bpp)
 {
 	switch (bpp){
@@ -296,31 +382,96 @@ void CxImage::Bitfield2RGB(BYTE *src, WORD redmask, WORD greenmask, WORD bluemas
 	return;
 }
 ////////////////////////////////////////////////////////////////////////////////
-bool CxImage::CreateFromARGB(DWORD dwWidth,DWORD dwHeight,BYTE* argbArray)
+/**
+ * Creates an image from a generic buffer
+ * \param pArray: source memory buffer
+ * \param dwWidth: image width
+ * \param dwHeight: image height
+ * \param dwBitsperpixel: can be 1,4,8,24,32
+ * \param dwBytesperline: line alignment, in bytes, for a single row stored in pArray
+ * \param bFlipImage: tune this parameter if the image is upsidedown
+ * \return true if everything is ok
+ */
+bool CxImage::CreateFromArray(BYTE* pArray,DWORD dwWidth,DWORD dwHeight,DWORD dwBitsperpixel, DWORD dwBytesperline, bool bFlipImage)
 {
-	if (argbArray==NULL) return false;
-	if (!Create(dwWidth,dwHeight,24)) return false;
+	if (pArray==NULL) return false;
+	if (!((dwBitsperpixel==1)||(dwBitsperpixel==4)||(dwBitsperpixel==8)||
+		(dwBitsperpixel==24)||(dwBitsperpixel==32))) return false;
 
-	BYTE* dst;
-	BYTE* src = argbArray;
+	if (!Create(dwWidth,dwHeight,dwBitsperpixel)) return false;
+
+	if (dwBitsperpixel<24) SetGrayPalette();
+
 #if CXIMAGE_SUPPORT_ALPHA
-	if (!AlphaIsValid()) AlphaCreate();
+	if (dwBitsperpixel==32) AlphaCreate();
 #endif //CXIMAGE_SUPPORT_ALPHA
-	for (long y = dwHeight-1; y >= 0; y--) {
-		dst = info.pImage+y*info.dwEffWidth;
-		for(DWORD x=0;x<dwWidth;x++){
-			*dst++=src[0];
-			*dst++=src[1];
-			*dst++=src[2];
+
+	BYTE *dst,*src;
+
+	for (DWORD y = 0; y<dwHeight; y++) {
+		dst = info.pImage + (bFlipImage?(dwHeight-1-y):y) * info.dwEffWidth;
+		src = pArray + y * dwBytesperline;
+		if (dwBitsperpixel==32){
+			for(DWORD x=0;x<dwWidth;x++){
+				*dst++=src[0];
+				*dst++=src[1];
+				*dst++=src[2];
 #if CXIMAGE_SUPPORT_ALPHA
-			AlphaSet(x,y,src[3]);
+				AlphaSet(x,y,src[3]);
 #endif //CXIMAGE_SUPPORT_ALPHA
-			src+=4;
+				src+=4;
+			}
+		} else {
+			memcpy(dst,src,min(info.dwEffWidth,dwBytesperline));
 		}
 	}
 	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
+/**
+ * \sa CreateFromArray
+ */
+bool CxImage::CreateFromMatrix(BYTE** ppMatrix,DWORD dwWidth,DWORD dwHeight,DWORD dwBitsperpixel, DWORD dwBytesperline, bool bFlipImage)
+{
+	if (ppMatrix==NULL) return false;
+	if (!((dwBitsperpixel==1)||(dwBitsperpixel==4)||(dwBitsperpixel==8)||
+		(dwBitsperpixel==24)||(dwBitsperpixel==32))) return false;
+
+	if (!Create(dwWidth,dwHeight,dwBitsperpixel)) return false;
+
+	if (dwBitsperpixel<24) SetGrayPalette();
+
+#if CXIMAGE_SUPPORT_ALPHA
+	if (dwBitsperpixel==32) AlphaCreate();
+#endif //CXIMAGE_SUPPORT_ALPHA
+
+	BYTE *dst,*src;
+
+	for (DWORD y = 0; y<dwHeight; y++) {
+		dst = info.pImage + (bFlipImage?(dwHeight-1-y):y) * info.dwEffWidth;
+		src = ppMatrix[y];
+		if (src){
+			if (dwBitsperpixel==32){
+				for(DWORD x=0;x<dwWidth;x++){
+					*dst++=src[0];
+					*dst++=src[1];
+					*dst++=src[2];
+#if CXIMAGE_SUPPORT_ALPHA
+					AlphaSet(x,y,src[3]);
+#endif //CXIMAGE_SUPPORT_ALPHA
+					src+=4;
+				}
+			} else {
+				memcpy(dst,src,min(info.dwEffWidth,dwBytesperline));
+			}
+		}
+	}
+	return true;
+}
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * \return lightness difference between elem1 and elem2
+ */
 int CxImage::CompareColors(const void *elem1, const void *elem2)
 {
 	RGBQUAD* c1 = (RGBQUAD*)elem1;
@@ -332,42 +483,16 @@ int CxImage::CompareColors(const void *elem1, const void *elem2)
 	return (g1-g2);
 }
 ////////////////////////////////////////////////////////////////////////////////
-RGBQUAD	CxImage::GetTransColor()
+/**
+ * simply calls "if (memblock) free(memblock);".
+ * Useful when calling Encode for a memory buffer,
+ * from a DLL compiled with different memory management options.
+ * CxImage::FreeMemory will use the same memory environment used by Encode. 
+ */
+void CxImage::FreeMemory(void* memblock)
 {
-	if (head.biBitCount<24 && info.nBkgndIndex != -1) return GetPaletteColor((BYTE)info.nBkgndIndex);
-	return info.nBkgndColor;
+	if (memblock)
+		free(memblock);
 }
 ////////////////////////////////////////////////////////////////////////////////
-BYTE CxImage::GetColorType()
-{
-	BYTE b = (BYTE)((head.biBitCount>8) ? 2 /*COLORTYPE_COLOR*/ : 1 /*COLORTYPE_PALETTE*/);
-#if CXIMAGE_SUPPORT_ALPHA
-	if (AlphaIsValid()) b = 4 /*COLORTYPE_ALPHA*/;
-#endif //CXIMAGE_SUPPORT_ALPHA
-	return b;
-}
-////////////////////////////////////////////////////////////////////////////////
-void CxImage::SetXDPI(long dpi)
-{
-	info.xDPI = dpi;
-	head.biXPelsPerMeter = (long) floor(dpi * 10000.0 / 254.0 + 0.5);
-}
-////////////////////////////////////////////////////////////////////////////////
-void CxImage::SetYDPI(long dpi)
-{
-	info.yDPI = dpi;
-	head.biYPelsPerMeter = (long) floor(dpi * 10000.0 / 254.0 + 0.5);
-}
-////////////////////////////////////////////////////////////////////////////////
-void CxImage::SetFlags(DWORD flags, bool bLockReservedFlags)
-{
-	if (bLockReservedFlags) info.dwFlags = flags & 0x0000ffff;
-	else info.dwFlags = flags;
-}
-////////////////////////////////////////////////////////////////////////////////
-const char* CxImage::GetVersion()
-{
-	static const char CxImageVersion[] = "CxImage 5.71";
-	return (CxImageVersion);
-}
 //EOF

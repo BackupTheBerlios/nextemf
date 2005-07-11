@@ -246,6 +246,11 @@ CemuleApp::CemuleApp(LPCTSTR lpszAppName)
 	m_strModLongVersion.AppendFormat(_T("%u.%u"), CemuleApp::m_nMVersionMjr, CemuleApp::m_nMVersionMin);
 #endif //Modversion
 //<==Modversion [shadow2004][cyrex2001]
+	//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+	m_lastValidId	= 0;
+#endif //Reask sourcen after ip change
+	//<==Reask sourcen after ip change [cyrex2001]
 }
 
 
@@ -1677,3 +1682,47 @@ void CemuleApp::OptimizerInfo(void)
 }
 #endif
 //<== Optimizer [shadow2004]
+
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+void CemuleApp::CheckIDChange(void)
+	{
+	DWORD ReaskID = 0;
+	if (serverconnect->IsConnected())
+		{
+		ReaskID = serverconnect->GetClientID();
+		}
+	//if(ReaskID == 0 && thePrefs.GetCheckCon())
+	//	{
+	//	ReaskID = conchecker.GetIP();
+	//	}
+	if(ReaskID == 0)
+		{
+		ReaskID = GetPublicIP();
+		}
+	if(thePrefs.IsreaskSourceAfterIPChange()&& (m_lastValidId != 0 && ReaskID != 0 && m_lastValidId != ReaskID))
+		{
+		//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+		if(thePrefs.GetQuickStart() && thePrefs.GetQuickStartAfterIPChange())
+			{
+			theApp.downloadqueue->quickflag = 0;
+			theApp.downloadqueue->quickflags = 0;
+			}
+#endif //Quickstart
+		//<==Quickstart [cyrex2001]
+		theApp.clientlist->TrigReaskForDownload(true);
+		AddLogLine (false, _T("Change from IP:%s (%s ID:%u) to IP:%s (%s ID:%u) detected%s"), 
+			ipstr(m_lastValidId),
+			(m_lastValidId < 16777216) ? _T("low") : _T("high"),
+			m_lastValidId,
+			ipstr(ReaskID),
+			(ReaskID < 16777216)  ? _T("low") : _T("high"),
+			ReaskID,
+			(m_lastValidId < 16777216 && ReaskID < 16777216) ? 
+			_T("") : _T(", all sources will be reasked on 1...10 minutes"));
+		}
+	m_lastValidId = ReaskID;
+	}
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]

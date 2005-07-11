@@ -2151,6 +2151,14 @@
 #define IDC_MAXUP                       3201
 #define IDC_DCAP_LBL2                   3202
 #define IDC_UCAP_LBL2                   3203
+#define IDC_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK 3250
+#define IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK 3250
+#define IDS_QUICK_START                 3251
+#define IDS_QUICK_START_MAX_CONN        3252
+#define IDS_QUICK_START_MAX_CONN_PER_FIVE 3253
+#define IDS_QUICK_START_AFTER_IP_CHANGE 3254
+#define IDS_QUICK_START_MAX_TIME        3255
+#define IDS_CON_CONTROL					3256
 
 // Next default values for new objects
 // 

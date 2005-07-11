@@ -135,4 +135,13 @@ private:
 	CUpDownClient* m_pBuddy;
 	uint8 m_nBuddyStatus;
 	CUpDownClientPtrList m_KadList;
+
+	//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+public:
+	// Maella -Inform sources of an ID change-
+	void TrigReaskForDownload(bool immediate);
+	// Maella end
+#endif //Reask sourcen after ip change
+	//<==Reask sourcen after ip change [cyrex2001]
 };

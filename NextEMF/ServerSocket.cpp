@@ -260,7 +260,12 @@ bool CServerSocket::ProcessPacket(const BYTE* packet, uint32 size, uint8 opcode)
 				}
 				serverconnect->SetClientID(la->clientid);
 				AddLogLine(false, GetResString(IDS_NEWCLIENTID), la->clientid);
-
+				//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+				if(thePrefs.IsreaskSourceAfterIPChange())
+					theApp.CheckIDChange();
+#endif //Reask sourcen after ip change
+				//<==Reask sourcen after ip change [cyrex2001]
 				theApp.downloadqueue->ResetLocalServerRequests();
 				break;
 			}

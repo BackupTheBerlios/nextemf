@@ -1,12 +1,14 @@
 // xImaPal.cpp : Palette and Pixel functions
-/* 07/08/2001 v1.00 - ing.davide.pizzolato@libero.it
- * CxImage version 5.71 25/Apr/2003
+/* 07/08/2001 v1.00 - Davide Pizzolato - www.xdp.it
+ * CxImage version 5.99c 17/Oct/2004
  */
 
 #include "ximage.h"
 
 ////////////////////////////////////////////////////////////////////////////////
-// returns the palette dimension in byte
+/**
+ * returns the palette dimension in byte
+ */
 DWORD CxImage::GetPaletteSize()
 {
 	return (head.biClrUsed * sizeof(RGBQUAD));
@@ -57,7 +59,9 @@ void CxImage::SetPaletteColor(BYTE idx, COLORREF cr)
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////
-// returns the pointer to the first palette index 
+/**
+ * returns the pointer to the first palette index
+ */
 RGBQUAD* CxImage::GetPalette() const
 {
 	if ((pDib)&&(head.biClrUsed))
@@ -65,6 +69,9 @@ RGBQUAD* CxImage::GetPalette() const
 	return NULL;
 }
 ////////////////////////////////////////////////////////////////////////////////
+/**
+ * Returns the color of the specified index.
+ */
 RGBQUAD CxImage::GetPaletteColor(BYTE idx)
 {
 	RGBQUAD rgb = {0,0,0,0};
@@ -81,13 +88,16 @@ RGBQUAD CxImage::GetPaletteColor(BYTE idx)
 	return rgb;
 }
 ////////////////////////////////////////////////////////////////////////////////
+/**
+ * Returns the palette index of the specified pixel.
+ */
 BYTE CxImage::GetPixelIndex(long x,long y)
 {
 	if ((pDib==NULL)||(head.biClrUsed==0)) return 0;
 
 	if ((x<0)||(y<0)||(x>=head.biWidth)||(y>=head.biHeight)) {
 		if (info.nBkgndIndex != -1)	return (BYTE)info.nBkgndIndex;
-		else return 0;
+		else return *info.pImage;
 	}
 	if (head.biBitCount==8){
 		return info.pImage[y*info.dwEffWidth + x];
@@ -107,16 +117,40 @@ BYTE CxImage::GetPixelIndex(long x,long y)
 	return 0;
 }
 ////////////////////////////////////////////////////////////////////////////////
-RGBQUAD CxImage::GetPixelColor(long x,long y)
+BYTE CxImage::BlindGetPixelIndex(const long x,const long y)
+{
+#ifdef _DEBUG
+	if ((pDib==NULL) || (head.biClrUsed==0) || !IsInside(x,y)) throw 0;
+#endif
+
+	if (head.biBitCount==8){
+		return info.pImage[y*info.dwEffWidth + x];
+	} else {
+		BYTE pos;
+		BYTE iDst= info.pImage[y*info.dwEffWidth + (x*head.biBitCount >> 3)];
+		if (head.biBitCount==4){
+			pos = (BYTE)(4*(1-x%2));
+			iDst &= (0x0F<<pos);
+			return (BYTE)(iDst >> pos);
+		} else if (head.biBitCount==1){
+			pos = (BYTE)(7-x%8);
+			iDst &= (0x01<<pos);
+			return (BYTE)(iDst >> pos);
+		}
+	}
+	return 0;
+}
+////////////////////////////////////////////////////////////////////////////////
+RGBQUAD CxImage::GetPixelColor(long x,long y, bool bGetAlpha)
 {
 //	RGBQUAD rgb={0,0,0,0};
 	RGBQUAD rgb=info.nBkgndColor; //<mpwolski>
 	if ((pDib==NULL)||(x<0)||(y<0)||
 		(x>=head.biWidth)||(y>=head.biHeight)){
 		if (info.nBkgndIndex != -1){
-			if (head.biBitCount<24) rgb = GetPaletteColor((BYTE)info.nBkgndIndex);
-			else rgb = info.nBkgndColor;
-		} else if (pDib) rgb = GetPixelColor(0,0);
+			if (head.biBitCount<24) return GetPaletteColor((BYTE)info.nBkgndIndex);
+			else return info.nBkgndColor;
+		} else if (pDib) return GetPixelColor(0,0);
 		return rgb;
 	}
 
@@ -129,7 +163,38 @@ RGBQUAD CxImage::GetPixelColor(long x,long y)
 		rgb.rgbRed  = *iDst;
 	}
 #if CXIMAGE_SUPPORT_ALPHA
-	if (pAlpha) rgb.rgbReserved = AlphaGet(x,y);
+	if (pAlpha && bGetAlpha) rgb.rgbReserved = AlphaGet(x,y);
+#else
+	rgb.rgbReserved = 0;
+#endif //CXIMAGE_SUPPORT_ALPHA
+	return rgb;
+}
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * This is (a bit) faster version of GetPixelColor. 
+ * It tests bounds only in debug mode (_DEBUG defined).
+ * 
+ * It is an error to request out-of-borders pixel with this method. 
+ * In DEBUG mode an exception will be thrown, and data will be violated in non-DEBUG mode. 
+ * \author ***bd*** 2.2004
+ */
+RGBQUAD CxImage::BlindGetPixelColor(const long x,const long y)
+{
+  RGBQUAD rgb;
+#ifdef _DEBUG
+	if ((pDib==NULL) || !IsInside(x,y)) throw 0;
+#endif
+
+	if (head.biClrUsed){
+		return GetPaletteColor(BlindGetPixelIndex(x,y));
+	}
+
+	BYTE* iDst  = info.pImage + y*info.dwEffWidth + x*3;
+	rgb.rgbBlue = *iDst++;
+	rgb.rgbGreen= *iDst++;
+	rgb.rgbRed  = *iDst;
+#if CXIMAGE_SUPPORT_ALPHA
+	if (pAlpha) rgb.rgbReserved = pAlpha[x+y*head.biWidth];
 #else
 	rgb.rgbReserved = 0;
 #endif //CXIMAGE_SUPPORT_ALPHA
@@ -172,7 +237,7 @@ void CxImage::SetPixelColor(long x,long y,COLORREF cr)
 	SetPixelColor(x,y,RGBtoRGBQUAD(cr));
 }
 ////////////////////////////////////////////////////////////////////////////////
-void CxImage::SetPixelColor(long x,long y,RGBQUAD c, bool bEditAlpha)
+void CxImage::SetPixelColor(long x,long y,RGBQUAD c, bool bSetAlpha)
 {
 	if ((pDib==NULL)||(x<0)||(y<0)||
 		(x>=head.biWidth)||(y>=head.biHeight)) return;
@@ -184,11 +249,47 @@ void CxImage::SetPixelColor(long x,long y,RGBQUAD c, bool bEditAlpha)
 		*iDst++ = c.rgbGreen;
 		*iDst   = c.rgbRed;
 #if CXIMAGE_SUPPORT_ALPHA
-		if (bEditAlpha) AlphaSet(x,y,c.rgbReserved);
+		if (bSetAlpha) AlphaSet(x,y,c.rgbReserved);
 #endif //CXIMAGE_SUPPORT_ALPHA
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////
+/**
+ * Blends the current pixel color with a new color.
+ * \param x,y = pixel
+ * \param c = new color
+ * \param blend = can be from 0 (no effect) to 1 (full effect).
+ * \param bSetAlpha = if true, blends also the alpha component stored in c.rgbReserved
+ */
+void CxImage::BlendPixelColor(long x,long y,RGBQUAD c, float blend, bool bSetAlpha)
+{
+	if ((pDib==NULL)||(x<0)||(y<0)||
+		(x>=head.biWidth)||(y>=head.biHeight)) return;
+
+	int a0 = (int)(256*blend);
+	int a1 = 256 - a0;
+
+	RGBQUAD c0 = BlindGetPixelColor(x,y);
+	c.rgbRed  = (BYTE)((c.rgbRed * a0 + c0.rgbRed * a1)>>8);
+	c.rgbBlue  = (BYTE)((c.rgbBlue * a0 + c0.rgbBlue * a1)>>8);
+	c.rgbGreen  = (BYTE)((c.rgbGreen * a0 + c0.rgbGreen * a1)>>8);
+
+	if (head.biClrUsed)
+		SetPixelIndex(x,y,GetNearestIndex(c));
+	else {
+		BYTE* iDst = info.pImage + y*info.dwEffWidth + x*3;
+		*iDst++ = c.rgbBlue;
+		*iDst++ = c.rgbGreen;
+		*iDst   = c.rgbRed;
+#if CXIMAGE_SUPPORT_ALPHA
+		if (bSetAlpha) AlphaSet(x,y,c.rgbReserved);
+#endif //CXIMAGE_SUPPORT_ALPHA
+	}
+}
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Returns the best palette index that matches a specified color.
+ */
 BYTE CxImage::GetNearestIndex(RGBQUAD c)
 {
 	if ((pDib==NULL)||(head.biClrUsed==0)) return 0;
@@ -200,9 +301,9 @@ BYTE CxImage::GetNearestIndex(RGBQUAD c)
 
 	BYTE* iDst = (BYTE*)(pDib) + sizeof(BITMAPINFOHEADER);
 	long distance=200000;
-	int i,j=0;
+	int i,j = 0;
 	long k,l;
-	int m= (int)head.biClrUsed;
+	int m = (int)(head.biClrImportant==0 ? head.biClrUsed : head.biClrImportant);
 	for(i=0,l=0;i<m;i++,l+=sizeof(RGBQUAD)){
 		k = (iDst[l]-c.rgbBlue)*(iDst[l]-c.rgbBlue)+
 			(iDst[l+1]-c.rgbGreen)*(iDst[l+1]-c.rgbGreen)+
@@ -221,9 +322,11 @@ BYTE CxImage::GetNearestIndex(RGBQUAD c)
 	return (BYTE)j;
 }
 ////////////////////////////////////////////////////////////////////////////////
-// swaps the blue and red components (for RGB images)
-// > buffer: pointer to the pixels
-// > lenght: number of bytes to swap. lenght may not exceed the scan line.
+/**
+ * swaps the blue and red components (for RGB images)
+ * \param buffer : pointer to the pixels
+ * \param length : number of bytes to swap. lenght may not exceed the scan line.
+ */
 void CxImage::RGBtoBGR(BYTE *buffer, int length)
 {
 	if (buffer && (head.biClrUsed==0)){
@@ -250,6 +353,11 @@ COLORREF CxImage::RGBQUADtoRGB (RGBQUAD c)
 	return RGB(c.rgbRed,c.rgbGreen,c.rgbBlue);
 }
 ////////////////////////////////////////////////////////////////////////////////
+/**
+ * Returns the color of the specified index.
+ * \param i = palette index
+ * \param r, g, b = output color channels
+ */
 bool CxImage::GetPaletteColor(BYTE i, BYTE* r, BYTE* g, BYTE* b)
 {
 	RGBQUAD* ppal=GetPalette();
@@ -297,6 +405,11 @@ void CxImage::SetPalette(RGBQUAD* pPal,DWORD nColors)
 	info.last_c_isvalid = false;
 }
 ////////////////////////////////////////////////////////////////////////////////
+/**
+ * Sets (or replaces) the palette to gray scale palette.
+ * The function doesn't change the pixels; for standard
+ * gray scale conversion use GrayScale().
+ */
 void CxImage::SetGrayPalette()
 {
 	if ((pDib==NULL)||(head.biClrUsed==0)) return;
@@ -305,6 +418,10 @@ void CxImage::SetGrayPalette()
 		pal[ni].rgbBlue=pal[ni].rgbGreen = pal[ni].rgbRed = (BYTE)(ni*(255/(head.biClrUsed-1)));
 }
 ////////////////////////////////////////////////////////////////////////////////
+/**
+ * Colorize the palette.
+ * \sa Colorize
+ */
 void CxImage::BlendPalette(COLORREF cr,long perc)
 {
 	if ((pDib==NULL)||(head.biClrUsed==0)) return;
@@ -322,6 +439,9 @@ void CxImage::BlendPalette(COLORREF cr,long perc)
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////
+/**
+ * Returns true if the image has 256 colors and a linear grey scale palette.
+ */
 bool CxImage::IsGrayScale()
 {
 	RGBQUAD* ppal=GetPalette();
@@ -332,7 +452,9 @@ bool CxImage::IsGrayScale()
 	return true;
 }
 ////////////////////////////////////////////////////////////////////////////////
-// swap two indexes in the image and their colors in the palette
+/**
+ * swap two indexes in the image and their colors in the palette
+ */
 void CxImage::SwapIndex(BYTE idx1, BYTE idx2)
 {
 	RGBQUAD* ppal=GetPalette();
@@ -352,6 +474,184 @@ void CxImage::SwapIndex(BYTE idx1, BYTE idx2)
 	}
 }
 ////////////////////////////////////////////////////////////////////////////////
+bool CxImage::IsTransparent(long x, long y)
+{
+	if (!pDib) return false;
+
+	if (info.nBkgndIndex>=0){
+		if (head.biClrUsed){
+			if (GetPixelIndex(x,y) == info.nBkgndIndex) return true;
+		} else {
+			RGBQUAD ct = info.nBkgndColor;
+			RGBQUAD c = GetPixelColor(x,y,false);
+			if (*(long*)&c==*(long*)&ct) return true;
+		}
+	}
+
+#if CXIMAGE_SUPPORT_ALPHA
+	if (pAlpha) return AlphaGet(x,y)==0;
+#endif
+
+	return false;
+}
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Checks if image has the same palette, if any.
+ * \param img = image to compare.
+ * \param bCheckAlpha = check also the rgbReserved field.
+ */
+bool CxImage::IsSamePalette(CxImage &img, bool bCheckAlpha)
+{
+	if (head.biClrUsed != img.head.biClrUsed)
+		return false;
+	if (head.biClrUsed == 0)
+		return false;
+
+	RGBQUAD c1,c2;
+	for (DWORD n=0; n<head.biClrUsed; n++){
+		c1 = GetPaletteColor((BYTE)n);
+		c2 = img.GetPaletteColor((BYTE)n);
+		if (c1.rgbRed != c2.rgbRed) return false;
+		if (c1.rgbBlue != c2.rgbBlue) return false;
+		if (c1.rgbGreen != c2.rgbGreen) return false;
+		if (bCheckAlpha && (c1.rgbReserved != c2.rgbReserved)) return false;
+	}
+	return true;
+}
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * \sa SetClrImportant
+ */
+DWORD CxImage::GetClrImportant() const
+{
+	return head.biClrImportant;
+}
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * sets the maximum number of colors that some functions like
+ * DecreaseBpp() or GetNearestIndex() will use on indexed images
+ * \param ncolors should be less than 2^bpp,
+ * or 0 if all the colors are important.
+ */
+void CxImage::SetClrImportant(DWORD ncolors)
+{
+	if (ncolors==0 || ncolors>256) {
+		head.biClrImportant = 0;
+		return;
+	}
+
+	switch(head.biBitCount){
+	case 1:
+		head.biClrImportant = min(ncolors,2);
+		break;
+	case 4:
+		head.biClrImportant = min(ncolors,16);
+		break;
+	case 8:
+		head.biClrImportant = ncolors;
+		break;
+	}
+	return;
+}
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Returns pointer to pixel. Currently implemented only for truecolor images.
+ *  
+ * \param  x,y - coordinates
+ *
+ * \return pointer to first byte of pixel data
+ *
+ * \author ***bd*** 2.2004
+ */
+void* CxImage::BlindGetPixelPointer(const long x, const long y)
+{
+  if (!IsIndexed())
+    return info.pImage + y*info.dwEffWidth + x*3;
+  else
+    return 0;
+}
+////////////////////////////////////////////////////////////////////////////////
+void CxImage::DrawLine(int StartX, int EndX, int StartY, int EndY, COLORREF cr)
+{
+	DrawLine(StartX, EndX, StartY, EndY, RGBtoRGBQUAD(cr));
+}
+////////////////////////////////////////////////////////////////////////////////
+void CxImage::DrawLine(int StartX, int EndX, int StartY, int EndY, RGBQUAD color, bool bSetAlpha)
+{
+	if (!pDib) return;
+	//////////////////////////////////////////////////////
+	// Draws a line using the Bresenham line algorithm
+	// Thanks to Jordan DeLozier <JDL>
+	//////////////////////////////////////////////////////
+	int x1 = StartX;
+	int y1 = StartY;
+	int x = x1;                       // Start x off at the first pixel
+	int y = y1;                       // Start y off at the first pixel
+	int x2 = EndX;
+	int y2 = EndY;
+
+	int xinc1,xinc2,yinc1,yinc2;      // Increasing values
+	int den, num, numadd,numpixels;   
+	int deltax = abs(x2 - x1);        // The difference between the x's
+	int deltay = abs(y2 - y1);        // The difference between the y's
+
+	// Get Increasing Values
+	if (x2 >= x1) {                // The x-values are increasing
+		xinc1 = 1;
+		xinc2 = 1;
+	} else {                         // The x-values are decreasing
+		xinc1 = -1;
+		xinc2 = -1;
+	}
+
+	if (y2 >= y1) {                // The y-values are increasing
+		yinc1 = 1;
+		yinc2 = 1;
+	} else {                         // The y-values are decreasing
+		yinc1 = -1;
+		yinc2 = -1;
+	}
+
+	// Actually draw the line
+	if (deltax >= deltay)         // There is at least one x-value for every y-value
+	{
+		xinc1 = 0;                  // Don't change the x when numerator >= denominator
+		yinc2 = 0;                  // Don't change the y for every iteration
+		den = deltax;
+		num = deltax / 2;
+		numadd = deltay;
+		numpixels = deltax;         // There are more x-values than y-values
+	}
+	else                          // There is at least one y-value for every x-value
+	{
+		xinc2 = 0;                  // Don't change the x for every iteration
+		yinc1 = 0;                  // Don't change the y when numerator >= denominator
+		den = deltay;
+		num = deltay / 2;
+		numadd = deltax;
+		numpixels = deltay;         // There are more y-values than x-values
+	}
+	
+	for (int curpixel = 0; curpixel <= numpixels; curpixel++)
+	{
+		// Draw the current pixel
+		SetPixelColor(x,y,color,bSetAlpha);
+		
+		num += numadd;              // Increase the numerator by the top of the fraction
+		if (num >= den)             // Check if numerator >= denominator
+		{
+			num -= den;               // Calculate the new numerator value
+			x += xinc1;               // Change the x as appropriate
+			y += yinc1;               // Change the y as appropriate
+		}
+		x += xinc2;                 // Change the x as appropriate
+		y += yinc2;                 // Change the y as appropriate
+	}
+}
+////////////////////////////////////////////////////////////////////////////////
+/**
+ * Sets a palette with standard colors for 4 and 8 bpp images.
+ */
 void CxImage::SetStdPalette()
 {
 	if (!pDib) return;

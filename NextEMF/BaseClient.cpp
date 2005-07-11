@@ -247,6 +247,20 @@ void CUpDownClient::Init()
 #endif //Modversion
 //<==Modversion [shadow2004]
 
+	//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+	// Maella -Spread Request- (idea SlugFiller)
+	// FILEREASKTIME = 29 mins
+	// Remark: a client will be remove from an upload queue after 2*FILEREASKTIME (~1 hour)
+	//         a two small value increases the traffic + causes a banishment if lower than 10 minutes
+	//         srand() is already called a few times..
+	uint32 jitter = rand() * MIN2S(4) / RAND_MAX; // 0..4 minutes, keep in mind integer overflow
+	m_jitteredFileReaskTime = FILEREASKTIME - SEC2MS(90) + SEC2MS(jitter) - MIN2MS(2);
+	//Xman: result between 25.5 and 29.5 this is useful to use TCP-Connection from older clients
+	m_dwLastUDPReaskTime = 0;
+	m_dwNextTCPAskedTime = 0;
+#endif //Reask sourcen after ip change
+	//<==Reask sourcen after ip change [cyrex2001]
 }
 
 CUpDownClient::~CUpDownClient(){
@@ -310,6 +324,13 @@ CUpDownClient::~CUpDownClient(){
 
 	if (m_pReqFileAICHHash != NULL)
 		delete m_pReqFileAICHHash;
+
+	//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+	if (!m_partStatusMap.empty())
+		m_partStatusMap.clear();
+#endif //Reask sourcen after ip change
+	//<==Reask sourcen after ip change [cyrex2001]
 }
 
 void CUpDownClient::ClearHelloProperties()
@@ -2244,6 +2265,13 @@ void CUpDownClient::ResetFileStatusInfo()
 		delete m_pReqFileAICHHash;
 		m_pReqFileAICHHash = NULL;
 	}
+
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+	m_dwLastUDPReaskTime = 0;			
+	m_dwNextTCPAskedTime = 0;
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 }
 
 bool CUpDownClient::IsBanned() const

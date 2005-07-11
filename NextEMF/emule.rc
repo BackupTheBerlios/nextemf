@@ -4355,7 +4355,19 @@ BEGIN
     IDS_RUNNINGRESTRICTED   "eMule is running with reduced privileges"
 END
 
-//#endif    // English (U.S.) resources
+STRINGTABLE 
+BEGIN
+    IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK 
+                            "Reask sources after reconnection of modem (IP change)"
+    IDS_QUICK_START         "Quick Start"
+    IDS_QUICK_START_MAX_CONN "max. con."
+    IDS_QUICK_START_MAX_CONN_PER_FIVE "max. con./5sec"
+    IDS_QUICK_START_AFTER_IP_CHANGE "Quick Start after IP Change"
+    IDS_QUICK_START_MAX_TIME "Time for Quick Start [8-18 min.]"
+    IDS_CON_CONTROL         "Connection control"
+END
+
+#endif    // Englisch (USA) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

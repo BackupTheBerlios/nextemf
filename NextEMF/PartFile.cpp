@@ -2246,22 +2246,70 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 							break;
 						}
 					}
+				//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+				// Maella -Unnecessary Protocol Overload-
+				// Maella -Spread Request- (idea SlugFiller)					
+				if(theApp.IsConnected() == true)
+					{
+					// Check if a refresh is required for the download session with a cheap UDP
+					if((cur_src->GetLastAskedTime() != 0) &&
+						(cur_src->GetNextTCPAskedTime() > dwCurTick + MIN2MS(10)) &&
+						// 55 seconds for two attempts to refresh the download session with UDP
+						cur_src->GetTimeUntilReask() < SEC2MS(55) && cur_src->GetTimeUntilReask() > 0 && ::GetTickCount()-cur_src->getLastTriedToConnectTime() > MIN2MS(20)) // ZZ:DownloadManager (one resk timestamp for each file)
+						{
+						// Send a OP_REASKFILEPING (UDP) to refresh the download session
+						// The refresh of the download session is necessary to stay in the remote queue
+						// => see CUpDownClient::SetLastUpRequest() and MAX_PURGEQUEUETIME
+						cur_src->UDPReaskForDownload();
+						}
+					}
+				// Maella end
+#else
 					//Give up to 1 min for UDP to respond.. If we are within one min of TCP reask, do not try..
 					if (theApp.IsConnected() && cur_src->GetTimeUntilReask() < MIN2MS(2) && cur_src->GetTimeUntilReask() > SEC2MS(1) && ::GetTickCount()-cur_src->getLastTriedToConnectTime() > 20*60*1000) // ZZ:DownloadManager (one resk timestamp for each file)
 						cur_src->UDPReaskForDownload();
 				}
+#endif //Reask sourcen after ip change
+			//<==Reask sourcen after ip change [cyrex2001]
 				case DS_CONNECTING:
 				case DS_TOOMANYCONNS:
 				case DS_TOOMANYCONNSKAD:
 				case DS_NONE:
 				case DS_WAITCALLBACK:
 				case DS_WAITCALLBACKKAD:
+					//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+					// Maella -Spread Request- (idea SlugFiller)
+					// Maella -Unnecessary Protocol Overload-
+					if(theApp.IsConnected())	
+						{
+						// Check if a refresh is required for the download session with TCP
+						if(//(cur_src->GetLastAskedTime() == 0) || // Never asked before
+							(cur_src->GetNextTCPAskedTime() <= dwCurTick) || // Full refresh with TCP is required
+							(cur_src->socket != NULL && // Take advantage of the current connection
+							cur_src->socket->IsConnected() == true && 
+							cur_src->GetNextTCPAskedTime() - MIN2MS(10) < dwCurTick && 
+							cur_src->GetLastTCPAskedTime(this) + MIN_REQUESTTIME + MIN2MS(1) < dwCurTick) ||
+							(cur_src->GetTimeUntilReask() == 0 && ::GetTickCount()-cur_src->getLastTriedToConnectTime() > MIN2MS(20))) // ZZ:DownloadManager (one resk timestamp for each file)
+							{
+							// Initialize or refresh the download session with an expensive TCP session
+							// The refresh of the download session is necessary to stay in the remote queue
+							// => see CUpDownClient::SetLastUpRequest() and MAX_PURGEQUEUETIME
+							if(!cur_src->AskForDownload()) // NOTE: This may *delete* the client!!
+								break; //I left this break here just as a reminder just in case re rearange things..
+							}
+						}
+					// Maella end
+#else
 				{
 					if (theApp.IsConnected() && cur_src->GetTimeUntilReask() == 0 && ::GetTickCount()-cur_src->getLastTriedToConnectTime() > 20*60*1000) // ZZ:DownloadManager (one resk timestamp for each file)
 					{
 						if(!cur_src->AskForDownload()) // NOTE: This may *delete* the client!!
 							break; //I left this break here just as a reminder just in case re rearange things..
 					}
+#endif //Reask sourcen after ip change
+					//<==Reask sourcen after ip change [cyrex2001]
 					break;
 				}
 			}

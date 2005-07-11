@@ -1293,6 +1293,12 @@ void CKademliaUDPListener::processFirewalledResponse (const byte *packetData, ui
 	{
 		CKademlia::getPrefs()->setIPAddress(firewalledIP);
 		theApp.emuledlg->ShowConnectionState();
+		//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+		if(thePrefs.IsreaskSourceAfterIPChange())
+			theApp.CheckIDChange();
+#endif //Reask sourcen after ip change
+		//<==Reask sourcen after ip change [cyrex2001]
 	}
 	CKademlia::getPrefs()->incRecheckIP();
 }

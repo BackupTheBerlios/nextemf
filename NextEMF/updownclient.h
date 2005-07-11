@@ -21,6 +21,11 @@
 #include "NextEMF/NextEMF.h"
 #endif
 //<== Extended Failed/Success Statistic by NetF [shadow2004]
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+#include <map>
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
 
 //==>SNAFU [shadow2004]
 #ifdef SNAFU
@@ -794,6 +799,33 @@ protected:
     DWORD   m_dwLastTriedToConnect; // ZZ:DownloadManager (one resk timestamp for each file)
     bool    RecentlySwappedForSourceExchange() { return ::GetTickCount()-lastSwapForSourceExchangeTick < 30*1000; } // ZZ:DownloadManager
     void    SetSwapForSourceExchangeTick() { lastSwapForSourceExchangeTick = ::GetTickCount(); } // ZZ:DownloadManager
+//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+public:	
+	void   TrigNextSafeAskForDownload(CPartFile* pFile);
+protected:
+	// I was not very keen on using these artifact because it's an open  
+	// door for leechers, but since Khaos did it before...
+	struct PartStatus{
+		PartStatus() : dwStartUploadReqTime(0) {}
+	uint32 dwStartUploadReqTime; // Used to avoid Ban()
+		};
+	typedef std::map<CPartFile*, PartStatus> PartStatusMap;
+	PartStatusMap m_partStatusMap;
+public:
+	uint32 GetNextTCPAskedTime() const {return m_dwNextTCPAskedTime;}
+	void   SetNextTCPAskedTime(uint32 time) {m_dwNextTCPAskedTime = time;}
+	uint32 GetLastTCPAskedTime(CPartFile* pFile) {if (!pFile) return 0; return m_partStatusMap[pFile].dwStartUploadReqTime;}
+// Maella -Spread Request- (idea SlugFiller)
+public:
+	uint32 GetJitteredFileReaskTime() const {return m_jitteredFileReaskTime;} // range 27..31 min 
+private:
+	uint32 m_jitteredFileReaskTime;
+	uint32 m_dwLastUDPReaskTime;  // Last attempt to refresh the download session with UDP
+	uint32 m_dwNextTCPAskedTime;  // Time of the next refresh for the download session with TCP
+	// Maella end
+#endif //Reask sourcen after ip change
+	//<==Reask sourcen after ip change [cyrex2001]
 };
 //#pragma pack()
 

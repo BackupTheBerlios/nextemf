@@ -519,6 +519,27 @@ public:
 #endif
 //<== Linear Prio [shadow2004]
 
+	//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA //Reask sourcen after ip change
+	static bool	isreaskSourceAfterIPChange;
+	static bool	m_breaskSourceAfterIPChange;
+#endif //Reask sourcen after ip change
+	//<==Reask sourcen after ip change [cyrex2001]
+	//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+	static bool	m_bQuickStart;
+	static bool	isQuickStart;
+	static uint16  m_iQuickStartMaxTime;
+	static uint16  QuickStartMaxTime;
+	static uint16  m_iQuickStartMaxConn;
+	static uint16  QuickStartMaxConn;
+	static uint16  m_iQuickStartMaxConnPerFive;
+	static uint16  QuickStartMaxConnPerFive;
+	static bool	m_bQuickStartAfterIPChange;
+	static bool	isQuickStartAfterIPChange;
+#endif //Quickstart
+	//<==Quickstart [cyrex2001]
+
 	enum Table
 	{
 		tableDownload, 
@@ -1267,6 +1288,26 @@ public:
 	static	uint64	GetMaxDownloadInBytesPerSec(bool dynamic = false);
 #endif
 //<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+
+	//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA //Reask sourcen after ip change
+	static bool	IsreaskSourceAfterIPChange()			{ return isreaskSourceAfterIPChange; } 
+#endif //Reask sourcen after ip change
+//<==Reask sourcen after ip change [cyrex2001]
+//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+static bool	GetQuickStart()							{return isQuickStart;}
+static void	SetMaxCon(int in)						{maxconnections=in;} 
+static uint16	GetMaxCon()							{return maxconnections;}
+static void	SetQuickStartMaxTime(int in)			{ m_iQuickStartMaxTime = in; }
+static uint16  GetQuickStartMaxTime()				{ return m_iQuickStartMaxTime; }
+static void	SetQuickStartMaxConn(int in)			{ QuickStartMaxConn = in; }
+static uint16  GetQuickStartMaxConn()				{ return QuickStartMaxConn; }
+static void    SetQuickStartMaxConnPerFive(int in)	{ QuickStartMaxConnPerFive = in; }
+static uint16  GetQuickStartMaxConnPerFive()		{ return QuickStartMaxConnPerFive; }
+static bool	GetQuickStartAfterIPChange()			{return isQuickStartAfterIPChange;}
+#endif //Quickstart
+//<==Quickstart [cyrex2001]
 
 protected:
 	static	CString appdir;

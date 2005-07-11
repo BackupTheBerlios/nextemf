@@ -1,13 +1,54 @@
 #include "xmemfile.h"
 
 //////////////////////////////////////////////////////////
+CxMemFile::CxMemFile(BYTE* pBuffer, DWORD size)
+{
+	m_pBuffer = pBuffer;
+	m_Position = 0;
+	m_Size = m_Edge = size;
+	m_bFreeOnClose = (bool)(pBuffer==0);
+}
+//////////////////////////////////////////////////////////
+CxMemFile::~CxMemFile()
+{
+	Close();
+}
+//////////////////////////////////////////////////////////
+bool CxMemFile::Close()
+{
+	if ( (m_pBuffer) && (m_bFreeOnClose) ){
+		free(m_pBuffer);
+		m_pBuffer = NULL;
+		m_Size = 0;
+	}
+	return true;
+}
+//////////////////////////////////////////////////////////
+bool CxMemFile::Open()
+{
+	if (m_pBuffer) return false;	// Can't re-open without closing first
+
+	m_Position = m_Size = m_Edge = 0;
+	m_pBuffer=(BYTE*)malloc(1);
+	m_bFreeOnClose = true;
+
+	return (m_pBuffer!=0);
+}
+//////////////////////////////////////////////////////////
+BYTE* CxMemFile::GetBuffer(bool bDetachBuffer)
+{
+	m_bFreeOnClose = !bDetachBuffer;
+	return m_pBuffer;
+}
+//////////////////////////////////////////////////////////
 size_t CxMemFile::Read(void *buffer, size_t size, size_t count)
 {
-	if (m_pBuffer==NULL) return 0;
 	if (buffer==NULL) return 0;
-	if (m_Position > (long)m_Size) return 0;
 
-	long nCount = count*size;
+	if (m_pBuffer==NULL) return 0;
+	if (m_Position >= (long)m_Size) return 0;
+
+	long nCount = (long)(count*size);
 	if (nCount == 0) return 0;
 
 	long nRead;
@@ -27,7 +68,7 @@ size_t CxMemFile::Write(const void *buffer, size_t size, size_t count)
 	if (m_pBuffer==NULL) return 0;
 	if (buffer==NULL) return 0;
 
-	long nCount = count*size;
+	long nCount = (long)(count*size);
 	if (nCount == 0) return 0;
 
 	if (m_Position + nCount > m_Edge) Alloc(m_Position + nCount);
@@ -51,7 +92,7 @@ bool CxMemFile::Seek(long offset, int origin)
 	else if (origin == SEEK_END) lNewPos = m_Size + offset;
 	else return false;
 
-	if (lNewPos < 0) return false;
+	if (lNewPos < 0) lNewPos = 0;
 
 	m_Position = lNewPos;
 	return true;
@@ -111,9 +152,8 @@ void CxMemFile::Alloc(DWORD dwNewLen)
 {
 	if (dwNewLen > (DWORD)m_Edge)
 	{
-		// determine new buffer size
-		DWORD dwNewBufferSize = (DWORD)m_Edge;
-		while (dwNewBufferSize < dwNewLen) dwNewBufferSize += 4096;
+		// find new buffer size
+		DWORD dwNewBufferSize = (DWORD)(((dwNewLen>>12)+1)<<12);
 
 		// allocate new buffer
 		if (m_pBuffer == NULL) m_pBuffer = (BYTE*)malloc(dwNewBufferSize);

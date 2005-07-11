@@ -16,6 +16,21 @@ public:
 	enum { IDD = IDD_PPG_NEXTEMF };
 
 protected:
+	//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+	bool m_bIsreaskSourceAfterIPChange;
+#endif //Reask sourcen after ip change
+	//<==Reask sourcen after ip change [cyrex20
+	//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART
+	bool m_bQuickStart;
+	int m_iQuickStartMaxTime;
+	int m_iQuickStartMaxConnPerFive;
+	int m_iQuickStartMaxConn;
+	bool m_bQuickStartAfterIPChange;
+#endif //Quickstart
+	//<==Quickstart [cyrex2001]
+
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS
 	bool m_bEnableAntiNickThief;
@@ -52,6 +67,26 @@ protected:
 //<== Linear Prio [shadow2004]
 
 	HTREEITEM m_htiSecurity;
+	//==> QUICKSTART or RASAIC [cyrex2001]
+#if defined (QUICKSTART) || defined (RSAIC_MAELLA)
+	HTREEITEM m_htiCon;
+#endif
+	//<== QUICKSTART or RASAIC [cyrex2001]
+	//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA	
+	HTREEITEM m_htiIsreaskSourceAfterIPChange;
+#endif //Reask sourcen after ip change
+	//<==Reask sourcen after ip change [cyrex2001]
+	//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART
+	HTREEITEM m_htiQuickStart;
+	HTREEITEM m_htiQuickStartMaxTime;
+	HTREEITEM m_htiQuickStartMaxConnPerFive;
+	HTREEITEM m_htiQuickStartMaxConn;
+	HTREEITEM m_htiQuickStartAfterIPChange;
+#endif //Quickstart
+	//<==Quickstart [cyrex2001]
+
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS
 	HTREEITEM m_htiEnableAntiNickThief;

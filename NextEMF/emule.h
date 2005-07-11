@@ -236,7 +236,14 @@ public:
 	WSADATA				m_wsaData;
 #endif //WINSOCK2
 //<== WINSOCK2 [shadow2004]
-
+	//==>Reask sourcen after ip change [cyrex2001]
+#ifdef RSAIC_MAELLA
+public:
+	void	CheckIDChange();
+protected:
+	DWORD			m_lastValidId;
+#endif //Reask sourcen after ip change
+	//<==Reask sourcen after ip change [cyrex2001]
 };
 
 extern CemuleApp theApp;

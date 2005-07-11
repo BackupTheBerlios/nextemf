@@ -46,6 +46,13 @@
 static char THIS_FILE[] = __FILE__;
 #endif
 
+//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+uint32 MaxconnPerFiveBack;
+uint32 MaxconBack;
+DWORD quicktime;
+#endif //Quickstart
+//<==Quickstart [cyrex2001]
 
 CDownloadQueue::CDownloadQueue()
 {
@@ -65,6 +72,12 @@ CDownloadQueue::CDownloadQueue()
 	m_dwNextTCPSrcReq = 0;
 	m_cRequestsSentToServer = 0;
     m_dwLastA4AFtime = 0; // ZZ:DownloadManager
+	//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+	quickflag = 0;
+	quickflags = 0;
+#endif //Quickstart
+	//<==Quickstart [cyrex2001]
 }
 
 void CDownloadQueue::AddPartFilesToShare()
@@ -383,6 +396,48 @@ bool CDownloadQueue::IsFileExisting(const uchar* fileid, bool bLogWarnings) cons
 void CDownloadQueue::Process(){
 	
 	ProcessLocalRequests(); // send src requests to local server
+
+	//==>Quickstart [cyrex2001]
+#ifdef QUICKSTART //Quickstart
+	static DWORD QuickStartEndTime=0;
+	if(thePrefs.GetQuickStart() &&
+		theApp.serverconnect->IsConnected() &&
+		quickflag == 0)
+		{
+		if(quickflags == 0)
+			{
+			quicktime = ::GetTickCount();
+			MaxconnPerFiveBack = thePrefs.GetMaxConperFive();
+			MaxconBack = thePrefs.GetMaxCon();
+			if (MaxconnPerFiveBack < thePrefs.GetQuickStartMaxConnPerFive())
+				thePrefs.SetMaxConsPerFive(thePrefs.GetQuickStartMaxConnPerFive());
+			if (MaxconBack < thePrefs.GetQuickStartMaxConn())
+				thePrefs.SetMaxCon(thePrefs.GetQuickStartMaxConn());
+			quickflags = 1;
+			AddLogLine(true, _T("***** Quick Start actived for %u min. *****"), thePrefs.QuickStartMaxTime);
+			AddLogLine(false, _T("***** Max.Con.: %i *****"), thePrefs.GetMaxCon());
+			AddLogLine(false, _T("***** Max.Con./5sec: %i *****"), thePrefs.GetMaxConperFive());
+
+			DWORD QuickStartTime = MIN2MS(thePrefs.QuickStartMaxTime);
+			QuickStartEndTime = quicktime + QuickStartTime;
+			for(POSITION pos = theApp.downloadqueue->filelist.GetHeadPosition(); pos != NULL;) 
+				{ 
+				CPartFile* cur_file = theApp.downloadqueue->filelist.GetNext(pos); 
+				}
+			}
+		if (QuickStartEndTime <= ::GetTickCount())
+			{
+			thePrefs.SetMaxConsPerFive(MaxconnPerFiveBack);
+			thePrefs.SetMaxCon(MaxconBack);
+			quickflag = 1;
+			AddLogLine(true , _T("***** Quick Start ended *****"));
+			AddLogLine(false, _T("***** Max.Con.: %i *****"), thePrefs.GetMaxCon());
+			AddLogLine(false, _T("***** Max.Con./5sec: %i *****"), thePrefs.GetMaxConperFive());
+			}
+		}
+#endif //Quickstart
+	//<==Quickstart [cyrex2001]
+
 //==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 #ifdef FAF
 	uint32 downspeed = 0;
