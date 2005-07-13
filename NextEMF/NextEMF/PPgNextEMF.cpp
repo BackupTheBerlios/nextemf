@@ -79,11 +79,13 @@ CPPgNextEMF::CPPgNextEMF()
 	m_htiCon = NULL;
 #endif
 	//<== QUICKSTART or RASAIC [cyrex2001]
+
 	//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA
 	m_htiIsreaskSourceAfterIPChange = NULL; 
 #endif //Reask sourcen after ip change
 	//<==Reask sourcen after ip change [cyrex2001]
+
 	//==>Quickstart [cyrex2001]
 #ifdef QUICKSTART
 	m_htiQuickStart = NULL;
@@ -160,11 +162,13 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		//<== Bold Categories by $icK$ [shadow2004]
 #endif
 		//<== QUICKSTART or RASAIC [cyrex2001]
+
 		//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA
 		m_htiIsreaskSourceAfterIPChange = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK ), m_htiCon, m_bIsreaskSourceAfterIPChange);
 #endif //Reask sourcen after ip change
 		//<==Reask sourcen after ip change [cyrex2001]
+
 		//==>Quickstart [cyrex2001]
 #ifdef QUICKSTART
 		m_htiQuickStart = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_QUICK_START), m_htiCon, m_bQuickStart);
@@ -240,6 +244,7 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiIsreaskSourceAfterIPChange, m_bIsreaskSourceAfterIPChange); 
 #endif //Reask sourcen after ip change
 	//<==Reask sourcen after ip change [cyrex2001]
+
 	//==>Quickstart [cyrex2001]
 #ifdef QUICKSTART
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiQuickStart, m_bQuickStart);
@@ -296,6 +301,7 @@ BOOL CPPgNextEMF::OnInitDialog()
 m_bIsreaskSourceAfterIPChange = thePrefs.isreaskSourceAfterIPChange;
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
+
 //==>Quickstart [cyrex2001]
 #ifdef QUICKSTART
 m_bQuickStart = thePrefs.isQuickStart;
@@ -368,6 +374,7 @@ BOOL CPPgNextEMF::OnApply()
 	thePrefs.isreaskSourceAfterIPChange = m_bIsreaskSourceAfterIPChange;
 #endif //Reask sourcen after ip change
 	//<==Reask sourcen after ip change [cyrex2001]
+
 	//==>Quickstart [cyrex2001]
 #ifdef QUICKSTART
 	thePrefs.isQuickStart = m_bQuickStart;
@@ -430,6 +437,7 @@ void CPPgNextEMF::Localize(void)
 		if (m_htiIsreaskSourceAfterIPChange) m_ctrlTreeOptions.SetItemText(m_htiIsreaskSourceAfterIPChange, GetResString(IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK ));
 #endif //Reask sourcen after ip change
 		//<==Reask sourcen after ip change [cyrex2001]
+
 		//==>Quickstart [cyrex2001]
 #ifdef QUICKSTART		
 		if (m_htiQuickStart) m_ctrlTreeOptions.SetItemText(m_htiQuickStart, GetResString(IDS_QUICK_START));
@@ -485,6 +493,7 @@ void CPPgNextEMF::OnDestroy()
 	m_htiIsreaskSourceAfterIPChange = NULL;
 #endif //Reask sourcen after ip change
 	//<==Reask sourcen after ip change [cyrex2001]
+
 	//==>Quickstart [cyrex2001]
 #ifdef QUICKSTART
 	m_htiQuickStart = NULL;

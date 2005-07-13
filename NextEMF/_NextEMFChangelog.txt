@@ -1,6 +1,6 @@
 /////////////////////////////////
 |Changes eMule 0.46a NextEMF v0.5
-|=<|  Beta 2  |>=================
+|=<|  Beta 3  |>=================
 merged	: eMule v0.46b
 
 removed	: Skinsupport [shadow2004]
@@ -13,12 +13,17 @@ added   : Reask after IP change [cyrex2001]
 added   : Spread reask idea by Slugfiller/Maella modify by Xman [cyrex2001]
 added	: Allow Bandwidth Settings in <1KB Incremements by Maella adapted by Xman1 [shadow2004]
 added   : Anti-Modfaker by MorphXT [cyrex2001]
+added	: 'NextEMF'-Slotmanager inspired by WiZaRd and Xman1 [shadow2004] Thanks a lot to both :-D
 
 fixed   : small fix in SplashScreen [cyrex2001]
 fixed	: Sorting-bug in Waiting-Queue an Upload-Queue [shadow2004]
+fixed	: bug in CPreferences::IsTempFile by WiZaRd [shadow2004]
+fixed	: bug in SharedFilesWnd.cpp by WiZaRd [shadow2004]
 
 update	: Emulate others (Shareaza2) inspired by Spike2 [shadow2004]
 update	: Leecherlog to work with 46b [shadow2004]
+update	: SNAFU-Tags by Xman [shadow2004]
+update	: German Language [shadow2004]
 
 
 /////////////////////////////////

@@ -236,6 +236,7 @@ public:
 	WSADATA				m_wsaData;
 #endif //WINSOCK2
 //<== WINSOCK2 [shadow2004]
+
 	//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA
 public:

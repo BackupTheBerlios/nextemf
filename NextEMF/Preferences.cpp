@@ -65,6 +65,12 @@ int	CPreferences::maxGraphUploadRate;
 #endif
 //<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 
+//==> SlotSpeed [shadow2004]
+#ifdef SLOT
+float	CPreferences::m_slotspeed;
+#endif
+//<== SlotSpeed [shadow2004]
+
 uint16	CPreferences::port;
 uint16	CPreferences::udpport;
 uint16	CPreferences::nServerUDPPort;
@@ -467,6 +473,7 @@ bool	CPreferences::isreaskSourceAfterIPChange;
 bool	CPreferences::m_breaskSourceAfterIPChange;
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
+
 //==>Quickstart [cyrex2001]
 #ifdef QUICKSTART //Quickstart
 bool	CPreferences::m_bQuickStart;
@@ -703,9 +710,15 @@ void CPreferences::SetStandartValues()
 
 bool CPreferences::IsTempFile(const CString& rstrDirectory, const CString& rstrName)
 {
-	for (int i=0;i<tempdir.GetCount();i++)
-		if (CompareDirectories(rstrDirectory, GetTempDir(i) ))
+	bool bFound = false;		// FIX by WiZaRd
+	for (int i=0;i<tempdir.GetCount() && !bFound;i++) 
+		if (!CompareDirectories(rstrDirectory, GetTempDir(i))) 
+			bFound = true; //ok, found a directory 
+	if(!bFound) //found nowhere - not a tempfile... 
 		return false;
+/*	for (int i=0;i<tempdir.GetCount();i++)
+		if (CompareDirectories(rstrDirectory, GetTempDir(i) ))
+		return false;*/
 
 	// do not share a file from the temp directory, if it matches one of the following patterns
 	CString strNameLower(rstrName);
@@ -1884,11 +1897,18 @@ void CPreferences::SavePreferences()
 #endif
 //<== Linear Prio [shadow2004]
 
+//==> SlotSpeed [shadow2004]
+#ifdef SLOT
+ini.WriteFloat(_T("uploadslotspeed"),m_slotspeed,_T("NextEMF"));
+#endif
+//<== SlotSpeed [shadow2004]
+
 	//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA //Reask sourcen after ip change
 	ini.WriteBool(_T("ReaskSourceAfterIPChange"),isreaskSourceAfterIPChange,_T("NextEMF"));
 #endif //Reask sourcen after ip change
 	//<==Reask sourcen after ip change [cyrex2001]
+
 	//==>Quickstart [cyrex2001]
 #ifdef QUICKSTART //Quickstart
 	ini.WriteBool(_T("QuickStart"), isQuickStart,_T("NextEMF"));
@@ -2528,11 +2548,18 @@ void CPreferences::LoadPreferences()
 #endif
 //<== Linear Prio [shadow2004]
 
+//==> SlotSpeed [shadow2004]
+#ifdef SLOT
+	m_slotspeed=ini.GetFloat(_T("uploadslotspeed"),2.8f, _T("NextEMF"));
+#endif
+//<== SlotSpeed [shadow2004]
+
 	//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA //Reask sourcen after ip change
 	isreaskSourceAfterIPChange = ini.GetBool(_T("ReaskSourceAfterIPChange"),false, _T("NextEMF"));
 #endif //Reask sourcen after ip change
 	//<==Reask sourcen after ip change [cyrex2001]
+
 	//==>Quickstart [cyrex2001]
 #ifdef QUICKSTART //Quickstart
 	QuickStartMaxTime=ini.GetInt(_T("QuickStartMaxTime"), 10, _T("NextEMF"));

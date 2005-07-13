@@ -47,6 +47,11 @@
 #include "Kademlia/Kademlia/Prefs.h"
 #include "Log.h"
 #include "collection.h"
+//==> SlotSpeed [shadow2004]
+#ifdef SLOT
+#include "preferences.h"
+#endif
+//<== SlotSpeed [shadow2004]
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -386,6 +391,15 @@ bool CUploadQueue::AcceptNewClient(uint32 curUploadSlots){
     else
 		MaxSpeed = thePrefs.GetMaxUpload();
 	
+//==> SlotSpeed [shadow2004]
+#ifdef SLOT
+	if(curUploadSlots > GetActiveUploadsCount()) 
+		return false;
+
+	if(thePrefs.m_slotspeed*curUploadSlots < MaxSpeed-thePrefs.m_slotspeed) return true; 
+#endif
+//<== SlotSpeed [shadow2004]
+
 	if (curUploadSlots >= MAX_UP_CLIENTS_ALLOWED ||
         curUploadSlots >= 4 &&
         (

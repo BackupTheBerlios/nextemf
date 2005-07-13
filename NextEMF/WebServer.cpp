@@ -922,6 +922,30 @@ CString CWebServer::_GetHeader(ThreadData Data, long lSession)
 	_stprintf(HTTPHeader, _T("%.0f"), (static_cast<double>(theApp.listensocket->GetOpenSockets())));
 	Out.Replace(_T("[CurConnection]"), HTTPHeader);
 
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+	float		dwMax;
+
+	dwMax = thePrefs.GetMaxUpload();
+	if (dwMax == UNLIMITED)
+		HTTPHelp = GetResString(IDS_PW_UNLIMITED);
+	else
+		HTTPHelp.Format(_T("%f"), dwMax);
+	Out.Replace(_T("[MaxUpload]"), HTTPHelp);
+
+	dwMax = thePrefs.GetMaxDownload();
+	if (dwMax == UNLIMITED)
+		HTTPHelp = GetResString(IDS_PW_UNLIMITED);
+	else
+		HTTPHelp.Format(_T("%f"), dwMax);
+	Out.Replace(_T("[MaxDownload]"), HTTPHelp);
+
+	dwMax = thePrefs.GetMaxConnections();
+	if (dwMax == UNLIMITED)
+		HTTPHelp = GetResString(IDS_PW_UNLIMITED);
+	else
+		HTTPHelp.Format(_T("%u"), (uint16)dwMax);
+#else
 	uint32		dwMax;
 
 	dwMax = thePrefs.GetMaxUpload();
@@ -943,6 +967,8 @@ CString CWebServer::_GetHeader(ThreadData Data, long lSession)
 		HTTPHelp = GetResString(IDS_PW_UNLIMITED);
 	else
 		HTTPHelp.Format(_T("%u"), dwMax);
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	Out.Replace(_T("[MaxConnection]"), HTTPHelp);
 	Out.Replace(_T("[UserValue]"), HTTPHelpV);
 	Out.Replace(_T("[MaxUsers]"), HTTPHelpM);
@@ -3706,10 +3732,19 @@ CString CWebServer::_GetGraphs(ThreadData Data)
 	Out.Replace(_T("[ScaleTime]"), CastSecondsToHM(thePrefs.GetTrafficOMeterInterval() * WEB_GRAPH_WIDTH));
 
 	CString s1;
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+	s1.Format(_T("%u"), (int)thePrefs.GetMaxGraphDownloadRate()+4 );
+	Out.Replace(_T("[MaxDownload]"), s1);
+	s1.Format(_T("%u"), (int)thePrefs.GetMaxGraphUploadRate()+4 );
+	Out.Replace(_T("[MaxUpload]"), s1);
+#else
 	s1.Format(_T("%u"), thePrefs.GetMaxGraphDownloadRate()+4 );
 	Out.Replace(_T("[MaxDownload]"), s1);
 	s1.Format(_T("%u"), thePrefs.GetMaxGraphUploadRate()+4 );
 	Out.Replace(_T("[MaxUpload]"), s1);
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	s1.Format(_T("%u"), thePrefs.GetMaxConnections()+20);
 	Out.Replace(_T("[MaxConnections]"), s1);
 
@@ -4002,6 +4037,29 @@ CString CWebServer::_GetPreferences(ThreadData Data)
 
 		CString strTmp = _ParseURL(Data.sURL, _T("maxcapdown"));
 		if(!strTmp.IsEmpty())
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+			thePrefs.SetMaxGraphDownloadRate(  _tstof(strTmp));
+		strTmp = _ParseURL(Data.sURL, _T("maxcapup"));
+		if(!strTmp.IsEmpty())
+			thePrefs.SetMaxGraphUploadRate( _tstof(strTmp));
+
+		float	dwSpeed;
+
+		strTmp = _ParseURL(Data.sURL, _T("maxdown"));
+		if (!strTmp.IsEmpty())
+		{
+			dwSpeed = _tstof(strTmp);
+			thePrefs.SetMaxDownload(dwSpeed>0?dwSpeed:UNLIMITED);
+		}
+		strTmp = _ParseURL(Data.sURL, _T("maxup"));
+		if (!strTmp.IsEmpty())
+		{
+			dwSpeed = _tstof(strTmp);
+			if (dwSpeed==0 || dwSpeed==UNLIMITED)
+				dwSpeed=11;
+			thePrefs.SetMaxUpload(dwSpeed);
+#else
 			thePrefs.SetMaxGraphDownloadRate(  _tstoi(strTmp));
 		strTmp = _ParseURL(Data.sURL, _T("maxcapup"));
 		if(!strTmp.IsEmpty())
@@ -4020,6 +4078,8 @@ CString CWebServer::_GetPreferences(ThreadData Data)
 		{
 			dwSpeed = _tstoi(strTmp);
 			thePrefs.SetMaxUpload(dwSpeed>0?dwSpeed:UNLIMITED);
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 		}
 
 		if(!_ParseURL(Data.sURL, _T("maxsources")).IsEmpty())
@@ -4078,6 +4138,24 @@ CString CWebServer::_GetPreferences(ThreadData Data)
 
 
 	CString	sT;
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+	float n = thePrefs.GetMaxDownload();
+	if(n < 0.0f || n >= UNLIMITED) n = 0.0f;
+	sT.Format(_T("%0.1f"), n);
+	Out.Replace(_T("[MaxDownVal]"), sT);
+
+	n = thePrefs.GetMaxUpload();
+	if(n < 0.0f || n >= UNLIMITED) n = 0.0f;
+	sT.Format(_T("%.1f"), n);
+	Out.Replace(_T("[MaxUpVal]"), sT);
+
+	sT.Format(_T("%.1f"), thePrefs.GetMaxGraphDownloadRate());
+	Out.Replace(_T("[MaxCapDownVal]"), sT);
+
+	sT.Format(_T("%.1f"), thePrefs.GetMaxGraphUploadRate());
+	Out.Replace(_T("[MaxCapUpVal]"), sT);
+#else
 	sT.Format(_T("%u"), thePrefs.GetMaxDownload()==UNLIMITED?0:thePrefs.GetMaxDownload());
 	Out.Replace(_T("[MaxDownVal]"), sT);
 
@@ -4089,7 +4167,8 @@ CString CWebServer::_GetPreferences(ThreadData Data)
 
 	sT.Format(_T("%u"), thePrefs.GetMaxGraphUploadRate() );
 	Out.Replace(_T("[MaxCapUpVal]"), sT);
-
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	return Out;
 }
 

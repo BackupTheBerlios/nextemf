@@ -21,6 +21,6 @@
 #define MOD_VERSION_MIN		5
 #define MOD_VERSION_BUILD   0
 
-#define	MOD_VERSION			_T("NextEMF b2")
-#define	MOD_VERSION_LONG	_T("NextEMF b2 v")
+#define	MOD_VERSION			_T("NextEMF b3")
+#define	MOD_VERSION_LONG	_T("NextEMF b3 v")
 

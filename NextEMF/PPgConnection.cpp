@@ -65,6 +65,12 @@ BEGIN_MESSAGE_MAP(CPPgConnection, CPropertyPage)
 	ON_BN_CLICKED(IDC_DLIMIT_LBL, OnLimiterChange)
 #endif
 //<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+
+//==> SlotSpeed [shadow2004]
+#ifdef SLOT
+	ON_EN_KILLFOCUS(IDC_MAXUP, OnEnKillfocusMaxup)
+#endif
+//<== SlotSpeed [shadow2004]
 	ON_WM_HSCROLL()
 	ON_BN_CLICKED(IDC_NETWORK_KADEMLIA, OnSettingsChange)
 	ON_WM_HELPINFO()
@@ -84,6 +90,12 @@ CPPgConnection::~CPPgConnection()
 void CPPgConnection::DoDataExchange(CDataExchange* pDX)
 {
 	CPropertyPage::DoDataExchange(pDX);
+
+//==> SlotSpeed [shadow2004]
+#ifdef SLOT
+	DDX_Control(pDX, IDC_MAXUP_SLIDER, m_ctlMaxUp);
+#endif
+//<== SlotSpeed [shadow2004]
 
 //==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 #ifdef FAF
@@ -279,7 +291,12 @@ void CPPgConnection::LoadSettings(void)
 			GetDlgItem(IDC_OPENPORTS)->EnableWindow(true);
 		else
 			GetDlgItem(IDC_OPENPORTS)->EnableWindow(false);
-
+//==> SlotSpeed [shadow2004]
+#ifdef SLOT
+		CalculateMaxUpSlotSpeed();
+		m_ctlMaxUp.SetPos((int)(thePrefs.m_slotspeed*10.0f +0.5f));		
+#endif
+//<== SlotSpeed [shadow2004]
 		ShowLimitValues();
 //==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 #ifndef FAF
@@ -310,16 +327,18 @@ BOOL CPPgConnection::OnApply()
 #ifdef FAF
 		double download = _tstof(buffer);
 		thePrefs.SetMaxGraphDownloadRate((download <= 0) ? 96.0f : (float)download);
-
-//		thePrefs.SetMaxGraphDownloadRate(_tstof(buffer));
 #else
 		thePrefs.SetMaxGraphDownloadRate(_tstoi(buffer));
 #endif
 //<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 	}
 
-//	m_ctlMaxDown.SetRange(1, thePrefs.GetMaxGraphDownloadRate(), TRUE);
-//	SetRateSliderTicks(m_ctlMaxDown);
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifndef FAF
+	m_ctlMaxDown.SetRange(1, thePrefs.GetMaxGraphDownloadRate(), TRUE);
+	SetRateSliderTicks(m_ctlMaxDown);
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 
 	if (GetDlgItem(IDC_UPLOAD_CAP)->GetWindowTextLength())
 	{
@@ -333,7 +352,6 @@ BOOL CPPgConnection::OnApply()
 			thePrefs.SetMaxGraphUploadRate(5.0f);
 		else
 			thePrefs.SetMaxGraphUploadRate((float)upload);
-//		thePrefs.SetMaxGraphUploadRate(_tstof(buffer));
 #else
 		thePrefs.SetMaxGraphUploadRate(_tstoi(buffer));
 #endif
@@ -484,6 +502,13 @@ BOOL CPPgConnection::OnApply()
 #endif
 //<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 
+//==> SlotSpeed [shadow2004]
+#ifdef SLOT
+	CalculateMaxUpSlotSpeed();
+	thePrefs.m_slotspeed=(float)m_ctlMaxUp.GetPos()/10.0f;
+#endif
+//<== SlotSpeed [shadow2004]
+
 	uint16 tempcon = thePrefs.maxconnections;
 	if (GetDlgItem(IDC_MAXCON)->GetWindowTextLength())
 	{
@@ -601,6 +626,14 @@ void CPPgConnection::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar* pScrollBar)
 
 void CPPgConnection::ShowLimitValues()
 {
+//==> SlotSpeed [shadow2004]
+#ifdef SLOT
+	CString buffer;
+
+	buffer.Format(_T("%.1f %s"),(float) m_ctlMaxUp.GetPos()/10, GetResString(IDS_KBYTESEC));
+	GetDlgItem(IDC_SLOTSPEED_LBL)->SetWindowText(buffer);
+#endif
+//<== SlotSpeed [shadow2004]
 //==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 #ifndef FAF
 	CString buffer;
@@ -728,3 +761,43 @@ void CPPgConnection::SetRateSliderTicks(CSliderCtrl& rRate)
 }
 #endif
 //<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+
+//==> SlotSpeed [shadow2004]
+#ifdef SLOT
+void CPPgConnection::CalculateMaxUpSlotSpeed()
+{
+	TCHAR buffer[510];
+	float maxUp=10;
+	int minRange=25;
+	if(GetDlgItem(IDC_MAXUP)->GetWindowText(buffer, 20)>0)
+		maxUp=_tstof(buffer);
+	float maxSlotSpeed=2.8f;
+	if (maxUp<6) 
+	{
+		maxSlotSpeed=2.0f; 
+		minRange=15;
+	}
+	if (maxUp>=6) maxSlotSpeed=3.0f;
+	
+	if (maxUp>=10)
+	{
+		//maxSlotSpeed=(maxUp-maxUp/10.0f)/2.0f;
+		maxSlotSpeed=maxUp*0.45f;
+		minRange=30;
+	}
+	float a=ceil(maxSlotSpeed*10.0f);
+	int b=a;
+	if((float)m_ctlMaxUp.GetPos()>a)
+	{
+		m_ctlMaxUp.SetPos(b);
+	}
+	m_ctlMaxUp.SetRange(minRange,b,true);
+}
+
+void CPPgConnection::OnEnKillfocusMaxup()
+{
+		CalculateMaxUpSlotSpeed();
+		ShowLimitValues();
+}
+#endif
+//<== SlotSpeed [shadow2004]

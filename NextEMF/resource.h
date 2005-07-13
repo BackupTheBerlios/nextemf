@@ -1961,7 +1961,7 @@
 #define IDC_CHECKNOENDTIME              2771
 #define IDC_TOTAL_TAGS                  2772
 #define IDC_MAXUP_SLIDER                2774
-#define IDC_MAXDOWN_SLIDER              2775
+//#define IDC_MAXDOWN_SLIDER              2775
 #define IDD_PREVIEWDIALOG               2776
 #define IDC_PREVIEW_INFO                2777
 #define IDC_HIDECONVDLG                 2778
@@ -2151,7 +2151,8 @@
 #define IDC_MAXUP                       3201
 #define IDC_DCAP_LBL2                   3202
 #define IDC_UCAP_LBL2                   3203
-#define IDC_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK 3250
+#define IDC_UCAP_LBL3                   3204
+#define IDC_SLOTSPEED_LBL               3205
 #define IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK 3250
 #define IDS_QUICK_START                 3251
 #define IDS_QUICK_START_MAX_CONN        3252

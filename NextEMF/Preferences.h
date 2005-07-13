@@ -519,12 +519,20 @@ public:
 #endif
 //<== Linear Prio [shadow2004]
 
+//==> SlotSpeed [shadow2004]
+#ifdef SLOT
+	static float	m_slotspeed;
+	static uint32	GetSlotSpeed()     {return m_slotspeed*1024;}
+#endif
+//<== SlotSpeed [shadow2004]
+
 	//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA //Reask sourcen after ip change
 	static bool	isreaskSourceAfterIPChange;
 	static bool	m_breaskSourceAfterIPChange;
 #endif //Reask sourcen after ip change
 	//<==Reask sourcen after ip change [cyrex2001]
+
 	//==>Quickstart [cyrex2001]
 #ifdef QUICKSTART //Quickstart
 	static bool	m_bQuickStart;
@@ -1294,6 +1302,7 @@ public:
 	static bool	IsreaskSourceAfterIPChange()			{ return isreaskSourceAfterIPChange; } 
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
+
 //==>Quickstart [cyrex2001]
 #ifdef QUICKSTART //Quickstart
 static bool	GetQuickStart()							{return isQuickStart;}

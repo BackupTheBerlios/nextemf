@@ -847,7 +847,11 @@ static LPCTSTR apszSnafuTag[] =
 	_T("[eMule v0.26 Leecher]"),							//11
 	_T("[Hunter]"),											//12
 	_T("[Bionic 0.20 Beta]"),								//13
-	_T("[Rumata (rus)(Plus v1f)]")							//14
+	_T("[Rumata (rus)(Plus v1f)]"),							//14
+	_T("[Fusspi]"),											//15
+	_T("[donkey2002]"),										//16
+	_T("[md4]"),									        //17
+	_T("[SpeedMule]")										//18 Xman x4	
 	};
 
 //<<< new tags from eMule 0.04x
@@ -858,17 +862,37 @@ static LPCTSTR apszSnafuTag[] =
 #define CT_UNKNOWNx15			0x15 // http://www.haspepapa-welt.de (DodgeBoards) & DarkMule |eVorte|X|
 #define CT_UNKNOWNx16			0x16 // http://www.haspepapa-welt.de (DodgeBoards)
 #define CT_UNKNOWNx17			0x17 // http://www.haspepapa-welt.de (DodgeBoards)
+#define CT_UNKNOWNxE6			0xE6 // http://www.haspepapa-welt.de
 #define CT_UNKNOWNx22			0x22 // DarkMule |eVorte|X|
+#define CT_UNKNOWNx5D			0x5D // md4 
 #define CT_UNKNOWNx63			0x63 // ?
 #define CT_UNKNOWNx64			0x64 // ?
-#define CT_UNKNOWNx69			0x69 // eMuleReactor
+#define CT_UNKNOWNx69			0x69 // eMuleReactor //Xman don't use this, it's webcache!
+#define CT_UNKNOWNx6B			0x6B // md4
+#define CT_UNKNOWNx6C			0x6C // md4
+#define CT_UNKNOWNx74			0x74 // md4
+#define CT_UNKNOWNx76			0x76 // www.donkey2002.to
 #define CT_UNKNOWNx79			0x79 // Bionic
+#define CT_UNKNOWNx7A			0x7A // NewDarkMule
+#define CT_UNKNOWNx83			0x83 // Fusspi
+#define CT_UNKNOWNx87			0x87 // md4
 #define CT_UNKNOWNx88			0x88 // DarkMule v6 |eVorte|X|
 #define CT_UNKNOWNx8c			0x8c // eMule v0.27c [LSD7c] 
 #define CT_UNKNOWNx8d			0x8d // unknown Leecher - (client version:60)
+#define CT_UNKNOWNx97			0x97 // Emulereactor Community Mod
+#define CT_UNKNOWNx98			0x98 // Emulereactor Community Mod
 #define CT_UNKNOWNx99			0x99 // eMule v0.26d [RAMMSTEIN 8b]
+#define CT_UNKNOWNx9C			0x9C // Emulereactor Community Mod
 #define CT_UNKNOWNxbb			0xbb // emule.de (client version:60)
 #define CT_UNKNOWNxc4			0xc4 //MD5 Community from new bionic - hello
+#define CT_UNKNOWNxC8			0xc8 // MD5 Community from new bionic - hello //Xman x4
+#define CT_UNKNOWNxCA			0xCA // NewDarkMule
+#define CT_UNKNOWNxCD			0xCD // www.donkey2002.to
+#define CT_UNKNOWNxDA			0xDA // Emulereactor Community Mod
+#define CT_UNKNOWNxEC			0xec // SpeedMule and clones	//Xman x4
+#define CT_UNKNOWNxF0			0xF0 // Emulereactor Community Mod
+#define CT_UNKNOWNxF4			0xF4 // Emulereactor Community Mod
+
 #define CT_FRIENDSHARING		0x66 //eWombat  [SNAFU]
 #define CT_DARK					0x54 //eWombat [SNAFU]
 #define FRIENDSHARING_ID		0x5F73F1A0 // Magic Key, DO NOT CHANGE!

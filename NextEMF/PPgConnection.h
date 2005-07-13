@@ -22,6 +22,12 @@ public:
 
 protected:
 	bool guardian;
+//==> SlotSpeed [shadow2004]
+#ifdef SLOT
+	CSliderCtrl m_ctlMaxUp;
+#endif
+//<== SlotSpeed [shadow2004]
+
 //==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 #ifdef FAF
 	CNumEdit m_maxUpload;
@@ -33,6 +39,12 @@ protected:
 	CSliderCtrl m_ctlMaxUp;
 #endif
 //<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+
+//==> SlotSpeed [shadow2004]
+#ifdef SLOT
+	void CalculateMaxUpSlotSpeed();
+#endif
+//<== SlotSpeed [shadow2004]
 
 	void ShowLimitValues();
 //==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
@@ -64,4 +76,9 @@ protected:
 	afx_msg void OnEnChangeTCP();
 	afx_msg void OnEnChangeUDP();
 	afx_msg void OnEnChangePorts(uint8 istcpport);
+//==> SlotSpeed [shadow2004]
+#ifdef SLOT
+	afx_msg void OnEnKillfocusMaxup();
+#endif
+//<== SlotSpeed [shadow2004]
 };

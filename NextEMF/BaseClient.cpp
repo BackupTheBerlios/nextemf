@@ -2861,11 +2861,22 @@ switch(tag->GetNameID())
 	case CT_UNKNOWNx13:
 	case CT_UNKNOWNx14:
 	case CT_UNKNOWNx16:
-	case CT_UNKNOWNx17:			strSnafuTag=apszSnafuTag[0];break;//buffer=_T("DodgeBoards");break;
+	case CT_UNKNOWNx17:
+	case CT_UNKNOWNxE6:			strSnafuTag=apszSnafuTag[0];break;//buffer=_T("DodgeBoards");break;
 	case CT_UNKNOWNx15:			strSnafuTag=apszSnafuTag[1];break;//buffer=_T("DodgeBoards & DarkMule |eVorte|X|");break;
 	case CT_UNKNOWNx22:			strSnafuTag=apszSnafuTag[2];break;//buffer=_T("DarkMule v6 |eVorte|X|");break;
+	case CT_UNKNOWNx5D:
+	case CT_UNKNOWNx6B:
+	case CT_UNKNOWNx6C:			strSnafuTag=apszSnafuTag[17];break;
+	case CT_UNKNOWNx74:
+	case CT_UNKNOWNx87:			strSnafuTag=apszSnafuTag[17];break;
+	case CT_UNKNOWNxF0:
+	case CT_UNKNOWNxF4:			strSnafuTag=apszSnafuTag[17];break;
 	//case CT_UNKNOWNx69:			strSnafuTag=apszSnafuTag[3];break;//buffer=_T("eMuleReactor");break;
 	case CT_UNKNOWNx79:			strSnafuTag=apszSnafuTag[4];break;//buffer=_T("Bionic");break;
+	case CT_UNKNOWNx83:			strSnafuTag=apszSnafuTag[15];break;//buffer=_T("Fusspi");break;
+	case CT_UNKNOWNx76:			
+	case CT_UNKNOWNxCD:			strSnafuTag=apszSnafuTag[16];break;//buffer=_T("www.donkey2002.to");break;
 	case CT_UNKNOWNx88:
 		//If its a LSD its o.k
         if (m_strModVersion.IsEmpty() || _tcsnicmp(m_strModVersion,_T("LSD"),3)!=0)
@@ -2874,20 +2885,27 @@ switch(tag->GetNameID())
 	case CT_UNKNOWNx8c:			strSnafuTag=apszSnafuTag[5];break;//buffer=_T("[LSD7c]");break; 
 	case CT_UNKNOWNx8d:			strSnafuTag=apszSnafuTag[6];break;//buffer=_T("[0x8d] unknown Leecher - (client version:60)");break;
 	case CT_UNKNOWNx99:			strSnafuTag=apszSnafuTag[7];break;//buffer=_T("[RAMMSTEIN]");break;		//STRIKE BACK
+	case CT_UNKNOWNx98:
+	case CT_UNKNOWNx9C:
+	case CT_UNKNOWNxDA:			strSnafuTag=apszSnafuTag[3];break;//buffer=_T("eMuleReactor");break;
+	case CT_UNKNOWNxC8:			//Xman x4
 	case CT_UNKNOWNxc4:			strSnafuTag=apszSnafuTag[8];break;//buffer=_T("[MD5 Community]");break;	//USED BY NEW BIONIC => 0x12 Sender
+	case CT_UNKNOWNxEC:			strSnafuTag=apszSnafuTag[18];break; //Xman x4 Speedmule
 	case CT_FRIENDSHARING:		//STRIKE BACK
 		//if (theApp.glob_prefs->GetAntiFriendshare())
 		//	{
-		//if (tag->IsInt() && tag->GetInt() == FRIENDSHARING_ID) //Mit dieser ID Definitiv
-		//		{
-		//                if(!IsBanned() && thePrefs.GetLogBannedClients())
-		//	                 AddLeecherLogLine(false, _T("[S.N.A.F.U. V3.1] Banned by Friendsharing : %s %s (%s)"), strSnafuTag, tag->GetFullInfo(),DbgGetClientInfo());
-		//		Ban(_T("Friend Sharing detected"));
-		//		return;				
-		//		}
+		if (tag->IsInt() && tag->GetInt() == FRIENDSHARING_ID) //Mit dieser ID Definitiv
+				{
+		                if(!IsBanned() && thePrefs.GetLogBannedClients())
+			                 AddLeecherLogLine(false, _T("[S.N.A.F.U. V3.1] Banned by Friendsharing : %s %s (%s)"), strSnafuTag, tag->GetFullInfo(),DbgGetClientInfo());
+				Ban(_T("Friend Sharing detected"));
+				return;				
+				}
 		//	}
 		break;
 	case CT_DARK:				//STRIKE BACK				
+	case CT_UNKNOWNx7A:
+	case CT_UNKNOWNxCA:
 			strSnafuTag=apszSnafuTag[9];break;//buffer=_T("new DarkMule");
 		break;
 	}

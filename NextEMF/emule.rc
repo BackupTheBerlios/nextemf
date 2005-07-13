@@ -446,6 +446,10 @@ BEGIN
 //                    130,11,WS_EX_STATICEDGE
 //#endif
 //<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+//==> SlotSpeed [shadow2004]
+    CONTROL         "",IDC_MAXUP_SLIDER,"msctls_trackbar32",WS_TABSTOP,86,61,
+                    130,11,WS_EX_STATICEDGE
+//<== SlotSpeed [shadow2004]
     EDITTEXT        IDC_PORT,41,89,38,12,ES_AUTOHSCROLL | ES_NUMBER
     EDITTEXT        IDC_UDPPORT,41,106,38,12,ES_AUTOHSCROLL | ES_NUMBER
     CONTROL         "disable",IDC_UDPDISABLE,"Button",BS_AUTOCHECKBOX | 
@@ -497,6 +501,12 @@ BEGIN
     CONTROL         "Upload",IDC_UCAP_LBL2,"Static",SS_LEFTNOWORDWRAP | 
                     WS_GROUP,91,36,58,8
 //<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+//==> SlotSpeed [shadow2004]
+    CONTROL         "Upload Slot Speed",IDC_UCAP_LBL3,"Static",
+                    SS_LEFTNOWORDWRAP | WS_GROUP,91,49,67,8
+    CONTROL         "",IDC_SLOTSPEED_LBL,"Static",SS_LEFTNOWORDWRAP | 
+                    WS_GROUP,167,50,49,8
+//<== SlotSpeed [shadow2004]
 END
 
 IDD_FILES DIALOGEX 0, 35, 511, 289
@@ -4367,7 +4377,7 @@ BEGIN
     IDS_CON_CONTROL         "Connection control"
 END
 
-#endif    // Englisch (USA) resources
+//#endif    // Englisch (USA) resources
 /////////////////////////////////////////////////////////////////////////////
 
 

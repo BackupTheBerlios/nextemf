@@ -246,6 +246,7 @@ CemuleApp::CemuleApp(LPCTSTR lpszAppName)
 	m_strModLongVersion.AppendFormat(_T("%u.%u"), CemuleApp::m_nMVersionMjr, CemuleApp::m_nMVersionMin);
 #endif //Modversion
 //<==Modversion [shadow2004][cyrex2001]
+
 	//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA
 	m_lastValidId	= 0;
