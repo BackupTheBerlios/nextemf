@@ -985,6 +985,28 @@ bool CDownloadQueue::SendNextUDPPacket()
 			}
 		}
 
+    //==>WiZaRd/Max AutoHardLimit [cyrex2001]
+    #ifdef AHL
+	if (thePrefs.IsUseAutoHL())
+		{
+		if (!bSentPacket && nextfile && nextfile->GetSourceCount() < nextfile->GetMaxSourcePerFileUDP())
+			{
+			if (bGetSources2Packet){
+				// GETSOURCES2 Packet (<HASH_16><SIZE_4> *)
+				dataGlobGetSources.WriteHash16(nextfile->GetFileHash());
+				dataGlobGetSources.WriteUInt32(nextfile->GetFileSize());
+				}
+			else{
+				// GETSOURCES Packet (<HASH_16> *)
+				dataGlobGetSources.WriteHash16(nextfile->GetFileHash());
+				}
+		iFiles++;
+		if (thePrefs.GetDebugServerUDPLevel() > 0 && thePrefs.GetDebugServerSourcesLevel() > 0)
+			Debug(_T(">>> Queued  %s to server %-21s (%3u of %3u); Buff  %u=%s\n"), bGetSources2Packet ? _T("OP__GlobGetSources2") : _T("OP__GlobGetSources1"), ipstr(cur_udpserver->GetAddress(), cur_udpserver->GetPort()), m_iSearchedServers + 1, theApp.serverlist->GetServerCount(), iFiles, DbgGetFileInfo(nextfile->GetFileHash()));
+			}
+		}
+	else
+		{
 		if (!bSentPacket && nextfile && nextfile->GetSourceCount() < nextfile->GetMaxSourcePerFileUDP())
 		{
 			if (bGetSources2Packet){
@@ -1000,6 +1022,25 @@ bool CDownloadQueue::SendNextUDPPacket()
 			if (thePrefs.GetDebugServerUDPLevel() > 0 && thePrefs.GetDebugServerSourcesLevel() > 0)
 				Debug(_T(">>> Queued  %s to server %-21s (%3u of %3u); Buff  %u=%s\n"), bGetSources2Packet ? _T("OP__GlobGetSources2") : _T("OP__GlobGetSources1"), ipstr(cur_udpserver->GetAddress(), cur_udpserver->GetPort()), m_iSearchedServers + 1, theApp.serverlist->GetServerCount(), iFiles, DbgGetFileInfo(nextfile->GetFileHash()));
 		}
+		}
+    #else //
+		if (!bSentPacket && nextfile && nextfile->GetSourceCount() < nextfile->GetMaxSourcePerFileUDP())
+		{
+			if (bGetSources2Packet){
+				// GETSOURCES2 Packet (<HASH_16><SIZE_4> *)
+				dataGlobGetSources.WriteHash16(nextfile->GetFileHash());
+				dataGlobGetSources.WriteUInt32(nextfile->GetFileSize());
+			}
+			else{
+				// GETSOURCES Packet (<HASH_16> *)
+				dataGlobGetSources.WriteHash16(nextfile->GetFileHash());
+			}
+			iFiles++;
+			if (thePrefs.GetDebugServerUDPLevel() > 0 && thePrefs.GetDebugServerSourcesLevel() > 0)
+				Debug(_T(">>> Queued  %s to server %-21s (%3u of %3u); Buff  %u=%s\n"), bGetSources2Packet ? _T("OP__GlobGetSources2") : _T("OP__GlobGetSources1"), ipstr(cur_udpserver->GetAddress(), cur_udpserver->GetPort()), m_iSearchedServers + 1, theApp.serverlist->GetServerCount(), iFiles, DbgGetFileInfo(nextfile->GetFileHash()));
+		}
+    #endif //WiZaRd/Max AutoHardLimit
+    //<==WiZaRd/Max AutoHardLimit [cyrex2001]
 	}
 
 	ASSERT( dataGlobGetSources.GetLength() == 0 || !bSentPacket );
@@ -1746,9 +1787,24 @@ void CDownloadQueue::KademliaSearchFile(uint32 searchID, const Kademlia::CUInt12
 	CPartFile* temp = GetFileByKadFileSearchID(searchID);
 	if( !temp )
 		return;
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+	if (thePrefs.IsUseAutoHL())
+		{
+        if(!(!temp->IsStopped() && temp->GetFileHardLimit() > temp->GetSourceCount()))
+		return;
+		}
+	else
+		{
+		if(!(!temp->IsStopped() && temp->GetMaxSources() > temp->GetSourceCount()))
+		return;
+		}
+#else
 	//Do we need more sources?
 	if(!(!temp->IsStopped() && temp->GetMaxSources() > temp->GetSourceCount()))
 		return;
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 
 	uint32 ED2Kip = ntohl(ip);
 	if (theApp.ipfilter->IsFiltered(ED2Kip))

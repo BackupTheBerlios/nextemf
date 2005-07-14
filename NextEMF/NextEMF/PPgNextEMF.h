@@ -32,6 +32,14 @@ protected:
 #endif //Quickstart
 	//<==Quickstart [cyrex2001]
 
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+	int m_iAutoHLUpdateTimer; 
+	bool m_bUseAutoHL;
+	int m_iMaxSourcesHL;
+	int m_iMinFileLimit;
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS
 	bool m_bEnableAntiNickThief;
@@ -89,6 +97,16 @@ protected:
 	HTREEITEM m_htiQuickStartAfterIPChange;
 #endif //Quickstart
 	//<==Quickstart [cyrex2001]
+
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+	HTREEITEM m_htiHardLimit;
+	HTREEITEM m_htiAutoHLUpdateTimer; 
+	HTREEITEM m_htiUseAutoHL;
+	HTREEITEM m_htiMaxSourcesHL;
+	HTREEITEM m_htiMinFileLimit;
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS

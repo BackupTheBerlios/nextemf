@@ -253,9 +253,15 @@ bool CUpDownClient::IsSourceRequestAllowed(CPartFile* partfile, bool sourceExcha
 	return (
 	         //if client has the correct extended protocol
 	         ExtProtocolAvailable() && GetSourceExchangeVersion() > 1 &&
+	 //==>WiZaRd/Max AutoHardLimit [cyrex2001]
+    #ifdef AHL
+             partfile->GetFileHardLimitSoft() > uSources &&
+    #else //
 	         //AND if we need more sources
 	         reqfile->GetMaxSourcePerFileSoft() > uSources &&
 	         //AND if...
+    #endif //WiZaRd/Max AutoHardLimit
+    //<==WiZaRd/Max AutoHardLimit [cyrex2001]
 	         (
 	           //source is not complete and file is very rare
 	           ( !m_bCompleteSource
@@ -1610,7 +1616,7 @@ const bool CUpDownClient::SwapToRightFile(CPartFile* SwapTo, CPartFile* cur_file
 #ifdef RSAIC_MAELLA
 				uint32 allNnpReaskTime = GetJitteredFileReaskTime()*2*(m_OtherNoNeeded_list.GetSize() + ((GetDownloadState() == DS_NONEEDEDPARTS)?1:0)); // wait two reask interval for each nnp file before reasking an nnp file
 #else
-                uint32 allNnpReaskTime = FILEREASKTIME*2*(m_OtherNoNeeded_list.GetSize() + ((GetDownloadState() == DS_NONEEDEDPARTS)?1:0)); // wait two reask interval for each nnp file before reasking an nnp file
+				uint32 allNnpReaskTime = FILEREASKTIME*2*(m_OtherNoNeeded_list.GetSize() + ((GetDownloadState() == DS_NONEEDEDPARTS)?1:0)); // wait two reask interval for each nnp file before reasking an nnp file
 #endif //Reask sourcen after ip change
 				//<==Reask sourcen after ip change [cyrex2001]
                 if(!SwapToIsNNPFile && (!curFileisNNPFile || GetLastAskedTime(cur_file) == 0 || tempTick-GetLastAskedTime(cur_file) > allNnpReaskTime) && rightFileHasHigherPrio ||
@@ -2061,9 +2067,9 @@ uint32 CUpDownClient::GetTimeUntilReask(const CPartFile* file, const bool allowS
 						  reaskTime = GetJitteredFileReaskTime();
 						  // Maella -Spread Request- (idea SlugFiller)
 #else
-            reaskTime = FILEREASKTIME*2;
-        } else {
-            reaskTime = FILEREASKTIME;
+					  reaskTime = FILEREASKTIME*2;
+					  } else {
+						  reaskTime = FILEREASKTIME;
 #endif //Reask sourcen after ip change
 						  //<==Reask sourcen after ip change [cyrex2001]
         }

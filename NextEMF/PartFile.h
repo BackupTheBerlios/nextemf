@@ -393,4 +393,26 @@ private:
 	uint16	m_catResumeOrder;
 #endif
 //<== Linear Prio [shadow2004]
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+private: 
+    bool    m_bUseAutoHL;
+	uint32  m_iFileHardLimit; 
+    uint32  m_iUpdateHL;
+	uint32  FileLimit;
+	uint32  PosTolleranz;
+	uint32  NegTolleranz;
+	uint8   FirstStart;
+	uint8	m_iNewHLUpdateTimer;
+public: 
+    bool    IsPaused() const {return paused; } 
+    bool    UseAutoHL()    const     {return m_bUseAutoHL;} 
+	void    SetUseAutoHL(bool b)    {m_bUseAutoHL = b;} 
+    void    SetAutoHL();
+    uint16  GetFileHardLimit() const; 
+    //void    SetFileHardLimit(uint16 i); 
+    uint16  GetFileHardLimitSoft(); 
+    uint16  GetMaxSourcePerFileUDP();
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 };

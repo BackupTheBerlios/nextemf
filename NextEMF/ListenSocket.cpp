@@ -423,8 +423,23 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 						// no passive adding of files with only one part
 						if (reqfile->IsPartFile() && reqfile->GetFileSize() > PARTSIZE)
 						{
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+						if (thePrefs.IsUseAutoHL())
+							{
+							if (((CPartFile*)reqfile)->GetFileHardLimit() > ((CPartFile*)reqfile)->GetSourceCount())
+								theApp.downloadqueue->CheckAndAddKnownSource((CPartFile*)reqfile, client, true);
+							}
+						else
+							{
 							if (((CPartFile*)reqfile)->GetMaxSources() > ((CPartFile*)reqfile)->GetSourceCount())
 								theApp.downloadqueue->CheckAndAddKnownSource((CPartFile*)reqfile, client, true);
+							}
+#else //
+							if (((CPartFile*)reqfile)->GetMaxSources() > ((CPartFile*)reqfile)->GetSourceCount())
+								theApp.downloadqueue->CheckAndAddKnownSource((CPartFile*)reqfile, client, true);
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]						    
 						}
 
 						// check to see if this is a new file they are asking for

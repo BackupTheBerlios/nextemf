@@ -488,6 +488,16 @@ bool	CPreferences::m_bQuickStartAfterIPChange;
 bool	CPreferences::isQuickStartAfterIPChange;
 #endif //Quickstart
 //<==Quickstart [cyrex2001]
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+uint16  CPreferences::m_iAutoHLUpdateTimer; 
+bool    CPreferences::m_bUseAgressiveMode;//Max AutoHL
+bool    CPreferences::PassivModus=false;
+bool    CPreferences::m_bUseAutoHL; 
+uint16  CPreferences::m_iMaxSourcesHL; 
+uint16	CPreferences::m_iMinFileLimit;
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 
 CPreferences::CPreferences()
 {
@@ -1918,6 +1928,14 @@ ini.WriteFloat(_T("uploadslotspeed"),m_slotspeed,_T("NextEMF"));
 	ini.WriteBool(_T("QuickStartAfterIPChange"), isQuickStartAfterIPChange,_T("NextEMF"));
 #endif //Quickstart
 	//<==Quickstart [cyrex2001]
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+    ini.WriteInt(_T("AutoHLUpdate"), m_iAutoHLUpdateTimer,_T("NextEMF")); 
+    ini.WriteBool(_T("AutoHL"), m_bUseAutoHL,_T("NextEMF"));
+	ini.WriteInt(_T("MaxSourcesHL"), m_iMaxSourcesHL,_T("NextEMF"));
+	ini.WriteInt(_T("MinFileLimit"),m_iMinFileLimit,_T("NextEMF"));
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]	
 }
 
 void CPreferences::ResetStatsColor(int index)
@@ -2569,6 +2587,14 @@ void CPreferences::LoadPreferences()
 	isQuickStartAfterIPChange=ini.GetBool(_T("QuickStartAfterIPChange"),false, _T("NextEMF"));
 #endif //Quickstart
 //<==Quickstart [cyrex2001]
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+    m_iAutoHLUpdateTimer = ini.GetInt(_T("AutoHLUpdate"), 50, _T("NextEMF")); 
+    m_bUseAutoHL = ini.GetBool(_T("AutoHL"), true, _T("NextEMF"));
+	m_iMaxSourcesHL = ini.GetInt(_T("MaxSourcesHL"), 4500, _T("NextEMF"));
+	m_iMinFileLimit = ini.GetInt(_T("MinFileLimit"), 15, _T("NextEMF"));
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 
 	LoadCats();
 	SetLanguage();
@@ -2808,6 +2834,26 @@ void CPreferences::SetNetworkKademlia(bool val)
 {
 	networkkademlia = val; 
 }
+
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+uint16 CPreferences::GetMaxSourcePerFileSoft()
+	{
+	UINT temp = ((UINT)maxsourceperfile * 9L) / 10;
+	if (temp > MAX_SOURCES_FILE_SOFT)
+		return MAX_SOURCES_FILE_SOFT;
+	return temp;
+	}
+
+uint16 CPreferences::GetMaxSourcePerFileUDP()
+	{	
+	UINT temp = ((UINT)maxsourceperfile * 3L) / 4;
+	if (temp > MAX_SOURCES_FILE_UDP)
+		return MAX_SOURCES_FILE_UDP;
+	return temp;
+	}
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 
 CString CPreferences::GetHomepageBaseURLForLevel(uint8 nLevel){
 	CString tmp;

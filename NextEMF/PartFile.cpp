@@ -311,6 +311,14 @@ void CPartFile::Init(){
 	m_catResumeOrder=0;
 #endif
 //<== Linear Prio [shadow2004]
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+    m_iFileHardLimit = thePrefs.GetMinFileLimit();
+	m_iUpdateHL = ::GetTickCount();
+	m_bUseAutoHL = thePrefs.IsUseAutoHL(); 
+    thePrefs.PassivModus=false;
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 }
 
 CPartFile::~CPartFile()
@@ -2199,12 +2207,35 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 						//Make sure we still cannot callback to this Client..
 						if( !theApp.DoCallback( cur_src ) )
 						{
+    //==>WiZaRd/Max AutoHardLimit [cyrex2001]
+    #ifdef AHL
+						if (thePrefs.IsUseAutoHL())
+							{
+							if( ((dwCurTick - lastpurgetime) > SEC2MS(30)) && (GetSourceCount() >= (GetFileHardLimit()*.8 )) )
+								{
+								theApp.downloadqueue->RemoveSource( cur_src );
+								lastpurgetime = dwCurTick;
+								}
+							}
+						else
+							{
 							//If we are almost maxed on sources, slowly remove these client to see if we can find a better source.
 							if( ((dwCurTick - lastpurgetime) > SEC2MS(30)) && (this->GetSourceCount() >= (GetMaxSources()*.8 )) )
 							{
 								theApp.downloadqueue->RemoveSource( cur_src );
 								lastpurgetime = dwCurTick;
 							}
+							}
+    #else //
+							//If we are almost maxed on sources, slowly remove these client to see if we can find a better source.
+							if( ((dwCurTick - lastpurgetime) > SEC2MS(30)) && (this->GetSourceCount() >= (GetMaxSources()*.8 )) )
+							{
+								theApp.downloadqueue->RemoveSource( cur_src );
+								lastpurgetime = dwCurTick;
+							}
+    #endif //WiZaRd/Max AutoHardLimit
+    //<==WiZaRd/Max AutoHardLimit [cyrex2001]						    
+
 							break;
 						}
 					}
@@ -2218,8 +2249,16 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 					// This causes sources to pop in and out creating extra overhead!
 					if( (dwCurTick - lastpurgetime) > SEC2MS(40) ){
 						lastpurgetime = dwCurTick;
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+						if (GetSourceCount() >= (GetFileHardLimit()*.8 ))
+#else //
 						// we only delete them if reaching the limit
-						if (GetSourceCount() >= (GetMaxSources()*.8 )){
+						if (GetSourceCount() >= (GetMaxSources()*.8 ))
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001						
+
+                        {
 							theApp.downloadqueue->RemoveSource( cur_src );
 							break;
 						}			
@@ -2239,12 +2278,31 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 					// This causes sources to pop in and out creating extra overhead!
 					if( cur_src->IsRemoteQueueFull() ) 
 					{
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+						if (thePrefs.IsUseAutoHL())
+							if( ((dwCurTick - lastpurgetime) > MIN2MS(1)) && (GetSourceCount() >= (GetFileHardLimit()*.8 )) )
+								{
+								theApp.downloadqueue->RemoveSource( cur_src );
+								lastpurgetime = dwCurTick;
+								break;
+								}
+						else
+						    if( ((dwCurTick - lastpurgetime) > MIN2MS(1)) && (GetSourceCount() >= (GetMaxSources()*.8 )) )
+						    {
+							    theApp.downloadqueue->RemoveSource( cur_src );
+							    lastpurgetime = dwCurTick;
+							    break;
+						    }						
+#else //														    					    
 						if( ((dwCurTick - lastpurgetime) > MIN2MS(1)) && (GetSourceCount() >= (GetMaxSources()*.8 )) )
 						{
 							theApp.downloadqueue->RemoveSource( cur_src );
 							lastpurgetime = dwCurTick;
 							break;
 						}
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]						
 					}
 				//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA
@@ -2266,9 +2324,9 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 					}
 				// Maella end
 #else
-					//Give up to 1 min for UDP to respond.. If we are within one min of TCP reask, do not try..
-					if (theApp.IsConnected() && cur_src->GetTimeUntilReask() < MIN2MS(2) && cur_src->GetTimeUntilReask() > SEC2MS(1) && ::GetTickCount()-cur_src->getLastTriedToConnectTime() > 20*60*1000) // ZZ:DownloadManager (one resk timestamp for each file)
-						cur_src->UDPReaskForDownload();
+				//Give up to 1 min for UDP to respond.. If we are within one min of TCP reask, do not try..
+				if (theApp.IsConnected() && cur_src->GetTimeUntilReask() < MIN2MS(2) && cur_src->GetTimeUntilReask() > SEC2MS(1) && ::GetTickCount()-cur_src->getLastTriedToConnectTime() > 20*60*1000) // ZZ:DownloadManager (one resk timestamp for each file)
+					cur_src->UDPReaskForDownload();
 				}
 #endif //Reask sourcen after ip change
 			//<==Reask sourcen after ip change [cyrex2001]
@@ -2302,12 +2360,12 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 						}
 					// Maella end
 #else
-				{
-					if (theApp.IsConnected() && cur_src->GetTimeUntilReask() == 0 && ::GetTickCount()-cur_src->getLastTriedToConnectTime() > 20*60*1000) // ZZ:DownloadManager (one resk timestamp for each file)
 					{
+					if (theApp.IsConnected() && cur_src->GetTimeUntilReask() == 0 && ::GetTickCount()-cur_src->getLastTriedToConnectTime() > 20*60*1000) // ZZ:DownloadManager (one resk timestamp for each file)
+						{
 						if(!cur_src->AskForDownload()) // NOTE: This may *delete* the client!!
 							break; //I left this break here just as a reminder just in case re rearange things..
-					}
+						}
 #endif //Reask sourcen after ip change
 					//<==Reask sourcen after ip change [cyrex2001]
 					break;
@@ -2316,7 +2374,57 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 		}
 		if (downloadingbefore!=(m_anStates[DS_DOWNLOADING]>0))
 			NotifyStatusChange();
- 
+ //==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+		if (thePrefs.IsUseAutoHL())
+			{
+			bool bOSaysOK = ((thePrefs.maxconnections * 3 > (uint16)theApp.listensocket->GetActiveConnections() * 4) ? true:false);
+			if ((GetMaxSourcePerFileUDP() > GetSourceCount())&& bOSaysOK)
+				{
+				if (theApp.downloadqueue->DoKademliaFileRequest() && (Kademlia::CKademlia::getTotalFile() < KADEMLIATOTALFILE) && (dwCurTick > m_LastSearchTimeKad) &&  Kademlia::CKademlia::isConnected() && theApp.IsConnected() && !stopped){ //Once we can handle lowID users in Kad, we remove the second IsConnected
+					//Kademlia
+					theApp.downloadqueue->SetLastKademliaFileRequest();
+					if (!GetKadFileSearchID())
+						{
+						Kademlia::CUInt128 kadFileID;
+						kadFileID.setValue(GetFileHash());
+						Kademlia::CSearch* pSearch = Kademlia::CSearchManager::prepareLookup(Kademlia::CSearch::FILE, true, kadFileID);
+						if (pSearch)
+							{
+							if(m_TotalSearchesKad < 7)
+								m_TotalSearchesKad++;
+							m_LastSearchTimeKad = dwCurTick + (KADEMLIAREASKTIME*m_TotalSearchesKad);
+							SetKadFileSearchID(pSearch->getSearchID());
+							}
+						else
+							SetKadFileSearchID(0);
+						}
+					}
+				}
+			}
+		else
+		if( GetMaxSourcePerFileUDP() > GetSourceCount()){
+			if (theApp.downloadqueue->DoKademliaFileRequest() && (Kademlia::CKademlia::getTotalFile() < KADEMLIATOTALFILE) && (dwCurTick > m_LastSearchTimeKad) &&  Kademlia::CKademlia::isConnected() && theApp.IsConnected() && !stopped){ //Once we can handle lowID users in Kad, we remove the second IsConnected
+				//Kademlia
+				theApp.downloadqueue->SetLastKademliaFileRequest();
+				if (!GetKadFileSearchID())
+				{
+					Kademlia::CUInt128 kadFileID;
+					kadFileID.setValue(GetFileHash());
+					Kademlia::CSearch* pSearch = Kademlia::CSearchManager::prepareLookup(Kademlia::CSearch::FILE, true, kadFileID);
+					if (pSearch)
+					{
+						if(m_TotalSearchesKad < 7)
+							m_TotalSearchesKad++;
+						m_LastSearchTimeKad = dwCurTick + (KADEMLIAREASKTIME*m_TotalSearchesKad);
+						SetKadFileSearchID(pSearch->getSearchID());
+					}
+					else
+						SetKadFileSearchID(0);
+				}
+			}
+		}			
+#else //
 		if( GetMaxSourcePerFileUDP() > GetSourceCount()){
 			if (theApp.downloadqueue->DoKademliaFileRequest() && (Kademlia::CKademlia::getTotalFile() < KADEMLIATOTALFILE) && (dwCurTick > m_LastSearchTimeKad) &&  Kademlia::CKademlia::isConnected() && theApp.IsConnected() && !stopped){ //Once we can handle lowID users in Kad, we remove the second IsConnected
 				//Kademlia
@@ -2338,6 +2446,8 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 				}
 			}
 		}
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]		
 		else{
 			if(GetKadFileSearchID())
 			{
@@ -2345,14 +2455,39 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 			}
 		}
 
-
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+			if (thePrefs.IsUseAutoHL())
+				{
+				bool bOSaysOK = ((thePrefs.maxconnections * 3 	> (uint16)theApp.listensocket->GetActiveConnections() * 4) ? true:false);
+				// check if we want new sources from server
+				if ( !m_bLocalSrcReqQueued && ((!m_LastSearchTime) || (dwCurTick - m_LastSearchTime) > SERVERREASKTIME) && theApp.serverconnect->IsConnected()
+				&& GetFileHardLimitSoft() > GetSourceCount() && !stopped && bOSaysOK )
+					{
+					m_bLocalSrcReqQueued = true;
+					theApp.downloadqueue->SendLocalSrcRequest(this);
+					}
+				}
+			else 
+				{
+		        // check if we want new sources from server
+		        if ( !m_bLocalSrcReqQueued && ((!m_LastSearchTime) || (dwCurTick - m_LastSearchTime) > SERVERREASKTIME) && theApp.serverconnect->IsConnected()
+			        && GetMaxSourcePerFileSoft() > GetSourceCount() && !stopped )
+		            {
+			        m_bLocalSrcReqQueued = true;
+			        theApp.downloadqueue->SendLocalSrcRequest(this);
+		            }
+				}
+#else
 		// check if we want new sources from server
 		if ( !m_bLocalSrcReqQueued && ((!m_LastSearchTime) || (dwCurTick - m_LastSearchTime) > SERVERREASKTIME) && theApp.serverconnect->IsConnected()
 			&& GetMaxSourcePerFileSoft() > GetSourceCount() && !stopped )
-		{
+		    {
 			m_bLocalSrcReqQueued = true;
 			theApp.downloadqueue->SendLocalSrcRequest(this);
-		}
+		    }
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 
 		count++;
 		if (count == 3){
@@ -2371,7 +2506,29 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 		if (thePrefs.ShowCatTabInfos() )
 			theApp.emuledlg->transferwnd->UpdateCatTabTitles();
 	}
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+if (UseAutoHL()) 
+ {
+    if(GetStatus() == PS_READY || GetStatus() == PS_EMPTY) 
+    { 
+	bool bOSaysOK = ((thePrefs.maxconnections * 3 > (uint16)theApp.listensocket->GetActiveConnections() * 4 ) ? true:false);
 
+		if(bOSaysOK)
+		{
+			//if( m_iUpdateHL && dwCurTick > m_iUpdateHL && (dwCurTick - m_iUpdateHL) > uint32(SEC2MS(thePrefs.GetAutoHLUpdateTimer())) ) 
+		if( m_iUpdateHL && dwCurTick > m_iUpdateHL && (dwCurTick - m_iUpdateHL) > uint32(SEC2MS(m_iNewHLUpdateTimer)) ) 
+            SetAutoHL();
+			if (!thePrefs.PassivModus)
+			{
+				if(m_iFileHardLimit < uint32(srclist.GetCount())) 
+				m_iFileHardLimit = srclist.GetCount(); 
+			}
+		}
+	}
+ }
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 	return datarate;
 }
 
@@ -2742,6 +2899,12 @@ void CPartFile::CompleteFile(bool bIsHashingDone)
 	if (!bIsHashingDone){
 		SetStatus(PS_COMPLETING);
 		datarate = 0;
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+        m_iFileHardLimit = 0; 
+        m_iUpdateHL = NULL; 
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]		
 		CAddFileThread* addfilethread = (CAddFileThread*) AfxBeginThread(RUNTIME_CLASS(CAddFileThread), THREAD_PRIORITY_BELOW_NORMAL,0, CREATE_SUSPENDED);
 		if (addfilethread){
 			SetFileOp(PFOP_HASHING);
@@ -3031,6 +3194,13 @@ BOOL CPartFile::PerformFileComplete()
 	paused = false;
 	SetFileOp(PFOP_NONE);
 
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+    m_iFileHardLimit = 0; 
+    m_iUpdateHL = NULL;
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
+
 	// clear the blackbox to free up memory
 	m_CorruptionBlackBox.Free();
 
@@ -3312,6 +3482,12 @@ void CPartFile::StopFile(bool bCancel, bool resort)
 #endif
 //<== Optimizer [shadow2004]
 
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+	m_iUpdateHL = NULL;
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
+
 	if (!bCancel)
 		FlushBuffer(true);
     if(resort) {
@@ -3382,6 +3558,11 @@ void CPartFile::PauseFile(bool bInsufficient, bool resort)
 			cur_src->SetDownloadState(DS_ONQUEUE, _T("You cancelled the download. Sending OP_CANCELTRANSFER"));
 #endif
 //<== Extended Failed/Success Statistic by NetF [shadow2004]
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+            m_iUpdateHL = NULL;
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 		}
 	}
 	delete packet;
@@ -3430,6 +3611,11 @@ void CPartFile::ResumeFile(bool resort)
 	}
 	paused = false;
 	stopped = false;
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+	m_iUpdateHL = ::GetTickCount();
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]	
 	SetActive(theApp.IsConnected());
 	m_LastSearchTime = 0;
     if(resort) {
@@ -3969,7 +4155,27 @@ void CPartFile::AddClientSources(CSafeMemFile* sources, uint8 sourceexchangevers
 				continue;
 			}
 		}
-
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+	if (thePrefs.IsUseAutoHL())
+		{
+		if( GetFileHardLimit() > GetSourceCount() )
+			{
+			CUpDownClient* newsource;
+			if( sourceexchangeversion == 3 )
+				newsource = new CUpDownClient(this,nPort,dwID,dwServerIP,nServerPort,false);
+			else
+				newsource = new CUpDownClient(this,nPort,dwID,dwServerIP,nServerPort,true);
+			if (sourceexchangeversion > 1)
+				newsource->SetUserHash(achUserHash);
+			newsource->SetSourceFrom(SF_SOURCE_EXCHANGE);
+			theApp.downloadqueue->CheckAndAddSource(this,newsource);
+			}
+		else
+			break;
+		}
+	else
+		{
 		if (GetMaxSources() > GetSourceCount())
 		{
 			CUpDownClient* newsource;
@@ -3984,6 +4190,24 @@ void CPartFile::AddClientSources(CSafeMemFile* sources, uint8 sourceexchangevers
 		} 
 		else
 			break;
+		}
+#else //
+		if (GetMaxSources() > GetSourceCount())
+		{
+			CUpDownClient* newsource;
+			if (sourceexchangeversion == 3)
+				newsource = new CUpDownClient(this,nPort,dwID,dwServerIP,nServerPort,false);
+			else
+				newsource = new CUpDownClient(this,nPort,dwID,dwServerIP,nServerPort,true);
+			if (sourceexchangeversion > 1)
+				newsource->SetUserHash(achUserHash);
+			newsource->SetSourceFrom(SF_SOURCE_EXCHANGE);
+			theApp.downloadqueue->CheckAndAddSource(this,newsource);
+		} 
+		else
+			break;
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 	}
 }
 
@@ -5513,3 +5737,89 @@ CString CPartFile::GetTempPath() const
 {
 	return m_fullname.Left(m_fullname.ReverseFind(_T('\\'))+1);
 }
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+void CPartFile::SetAutoHL()//Max - AutoHL
+	{
+	uint16 aCount = 0; //Max - get active downloads
+	uint32 countsources=0; //Max - get all current sources
+	uint8	curTab=0; //Max - for file counter
+	PosTolleranz=thePrefs.GetMaxSourcesHL()*1.05;// +5%
+	NegTolleranz=thePrefs.GetMaxSourcesHL()*.95;// -5%
+	FileLimit=m_iFileHardLimit;
+	for (POSITION pos = theApp.downloadqueue->filelist.GetHeadPosition();pos != 0; theApp.downloadqueue->filelist.GetNext(pos))
+		{
+		CPartFile* cur_file = theApp.downloadqueue->filelist.GetAt(pos);
+		if (cur_file->CheckShowItemInGivenCat(curTab))
+			{	
+			countsources += cur_file->GetSourceCount();
+			if(cur_file->GetStatus() == PS_READY // ready,not stopped,not paused = active
+				&& !cur_file->IsStopped() 
+				&& !cur_file->IsPaused())  
+				++aCount;
+			}
+		}
+	//all needed variables count
+	if((PosTolleranz>countsources) && (countsources>NegTolleranz))
+		{  
+		thePrefs.PassivModus=1;
+		m_iNewHLUpdateTimer = thePrefs.GetAutoHLUpdateTimer()*12;
+		m_iUpdateHL = ::GetTickCount();//set system time for next request
+		return;
+		}
+	else
+		m_iNewHLUpdateTimer = thePrefs.GetAutoHLUpdateTimer();
+	if (aCount != 0)// for no division by zero
+		{       
+		if (thePrefs.GetMaxSourcesHL()> countsources)// get more sources
+			{	
+			if (FileLimit<=thePrefs.GetMaxSourcePerFile()) 
+				{
+				bool bOSaysOK = ((thePrefs.maxconnections * 3 	> theApp.listensocket->GetOpenSockets() *4) ? true:false);
+				if(bOSaysOK)
+					FileLimit=FileLimit +(thePrefs.maxconnections/aCount);
+				FileLimit=FileLimit +(thePrefs.MaxConperFive/aCount);
+				}
+			else
+				{
+				FileLimit=FileLimit +((thePrefs.GetMaxSourcesHL()-countsources)/aCount);
+				}
+			}
+		else
+			{
+			uint16 buffer= ((countsources-thePrefs.GetMaxSourcesHL())/aCount);
+			if (m_iFileHardLimit > buffer)// no negative (uint)
+				{
+				FileLimit=FileLimit-buffer;
+				}
+			}
+		}
+	//up-down throttler
+	m_iFileHardLimit=FileLimit;//copy new FileLimit to HardLimit 
+	// last check before return from function
+	m_iUpdateHL = ::GetTickCount();//set system time for next request
+	return;
+	}
+
+uint16 CPartFile::GetMaxSourcePerFileUDP()// Wizard/Max -AutoHL
+{     
+    UINT temp = ((UINT)m_iFileHardLimit * 3L) / 4; 
+    if (temp > MAX_SOURCES_FILE_UDP) 
+        return MAX_SOURCES_FILE_UDP; 
+    return temp; 
+} 
+
+uint16 CPartFile::GetFileHardLimitSoft()// Wizard/Max -AutoHL 
+{ 
+    UINT temp = ((UINT)m_iFileHardLimit * 9L) / 10; 
+    if (temp > MAX_SOURCES_FILE_SOFT) 
+        return MAX_SOURCES_FILE_SOFT; 
+    return temp; 
+} 
+
+uint16    CPartFile::GetFileHardLimit() const // Wizard/Max -AutoHL
+{ 
+    return m_iFileHardLimit; 
+} 
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001

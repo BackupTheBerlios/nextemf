@@ -547,6 +547,16 @@ public:
 	static bool	isQuickStartAfterIPChange;
 #endif //Quickstart
 	//<==Quickstart [cyrex2001]
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+    static  uint16    m_iMaxSourcesHL; 
+    static  bool	  m_bUseAutoHL; 
+	static  uint16    m_iAutoHLUpdateTimer; 
+	static  bool	  m_bUseAgressiveMode;//Max AutoHL
+	static  bool      PassivModus;	
+	static  uint16    m_iMinFileLimit; 
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]	
 
 	enum Table
 	{
@@ -876,6 +886,13 @@ public:
 
 	static	uint16	GetMaxConnections()			{return maxconnections;}
 	static	uint16	GetMaxHalfConnections()		{return maxhalfconnections;}
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+	static	uint16	GetMaxSourcePerFile()		{return maxsourceperfile;}
+	static	uint16	GetMaxSourcePerFileSoft();
+	static	uint16	GetMaxSourcePerFileUDP();
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]	
 	static	uint16	GetMaxSourcePerFileDefault(){return maxsourceperfile;}
 	static	UINT	GetDeadServerRetries()		{return m_uDeadServerRetries;}
 	static	DWORD	GetServerKeepAliveTimeout() {return m_dwServerKeepAliveTimeout;}
@@ -1317,6 +1334,18 @@ static uint16  GetQuickStartMaxConnPerFive()		{ return QuickStartMaxConnPerFive;
 static bool	GetQuickStartAfterIPChange()			{return isQuickStartAfterIPChange;}
 #endif //Quickstart
 //<==Quickstart [cyrex2001]
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+    static  uint16  GetAutoHLUpdateTimer()				{return m_iAutoHLUpdateTimer;} 
+	static  void	SetAutoHLUpdateTimer(uint16 i)		{m_iAutoHLUpdateTimer= i;}
+    static  uint16  GetMaxSourcesHL()                   {return m_iMaxSourcesHL;} 
+    static  void    SetMaxSourcesHL(uint16 i)           {m_iMaxSourcesHL = i;}
+    static  bool    IsUseAutoHL()                       {return m_bUseAutoHL;} 
+    static  bool    IsUseAgressiveMode()                {return m_bUseAgressiveMode;} //Max AutoHL
+	static  uint16  GetMinFileLimit()                   {return m_iMinFileLimit;} 
+	static  void    SetMinFileLimit(uint16 i)           {m_iMinFileLimit = i;}
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 
 protected:
 	static	CString appdir;

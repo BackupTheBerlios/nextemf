@@ -8,6 +8,7 @@ removed	: Custom Toolbar [shadow2004]
 removed	: Anti-Modfaker by WiZaRd [cyrex2001]
 removed	: Additional Toolbar [shadow2004]
 
+added   : Globales HardLimit by WiZaRD/MaxUpload modify for faster sourcen finding [cyrex2001]  
 added   : Quickstart and Quickstart after IP change [cyrex2001]
 added   : Reask after IP change [cyrex2001]
 added   : Spread reask idea by Slugfiller/Maella modify by Xman [cyrex2001]

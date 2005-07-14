@@ -2300,6 +2300,7 @@ COLLECTION_EDIT         ICON                    "res\\emuleCollEdit.ico"
 COLLECTION_SEARCH       ICON                    "res\\emuleCollSearch.ico"
 CLIENT_NEXTEMF          ICON                    "res\\client_nextemf.ico"
 EMULATOR                ICON                    "res\\Emulate_Settings_Tree.ico"
+HARDLIMIT               ICON                    "res\\HL.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -4375,6 +4376,14 @@ BEGIN
     IDS_QUICK_START_AFTER_IP_CHANGE "Quick Start after IP Change"
     IDS_QUICK_START_MAX_TIME "Time for Quick Start [8-18 min.]"
     IDS_CON_CONTROL         "Connection control"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_USE_GLOBALHL        "Enable globales hardlimit"
+    IDS_GLOBALHL_UPDATE_TIMER "Timer for globales hardlimit [30-80 sec.]"
+    IDS_MAX_SOURCE_HARDLIMIT "max.sourcen for hardlimit [1000-5000]"
+    IDS_MIN_SOURCE_HARDLIMIT "min. sourcelimit/file [10-50]"
 END
 
 //#endif    // Englisch (USA) resources

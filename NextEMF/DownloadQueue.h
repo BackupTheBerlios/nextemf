@@ -169,7 +169,15 @@ private:
 	bool	CompareParts(POSITION pos1, POSITION pos2);
 	void	SwapParts(POSITION pos1, POSITION pos2);
 	void	HeapSort(uint16 first, uint16 last);
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+public:
 	CTypedPtrList<CPtrList, CPartFile*> filelist;
+private:
+#else
+	CTypedPtrList<CPtrList, CPartFile*> filelist;
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]	
 	CTypedPtrList<CPtrList, CPartFile*> m_localServerReqQueue;
 	uint16	filesrdy;
 	uint32	datarate;

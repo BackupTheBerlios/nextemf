@@ -95,6 +95,16 @@ CPPgNextEMF::CPPgNextEMF()
 	m_htiQuickStartAfterIPChange = NULL;
 #endif //Quickstart
 	//<==Quickstart [cyrex2001]
+
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+	m_htiHardLimit = NULL;
+	m_htiAutoHLUpdateTimer = NULL; 
+	m_htiUseAutoHL = NULL;
+	m_htiMinFileLimit = NULL;
+	m_htiMaxSourcesHL = NULL;
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]	
 }
 
 CPPgNextEMF::~CPPgNextEMF()
@@ -112,6 +122,12 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		int iImgCon = 8;
 #endif
 	//<== QUICKSTART or RASAIC [cyrex2001]
+
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+		int iImgHardLimit = 8;
+#endif
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]	
 		int iImgSecurity = 8;
 //==> Emulate others by WiZaRd & Spike [shadow2004]
 #ifdef EMULATE
@@ -137,6 +153,11 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 			iImgCon = piml->Add(CTempIconLoader(_T("CONNECTION")));
 #endif
 //<== QUICKSTART or RASAIC [cyrex2001]
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+			iImgHardLimit = piml->Add(CTempIconLoader(_T("HARDLIMIT")));
+#endif
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 			iImgSecurity = piml->Add(CTempIconLoader(_T("SECURITY")));
 //==> Emulate others by WiZaRd & Spike [shadow2004]
 #ifdef EMULATE
@@ -182,7 +203,19 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		m_ctrlTreeOptions.Expand(m_htiCon, TVE_EXPAND);
 #endif //Quickstart
 		//<==Quickstart [cyrex2001]
-
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+		m_htiHardLimit = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_HARDLIMIT), iImgHardLimit, TVI_ROOT);
+		m_htiUseAutoHL = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_USE_GLOBALHL), m_htiHardLimit, m_bUseAutoHL);
+		m_htiAutoHLUpdateTimer = m_ctrlTreeOptions.InsertItem(GetResString(IDS_GLOBALHL_UPDATE_TIMER), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiHardLimit);
+		m_ctrlTreeOptions.AddEditBox(m_htiAutoHLUpdateTimer, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_htiMaxSourcesHL = m_ctrlTreeOptions.InsertItem(GetResString(IDS_MAX_SOURCE_HARDLIMIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT,m_htiHardLimit);
+		m_ctrlTreeOptions.AddEditBox(m_htiMaxSourcesHL, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_htiMinFileLimit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_MIN_SOURCE_HARDLIMIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiHardLimit);
+		m_ctrlTreeOptions.AddEditBox(m_htiMinFileLimit, RUNTIME_CLASS(CNumTreeOptionsEdit));
+		m_ctrlTreeOptions.Expand(m_htiHardLimit, TVE_EXPAND);
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 		m_htiSecurity = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SECURITY), iImgSecurity, TVI_ROOT);
 //==> Bold Categories by $icK$ [shadow2004]
 		m_ctrlTreeOptions.SetItemState(m_htiSecurity, TVIS_BOLD, TVIS_BOLD);
@@ -257,7 +290,17 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiQuickStartAfterIPChange, m_bQuickStartAfterIPChange);
 #endif //Quickstart
 	//<==Quickstart [cyrex2001]
-
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiUseAutoHL, m_bUseAutoHL);
+	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiAutoHLUpdateTimer, m_iAutoHLUpdateTimer);
+	DDV_MinMaxInt(pDX, m_iAutoHLUpdateTimer, 30, 80);
+	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiMaxSourcesHL, m_iMaxSourcesHL);
+	DDV_MinMaxInt(pDX, m_iMaxSourcesHL, 1000, 5000);
+	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiMinFileLimit, m_iMinFileLimit);
+	DDV_MinMaxInt(pDX, m_iMinFileLimit, 10, 50);
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableAntiNickThief, m_bEnableAntiNickThief);
@@ -311,7 +354,14 @@ m_iQuickStartMaxConn = (int)(thePrefs.QuickStartMaxConn);
 m_bQuickStartAfterIPChange = thePrefs.isQuickStartAfterIPChange;
 #endif //Quickstart
 //<==Quickstart [cyrex2001]
-
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+	m_iAutoHLUpdateTimer = (int) thePrefs.m_iAutoHLUpdateTimer; 
+	m_bUseAutoHL = thePrefs.m_bUseAutoHL;
+	m_iMaxSourcesHL = (int) thePrefs.m_iMaxSourcesHL;
+	m_iMinFileLimit = (int) thePrefs.m_iMinFileLimit;
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS
 	m_bEnableAntiNickThief = thePrefs.m_bAntiNickThief;
@@ -384,7 +434,14 @@ BOOL CPPgNextEMF::OnApply()
 	thePrefs.isQuickStartAfterIPChange = m_bQuickStartAfterIPChange;
 #endif //Quickstart
 	//<==Quickstart [cyrex2001]
-
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+	thePrefs.m_iAutoHLUpdateTimer = m_iAutoHLUpdateTimer; 
+	thePrefs.m_bUseAutoHL = m_bUseAutoHL;
+	thePrefs.m_iMaxSourcesHL = m_iMaxSourcesHL;
+	thePrefs.m_iMinFileLimit = m_iMinFileLimit;
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS
 	thePrefs.m_bAntiNickThief = m_bEnableAntiNickThief;
@@ -447,7 +504,14 @@ void CPPgNextEMF::Localize(void)
 		if (m_htiQuickStartAfterIPChange) m_ctrlTreeOptions.SetItemText(m_htiQuickStartAfterIPChange, GetResString(IDS_QUICK_START_AFTER_IP_CHANGE));
 #endif //Quickstart
 		//<==Quickstart [cyrex2001]
-
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+		if (m_htiUseAutoHL) m_ctrlTreeOptions.SetItemText(m_htiUseAutoHL, GetResString(IDS_USE_GLOBALHL));
+		if (m_htiAutoHLUpdateTimer) m_ctrlTreeOptions.SetEditLabel(m_htiAutoHLUpdateTimer, GetResString(IDS_GLOBALHL_UPDATE_TIMER));
+		if (m_htiMaxSourcesHL) m_ctrlTreeOptions.SetEditLabel(m_htiMaxSourcesHL, GetResString(IDS_MAX_SOURCE_HARDLIMIT));
+		if (m_htiMinFileLimit) m_ctrlTreeOptions.SetEditLabel(m_htiMinFileLimit, GetResString(IDS_MIN_SOURCE_HARDLIMIT));
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS
 	    if (m_htiEnableAntiNickThief) m_ctrlTreeOptions.SetItemText(m_htiEnableAntiNickThief, GetResString(IDS_ANTINICKTHIEF));
@@ -503,7 +567,15 @@ void CPPgNextEMF::OnDestroy()
 	m_htiQuickStartAfterIPChange = NULL;
 #endif //Quickstart
 	//<==Quickstart [cyrex2001]
-
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
+	m_htiHardLimit = NULL;
+	m_htiAutoHLUpdateTimer = NULL; 
+	m_htiUseAutoHL = NULL;
+	m_htiMaxSourcesHL = NULL;
+	m_htiMinFileLimit = NULL;
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS
 	m_htiEnableAntiNickThief = NULL;
