@@ -19,6 +19,13 @@
 #include "MeterIcon.h"
 #include "TitleMenu.h"
 
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR
+#include "EnBitmap.h"
+#include "NextEMF/xSkinButton.h"
+#endif
+//<== Toolbar [shadow2004]
+
 namespace Kademlia {
 	class CSearch;
 	class CContact;
@@ -31,7 +38,11 @@ class CKademliaWnd;
 class CKnownFileList; 
 class CMainFrameDropTarget;
 class CMuleStatusBarCtrl;
+//==> Toolbar [shadow2004]
+#ifndef TOOLBAR
 class CMuleToolbarCtrl;
+#endif
+//<== Toolbar [shadow2004]
 class CPreferencesDlg;
 class CSearchDlg;
 class CServerWnd;
@@ -55,7 +66,11 @@ class CMiniMule;
 
 class CemuleDlg : public CTrayDialog
 {
+//==> Toolbar [shadow2004]
+#ifndef TOOLBAR
 	friend class CMuleToolbarCtrl;
+#endif
+//<== Toolbar [shadow2004]
 	friend class CMiniMule;
 
 public:
@@ -119,10 +134,36 @@ public:
 	CStatisticsDlg*  statisticswnd;
 	CTaskbarNotifier* m_wndTaskbarNotifier;
 	CReBarCtrl		m_ctlMainTopReBar;
+//==> Toolbar [shadow2004]
+#ifndef TOOLBAR
 	CMuleToolbarCtrl* toolbar;
+#endif
+//<== Toolbar [shadow2004]
 	CKademliaWnd*	kademliawnd;
 	CWnd*			activewnd;
 	uint8			status;
+
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR
+	CEnBitmap m_co_ToolLeft;
+	CEnBitmap m_co_ToolMid;
+	CEnBitmap m_co_ToolRight;
+
+	afx_msg BOOL OnEraseBkgnd(CDC* pDC);
+	
+	afx_msg void OnBnClickedBtnConnect();
+	afx_msg void OnBnClickedBtnKademlia();
+	afx_msg void OnBnClickedBtnServer();
+	afx_msg void OnBnClickedBtnTransfer();
+	afx_msg void OnBnClickedBtnSearch();
+	afx_msg void OnBnClickedBtnShared();
+	afx_msg void OnBnClickedBtnMessage();
+	afx_msg void OnBnClickedBtnStatistic();
+	afx_msg void OnBnClickedBtnPreferences();
+	afx_msg void OnBnClickedBtnTools();
+	afx_msg void OnBnClickedBtnIrc();
+#endif
+//<== Toolbar [shadow2004]
 
 protected:
 	HICON			m_hIcon;
@@ -252,6 +293,22 @@ protected:
 
 	// Mini Mule
 	afx_msg LRESULT OnCloseMiniMule(WPARAM wParam, LPARAM lParam);
+
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR
+	CxSkinButton	m_co_ConnectBtn;
+	CxSkinButton	m_co_KademliaBtn;
+	CxSkinButton	m_co_ServerBtn;
+	CxSkinButton	m_co_TransferBtn;
+	CxSkinButton	m_co_SearchBtn;
+	CxSkinButton	m_co_SharedBtn;
+	CxSkinButton	m_co_MessagesBtn;
+	CxSkinButton	m_co_StatisticBtn;
+	CxSkinButton	m_co_PreferencesBtn;
+	CxSkinButton	m_co_ToolsBtn;
+	CxSkinButton	m_co_HelpBtn;
+#endif
+//<== Toolbar [shadow2004]
 };
 
 

@@ -78,7 +78,11 @@
 #include "FriendList.h"
 #include "IPFilter.h"
 #include "Statistics.h"
+//==> Toolbar [shadow2004]
+#ifndef TOOLBAR
 #include "MuleToolbarCtrl.h"
+#endif
+//<== Toolbar [shadow2004]
 #include "TaskbarNotifier.h"
 #include "MuleStatusbarCtrl.h"
 #include "ListenSocket.h"
@@ -186,6 +190,24 @@ BEGIN_MESSAGE_MAP(CemuleDlg, CTrayDialog)
 	ON_MESSAGE(TM_FRAMEGRABFINISHED, OnFrameGrabFinished)
 	ON_MESSAGE(TM_FILEALLOCEXC, OnFileAllocExc)
 	ON_MESSAGE(TM_FILECOMPLETED, OnFileCompleted)
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR
+	ON_WM_ERASEBKGND()
+
+	ON_BN_CLICKED(IDC_BTN_CONNECT, OnBnClickedBtnConnect)
+	ON_BN_CLICKED(IDC_BTN_KADEMLIA, OnBnClickedBtnKademlia)
+	ON_BN_CLICKED(IDC_BTN_SERVER, OnBnClickedBtnServer)
+	ON_BN_CLICKED(IDC_BTN_TRANSFER, OnBnClickedBtnTransfer)
+	ON_BN_CLICKED(IDC_BTN_SEARCH, OnBnClickedBtnSearch)
+	ON_BN_CLICKED(IDC_BTN_FILES, OnBnClickedBtnShared)
+	ON_BN_CLICKED(IDC_BTN_MESSAGES, OnBnClickedBtnMessage)
+	ON_BN_CLICKED(IDC_BTN_STATISTIC, OnBnClickedBtnStatistic)
+	ON_BN_CLICKED(IDC_BTN_PREFERENCES, OnBnClickedBtnPreferences)
+	ON_BN_CLICKED(IDC_BTN_TOOLS, OnBnClickedBtnTools)
+
+#endif
+//<== Toolbar [shadow2004]
+
 END_MESSAGE_MAP()
 
 CemuleDlg::CemuleDlg(CWnd* pParent /*=NULL*/)
@@ -200,7 +222,11 @@ CemuleDlg::CemuleDlg(CWnd* pParent /*=NULL*/)
 	searchwnd = new CSearchDlg;
 	chatwnd = new CChatWnd;
 	statisticswnd = new CStatisticsDlg;
+//==> Toolbar [shadow2004]
+#ifndef TOOLBAR
 	toolbar = new CMuleToolbarCtrl;
+#endif
+//<== Toolbar [shadow2004]
 	statusbar = new CMuleStatusBarCtrl;
 	m_wndTaskbarNotifier = new CTaskbarNotifier;
 
@@ -277,7 +303,11 @@ CemuleDlg::~CemuleDlg()
 	delete sharedfileswnd;
 	delete chatwnd;
 	delete statisticswnd;
+//==> Toolbar [shadow2004]
+#ifndef TOOLBAR
 	delete toolbar;
+#endif
+//<== Toolbar [shadow2004]
 	delete statusbar;
 	delete m_wndTaskbarNotifier;
 	delete m_pDropTarget;
@@ -286,6 +316,20 @@ CemuleDlg::~CemuleDlg()
 void CemuleDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CTrayDialog::DoDataExchange(pDX);
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR
+	DDX_Control(pDX, IDC_BTN_CONNECT, m_co_ConnectBtn);
+	DDX_Control(pDX, IDC_BTN_KADEMLIA, m_co_KademliaBtn);
+	DDX_Control(pDX, IDC_BTN_TRANSFER, m_co_TransferBtn);
+	DDX_Control(pDX, IDC_BTN_SERVER, m_co_ServerBtn);
+	DDX_Control(pDX, IDC_BTN_SEARCH, m_co_SearchBtn);
+	DDX_Control(pDX, IDC_BTN_FILES, m_co_SharedBtn);
+	DDX_Control(pDX, IDC_BTN_MESSAGES, m_co_MessagesBtn);
+	DDX_Control(pDX, IDC_BTN_STATISTIC, m_co_StatisticBtn);
+	DDX_Control(pDX, IDC_BTN_PREFERENCES, m_co_PreferencesBtn);
+	DDX_Control(pDX, IDC_BTN_TOOLS, m_co_ToolsBtn);
+#endif
+//<== Toolbar [shadow2004]
 }
 
 LRESULT CemuleDlg::OnAreYouEmule(WPARAM, LPARAM)
@@ -295,6 +339,13 @@ LRESULT CemuleDlg::OnAreYouEmule(WPARAM, LPARAM)
 
 BOOL CemuleDlg::OnInitDialog()
 {
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR
+	m_co_ToolLeft.LoadImage(IDR_TOOLBAR_LEFT,_T("JPG"));
+	m_co_ToolMid.LoadImage(IDR_TOOLBAR_CENTER,_T("JPG"));
+	m_co_ToolRight.LoadImage(IDR_TOOLBAR_RIGHT,_T("JPG"));
+#endif
+//<== Toolbar [shadow2004]
 	m_bStartMinimized = thePrefs.GetStartMinimized();
 	if (!m_bStartMinimized)
 		m_bStartMinimized = theApp.DidWeAutoStart();
@@ -327,6 +378,8 @@ BOOL CemuleDlg::OnInitDialog()
 		// remaining system menu entries are created later...
 	}
 
+//==> Toolbar [shadow2004]
+#ifndef TOOLBAR
 	CWnd* pwndToolbarX = toolbar;
 	if (toolbar->Create(WS_CHILD | WS_VISIBLE, CRect(0,0,0,0), this, IDC_TOOLBAR))
 	{
@@ -356,6 +409,8 @@ BOOL CemuleDlg::OnInitDialog()
 		    }
 		}
 	}
+#endif
+//<== Toolbar [shadow2004]
 
 	//set title
         SetWindowText(_T("eMule v") + theApp.m_strCurVersionLong
@@ -365,17 +420,6 @@ BOOL CemuleDlg::OnInitDialog()
 #endif //Modversion
         );
         
-/*	CString buffer = _T("eMule v"); 
-	buffer += theApp.m_strCurVersionLong;
-
-//==>Modversion [shadow2004]
-#ifdef MODVERSION
-	buffer += _T(" [") + theApp.m_strModLongVersion + _T("]");
-#endif //Modversion
-//<==Modversion [shadow2004]
-
-	SetWindowText(buffer);*/
-
 	// Init taskbar notifier
 	m_wndTaskbarNotifier->Create(this);
 	if (thePrefs.GetNotifierConfiguration().IsEmpty()) {
@@ -403,46 +447,156 @@ BOOL CemuleDlg::OnInitDialog()
 	statisticswnd->Create(IDD_STATISTICS);
 	kademliawnd->Create(IDD_KADEMLIAWND);
 
-	// with the top rebar control, some XP themes look better with some additional lite borders.. some not..
-	//serverwnd->ModifyStyleEx(0, WS_EX_STATICEDGE);
-	//sharedfileswnd->ModifyStyleEx(0, WS_EX_STATICEDGE);
-	//searchwnd->ModifyStyleEx(0, WS_EX_STATICEDGE);
-	//chatwnd->ModifyStyleEx(0, WS_EX_STATICEDGE);
-	//transferwnd->ModifyStyleEx(0, WS_EX_STATICEDGE);
-	//statisticswnd->ModifyStyleEx(0, WS_EX_STATICEDGE);
-	//kademliawnd->ModifyStyleEx(0, WS_EX_STATICEDGE);
-	//ircwnd->ModifyStyleEx(0, WS_EX_STATICEDGE);
-
 	// optional: restore last used main window dialog
 	if (thePrefs.GetRestoreLastMainWndDlg()){
 		switch (thePrefs.GetLastMainWndDlgID()){
 		case IDD_SERVER:
+			{
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR				
+				m_co_KademliaBtn.EnableWindow(TRUE);
+				m_co_TransferBtn.EnableWindow(TRUE);
+				m_co_SearchBtn.EnableWindow(TRUE);
+				m_co_SharedBtn.EnableWindow(TRUE);
+				m_co_MessagesBtn.EnableWindow(TRUE);
+				m_co_StatisticBtn.EnableWindow(TRUE);
+				m_co_PreferencesBtn.EnableWindow(TRUE);				
+
+				m_co_ServerBtn.EnableWindow(FALSE);
+#endif
+//<== Toolbar [shadow2004]
 			SetActiveDialog(serverwnd);
 			break;
+			}
 		case IDD_FILES:
+			{
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR				
+				m_co_KademliaBtn.EnableWindow(TRUE);
+				m_co_ServerBtn.EnableWindow(TRUE);
+				m_co_TransferBtn.EnableWindow(TRUE);
+				m_co_SearchBtn.EnableWindow(TRUE);
+				m_co_MessagesBtn.EnableWindow(TRUE);
+				m_co_StatisticBtn.EnableWindow(TRUE);
+				m_co_PreferencesBtn.EnableWindow(TRUE);				
+
+				m_co_SharedBtn.EnableWindow(FALSE);
+#endif
+//<== Toolbar [shadow2004]
 			SetActiveDialog(sharedfileswnd);
 			break;
+			}
 		case IDD_SEARCH:
+			{
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR	
+				m_co_KademliaBtn.EnableWindow(TRUE);
+				m_co_ServerBtn.EnableWindow(TRUE);
+				m_co_TransferBtn.EnableWindow(TRUE);
+				m_co_SharedBtn.EnableWindow(TRUE);
+				m_co_MessagesBtn.EnableWindow(TRUE);
+				m_co_StatisticBtn.EnableWindow(TRUE);
+				m_co_PreferencesBtn.EnableWindow(TRUE);				
+
+				m_co_SearchBtn.EnableWindow(FALSE);
+#endif
+//<== Toolbar [shadow2004]
 			SetActiveDialog(searchwnd);
 			break;
+			}
 		case IDD_CHAT:
+			{
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR	
+				m_co_KademliaBtn.EnableWindow(TRUE);
+				m_co_ServerBtn.EnableWindow(TRUE);
+				m_co_TransferBtn.EnableWindow(TRUE);
+				m_co_SearchBtn.EnableWindow(TRUE);
+				m_co_SharedBtn.EnableWindow(TRUE);
+				m_co_StatisticBtn.EnableWindow(TRUE);
+				m_co_PreferencesBtn.EnableWindow(TRUE);				
+
+				m_co_MessagesBtn.EnableWindow(FALSE);
+#endif
+//<== Toolbar [shadow2004]
 			SetActiveDialog(chatwnd);
 			break;
+			}
 		case IDD_TRANSFER:
+			{
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR	
+				m_co_KademliaBtn.EnableWindow(TRUE);
+				m_co_ServerBtn.EnableWindow(TRUE);
+				m_co_SearchBtn.EnableWindow(TRUE);
+				m_co_SharedBtn.EnableWindow(TRUE);
+				m_co_MessagesBtn.EnableWindow(TRUE);
+				m_co_StatisticBtn.EnableWindow(TRUE);
+				m_co_PreferencesBtn.EnableWindow(TRUE);				
+
+				m_co_TransferBtn.EnableWindow(FALSE);
+#endif
+//<== Toolbar [shadow2004]
 			SetActiveDialog(transferwnd);
 			break;
+			}
 		case IDD_STATISTICS:
+			{
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR	
+				m_co_KademliaBtn.EnableWindow(TRUE);
+				m_co_ServerBtn.EnableWindow(TRUE);
+				m_co_TransferBtn.EnableWindow(TRUE);
+				m_co_SearchBtn.EnableWindow(TRUE);
+				m_co_SharedBtn.EnableWindow(TRUE);
+				m_co_MessagesBtn.EnableWindow(TRUE);
+				m_co_PreferencesBtn.EnableWindow(TRUE);				
+
+				m_co_StatisticBtn.EnableWindow(FALSE);
+#endif
+//<== Toolbar [shadow2004]
 			SetActiveDialog(statisticswnd);
 			break;
+			}
 		case IDD_KADEMLIAWND:
+			{
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR	
+				m_co_ServerBtn.EnableWindow(TRUE);
+				m_co_TransferBtn.EnableWindow(TRUE);
+				m_co_SearchBtn.EnableWindow(TRUE);
+				m_co_SharedBtn.EnableWindow(TRUE);
+				m_co_MessagesBtn.EnableWindow(TRUE);
+				m_co_StatisticBtn.EnableWindow(TRUE);
+				m_co_PreferencesBtn.EnableWindow(TRUE);				
+
+				m_co_KademliaBtn.EnableWindow(FALSE);
+#endif
+//<== Toolbar [shadow2004]
 			SetActiveDialog(kademliawnd);
 			break;
 		}
 	}
+	}
 
 	// if still no active window, activate server window
 	if (activewnd == NULL)
+			{
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR	
+		m_co_KademliaBtn.EnableWindow(TRUE);
+		m_co_TransferBtn.EnableWindow(TRUE);
+		m_co_SearchBtn.EnableWindow(TRUE);
+		m_co_SharedBtn.EnableWindow(TRUE);
+		m_co_MessagesBtn.EnableWindow(TRUE);
+		m_co_StatisticBtn.EnableWindow(TRUE);
+		m_co_PreferencesBtn.EnableWindow(TRUE);				
+
+		m_co_ServerBtn.EnableWindow(FALSE);
+#endif
+//<== Toolbar [shadow2004]
 		SetActiveDialog(serverwnd);
+			}
 
 	SetAllIcons();
 	Localize();
@@ -450,6 +604,18 @@ BOOL CemuleDlg::OnInitDialog()
 	// set updateintervall of graphic rate display (in seconds)
 	//ShowConnectionState(false);
 
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR	
+	RECT rect;
+//	RECT rect1,rect2;
+	GetClientRect(&rect);
+
+	CRect srect;
+
+	statusbar->GetClientRect(&srect);
+	statusbar->SetWindowPos(NULL,0,rect.bottom-(srect.bottom-srect.top),rect.right-rect.left,rect.bottom-rect.top,SWP_NOZORDER);
+	statusbar->GetClientRect(&srect);
+#else
 	// adjust all main window sizes for toolbar height and maximize the child windows
 	CRect rcClient, rcToolbar, rcStatusbar;
 	GetClientRect(&rcClient);
@@ -457,6 +623,8 @@ BOOL CemuleDlg::OnInitDialog()
 	statusbar->GetWindowRect(&rcStatusbar);
 	rcClient.top += rcToolbar.Height();
 	rcClient.bottom -= rcStatusbar.Height();
+#endif
+//<== Toolbar [shadow2004]
 
 	CWnd* apWnds[] =
 	{
@@ -469,7 +637,50 @@ BOOL CemuleDlg::OnInitDialog()
 		statisticswnd
 	};
 	for (int i = 0; i < ARRSIZE(apWnds); i++)
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR	
+		apWnds[i]->SetWindowPos(NULL,0,66,rect.right-rect.left,rect.bottom-rect.top-66-(srect.bottom-srect.top),SWP_NOZORDER);
+
+	GetDlgItem(IDC_BTN_CONNECT)->SetWindowPos(NULL,16,4,56,56,SWP_NOZORDER);
+	GetDlgItem(IDC_BTN_KADEMLIA)->SetWindowPos(NULL,73,4,56,56,SWP_NOZORDER);
+	GetDlgItem(IDC_BTN_SERVER)->SetWindowPos(NULL,130,4,56,56,SWP_NOZORDER);
+	GetDlgItem(IDC_BTN_TRANSFER)->SetWindowPos(NULL,187,4,56,56,SWP_NOZORDER);
+	GetDlgItem(IDC_BTN_SEARCH)->SetWindowPos(NULL,244,4,56,56,SWP_NOZORDER);
+	GetDlgItem(IDC_BTN_FILES)->SetWindowPos(NULL,301,4,56,56,SWP_NOZORDER);
+	GetDlgItem(IDC_BTN_MESSAGES)->SetWindowPos(NULL,358,4,56,56,SWP_NOZORDER);
+	GetDlgItem(IDC_BTN_STATISTIC)->SetWindowPos(NULL,415,4,56,56,SWP_NOZORDER);
+	GetDlgItem(IDC_BTN_PREFERENCES)->SetWindowPos(NULL,472,4,56,56,SWP_NOZORDER);
+	GetDlgItem(IDC_BTN_TOOLS)->SetWindowPos(NULL,529,4,56,56,SWP_NOZORDER);
+
+
+	RECT trect4={0,39,56,55};
+	m_co_ConnectBtn.Set_TextPos(trect4);
+	m_co_KademliaBtn.Set_TextPos(trect4);
+	m_co_ServerBtn.Set_TextPos(trect4);
+	m_co_TransferBtn.Set_TextPos(trect4);
+	m_co_SearchBtn.Set_TextPos(trect4);
+	m_co_SharedBtn.Set_TextPos(trect4);
+	m_co_MessagesBtn.Set_TextPos(trect4);
+	m_co_StatisticBtn.Set_TextPos(trect4);
+	m_co_PreferencesBtn.Set_TextPos(trect4);
+	m_co_ToolsBtn.Set_TextPos(trect4);
+
+
+	m_co_ConnectBtn.SetSkin(IDB_CONNECT_NORMAL,IDB_CONNECT_CLICK,IDB_CONNECT_OVER,IDB_CONNECT_CLICK,0,0,0,0,0);
+	m_co_KademliaBtn.SetSkin(IDB_KADEMLIA_NORMAL,IDB_KADEMLIA_CLICK,IDB_KADEMLIA_OVER,IDB_KADEMLIA_CLICK,0,0,0,0,0);
+	m_co_ServerBtn.SetSkin(IDB_SERVER_NORMAL,IDB_SERVER_CLICK,IDB_SERVER_OVER,IDB_SERVER_CLICK,0,0,0,0,0);
+	m_co_TransferBtn.SetSkin(IDB_TRANSFER_NORMAL,IDB_TRANSFER_CLICK,IDB_TRANSFER_OVER,IDB_TRANSFER_CLICK,0,0,0,0,0);
+	m_co_SearchBtn.SetSkin(IDB_SEARCH_NORMAL,IDB_SEARCH_CLICK,IDB_SEARCH_OVER,IDB_SEARCH_CLICK,0,0,0,0,0);
+	m_co_SharedBtn.SetSkin(IDB_SHARED_NORMAL,IDB_SHARED_CLICK,IDB_SHARED_OVER,IDB_SHARED_CLICK,0,0,0,0,0);
+
+	m_co_MessagesBtn.SetSkin(IDB_MESSAGES_NORMAL,IDB_MESSAGES_CLICK,IDB_MESSAGES_OVER,IDB_MESSAGES_CLICK,0,0,0,0,0);
+	m_co_StatisticBtn.SetSkin(IDB_STATISTIC_NORMAL,IDB_STATISTIC_CLICK,IDB_STATISTIC_OVER,IDB_STATISTIC_CLICK,0,0,0,0,0);
+	m_co_PreferencesBtn.SetSkin(IDB_PREFERENCES_NORMAL,IDB_PREFERENCES_CLICK,IDB_PREFERENCES_OVER,IDB_PREFERENCES_CLICK,0,0,0,0,0);
+	m_co_ToolsBtn.SetSkin(IDB_TOOLS_NORMAL,IDB_TOOLS_CLICK,IDB_TOOLS_OVER,IDB_TOOLS_CLICK,0,0,0,0,0);
+#else
 		apWnds[i]->SetWindowPos(NULL, rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height(), SWP_NOZORDER);
+#endif
+//<== Toolbar [shadow2004]
 
 	// anchors
 	AddAnchor(*serverwnd,		TOP_LEFT, BOTTOM_RIGHT);
@@ -479,9 +690,18 @@ BOOL CemuleDlg::OnInitDialog()
     AddAnchor(*searchwnd,		TOP_LEFT, BOTTOM_RIGHT);
     AddAnchor(*chatwnd,			TOP_LEFT, BOTTOM_RIGHT);
 	AddAnchor(*statisticswnd,	TOP_LEFT, BOTTOM_RIGHT);
+//==> Toolbar [shadow2004]
+#ifndef TOOLBAR	
 	AddAnchor(*pwndToolbarX,	TOP_LEFT, TOP_RIGHT);
+#endif
+//<== Toolbar [shadow2004]
 	AddAnchor(*statusbar,		BOTTOM_LEFT, BOTTOM_RIGHT);
-
+//==> Toolbar [shadow2004]
+#ifndef TOOLBAR	
+	AddAnchor(IDC_BTN_TOOLS,TOP_RIGHT);
+	AddAnchor(IDC_BTN_PREFERENCES,TOP_RIGHT);
+#endif
+//<== Toolbar [shadow2004]
 	statisticswnd->ShowInterval();
 
 	// tray icon
@@ -1022,6 +1242,11 @@ void CemuleDlg::ShowConnectionState()
 
 	if (theApp.IsConnected())
 	{
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR
+		SetDlgItemText(IDC_BTN_CONNECT,GetResString(IDS_MAIN_BTN_DISCONNECT));
+		m_co_ConnectBtn.SetSkin(IDB_CONNECT_CLICK,IDB_CONNECT_CLICK,IDB_DISCONNECT_OVER,IDB_CONNECT_CLICK,0,0,0,0,0);
+#else
 		CString strPane(GetResString(IDS_MAIN_BTN_DISCONNECT));
 		TBBUTTONINFO tbi;
 		tbi.cbSize = sizeof(TBBUTTONINFO);
@@ -1029,11 +1254,18 @@ void CemuleDlg::ShowConnectionState()
 		tbi.iImage = 1;
 		tbi.pszText = const_cast<LPTSTR>((LPCTSTR)strPane);
 		toolbar->SetButtonInfo(TBBTN_CONNECT, &tbi);
+#endif
+//<== Toolbar [shadow2004]
 	}
 	else
 	{
 		if (theApp.serverconnect->IsConnecting() || Kademlia::CKademlia::isRunning()) 
 		{
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR
+			SetDlgItemText(IDC_BTN_CONNECT,GetResString(IDS_MAIN_BTN_CANCEL));
+			m_co_ConnectBtn.SetSkin(IDB_CONNECT_CLICK,IDB_CONNECT_CLICK,IDB_DISCONNECT_OVER,IDB_CONNECT_CLICK,0,0,0,0,0);
+#else
 			CString strPane(GetResString(IDS_MAIN_BTN_CANCEL));
 			TBBUTTONINFO tbi;
 			tbi.cbSize = sizeof(TBBUTTONINFO);
@@ -1041,10 +1273,17 @@ void CemuleDlg::ShowConnectionState()
 			tbi.iImage = 2;
 			tbi.pszText = const_cast<LPTSTR>((LPCTSTR)strPane);
 			toolbar->SetButtonInfo(TBBTN_CONNECT, &tbi);
+#endif
+//<== Toolbar [shadow2004]
 			ShowUserCount();
 		} 
 		else 
 		{
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR
+			SetDlgItemText(IDC_BTN_CONNECT,GetResString(IDS_MAIN_BTN_CONNECT));
+			m_co_ConnectBtn.SetSkin(IDB_CONNECT_NORMAL,IDB_CONNECT_CLICK,IDB_CONNECT_OVER,IDB_CONNECT_CLICK,0,0,0,0,0);
+#else
 			CString strPane(GetResString(IDS_MAIN_BTN_CONNECT));
 			TBBUTTONINFO tbi;
 			tbi.cbSize = sizeof(TBBUTTONINFO);
@@ -1052,6 +1291,8 @@ void CemuleDlg::ShowConnectionState()
 			tbi.iImage = 0;
 			tbi.pszText = const_cast<LPTSTR>((LPCTSTR)strPane);
 			toolbar->SetButtonInfo(TBBTN_CONNECT, &tbi);
+#endif
+//<== Toolbar [shadow2004]
 			ShowUserCount();
 		}
 
@@ -1235,6 +1476,8 @@ void CemuleDlg::SetActiveDialog(CWnd* dlg)
 	if (dlg == transferwnd){
 		if (thePrefs.ShowCatTabInfos())
 			transferwnd->UpdateCatTabTitles();
+//==> Toolbar [shadow2004]
+#ifndef TOOLBAR
 		toolbar->PressMuleButton(TBBTN_TRANSFERS);
 	}
 	else if (dlg == serverwnd){
@@ -1256,6 +1499,8 @@ void CemuleDlg::SetActiveDialog(CWnd* dlg)
 	}
 	else if	(dlg == kademliawnd){
 		toolbar->PressMuleButton(TBBTN_KAD);
+#endif
+//<== Toolbar [shadow2004]
 	}
 }
 
@@ -1285,6 +1530,16 @@ void CemuleDlg::SetStatusBarPartsSize()
 
 void CemuleDlg::OnSize(UINT nType, int cx, int cy)
 {
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR
+	CRect rect;
+	GetClientRect(&rect);
+	rect.bottom=66;
+
+	InvalidateRect(&rect,FALSE);
+#endif
+//<== Toolbar [shadow2004]
+
 	CTrayDialog::OnSize(nType, cx, cy);
 	SetStatusBarPartsSize();
 	transferwnd->VerifyCatTabSize();
@@ -2249,7 +2504,21 @@ void CemuleDlg::Localize()
 	}
 
 	ShowUserStateIcon();
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR
+	SetDlgItemText(IDC_BTN_KADEMLIA,GetResString(IDS_EM_KADEMLIA));
+	SetDlgItemText(IDC_BTN_SERVER,GetResString(IDS_EM_SERVER));
+	SetDlgItemText(IDC_BTN_TRANSFER,GetResString(IDS_EM_TRANS));
+	SetDlgItemText(IDC_BTN_SEARCH,GetResString(IDS_EM_SEARCH));
+	SetDlgItemText(IDC_BTN_FILES,GetResString(IDS_EM_FILES));
+	SetDlgItemText(IDC_BTN_MESSAGES,GetResString(IDS_EM_MESSAGES));
+	SetDlgItemText(IDC_BTN_STATISTIC,GetResString(IDS_EM_STATISTIC));
+	SetDlgItemText(IDC_BTN_PREFERENCES,GetResString(IDS_EM_PREFS));
+	SetDlgItemText(IDC_BTN_TOOLS,GetResString(IDS_TOOLS));
+#else
 	toolbar->Localize();
+#endif
+//<== Toolbar [shadow2004]
 	ShowConnectionState();
 	ShowTransferRate(true);
 	ShowUserCount();
@@ -2377,55 +2646,58 @@ BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 {
 	switch(wParam)
 	{	
-		case TBBTN_CONNECT:
-			OnBnClickedButton2();
+//		case TBBTN_CONNECT:
+//==> Toolbar [shadow2004]
+//			OnBnClickedButton2();
 			break;
 		case MP_HM_KAD:
-		case TBBTN_KAD:
+//		case TBBTN_KAD:
 			SetActiveDialog(kademliawnd);
 			break;
-		case TBBTN_SERVER:
+//		case TBBTN_SERVER:
 		case MP_HM_SRVR:
 			SetActiveDialog(serverwnd);
 			break;
-		case TBBTN_TRANSFERS:
+//		case TBBTN_TRANSFERS:
 		case MP_HM_TRANSFER:
 			SetActiveDialog(transferwnd);
 			break;
-		case TBBTN_SEARCH:
+//		case TBBTN_SEARCH:
 		case MP_HM_SEARCH:
 			SetActiveDialog(searchwnd);
 			break;
-		case TBBTN_SHARED:
+//		case TBBTN_SHARED:
 		case MP_HM_FILES:
 			SetActiveDialog(sharedfileswnd);
 			break;
-		case TBBTN_MESSAGES:
+//		case TBBTN_MESSAGES:
 		case MP_HM_MSGS:
 			SetActiveDialog(chatwnd);
 			break;
-		case TBBTN_STATS:
+//		case TBBTN_STATS:
 		case MP_HM_STATS:
 			SetActiveDialog(statisticswnd);
 			break;
-		case TBBTN_OPTIONS:
+//		case TBBTN_OPTIONS:
 		case MP_HM_PREFS:
-			toolbar->CheckButton(TBBTN_OPTIONS, TRUE);
+//==> Toolbar [shadow2004]
+//			toolbar->CheckButton(TBBTN_OPTIONS, TRUE);
 			ShowPreferences();
-			toolbar->CheckButton(TBBTN_OPTIONS, FALSE);
+//			toolbar->CheckButton(TBBTN_OPTIONS, FALSE);
 			break;
-		case TBBTN_TOOLS:
-			ShowToolPopup(true);
-			break;
+//		case TBBTN_TOOLS:
+//			ShowToolPopup(true);
+//			break;
 		case MP_HM_OPENINC:
 			ShellExecute(NULL, _T("open"), thePrefs.GetIncomingDir(),NULL, NULL, SW_SHOW); 
 			break;
 		case MP_HM_HELP:
-		case TBBTN_HELP:
+//		case TBBTN_HELP:
 			wParam = ID_HELP;
 			break;
 		case MP_HM_CON:
-			OnBnClickedButton2();
+//==> Toolbar [shadow2004]
+//			OnBnClickedButton2();
 			break;
 		case MP_HM_EXIT:
 			OnClose();
@@ -2478,11 +2750,15 @@ BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 
 LRESULT CemuleDlg::OnMenuChar(UINT nChar, UINT nFlags, CMenu* pMenu)
 {
+//==> Toolbar [shadow2004]
+#ifndef TOOLBAR
 	UINT nCmdID;
 	if (toolbar->MapAccelerator(nChar, &nCmdID)){
 		OnCommand(nCmdID, 0);
 		return MAKELONG(0,MNC_CLOSE);
 	}
+#endif
+//<== Toolbar [shadow2004]
 	return CTrayDialog::OnMenuChar(nChar, nFlags, pMenu);
 }
 
@@ -2928,6 +3204,8 @@ BOOL CemuleDlg::OnChevronPushed(UINT id, NMHDR* pNMHDR, LRESULT* plResult)
 	ASSERT( pnmrc->uBand == 0 );
 	ASSERT( pnmrc->wID == 0 );
 
+//==> Toolbar [shadow2004]
+#ifndef TOOLBAR
 	// get visible area of rebar/toolbar
 	CRect rcVisibleButtons;
 	toolbar->GetClientRect(&rcVisibleButtons);
@@ -2943,12 +3221,17 @@ BOOL CemuleDlg::OnChevronPushed(UINT id, NMHDR* pNMHDR, LRESULT* plResult)
 		if (!rcVisible.IntersectRect(&rcVisibleButtons, &rcButton) || !EqualRect(rcButton, rcVisible))
 			break;
 	}
+#endif
+//<== Toolbar [shadow2004]
 
 	// create menu for all toolbar buttons which are not (fully) visible
 	BOOL bLastMenuItemIsSep = TRUE;
 	CTitleMenu menu;
 	menu.CreatePopupMenu();
 	menu.AddMenuTitle(_T("eMule"), true);
+
+//==> Toolbar [shadow2004]
+#ifndef TOOLBAR
 	while (i < iButtons)
 	{
 		TCHAR szString[256];
@@ -2980,11 +3263,11 @@ BOOL CemuleDlg::OnChevronPushed(UINT id, NMHDR* pNMHDR, LRESULT* plResult)
 
 		i++;
 	}
+#endif
+//<== Toolbar [shadow2004]
 
 	CPoint ptMenu(pnmrc->rc.left, pnmrc->rc.top);
 	ClientToScreen(&ptMenu);
-	ptMenu.y += rcVisibleButtons.Height();
-	menu.TrackPopupMenu(TPM_LEFTALIGN | TPM_TOPALIGN | TPM_LEFTBUTTON | TPM_RIGHTBUTTON, ptMenu.x, ptMenu.y, this);
 	*plResult = 1;
 	return FALSE;
 }
@@ -3191,3 +3474,199 @@ LRESULT CemuleDlg::OnWebGUIInteraction(WPARAM wParam, LPARAM lParam) {
 
 	return 0;
 }
+
+//==> Toolbar [shadow2004]
+#ifdef TOOLBAR
+BOOL CemuleDlg::OnEraseBkgnd(CDC* pDC)
+{
+	RECT rect;
+
+	BITMAP bmpInfo;
+	CDC dcMemory1,dcMemory2,dcMemory3;
+
+	GetClientRect(&rect);
+
+	m_co_ToolLeft.GetBitmap(&bmpInfo);
+	dcMemory1.CreateCompatibleDC(pDC);
+	CBitmap* pOldBitmap1 = dcMemory1.SelectObject(&m_co_ToolLeft);
+	pDC->BitBlt(0,0, bmpInfo.bmWidth, bmpInfo.bmHeight, &dcMemory1, 0, 0, SRCCOPY);
+
+	m_co_ToolRight.GetBitmap(&bmpInfo);
+	dcMemory2.CreateCompatibleDC(pDC);
+	CBitmap* pOldBitmap2 = dcMemory2.SelectObject(&m_co_ToolRight);
+	pDC->BitBlt((rect.right-rect.left)-bmpInfo.bmWidth,0, bmpInfo.bmWidth, bmpInfo.bmHeight, &dcMemory2, 0, 0, SRCCOPY);
+
+	m_co_ToolMid.GetBitmap(&bmpInfo);
+	dcMemory3.CreateCompatibleDC(pDC);
+	CBitmap* pOldBitmap3 = dcMemory3.SelectObject(&m_co_ToolMid);
+	pDC->StretchBlt(387,0, rect.right-253-387, bmpInfo.bmHeight, &dcMemory3,0,0, bmpInfo.bmWidth, bmpInfo.bmHeight ,SRCCOPY);
+
+	dcMemory1.SelectObject(pOldBitmap1);
+	dcMemory2.SelectObject(pOldBitmap2);
+	dcMemory3.SelectObject(pOldBitmap3);
+
+  return FALSE;
+}
+
+void CemuleDlg::OnBnClickedBtnConnect()
+{
+
+	if (!theApp.IsConnected())
+		//connect if not currently connected
+		if (!theApp.serverconnect->IsConnecting() && !Kademlia::CKademlia::isRunning() ){
+			StartConnection();
+			SetDlgItemText(IDC_BTN_CONNECT,_T("Disconnect"));
+			m_co_ConnectBtn.SetSkin(IDB_CONNECT_CLICK,IDB_CONNECT_CLICK,IDB_DISCONNECT_OVER,IDB_CONNECT_CLICK,0,0,0,0,0);
+		}
+		else {
+			CloseConnection();
+			SetDlgItemText(IDC_BTN_CONNECT,_T("Connect"));
+			m_co_ConnectBtn.SetSkin(IDB_CONNECT_NORMAL,IDB_CONNECT_CLICK,IDB_CONNECT_OVER,IDB_CONNECT_CLICK,0,0,0,0,0);
+
+		}
+	else{
+		//disconnect if currently connected
+		CloseConnection();
+		SetDlgItemText(IDC_BTN_CONNECT,_T("Connect"));
+		m_co_ConnectBtn.SetSkin(IDB_CONNECT_NORMAL,IDB_CONNECT_CLICK,IDB_CONNECT_OVER,IDB_CONNECT_CLICK,0,0,0,0,0);
+
+	}
+}
+
+void CemuleDlg::OnBnClickedBtnKademlia()
+{
+	
+	m_co_ServerBtn.EnableWindow(TRUE);
+	m_co_TransferBtn.EnableWindow(TRUE);
+	m_co_SearchBtn.EnableWindow(TRUE);
+	m_co_SharedBtn.EnableWindow(TRUE);
+	m_co_MessagesBtn.EnableWindow(TRUE);
+	m_co_StatisticBtn.EnableWindow(TRUE);
+	m_co_PreferencesBtn.EnableWindow(TRUE);
+
+
+	m_co_KademliaBtn.EnableWindow(FALSE);
+
+	SetActiveDialog(kademliawnd);
+}
+
+void CemuleDlg::OnBnClickedBtnServer()
+{
+	
+	m_co_KademliaBtn.EnableWindow(TRUE);
+	m_co_TransferBtn.EnableWindow(TRUE);
+	m_co_SearchBtn.EnableWindow(TRUE);
+	m_co_SharedBtn.EnableWindow(TRUE);
+	m_co_MessagesBtn.EnableWindow(TRUE);
+	m_co_StatisticBtn.EnableWindow(TRUE);
+	m_co_PreferencesBtn.EnableWindow(TRUE);
+
+
+	m_co_ServerBtn.EnableWindow(FALSE);
+
+	SetActiveDialog(serverwnd);
+}
+
+void CemuleDlg::OnBnClickedBtnTransfer()
+{
+	
+	m_co_KademliaBtn.EnableWindow(TRUE);
+	m_co_ServerBtn.EnableWindow(TRUE);
+	m_co_SearchBtn.EnableWindow(TRUE);
+	m_co_SharedBtn.EnableWindow(TRUE);
+	m_co_MessagesBtn.EnableWindow(TRUE);
+	m_co_StatisticBtn.EnableWindow(TRUE);
+	m_co_PreferencesBtn.EnableWindow(TRUE);
+
+
+	m_co_TransferBtn.EnableWindow(FALSE);
+	
+	SetActiveDialog(transferwnd);
+}
+
+void CemuleDlg::OnBnClickedBtnSearch()
+{
+	
+	m_co_KademliaBtn.EnableWindow(TRUE);
+	m_co_ServerBtn.EnableWindow(TRUE);
+	m_co_TransferBtn.EnableWindow(TRUE);
+	m_co_SharedBtn.EnableWindow(TRUE);
+	m_co_MessagesBtn.EnableWindow(TRUE);
+	m_co_StatisticBtn.EnableWindow(TRUE);
+	m_co_PreferencesBtn.EnableWindow(TRUE);
+
+	m_co_SearchBtn.EnableWindow(FALSE);
+	
+	SetActiveDialog(searchwnd);
+}
+
+void CemuleDlg::OnBnClickedBtnShared()
+{
+	
+	m_co_KademliaBtn.EnableWindow(TRUE);
+	m_co_ServerBtn.EnableWindow(TRUE);
+	m_co_TransferBtn.EnableWindow(TRUE);
+	m_co_SearchBtn.EnableWindow(TRUE);
+	m_co_MessagesBtn.EnableWindow(TRUE);
+	m_co_StatisticBtn.EnableWindow(TRUE);
+	m_co_PreferencesBtn.EnableWindow(TRUE);
+
+	m_co_SharedBtn.EnableWindow(FALSE);
+	
+	SetActiveDialog(sharedfileswnd);
+}
+
+
+void CemuleDlg::OnBnClickedBtnMessage()
+{
+	m_co_KademliaBtn.EnableWindow(TRUE);
+	m_co_ServerBtn.EnableWindow(TRUE);
+	m_co_TransferBtn.EnableWindow(TRUE);
+	m_co_SearchBtn.EnableWindow(TRUE);
+	m_co_SharedBtn.EnableWindow(TRUE);
+	m_co_StatisticBtn.EnableWindow(TRUE);
+	m_co_PreferencesBtn.EnableWindow(TRUE);
+
+	
+	m_co_MessagesBtn.EnableWindow(FALSE);
+
+	SetActiveDialog(chatwnd);
+}
+
+void CemuleDlg::OnBnClickedBtnStatistic()
+{
+	m_co_KademliaBtn.EnableWindow(TRUE);
+	m_co_ServerBtn.EnableWindow(TRUE);
+	m_co_TransferBtn.EnableWindow(TRUE);
+	m_co_SearchBtn.EnableWindow(TRUE);
+	m_co_SharedBtn.EnableWindow(TRUE);
+	m_co_MessagesBtn.EnableWindow(TRUE);
+	m_co_PreferencesBtn.EnableWindow(TRUE);
+
+	m_co_StatisticBtn.EnableWindow(FALSE);
+		
+	SetActiveDialog(statisticswnd);
+}
+
+void CemuleDlg::OnBnClickedBtnPreferences()
+{
+	static int iOpen = 0;
+	if(!iOpen)
+	{
+		iOpen = 1;
+		ShowPreferences();
+		iOpen = 0;
+//		m_co_UpTrafficGraph.Init_Graph(_T("Up"),thePrefs.GetMaxGraphUploadRate());
+//		m_co_DownTrafficGraph.Init_Graph(_T("Down"),thePrefs.GetMaxGraphDownloadRate());
+
+	}	
+	
+}
+
+void CemuleDlg::OnBnClickedBtnTools()
+{
+	ShowToolPopup(true);
+
+}
+#endif
+//<== Toolbar [shadow2004]

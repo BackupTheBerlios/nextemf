@@ -16,7 +16,11 @@
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
 
+//==> Toolbar [shadow2004]
+#ifndef TOOLBAR
 const CString strDefaultToolbar = _T("00990102030405060799080910");
+#endif
+//<== Toolbar [shadow2004]
 
 enum EViewSharedFilesAccess{
 	vsfaEverybody = 0,
@@ -429,10 +433,13 @@ public:
 	static	bool	networkkademlia;
 	static	bool	networked2k;
 
+//==> Toolbar [shadow2004]
+#ifndef TOOLBAR
 	// toolbar
 	static	CString	m_sToolbarSettings;
+#endif
+//<== Toolbar [shadow2004]
 	static	bool	m_bReBarToolbar;
-
 
 	//preview
 	static	bool	m_bPreviewEnabled;
@@ -1146,9 +1153,13 @@ public:
 	static	void	SetUseDwlPercentage(bool in)				{ m_bShowDwlPercentage=in;}
 	static	bool	GetShowActiveDownloadsBold()				{ return m_bShowActiveDownloadsBold; }
 
+//==> Toolbar [shadow2004]
+#ifndef TOOLBAR
 	//Toolbar
 	static	const CString& GetToolbarSettings()					{ return m_sToolbarSettings; }
 	static	void	SetToolbarSettings(const CString& in)		{ m_sToolbarSettings = in; }
+#endif
+//<== Toolbar [shadow2004]
 	static	bool	GetReBarToolbar()							{ return m_bReBarToolbar; }
 	static	bool	GetUseReBarToolbar();
 

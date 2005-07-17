@@ -72,6 +72,18 @@ CAPTION "eMule"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     PUSHBUTTON      "^&x",IDC_HOTMENU,2,34,19,17,BS_FLAT | NOT WS_VISIBLE
+//==> Toolbar [shadow2004]
+    PUSHBUTTON      "Connect",IDC_BTN_CONNECT,10,4,50,25,NOT WS_TABSTOP
+    PUSHBUTTON      "Kademlia",IDC_BTN_KADEMLIA,64,4,50,25,NOT WS_TABSTOP
+    PUSHBUTTON      "Search",IDC_BTN_SEARCH,226,4,50,25,NOT WS_TABSTOP
+    PUSHBUTTON      "Server",IDC_BTN_SERVER,172,4,50,25,NOT WS_TABSTOP
+    PUSHBUTTON      "Files",IDC_BTN_FILES,280,4,50,25,NOT WS_TABSTOP
+    PUSHBUTTON      "Messages",IDC_BTN_MESSAGES,342,15,50,14,NOT WS_TABSTOP
+    PUSHBUTTON      "Statistic",IDC_BTN_STATISTIC,396,15,50,14
+    PUSHBUTTON      "Setup",IDC_BTN_PREFERENCES,450,14,50,14
+    PUSHBUTTON      "Tools",IDC_BTN_TOOLS,504,14,50,14
+    PUSHBUTTON      "Transfer",IDC_BTN_TRANSFER,118,4,50,25,NOT WS_TABSTOP
+//<== Toolbar [shadow2004]
     CONTROL         "Statusbar",IDC_STATUSBAR,"msctls_statusbar32",0x3,0,322,
                     515,18
 END
@@ -2113,19 +2125,18 @@ END
 // remains consistent on all systems.
 AAAEMULEAPP             ICON                    "res\\Mule.ico"
 EMPTY                   ICON                    "res\\Empty.ico"
-CONNECT                 ICON                    "res\\ConnectDo.ico"
-DISCONNECT              ICON                    "res\\ConnectDrop.ico"
-STOPCONNECTING          ICON                    "res\\ConnectStop.ico"
-KADEMLIA                ICON                    "res\\Kad.ico"
+//CONNECT                 ICON                    "res\\ConnectDo.ico"
+//DISCONNECT              ICON                    "res\\ConnectDrop.ico"
+//STOPCONNECTING          ICON                    "res\\ConnectStop.ico"
+//KADEMLIA                ICON                    "res\\Kad.ico"
 SERVER                  ICON                    "res\\Server.ico"
-SEARCH                  ICON                    "res\\Search.ico"
+//SEARCH                  ICON                    "res\\Search.ico"
 TRANSFER                ICON                    "res\\Transfer.ico"
-SHAREDFILES             ICON                    "res\\SharedFiles.ico"
+//SHAREDFILES             ICON                    "res\\SharedFiles.ico"
 STATISTICS              ICON                    "res\\Statistics.ico"
-MESSAGES                ICON                    "res\\Messages.ico"
+//MESSAGES                ICON                    "res\\Messages.ico"
 PREFERENCES             ICON                    "res\\Preferences.ico"
-TOOLS                   ICON                    "res\\Tools.ico"
-HELP                    ICON                    "res\\Help.ico"
+//HELP                    ICON                    "res\\Help.ico"
 TRAYCONNECTED           ICON                    "res\\TrayConnected.ico"
 TRAYNOTCONNECTED        ICON                    "res\\TrayDisconnected.ico"
 TRAYLOWID               ICON                    "res\\TrayLowID.ico"
@@ -2314,6 +2325,39 @@ IDB_DOWN2X              BITMAP                  "res\\ListViewSortDown2x.bmp"
 TRAYBTN_BLUE            BITMAP                  "res\\TrayBtnBlue.bmp"
 TRAYBTN_METALLIC        BITMAP                  "res\\TrayBtnMetallic.bmp"
 TRAYBTN_HOMESTEAD       BITMAP                  "res\\TrayBtnHomestead.bmp"
+//==> Toolbar [shadow2004]
+IDB_KADEMLIA_OVER      BITMAP                   "res\\Toolbar\\btn_kad_over.bmp"
+IDB_KADEMLIA_CLICK     BITMAP                   "res\\Toolbar\\btn_kad_click.bmp"
+IDB_KADEMLIA_NORMAL    BITMAP                   "res\\Toolbar\\btn_kad_normal.bmp"
+IDB_SERVER_CLICK        BITMAP                  "res\\Toolbar\\btn_server_click.bmp"
+IDB_SERVER_NORMAL       BITMAP                  "res\\Toolbar\\btn_server_normal.bmp"
+IDB_SERVER_OVER         BITMAP                  "res\\Toolbar\\btn_server_over.bmp"
+IDB_TRANSFER_OVER       BITMAP                  "res\\Toolbar\\btn_transfer_over.bmp"
+IDB_TRANSFER_CLICK      BITMAP                  "res\\Toolbar\\btn_transfer_click.bmp"
+IDB_TRANSFER_NORMAL     BITMAP                  "res\\Toolbar\\btn_transfer_normal.bmp"
+IDB_SEARCH_CLICK        BITMAP                  "res\\Toolbar\\btn_search_click.bmp"
+IDB_SEARCH_NORMAL       BITMAP                  "res\\Toolbar\\btn_search_normal.bmp"
+IDB_SEARCH_OVER         BITMAP                  "res\\Toolbar\\btn_search_over.bmp"
+IDB_MESSAGES_OVER       BITMAP                  "res\\Toolbar\\btn_msg_over.bmp"
+IDB_MESSAGES_CLICK      BITMAP                  "res\\Toolbar\\btn_msg_click.bmp"
+IDB_MESSAGES_NORMAL     BITMAP                  "res\\Toolbar\\btn_msg_normal.bmp"
+IDB_SHARED_OVER         BITMAP                  "res\\Toolbar\\btn_files_over.bmp"
+IDB_SHARED_CLICK        BITMAP                  "res\\Toolbar\\btn_files_click.bmp"
+IDB_SHARED_NORMAL       BITMAP                  "res\\Toolbar\\btn_files_normal.bmp"
+IDB_STATISTIC_OVER      BITMAP                  "res\\Toolbar\\btn_stats_over.bmp"
+IDB_STATISTIC_CLICK     BITMAP                  "res\\Toolbar\\btn_stats_click.bmp"
+IDB_STATISTIC_NORMAL    BITMAP                  "res\\Toolbar\\btn_stats_normal.bmp"
+IDB_PREFERENCES_OVER    BITMAP                  "res\\Toolbar\\btn_settings_over.bmp"
+IDB_PREFERENCES_CLICK   BITMAP                  "res\\Toolbar\\btn_settings_click.bmp"
+IDB_PREFERENCES_NORMAL  BITMAP                  "res\\Toolbar\\btn_settings_normal.bmp"
+IDB_TOOLS_OVER          BITMAP                  "res\\Toolbar\\btn_tools_over.bmp"
+IDB_TOOLS_CLICK         BITMAP                  "res\\Toolbar\\btn_tools_click.bmp"
+IDB_TOOLS_NORMAL        BITMAP                  "res\\Toolbar\\btn_tools_normal.bmp"
+IDB_CONNECT_OVER        BITMAP                  "res\\Toolbar\\btn_connect_over.bmp"
+IDB_CONNECT_CLICK       BITMAP                  "res\\Toolbar\\btn_connect_click.bmp"
+IDB_CONNECT_NORMAL      BITMAP                  "res\\Toolbar\\btn_connect_normal.bmp"
+IDB_DISCONNECT_OVER     BITMAP                  "res\\Toolbar\\btn_disconnect_over.bmp"
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -2335,6 +2379,10 @@ IDR_HTTPDOWNLOAD_ANI    AVI                     "res\\inetdownload.avi"
 //
 
 ABOUT                   JPG                     "res\\logo.jpg"
+//==> Toolbar [shadow2004]
+IDR_TOOLBAR_LEFT        JPG                     "res\\Toolbar\\toolbar_left.jpg"
+IDR_TOOLBAR_CENTER      JPG                     "res\\Toolbar\\toolbar_center.jpg"
+IDR_TOOLBAR_RIGHT       JPG                     "res\\Toolbar\\toolbar_right.jpg"
 
 /////////////////////////////////////////////////////////////////////////////
 //

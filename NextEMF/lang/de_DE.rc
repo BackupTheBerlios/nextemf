@@ -1881,6 +1881,12 @@ BEGIN
     IDS_STATS_OTHER         "Sonstiges"
     IDS_STATS_STILLUP       "Am Hochladen"
     IDS_STATS_CANCELED      "Abgebrochen"
+    IDS_USE_GLOBALHL        "Globales Hardlimit aktivieren? (Deaktiviert manuelles Hardlimit)"
+    IDS_GLOBALHL_UPDATE_TIMER 
+                            "Zeit bis zur nächsten Überprüfung des Hardlimits [30-80 sec.]"
+    IDS_MAX_SOURCE_HARDLIMIT 
+                            "Max. Quellen für das globale Hardlimit [1000-5000]"
+    IDS_MIN_SOURCE_HARDLIMIT "Min. Quellenlimit für jede Datei [10-50]"
 END
 
 STRINGTABLE 

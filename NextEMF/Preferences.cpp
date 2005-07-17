@@ -37,7 +37,11 @@
 #include "emuledlg.h"
 #include "StatisticsDlg.h"
 #include "Log.h"
+//==> Toolbar [shadow2004]
+#ifndef TOOLBAR
 #include "MuleToolbarCtrl.h"
+#endif
+//<== Toolbar [shadow2004]
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -384,7 +388,11 @@ bool	CPreferences::m_bAdvancedSpamfilter;
 bool	CPreferences::m_bUseSecureIdent;
 bool	CPreferences::networkkademlia;
 bool	CPreferences::networked2k;
+//==> Toolbar [shadow2004]
+#ifndef TOOLBAR
 CString	CPreferences::m_sToolbarSettings;
+#endif
+//<== Toolbar [shadow2004]
 bool	CPreferences::m_bReBarToolbar;
 bool	CPreferences::m_bPreviewEnabled;
 bool	CPreferences::m_bDynUpEnabled;
@@ -1801,8 +1809,12 @@ void CPreferences::SavePreferences()
 	ini.WriteBool(_T("RemoveFilesToBin"),m_bRemove2bin);
 	//ini.WriteBool(_T("ShowCopyEd2kLinkCmd"),m_bShowCopyEd2kLinkCmd);
 
+//==> Toolbar [shadow2004]
+#ifndef TOOLBAR
 	// Toolbar
 	ini.WriteString(_T("ToolbarSetting"), m_sToolbarSettings);
+#endif
+//<== Toolbar [shadow2004]
 
 	ini.WriteBinary(_T("HyperTextFont"), (LPBYTE)&m_lfHyperText, sizeof m_lfHyperText);
 	ini.WriteBinary(_T("LogTextFont"), (LPBYTE)&m_lfLogText, sizeof m_lfLogText);
@@ -2403,8 +2415,12 @@ void CPreferences::LoadPreferences()
 	m_bRemoveFinishedDownloads=ini.GetBool(_T("AutoClearCompleted"),false);
 	m_bUseOldTimeRemaining= ini.GetBool(_T("UseSimpleTimeRemainingcomputation"),false);
 
+//==> Toolbar [shadow2004]
+#ifndef TOOLBAR
 	// Toolbar
 	m_sToolbarSettings = ini.GetString(_T("ToolbarSetting"), strDefaultToolbar);
+#endif
+//<== Toolbar [shadow2004]
 	m_bReBarToolbar = ini.GetBool(_T("ReBarToolbar"), 1);
 	m_iStraightWindowStyles=ini.GetInt(_T("StraightWindowStyles"),0);
 	m_bRTLWindowsLayout = ini.GetBool(_T("RTLWindowsLayout"));

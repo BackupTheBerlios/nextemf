@@ -641,6 +641,7 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 		client->SetCollectionUploadSlot(true);
 		RemoveFromWaitingQueue(client, true);
 		AddUpNextClient(_T("Collection Priority Slot"), client);
+		return;	// Xman1 Collection Slot Fix
 	}
 	else
 		client->SetCollectionUploadSlot(false);

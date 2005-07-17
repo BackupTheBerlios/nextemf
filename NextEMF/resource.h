@@ -2165,6 +2165,54 @@
 #define IDS_MAX_SOURCE_HARDLIMIT		3302
 #define IDS_MIN_SOURCE_HARDLIMIT		3303
 
+#define IDC_BTN_CONNECT                 7000
+#define IDC_BTN_KADEMLIA               7001
+#define IDC_BTN_SEARCH                  7002
+#define IDC_BTN_SERVER                  7003
+#define IDC_BTN_FILES                   7004
+#define IDC_BTN_MESSAGES                7005
+#define IDC_BTN_STATISTIC               7006
+#define IDC_BTN_PREFERENCES             7007
+#define IDC_BTN_TOOLS                   7008
+#define IDC_BTN_TRANSFER                7010
+#define IDC_BTN_IRC                     7011
+#define IDD_SPEEDGRAPH                  7012
+#define IDB_KADEMLIA_OVER              7020
+#define IDB_KADEMLIA_CLICK             7021
+#define IDB_KADEMLIA_NORMAL            7022
+#define IDB_CONNECT_OVER                7023
+#define IDB_CONNECT_CLICK               7024
+#define IDB_CONNECT_NORMAL              7025
+#define IDB_SHARED_OVER                 7026
+#define IDB_SEARCH_CLICK                7027
+#define IDB_SEARCH_NORMAL               7029
+#define IDB_SEARCH_OVER                 7030
+#define IDB_SERVER_CLICK                7031
+#define IDB_SERVER_NORMAL               7032
+#define IDB_SERVER_OVER                 7034
+#define IDB_SHARED_CLICK                7035
+#define IDB_SHARED_NORMAL               7036
+#define IDB_MESSAGES_OVER               7037
+#define IDB_MESSAGES_CLICK              7038
+#define IDB_MESSAGES_NORMAL             7039
+#define IDB_PREFERENCES_OVER            7040
+#define IDB_PREFERENCES_CLICK           7041
+#define IDB_PREFERENCES_NORMAL          7042
+#define IDB_STATISTIC_OVER              7043
+#define IDB_STATISTIC_CLICK             7044
+#define IDB_STATISTIC_NORMAL            7045
+#define IDB_TOOLS_OVER                  7046
+#define IDB_TOOLS_CLICK                 7047
+#define IDB_TOOLS_NORMAL                7049
+#define IDB_TRANSFER_OVER               7050
+#define IDB_TRANSFER_CLICK              7051
+#define IDB_TRANSFER_NORMAL             7052
+#define IDB_DISCONNECT_OVER             7053
+#define IDR_TOOLBAR_LEFT                7054
+#define IDR_TOOLBAR_CENTER              7055
+#define IDR_TOOLBAR_RIGHT               7056
+
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

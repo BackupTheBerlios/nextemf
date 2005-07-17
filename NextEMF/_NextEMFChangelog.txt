@@ -1,12 +1,14 @@
 /////////////////////////////////
 |Changes eMule 0.46a NextEMF v0.5
-|=<|  Beta 3  |>=================
+|=<|  FINAL  |>==================
+
 merged	: eMule v0.46b
 
 removed	: Skinsupport [shadow2004]
 removed	: Custom Toolbar [shadow2004]
 removed	: Anti-Modfaker by WiZaRd [cyrex2001]
 removed	: Additional Toolbar [shadow2004]
+removed	: eMule-Toolbar [shadow2004]
 
 added   : Globales HardLimit by WiZaRD/MaxUpload modify for faster sourcen finding [cyrex2001]  
 added   : Quickstart and Quickstart after IP change [cyrex2001]
@@ -15,11 +17,14 @@ added   : Spread reask idea by Slugfiller/Maella modify by Xman [cyrex2001]
 added	: Allow Bandwidth Settings in <1KB Incremements by Maella adapted by Xman1 [shadow2004]
 added   : Anti-Modfaker by MorphXT [cyrex2001]
 added	: 'NextEMF'-Slotmanager inspired by WiZaRd and Xman1 [shadow2004] Thanks a lot to both :-D
+added	: skinned Toolbar adapted by ef-Mod [shadow2004]
+added	: new Toolbar-Graphics by hateman [shadow2004]
 
 fixed   : small fix in SplashScreen [cyrex2001]
 fixed	: Sorting-bug in Waiting-Queue an Upload-Queue [shadow2004]
 fixed	: bug in CPreferences::IsTempFile by WiZaRd [shadow2004]
 fixed	: bug in SharedFilesWnd.cpp by WiZaRd [shadow2004]
+fixed	: missing return in  void CUploadQueue::AddClientToQueue(...) by Xman1
 
 update	: Emulate others (Shareaza2) inspired by Spike2 [shadow2004]
 update	: Leecherlog to work with 46b [shadow2004]
@@ -66,3 +71,44 @@ fixed	: Changed static Text in extended Statistic to dynamic (Lang-Support) [sha
 
 update	: german Language File (13.06.2005) [shadow2004]
 update  : italian Language File (19.06.2005) [maraglio16]
+
+/////////////////////////////////
+| The NextEMF-Team
+|=<|>============================
+
+|Devolper
+---------
+	cyrex2001
+	shadow2004
+	
+|GraFiX
+-------
+	christitus
+	hateman
+
+|BetaTester
+-----------
+	AMD
+	Chris_Cornell
+	dani_555
+	dennisw
+	eMule_Gott
+	Grisu69
+	magicm13
+	Paul_2
+	pesti
+	Schmuddelkind
+	schnulli900
+	
+	
+/////////////////////////////////
+| Special Thanks and Greetings
+|=<|>============================
+
+For their help I want to thank the following people:
+	WiZaRd for his help, when no one knows an answer :-) and for his ideas
+	Xman1 for his work on the Xtreme-Mod
+	eMulefan83 and his Team
+	Hateman for the NextEMF-Style (I hate Paintshop ;-) )
+	All the betatesters for finding all (?) the bugs
+	

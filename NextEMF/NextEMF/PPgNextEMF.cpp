@@ -206,6 +206,9 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 //==>WiZaRd/Max AutoHardLimit [cyrex2001]
 #ifdef AHL
 		m_htiHardLimit = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_HARDLIMIT), iImgHardLimit, TVI_ROOT);
+		//==> Bold Categories by $icK$ [shadow2004]
+		m_ctrlTreeOptions.SetItemState(m_htiHardLimit, TVIS_BOLD, TVIS_BOLD);
+		//<== Bold Categories by $icK$ [shadow2004]
 		m_htiUseAutoHL = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_USE_GLOBALHL), m_htiHardLimit, m_bUseAutoHL);
 		m_htiAutoHLUpdateTimer = m_ctrlTreeOptions.InsertItem(GetResString(IDS_GLOBALHL_UPDATE_TIMER), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiHardLimit);
 		m_ctrlTreeOptions.AddEditBox(m_htiAutoHLUpdateTimer, RUNTIME_CLASS(CNumTreeOptionsEdit));

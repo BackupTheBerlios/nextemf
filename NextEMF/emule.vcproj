@@ -90,7 +90,7 @@
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;MODVERSION;WINSOCK2;ANTI_LEECHER_LOG;ANTI_LEECH_CLASS;FSSTATS;EMULATE;OPTIM;CSP;SNAFU;ANTI_MODFAKER;FAF;SLOT;QUICKSTART;RSAIC_MAELLA;AHL"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;MODVERSION;WINSOCK2;ANTI_LEECHER_LOG;ANTI_LEECH_CLASS;FSSTATS;EMULATE;OPTIM;CSP;SNAFU;ANTI_MODFAKER;FAF;SLOT;QUICKSTART;RSAIC_MAELLA;AHL;TOOLBAR"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
 				BufferSecurityCheck="TRUE"
@@ -1041,9 +1041,6 @@
 				RelativePath="MuleStatusBarCtrl.cpp">
 			</File>
 			<File
-				RelativePath="MuleToolBarCtrl.cpp">
-			</File>
-			<File
 				RelativePath="NetworkInfoDlg.cpp">
 			</File>
 			<File
@@ -1417,9 +1414,6 @@
 			</File>
 			<File
 				RelativePath="MuleStatusBarCtrl.h">
-			</File>
-			<File
-				RelativePath="MuleToolBarCtrl.h">
 			</File>
 			<File
 				RelativePath="NetworkInfoDlg.h">
@@ -2013,6 +2007,9 @@
 				RelativePath="res\Help.ico">
 			</File>
 			<File
+				RelativePath=".\res\HL.ico">
+			</File>
+			<File
 				RelativePath="res\Import.ico">
 			</File>
 			<File
@@ -2426,6 +2423,12 @@
 			</File>
 			<File
 				RelativePath=".\NextEMF\PPgNextEMF.h">
+			</File>
+			<File
+				RelativePath=".\NextEMF\xSkinButton.cpp">
+			</File>
+			<File
+				RelativePath=".\NextEMF\xSkinButton.h">
 			</File>
 		</Filter>
 		<Filter
