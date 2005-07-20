@@ -74,7 +74,16 @@ public:
 	void	AddUploaded(uint32 bytes, uint32 dwForIP);
 	uint64	GetUploadedTotal() const;
 	uint64	GetDownloadedTotal() const;
+//==> Xman CreditSystem [shadow2004]
+#ifdef XCS
+	float	GetScoreRatio(const CUpDownClient* client); //Xman Credit System
+	float	GetMyScoreRatio(uint32 dwForIP) const; // See own credits
+	float	GetBonusFaktor()				{return m_bonusfaktor;} //Xman Credit System
+#else
 	float	GetScoreRatio(uint32 dwForIP) const;
+#endif
+//<== Xman CreditSystem [shadow2004]
+
 	void	SetLastSeen()					{m_pCredits->nLastSeen = time(NULL);}
 	bool	SetSecureIdent(const uchar* pachIdent, uint8 nIdentLen); // Public key cannot change, use only if there is not public key yet
 	uint32	m_dwCryptRndChallengeFor;
@@ -94,6 +103,11 @@ private:
 	uint32			m_dwSecureWaitTime;
 	uint32			m_dwUnSecureWaitTime;
 	uint32			m_dwWaitTimeIP;			   // client IP assigned to the waittime
+//==> Xman CreditSystem [shadow2004]
+#ifdef XCS
+	float			m_bonusfaktor;
+#endif
+//<== Xman CreditSystem [shadow2004]
 };
 
 class CClientCreditsList

@@ -305,37 +305,38 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 					if (client->IsFriend())
 						image = 4;
 					else if (client->GetClientSoft() == SO_EDONKEYHYBRID){
-						if (client->credits->GetScoreRatio(client->GetIP()) > 1)
+//==> Xman CreditSystem [shadow2004]
+						if (client->credits->GetScoreRatio(client/*->GetIP()*/) > 1)
 							image = 8;
 						else
 							image = 7;
 					}
 					else if (client->GetClientSoft() == SO_MLDONKEY){
-						if (client->credits->GetScoreRatio(client->GetIP()) > 1)
+						if (client->credits->GetScoreRatio(client/*->GetIP()*/) > 1)
 							image = 6;
 						else
 							image = 5;
 					}
 					else if (client->GetClientSoft() == SO_SHAREAZA){
-						if(client->credits->GetScoreRatio(client->GetIP()) > 1)
+						if(client->credits->GetScoreRatio(client/*->GetIP()*/) > 1)
 							image = 10;
 						else
 							image = 9;
 					}
 					else if (client->GetClientSoft() == SO_AMULE){
-						if(client->credits->GetScoreRatio(client->GetIP()) > 1)
+						if(client->credits->GetScoreRatio(client/*->GetIP()*/) > 1)
 							image = 12;
 						else
 							image = 11;
 					}
 					else if (client->GetClientSoft() == SO_LPHANT){
-						if(client->credits->GetScoreRatio(client->GetIP()) > 1)
+						if(client->credits->GetScoreRatio(client/*->GetIP()*/) > 1)
 							image = 14;
 						else
 							image = 13;
 					}
 					else if (client->ExtProtocolAvailable()){
-						if(client->credits->GetScoreRatio(client->GetIP()) > 1)
+						if(client->credits->GetScoreRatio(client/*->GetIP()*/) > 1)
 //==>Modversion [shadow2004]
 #ifdef MODVERSION
 							image = (client->IsNextEMF())?16:3;
@@ -355,7 +356,8 @@ void CQueueListCtrl::DrawItem(LPDRAWITEMSTRUCT lpDrawItemStruct)
 
 					}
 					else{
-						if (client->credits->GetScoreRatio(client->GetIP()) > 1)
+						if (client->credits->GetScoreRatio(client/*->GetIP()*/) > 1)
+//==> Xman CreditSystem [shadow2004]
 							image = 2;
 						else
 							image = 0;

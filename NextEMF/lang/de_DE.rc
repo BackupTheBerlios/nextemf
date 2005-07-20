@@ -1566,12 +1566,6 @@ BEGIN
     IDS_A4AF_SAVE_CPU       "A4AF-Prüfungen deaktivieren (CPU schonen)"
     IDS_SEARCH_DOC          "Dokument"
     IDS_DOWNLOAD_ALPHABETICAL "Download in alphabetischer Reihenfolge"
-    IDS_INSTALL_SKIN        "Installiere eMule Skin"
-    IDS_INSTALL_SKIN_NODIR  "Kein eMule Skin Verzeichnis ausgewählt oder Verzeichnis ist nicht zugreifbar!"
-    IDS_INSTALL_SKIN_DIR_ERROR 
-                            "Das Verzeichnis ""%s"" konnte nicht für das eMule Skin - %s erzeugt werden."
-    IDS_INSTALL_SKIN_FILE_ERROR 
-                            "Die Datei ""%s"" konnte nicht vom eMule Skin zur lokalent Datei ""%s"" entpackt werden - %s"
     IDS_NEXT_REASK          "Nächste Anfrage"
     IDS_A4AF_FILES          "A4AF Datei"
     IDS_STATS_FRATIO        "Session UL:DL Verhältnis (ohne Freundesupload):"
@@ -1825,6 +1819,7 @@ BEGIN
     IDS_ERR_DUPL_FILES      "Doppelte freigegebene Datei: ""%s"" und ""%s"""
 END
 
+//////////////////////////////                    NextEMF Strings                 /////////////////////////////////////////
 STRINGTABLE 
 BEGIN
     IDS_LEECHERLOG          "Leecher Meldungen"

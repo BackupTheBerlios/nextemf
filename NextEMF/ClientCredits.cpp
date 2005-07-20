@@ -31,6 +31,11 @@
 #pragma warning(default:4516) // access-declarations are deprecated; member using-declarations provide a better alternative
 #include "emuledlg.h"
 #include "Log.h"
+//==> Xman CreditSystem [shadow2004]
+#ifdef XCS
+#include "updownclient.h"
+#endif
+//<== Xman CreditSystem [shadow2004]
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -47,6 +52,11 @@ CClientCredits::CClientCredits(CreditStruct* in_credits)
 	m_dwUnSecureWaitTime = 0;
 	m_dwSecureWaitTime = 0;
 	m_dwWaitTimeIP = 0;
+//==> Xman CreditSystem [shadow2004]
+#ifdef XCS
+	m_bonusfaktor=0;
+#endif
+//<== Xman CreditSystem [shadow2004]
 }
 
 CClientCredits::CClientCredits(const uchar* key)
@@ -64,6 +74,11 @@ CClientCredits::CClientCredits(const uchar* key)
 	m_dwUnSecureWaitTime = ::GetTickCount();
 	m_dwSecureWaitTime = ::GetTickCount();
 	m_dwWaitTimeIP = 0;
+//==> Xman CreditSystem [shadow2004]
+#ifdef XCS
+	m_bonusfaktor=0;
+#endif
+//<== Xman CreditSystem [shadow2004]
 }
 
 CClientCredits::~CClientCredits()
@@ -105,6 +120,124 @@ uint64	CClientCredits::GetDownloadedTotal() const{
 	return ( (uint64)m_pCredits->nDownloadedHi<<32)+m_pCredits->nDownloadedLo;
 }
 
+//==> Xman CreditSystem [shadow2004]
+#ifdef XCS
+float CClientCredits::GetScoreRatio(const CUpDownClient* client)
+{
+	uint32 dwForIP=client->GetIP();
+	#define PENALTY_UPSIZE 8388608 //8 MB
+
+	// Check the client ident status
+	if((GetCurrentIdentState(dwForIP) == IS_IDFAILED || GetCurrentIdentState(dwForIP) == IS_IDBADGUY || GetCurrentIdentState(dwForIP) == IS_IDNEEDED) && 
+		theApp.clientcredits->CryptoAvailable() == true){
+			// bad guy - no credits for you
+			return 1.0f;
+		}
+
+		// Cache value
+		const uint64 downloadTotal = GetDownloadedTotal();
+
+		// Check if this client has any credit (sent >1MB)
+		const float difference2=(float)client->GetTransferredUp() - client->GetTransferredDown();	
+		if(downloadTotal < 1000000)
+		{	
+			if ( difference2 > (2*PENALTY_UPSIZE))
+				m_bonusfaktor=(-0.2f);
+			else if (difference2 > PENALTY_UPSIZE)
+				m_bonusfaktor=(-0.1f);
+			else
+				m_bonusfaktor=0;
+
+			return (1.0f + m_bonusfaktor);
+		}
+
+		// Cache value
+		const uint64 uploadTotal = GetUploadedTotal();
+
+
+		// Bonus Faktor calculation
+		float difference = (float)downloadTotal - uploadTotal;
+		if (difference>=0)
+		{
+			m_bonusfaktor=difference/10485760.0f - (1.5f/(downloadTotal/10485760.0f));  //pro MB difference 0.1 - pro MB download 0.1
+			if (m_bonusfaktor<0)
+				m_bonusfaktor=0;
+		}
+		else 
+		{
+			difference=abs(difference);
+			if (difference> (2*PENALTY_UPSIZE) && difference2 > (2*PENALTY_UPSIZE))
+				m_bonusfaktor=(-0.2f);
+			else if (difference>PENALTY_UPSIZE && difference2 > PENALTY_UPSIZE)
+				m_bonusfaktor=(-0.1f);
+			else
+				m_bonusfaktor=0;
+		}
+		// Factor 1
+		float result = (uploadTotal == 0) ?
+			10.0f : (float)(2*downloadTotal)/(float)uploadTotal;
+
+		// Factor 2
+		const float trunk = (float)sqrt(2.0 + (double)downloadTotal/1048576.0);
+
+		if(result>10.0f)
+		{
+			result=10.0f;
+			m_bonusfaktor=0;
+		}
+		else
+			result += m_bonusfaktor;
+		if(result>10.0f)
+		{
+			m_bonusfaktor -= (result-10.0f);
+			result=10.0f;
+		}
+
+		if(result > trunk)
+		{
+			result = trunk;
+			m_bonusfaktor=0;
+		}
+
+		// Trunk final result 1..10
+		if(result < 1.0f)
+			return (1.0f + m_bonusfaktor );
+		else if (result > 10.0f)
+			return 10.0f;
+		else
+			return result;
+}
+
+float CClientCredits::GetMyScoreRatio(uint32 dwForIP) const
+{
+	// check the client ident status
+	if ( ( GetCurrentIdentState(dwForIP) == IS_IDFAILED || GetCurrentIdentState(dwForIP) == IS_IDBADGUY || GetCurrentIdentState(dwForIP) == IS_IDNEEDED) && theApp.clientcredits->CryptoAvailable() ){
+		// bad guy - no credits for... me?
+		return 1.0f;
+	}
+
+	if (GetUploadedTotal() < 1000000)
+		return 1.0f;
+	float result = 0;
+	if (!GetDownloadedTotal())
+		result = 10.0f;
+	else
+		result = (float)(((double)GetUploadedTotal()*2.0)/(double)GetDownloadedTotal());
+	float result2 = 0;
+	result2 = (float)GetUploadedTotal()/1048576.0;
+	result2 += 2.0f;
+	result2 = (float)sqrt(result2);
+
+	if (result > result2)
+		result = result2;
+
+	if (result < 1.0f)
+		return 1.0f;
+	else if (result > 10.0f)
+		return 10.0f;
+	return result;
+}
+#else
 float CClientCredits::GetScoreRatio(uint32 dwForIP) const
 {
 	// check the client ident status
@@ -134,6 +267,8 @@ float CClientCredits::GetScoreRatio(uint32 dwForIP) const
 		return 10.0F;
 	return result;
 }
+#endif
+//<== Xman CreditSystem [shadow2004]
 
 
 CClientCreditsList::CClientCreditsList()

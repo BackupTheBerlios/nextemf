@@ -2,6 +2,8 @@
 // Microsoft Visual C++ generated include file.
 // Used by it_IT.rc
 //
+#define IDS_VERBOSE_TITLE               3002
+#define IDS_SHAREAZA2                   3104
 
 // Next default values for new objects
 // 

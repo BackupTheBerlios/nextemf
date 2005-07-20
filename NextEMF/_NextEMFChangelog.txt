@@ -1,4 +1,11 @@
 /////////////////////////////////
+|Changes eMule 0.46a NextEMF v0.6
+|=<|  BETA 1  |>=================
+
+changed	: switched original Creditsystem with Xman1's [shadow2004]
+
+
+/////////////////////////////////
 |Changes eMule 0.46a NextEMF v0.5
 |=<|  FINAL  |>==================
 

@@ -138,7 +138,14 @@ BOOL CClientDetailPage::OnSetActive()
 		if (client->Credits()){
 			GetDlgItem(IDC_DUPTOTAL)->SetWindowText(CastItoXBytes(client->Credits()->GetDownloadedTotal(), false, false));
 			GetDlgItem(IDC_DDOWNTOTAL)->SetWindowText(CastItoXBytes(client->Credits()->GetUploadedTotal(), false, false));
+//==> Xman CreditSystem [shadow2004]
+#ifdef XCS
+			buffer.Format(_T("%.1f %+.1f [%.1f]"),(float)client->Credits()->GetScoreRatio(client)- (float)client->Credits()->GetBonusFaktor(),(float)client->Credits()->GetBonusFaktor(),(float)client->Credits()->GetMyScoreRatio(client->GetIP()));
+#else
 			buffer.Format(_T("%.1f"),(float)client->Credits()->GetScoreRatio(client->GetIP()));
+#endif
+//<== Xman CreditSystem [shadow2004]
+
 			GetDlgItem(IDC_DRATIO)->SetWindowText(buffer);
 			
 			if (theApp.clientcredits->CryptoAvailable()){

@@ -204,10 +204,16 @@ void CUpDownClient::SetUploadState(EUploadState eNewState)
 float CUpDownClient::GetCombinedFilePrioAndCredit() {
 	if (credits == 0){
 		ASSERT ( IsKindOf(RUNTIME_CLASS(CUrlClient)) );
-		return 0.0F;
+		return 0.0f;
 	}
 
+//==> Xman CreditSystem [shadow2004]
+#ifdef XCS
+return 10.0f*credits->GetScoreRatio(this)*float(GetFilePrioAsNumber());
+#else
     return 10.0f * credits->GetScoreRatio(GetIP()) * (float)GetFilePrioAsNumber();
+#endif
+//<== Xman CreditSystem [shadow2004]
 }
 
 /**
@@ -290,12 +296,24 @@ uint32 CUpDownClient::GetScore(bool sysvalue, bool isdownloading, bool onlybasev
 		// (to avoid 20 sec downloads) after this the score won't raise anymore 
 		fBaseValue = (float)(m_dwUploadTime-GetWaitStartTime());
 		ASSERT ( m_dwUploadTime-GetWaitStartTime() >= 0 ); //oct 28, 02: changed this from "> 0" to ">= 0"
+//==> Xman CreditSystem [shadow2004]
+#ifdef XCS
+		fBaseValue +=(float)900000;
+#else
 		fBaseValue += (float)(::GetTickCount() - m_dwUploadTime > 900000)? 900000:1800000;
+#endif
+//<== Xman CreditSystem [shadow2004]
 		fBaseValue /= 1000;
 	}
 	if(thePrefs.UseCreditSystem())
 	{
+//==> Xman CreditSystem [shadow2004]
+#ifdef XCS
+		float modif = credits->GetScoreRatio(this);
+#else
 		float modif = credits->GetScoreRatio(GetIP());
+#endif
+//<== Xman CreditSystem [shadow2004]
 		fBaseValue *= modif;
 	}
 	if (!onlybasevalue)

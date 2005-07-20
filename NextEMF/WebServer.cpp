@@ -2350,7 +2350,8 @@ CString CWebServer::_GetTransferList(ThreadData Data)
 			dUser.sClientExtra = _T("banned");
 		else if (cur_client->IsFriend())
 			dUser.sClientExtra = _T("friend");
-		else if (cur_client->Credits()->GetScoreRatio(cur_client->GetIP()) > 1)
+//==> Xman CreditSystem [shadow2004]
+		else if (cur_client->Credits()->GetScoreRatio(cur_client/*->GetIP()*/) > 1)
 			dUser.sClientExtra = _T("credit");
 		else
 			dUser.sClientExtra = _T("none");
