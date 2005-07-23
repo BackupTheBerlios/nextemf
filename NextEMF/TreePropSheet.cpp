@@ -14,6 +14,12 @@
 #include "TreePropSheetPgFrameDef.h"
 #include "HighColorTab.hpp"
 
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+#include "PreferencesDlg.h"
+#include "emuledlg.h"
+#endif
+//<== PPgTabControl [shadow2004]
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -349,7 +355,11 @@ void CTreePropSheet::RefillPageTree()
 
 		// Create an item in the tree for the page
 		HTREEITEM	hItem = CreatePageTreeItem(ti.pszText);
+//==> PPgTabControl [shadow2004]
+#ifndef PPGCTRL
 		ASSERT(hItem);
+#endif
+//<==> PPgTabControl [shadow2004]
 		if (hItem)
 		{
 			m_pwndPageTree->SetItemData(hItem, nPage);
@@ -387,6 +397,16 @@ HTREEITEM CTreePropSheet::CreatePageTreeItem(LPCTSTR lpszPath, HTREEITEM hParent
 	}
 
 	// If item with that text does not already exist, create a new one
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+	if (
+		strTopMostItem != "Connection 2" && // Connection 2
+		strTopMostItem != "Connection 3"    // Connection 3
+		) 
+	{ 
+
+#endif
+//<== PPgTabControl [shadow2004]
 	if (!hItem)
 	{
 		hItem = m_pwndPageTree->InsertItem(strTopMostItem, hParent);
@@ -395,9 +415,11 @@ HTREEITEM CTreePropSheet::CreatePageTreeItem(LPCTSTR lpszPath, HTREEITEM hParent
 			// set folder image
 			m_pwndPageTree->SetItemImage(hItem, m_Images.GetImageCount()-2, m_Images.GetImageCount()-2);
 	}
+	}
+
 	if (!hItem)
 	{
-		ASSERT(FALSE);
+		//ASSERT(FALSE);
 		return NULL;
 	}
 
@@ -965,7 +987,44 @@ void CTreePropSheet::OnPageTreeSelChanging(NMHDR *pNotifyStruct, LRESULT *plResu
 	if (nPage<0 || (unsigned)nPage>=m_pwndPageTree->GetCount())
 		bResult = KillActiveCurrentPage();
 	else
+	{
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+/*		if (nPage == 0 && theApp.emuledlg->preferenceswnd->ActivePageGeneral >= 1)		
+			nPage = theApp.emuledlg->preferenceswnd->ActivePageGeneral;
+		if (nPage == 1 && theApp.emuledlg->preferenceswnd->ActivePageDisplay >= 1)		
+			nPage = theApp.emuledlg->preferenceswnd->ActivePageDisplay;*/
+		if (nPage == 2 && theApp.emuledlg->preferenceswnd->ActivePageConnection >= 1)	
+			nPage = theApp.emuledlg->preferenceswnd->ActivePageConnection;
+/*		if (nPage == 3 && theApp.emuledlg->preferenceswnd->ActivePageProxy >= 1)
+			nPage = theApp.emuledlg->preferenceswnd->ActivePageProxy;
+		if (nPage == 4 && theApp.emuledlg->preferenceswnd->ActivePageServer >= 1)
+			nPage = theApp.emuledlg->preferenceswnd->ActivePageServer;
+		if (nPage == 5 && theApp.emuledlg->preferenceswnd->ActivePageDirectory >= 1)
+			nPage = theApp.emuledlg->preferenceswnd->ActivePageDirectory;
+		if (nPage == 6 && theApp.emuledlg->preferenceswnd->ActivePageFiles >= 1)
+			nPage = theApp.emuledlg->preferenceswnd->ActivePageFiles;
+		if (nPage == 7 && theApp.emuledlg->preferenceswnd->ActivePageNotify >= 1)
+			nPage = theApp.emuledlg->preferenceswnd->ActivePageNotify;
+		if (nPage == 8 && theApp.emuledlg->preferenceswnd->ActivePageStats >= 1)
+			nPage = theApp.emuledlg->preferenceswnd->ActivePageStats;
+		if (nPage == 9 && theApp.emuledlg->preferenceswnd->ActivePageIrc >= 1)
+			nPage = theApp.emuledlg->preferenceswnd->ActivePageIrc;
+		if (nPage == 10 && theApp.emuledlg->preferenceswnd->ActivePageSecurity >= 1)
+			nPage = theApp.emuledlg->preferenceswnd->ActivePageSecurity;
+		if (nPage == 11 && theApp.emuledlg->preferenceswnd->ActivePageSheduler >= 1)
+			nPage = theApp.emuledlg->preferenceswnd->ActivePageSheduler;
+		if (nPage == 12 && theApp.emuledlg->preferenceswnd->ActivePageWebServer >= 1)
+			nPage = theApp.emuledlg->preferenceswnd->ActivePageWebServer;
+	#if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
+		if (nPage == 14 && theApp.emuledlg->preferenceswnd->ActivePageDebug >= 1)
+			nPage = theApp.emuledlg->preferenceswnd->ActivePageDebug;	
+	#endif*/
+#endif
+//<==> PPgTabControl [shadow2004]
+
 		bResult = SetActivePage(nPage);
+	}
 
 	if (!bResult)
 		// prevent selection to change

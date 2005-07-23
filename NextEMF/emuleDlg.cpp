@@ -79,9 +79,7 @@
 #include "IPFilter.h"
 #include "Statistics.h"
 //==> Toolbar [shadow2004]
-#ifndef TOOLBAR
-#include "MuleToolbarCtrl.h"
-#endif
+//#include "MuleToolbarCtrl.h"
 //<== Toolbar [shadow2004]
 #include "TaskbarNotifier.h"
 #include "MuleStatusbarCtrl.h"
@@ -191,7 +189,6 @@ BEGIN_MESSAGE_MAP(CemuleDlg, CTrayDialog)
 	ON_MESSAGE(TM_FILEALLOCEXC, OnFileAllocExc)
 	ON_MESSAGE(TM_FILECOMPLETED, OnFileCompleted)
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR
 	ON_WM_ERASEBKGND()
 
 	ON_BN_CLICKED(IDC_BTN_CONNECT, OnBnClickedBtnConnect)
@@ -205,7 +202,6 @@ BEGIN_MESSAGE_MAP(CemuleDlg, CTrayDialog)
 	ON_BN_CLICKED(IDC_BTN_PREFERENCES, OnBnClickedBtnPreferences)
 	ON_BN_CLICKED(IDC_BTN_TOOLS, OnBnClickedBtnTools)
 
-#endif
 //<== Toolbar [shadow2004]
 
 END_MESSAGE_MAP()
@@ -223,9 +219,7 @@ CemuleDlg::CemuleDlg(CWnd* pParent /*=NULL*/)
 	chatwnd = new CChatWnd;
 	statisticswnd = new CStatisticsDlg;
 //==> Toolbar [shadow2004]
-#ifndef TOOLBAR
-	toolbar = new CMuleToolbarCtrl;
-#endif
+//	toolbar = new CMuleToolbarCtrl;
 //<== Toolbar [shadow2004]
 	statusbar = new CMuleStatusBarCtrl;
 	m_wndTaskbarNotifier = new CTaskbarNotifier;
@@ -304,9 +298,7 @@ CemuleDlg::~CemuleDlg()
 	delete chatwnd;
 	delete statisticswnd;
 //==> Toolbar [shadow2004]
-#ifndef TOOLBAR
-	delete toolbar;
-#endif
+//	delete toolbar;
 //<== Toolbar [shadow2004]
 	delete statusbar;
 	delete m_wndTaskbarNotifier;
@@ -317,7 +309,6 @@ void CemuleDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CTrayDialog::DoDataExchange(pDX);
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR
 	DDX_Control(pDX, IDC_BTN_CONNECT, m_co_ConnectBtn);
 	DDX_Control(pDX, IDC_BTN_KADEMLIA, m_co_KademliaBtn);
 	DDX_Control(pDX, IDC_BTN_TRANSFER, m_co_TransferBtn);
@@ -328,7 +319,6 @@ void CemuleDlg::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_BTN_STATISTIC, m_co_StatisticBtn);
 	DDX_Control(pDX, IDC_BTN_PREFERENCES, m_co_PreferencesBtn);
 	DDX_Control(pDX, IDC_BTN_TOOLS, m_co_ToolsBtn);
-#endif
 //<== Toolbar [shadow2004]
 }
 
@@ -340,11 +330,9 @@ LRESULT CemuleDlg::OnAreYouEmule(WPARAM, LPARAM)
 BOOL CemuleDlg::OnInitDialog()
 {
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR
 	m_co_ToolLeft.LoadImage(IDR_TOOLBAR_LEFT,_T("JPG"));
 	m_co_ToolMid.LoadImage(IDR_TOOLBAR_CENTER,_T("JPG"));
 	m_co_ToolRight.LoadImage(IDR_TOOLBAR_RIGHT,_T("JPG"));
-#endif
 //<== Toolbar [shadow2004]
 	m_bStartMinimized = thePrefs.GetStartMinimized();
 	if (!m_bStartMinimized)
@@ -379,8 +367,7 @@ BOOL CemuleDlg::OnInitDialog()
 	}
 
 //==> Toolbar [shadow2004]
-#ifndef TOOLBAR
-	CWnd* pwndToolbarX = toolbar;
+/*	CWnd* pwndToolbarX = toolbar;
 	if (toolbar->Create(WS_CHILD | WS_VISIBLE, CRect(0,0,0,0), this, IDC_TOOLBAR))
 	{
 		toolbar->Init();
@@ -408,8 +395,7 @@ BOOL CemuleDlg::OnInitDialog()
 			    pwndToolbarX = &m_ctlMainTopReBar;
 		    }
 		}
-	}
-#endif
+	}*/
 //<== Toolbar [shadow2004]
 
 	//set title
@@ -453,7 +439,6 @@ BOOL CemuleDlg::OnInitDialog()
 		case IDD_SERVER:
 			{
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR				
 				m_co_KademliaBtn.EnableWindow(TRUE);
 				m_co_TransferBtn.EnableWindow(TRUE);
 				m_co_SearchBtn.EnableWindow(TRUE);
@@ -463,7 +448,6 @@ BOOL CemuleDlg::OnInitDialog()
 				m_co_PreferencesBtn.EnableWindow(TRUE);				
 
 				m_co_ServerBtn.EnableWindow(FALSE);
-#endif
 //<== Toolbar [shadow2004]
 			SetActiveDialog(serverwnd);
 			break;
@@ -471,7 +455,6 @@ BOOL CemuleDlg::OnInitDialog()
 		case IDD_FILES:
 			{
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR				
 				m_co_KademliaBtn.EnableWindow(TRUE);
 				m_co_ServerBtn.EnableWindow(TRUE);
 				m_co_TransferBtn.EnableWindow(TRUE);
@@ -481,7 +464,6 @@ BOOL CemuleDlg::OnInitDialog()
 				m_co_PreferencesBtn.EnableWindow(TRUE);				
 
 				m_co_SharedBtn.EnableWindow(FALSE);
-#endif
 //<== Toolbar [shadow2004]
 			SetActiveDialog(sharedfileswnd);
 			break;
@@ -489,7 +471,6 @@ BOOL CemuleDlg::OnInitDialog()
 		case IDD_SEARCH:
 			{
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR	
 				m_co_KademliaBtn.EnableWindow(TRUE);
 				m_co_ServerBtn.EnableWindow(TRUE);
 				m_co_TransferBtn.EnableWindow(TRUE);
@@ -499,7 +480,6 @@ BOOL CemuleDlg::OnInitDialog()
 				m_co_PreferencesBtn.EnableWindow(TRUE);				
 
 				m_co_SearchBtn.EnableWindow(FALSE);
-#endif
 //<== Toolbar [shadow2004]
 			SetActiveDialog(searchwnd);
 			break;
@@ -507,7 +487,6 @@ BOOL CemuleDlg::OnInitDialog()
 		case IDD_CHAT:
 			{
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR	
 				m_co_KademliaBtn.EnableWindow(TRUE);
 				m_co_ServerBtn.EnableWindow(TRUE);
 				m_co_TransferBtn.EnableWindow(TRUE);
@@ -517,7 +496,6 @@ BOOL CemuleDlg::OnInitDialog()
 				m_co_PreferencesBtn.EnableWindow(TRUE);				
 
 				m_co_MessagesBtn.EnableWindow(FALSE);
-#endif
 //<== Toolbar [shadow2004]
 			SetActiveDialog(chatwnd);
 			break;
@@ -525,7 +503,6 @@ BOOL CemuleDlg::OnInitDialog()
 		case IDD_TRANSFER:
 			{
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR	
 				m_co_KademliaBtn.EnableWindow(TRUE);
 				m_co_ServerBtn.EnableWindow(TRUE);
 				m_co_SearchBtn.EnableWindow(TRUE);
@@ -535,7 +512,6 @@ BOOL CemuleDlg::OnInitDialog()
 				m_co_PreferencesBtn.EnableWindow(TRUE);				
 
 				m_co_TransferBtn.EnableWindow(FALSE);
-#endif
 //<== Toolbar [shadow2004]
 			SetActiveDialog(transferwnd);
 			break;
@@ -543,7 +519,6 @@ BOOL CemuleDlg::OnInitDialog()
 		case IDD_STATISTICS:
 			{
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR	
 				m_co_KademliaBtn.EnableWindow(TRUE);
 				m_co_ServerBtn.EnableWindow(TRUE);
 				m_co_TransferBtn.EnableWindow(TRUE);
@@ -553,7 +528,6 @@ BOOL CemuleDlg::OnInitDialog()
 				m_co_PreferencesBtn.EnableWindow(TRUE);				
 
 				m_co_StatisticBtn.EnableWindow(FALSE);
-#endif
 //<== Toolbar [shadow2004]
 			SetActiveDialog(statisticswnd);
 			break;
@@ -561,7 +535,6 @@ BOOL CemuleDlg::OnInitDialog()
 		case IDD_KADEMLIAWND:
 			{
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR	
 				m_co_ServerBtn.EnableWindow(TRUE);
 				m_co_TransferBtn.EnableWindow(TRUE);
 				m_co_SearchBtn.EnableWindow(TRUE);
@@ -571,7 +544,6 @@ BOOL CemuleDlg::OnInitDialog()
 				m_co_PreferencesBtn.EnableWindow(TRUE);				
 
 				m_co_KademliaBtn.EnableWindow(FALSE);
-#endif
 //<== Toolbar [shadow2004]
 			SetActiveDialog(kademliawnd);
 			break;
@@ -583,7 +555,6 @@ BOOL CemuleDlg::OnInitDialog()
 	if (activewnd == NULL)
 			{
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR	
 		m_co_KademliaBtn.EnableWindow(TRUE);
 		m_co_TransferBtn.EnableWindow(TRUE);
 		m_co_SearchBtn.EnableWindow(TRUE);
@@ -593,7 +564,6 @@ BOOL CemuleDlg::OnInitDialog()
 		m_co_PreferencesBtn.EnableWindow(TRUE);				
 
 		m_co_ServerBtn.EnableWindow(FALSE);
-#endif
 //<== Toolbar [shadow2004]
 		SetActiveDialog(serverwnd);
 			}
@@ -605,9 +575,7 @@ BOOL CemuleDlg::OnInitDialog()
 	//ShowConnectionState(false);
 
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR	
 	RECT rect;
-//	RECT rect1,rect2;
 	GetClientRect(&rect);
 
 	CRect srect;
@@ -615,15 +583,6 @@ BOOL CemuleDlg::OnInitDialog()
 	statusbar->GetClientRect(&srect);
 	statusbar->SetWindowPos(NULL,0,rect.bottom-(srect.bottom-srect.top),rect.right-rect.left,rect.bottom-rect.top,SWP_NOZORDER);
 	statusbar->GetClientRect(&srect);
-#else
-	// adjust all main window sizes for toolbar height and maximize the child windows
-	CRect rcClient, rcToolbar, rcStatusbar;
-	GetClientRect(&rcClient);
-	pwndToolbarX->GetWindowRect(&rcToolbar);
-	statusbar->GetWindowRect(&rcStatusbar);
-	rcClient.top += rcToolbar.Height();
-	rcClient.bottom -= rcStatusbar.Height();
-#endif
 //<== Toolbar [shadow2004]
 
 	CWnd* apWnds[] =
@@ -638,7 +597,6 @@ BOOL CemuleDlg::OnInitDialog()
 	};
 	for (int i = 0; i < ARRSIZE(apWnds); i++)
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR	
 		apWnds[i]->SetWindowPos(NULL,0,66,rect.right-rect.left,rect.bottom-rect.top-66-(srect.bottom-srect.top),SWP_NOZORDER);
 
 	GetDlgItem(IDC_BTN_CONNECT)->SetWindowPos(NULL,16,4,56,56,SWP_NOZORDER);
@@ -677,9 +635,6 @@ BOOL CemuleDlg::OnInitDialog()
 	m_co_StatisticBtn.SetSkin(IDB_STATISTIC_NORMAL,IDB_STATISTIC_CLICK,IDB_STATISTIC_OVER,IDB_STATISTIC_CLICK,0,0,0,0,0);
 	m_co_PreferencesBtn.SetSkin(IDB_PREFERENCES_NORMAL,IDB_PREFERENCES_CLICK,IDB_PREFERENCES_OVER,IDB_PREFERENCES_CLICK,0,0,0,0,0);
 	m_co_ToolsBtn.SetSkin(IDB_TOOLS_NORMAL,IDB_TOOLS_CLICK,IDB_TOOLS_OVER,IDB_TOOLS_CLICK,0,0,0,0,0);
-#else
-		apWnds[i]->SetWindowPos(NULL, rcClient.left, rcClient.top, rcClient.Width(), rcClient.Height(), SWP_NOZORDER);
-#endif
 //<== Toolbar [shadow2004]
 
 	// anchors
@@ -691,16 +646,12 @@ BOOL CemuleDlg::OnInitDialog()
     AddAnchor(*chatwnd,			TOP_LEFT, BOTTOM_RIGHT);
 	AddAnchor(*statisticswnd,	TOP_LEFT, BOTTOM_RIGHT);
 //==> Toolbar [shadow2004]
-#ifndef TOOLBAR	
-	AddAnchor(*pwndToolbarX,	TOP_LEFT, TOP_RIGHT);
-#endif
+//	AddAnchor(*pwndToolbarX,	TOP_LEFT, TOP_RIGHT);
 //<== Toolbar [shadow2004]
 	AddAnchor(*statusbar,		BOTTOM_LEFT, BOTTOM_RIGHT);
 //==> Toolbar [shadow2004]
-#ifndef TOOLBAR	
-	AddAnchor(IDC_BTN_TOOLS,TOP_RIGHT);
-	AddAnchor(IDC_BTN_PREFERENCES,TOP_RIGHT);
-#endif
+//	AddAnchor(IDC_BTN_TOOLS,TOP_RIGHT);
+//	AddAnchor(IDC_BTN_PREFERENCES,TOP_RIGHT);
 //<== Toolbar [shadow2004]
 	statisticswnd->ShowInterval();
 
@@ -1243,18 +1194,8 @@ void CemuleDlg::ShowConnectionState()
 	if (theApp.IsConnected())
 	{
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR
 		SetDlgItemText(IDC_BTN_CONNECT,GetResString(IDS_MAIN_BTN_DISCONNECT));
 		m_co_ConnectBtn.SetSkin(IDB_CONNECT_CLICK,IDB_CONNECT_CLICK,IDB_DISCONNECT_OVER,IDB_CONNECT_CLICK,0,0,0,0,0);
-#else
-		CString strPane(GetResString(IDS_MAIN_BTN_DISCONNECT));
-		TBBUTTONINFO tbi;
-		tbi.cbSize = sizeof(TBBUTTONINFO);
-		tbi.dwMask = TBIF_IMAGE | TBIF_TEXT;
-		tbi.iImage = 1;
-		tbi.pszText = const_cast<LPTSTR>((LPCTSTR)strPane);
-		toolbar->SetButtonInfo(TBBTN_CONNECT, &tbi);
-#endif
 //<== Toolbar [shadow2004]
 	}
 	else
@@ -1262,36 +1203,16 @@ void CemuleDlg::ShowConnectionState()
 		if (theApp.serverconnect->IsConnecting() || Kademlia::CKademlia::isRunning()) 
 		{
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR
 			SetDlgItemText(IDC_BTN_CONNECT,GetResString(IDS_MAIN_BTN_CANCEL));
 			m_co_ConnectBtn.SetSkin(IDB_CONNECT_CLICK,IDB_CONNECT_CLICK,IDB_DISCONNECT_OVER,IDB_CONNECT_CLICK,0,0,0,0,0);
-#else
-			CString strPane(GetResString(IDS_MAIN_BTN_CANCEL));
-			TBBUTTONINFO tbi;
-			tbi.cbSize = sizeof(TBBUTTONINFO);
-			tbi.dwMask = TBIF_IMAGE | TBIF_TEXT;
-			tbi.iImage = 2;
-			tbi.pszText = const_cast<LPTSTR>((LPCTSTR)strPane);
-			toolbar->SetButtonInfo(TBBTN_CONNECT, &tbi);
-#endif
 //<== Toolbar [shadow2004]
 			ShowUserCount();
 		} 
 		else 
 		{
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR
 			SetDlgItemText(IDC_BTN_CONNECT,GetResString(IDS_MAIN_BTN_CONNECT));
 			m_co_ConnectBtn.SetSkin(IDB_CONNECT_NORMAL,IDB_CONNECT_CLICK,IDB_CONNECT_OVER,IDB_CONNECT_CLICK,0,0,0,0,0);
-#else
-			CString strPane(GetResString(IDS_MAIN_BTN_CONNECT));
-			TBBUTTONINFO tbi;
-			tbi.cbSize = sizeof(TBBUTTONINFO);
-			tbi.dwMask = TBIF_IMAGE | TBIF_TEXT;
-			tbi.iImage = 0;
-			tbi.pszText = const_cast<LPTSTR>((LPCTSTR)strPane);
-			toolbar->SetButtonInfo(TBBTN_CONNECT, &tbi);
-#endif
 //<== Toolbar [shadow2004]
 			ShowUserCount();
 		}
@@ -1477,8 +1398,7 @@ void CemuleDlg::SetActiveDialog(CWnd* dlg)
 		if (thePrefs.ShowCatTabInfos())
 			transferwnd->UpdateCatTabTitles();
 //==> Toolbar [shadow2004]
-#ifndef TOOLBAR
-		toolbar->PressMuleButton(TBBTN_TRANSFERS);
+/*		toolbar->PressMuleButton(TBBTN_TRANSFERS);
 	}
 	else if (dlg == serverwnd){
 		toolbar->PressMuleButton(TBBTN_SERVER);
@@ -1498,8 +1418,7 @@ void CemuleDlg::SetActiveDialog(CWnd* dlg)
 		statisticswnd->ShowStatistics();
 	}
 	else if	(dlg == kademliawnd){
-		toolbar->PressMuleButton(TBBTN_KAD);
-#endif
+		toolbar->PressMuleButton(TBBTN_KAD);*/
 //<== Toolbar [shadow2004]
 	}
 }
@@ -1531,13 +1450,11 @@ void CemuleDlg::SetStatusBarPartsSize()
 void CemuleDlg::OnSize(UINT nType, int cx, int cy)
 {
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR
 	CRect rect;
 	GetClientRect(&rect);
 	rect.bottom=66;
 
 	InvalidateRect(&rect,FALSE);
-#endif
 //<== Toolbar [shadow2004]
 
 	CTrayDialog::OnSize(nType, cx, cy);
@@ -2505,7 +2422,6 @@ void CemuleDlg::Localize()
 
 	ShowUserStateIcon();
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR
 	SetDlgItemText(IDC_BTN_KADEMLIA,GetResString(IDS_EM_KADEMLIA));
 	SetDlgItemText(IDC_BTN_SERVER,GetResString(IDS_EM_SERVER));
 	SetDlgItemText(IDC_BTN_TRANSFER,GetResString(IDS_EM_TRANS));
@@ -2515,9 +2431,6 @@ void CemuleDlg::Localize()
 	SetDlgItemText(IDC_BTN_STATISTIC,GetResString(IDS_EM_STATISTIC));
 	SetDlgItemText(IDC_BTN_PREFERENCES,GetResString(IDS_EM_PREFS));
 	SetDlgItemText(IDC_BTN_TOOLS,GetResString(IDS_TOOLS));
-#else
-	toolbar->Localize();
-#endif
 //<== Toolbar [shadow2004]
 	ShowConnectionState();
 	ShowTransferRate(true);
@@ -2751,13 +2664,11 @@ BOOL CemuleDlg::OnCommand(WPARAM wParam, LPARAM lParam)
 LRESULT CemuleDlg::OnMenuChar(UINT nChar, UINT nFlags, CMenu* pMenu)
 {
 //==> Toolbar [shadow2004]
-#ifndef TOOLBAR
-	UINT nCmdID;
+/*	UINT nCmdID;
 	if (toolbar->MapAccelerator(nChar, &nCmdID)){
 		OnCommand(nCmdID, 0);
 		return MAKELONG(0,MNC_CLOSE);
-	}
-#endif
+	}*/
 //<== Toolbar [shadow2004]
 	return CTrayDialog::OnMenuChar(nChar, nFlags, pMenu);
 }
@@ -3205,8 +3116,7 @@ BOOL CemuleDlg::OnChevronPushed(UINT id, NMHDR* pNMHDR, LRESULT* plResult)
 	ASSERT( pnmrc->wID == 0 );
 
 //==> Toolbar [shadow2004]
-#ifndef TOOLBAR
-	// get visible area of rebar/toolbar
+/*	// get visible area of rebar/toolbar
 	CRect rcVisibleButtons;
 	toolbar->GetClientRect(&rcVisibleButtons);
 
@@ -3220,8 +3130,7 @@ BOOL CemuleDlg::OnChevronPushed(UINT id, NMHDR* pNMHDR, LRESULT* plResult)
 		CRect rcVisible;
 		if (!rcVisible.IntersectRect(&rcVisibleButtons, &rcButton) || !EqualRect(rcButton, rcVisible))
 			break;
-	}
-#endif
+	}*/
 //<== Toolbar [shadow2004]
 
 	// create menu for all toolbar buttons which are not (fully) visible
@@ -3231,8 +3140,7 @@ BOOL CemuleDlg::OnChevronPushed(UINT id, NMHDR* pNMHDR, LRESULT* plResult)
 	menu.AddMenuTitle(_T("eMule"), true);
 
 //==> Toolbar [shadow2004]
-#ifndef TOOLBAR
-	while (i < iButtons)
+/*	while (i < iButtons)
 	{
 		TCHAR szString[256];
 		szString[0] = _T('\0');
@@ -3262,8 +3170,7 @@ BOOL CemuleDlg::OnChevronPushed(UINT id, NMHDR* pNMHDR, LRESULT* plResult)
 		}
 
 		i++;
-	}
-#endif
+	}*/
 //<== Toolbar [shadow2004]
 
 	CPoint ptMenu(pnmrc->rc.left, pnmrc->rc.top);
@@ -3476,7 +3383,6 @@ LRESULT CemuleDlg::OnWebGUIInteraction(WPARAM wParam, LPARAM lParam) {
 }
 
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR
 BOOL CemuleDlg::OnEraseBkgnd(CDC* pDC)
 {
 	RECT rect;
@@ -3656,8 +3562,6 @@ void CemuleDlg::OnBnClickedBtnPreferences()
 		iOpen = 1;
 		ShowPreferences();
 		iOpen = 0;
-//		m_co_UpTrafficGraph.Init_Graph(_T("Up"),thePrefs.GetMaxGraphUploadRate());
-//		m_co_DownTrafficGraph.Init_Graph(_T("Down"),thePrefs.GetMaxGraphDownloadRate());
 
 	}	
 	
@@ -3668,5 +3572,4 @@ void CemuleDlg::OnBnClickedBtnTools()
 	ShowToolPopup(true);
 
 }
-#endif
 //<== Toolbar [shadow2004]

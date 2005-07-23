@@ -47,6 +47,8 @@ CPreferencesDlg::CPreferencesDlg()
 	m_wndSecurity.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndScheduler.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndNextEMF.m_psp.dwFlags &= ~PSH_HASHELP;// NextEMF-Pref [cyrex2001]
+	m_wndConnection2.m_psp.dwFlags &= ~PSH_HASHELP; // Connection 2
+	m_wndConnection3.m_psp.dwFlags &= ~PSH_HASHELP; // Connection 3
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	m_wndDebug.m_psp.dwFlags &= ~PSH_HASHELP;
 #endif
@@ -68,21 +70,26 @@ CPreferencesDlg::CPreferencesDlg()
 	CTreePropSheet::SetPageIcon(&m_wndDebug, _T("Preferences"));
 #endif
 
-	AddPage(&m_wndGeneral);
-	AddPage(&m_wndDisplay);
-	AddPage(&m_wndConnection);
-	AddPage(&m_wndServer);
-	AddPage(&m_wndDirectories);
-	AddPage(&m_wndFiles);
-	AddPage(&m_wndNotify);
-	AddPage(&m_wndStats);
-	AddPage(&m_wndSecurity);
-	AddPage(&m_wndScheduler);
-	AddPage(&m_wndWebServer);
-	AddPage(&m_wndTweaks);
-	AddPage(&m_wndNextEMF);// NextEMF-Pref [cyrex2001]
+	AddPage(&m_wndGeneral);									// 0
+	AddPage(&m_wndDisplay);									// 1
+	AddPage(&m_wndConnection);								// 2
+	AddPage(&m_wndServer);									// 3
+	AddPage(&m_wndDirectories);								// 4
+	AddPage(&m_wndFiles);									// 5
+	AddPage(&m_wndNotify);									// 6
+	AddPage(&m_wndStats);									// 7
+	AddPage(&m_wndSecurity);								// 8
+	AddPage(&m_wndScheduler);								// 9
+	AddPage(&m_wndWebServer);								// 10
+	AddPage(&m_wndTweaks);									// 11
+	AddPage(&m_wndNextEMF);// NextEMF-Pref [cyrex2001]		// 12
+
+//==> PPgTabControl [shadow2004]
+	AddPage(&m_wndConnection2);								// 13
+	AddPage(&m_wndConnection3);								// 14
+//<== PPgTabControl [shadow2004]
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
-	AddPage(&m_wndDebug);
+	AddPage(&m_wndDebug);									// 15
 #endif
 
 	SetTreeViewMode(TRUE, TRUE, TRUE);
@@ -90,6 +97,38 @@ CPreferencesDlg::CPreferencesDlg()
 
 	m_pPshStartPage = NULL;
 	m_bSaveIniFile = false;
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+/*	ActivePageGeneral			= 0;
+	ActivePageDisplay			= 0;*/
+	ActivePageConnection		= 0;
+/*	ActivePageServer			= 0;
+	ActivePageDirectory			= 0;
+	ActivePageFiles				= 0;
+	ActivePageNotify			= 0;
+	ActivePageStats				= 0;
+	ActivePageSecurity			= 0;
+	ActivePageSheduler			= 0;
+	ActivePageWebServer			= 0;
+	ActivePageTweaks			= 0;
+	ActivePageDebug				= 0;
+
+	StartPageGeneral			= 0;
+	StartPageDisplay			= 0;*/
+	StartPageConnection			= 0;
+/*	StartPageServer				= 0;
+	StartPageDirectory			= 0;
+	StartPageFiles				= 0;
+	StartPageNotify				= 0;
+	StartPageStats				= 0;
+	StartPageSecurity			= 0;
+	StartPageSheduler			= 0;
+	StartPageWebServer			= 0;
+	StartPageTweaks				= 0;
+	StartPageDebug				= 0;*/
+
+#endif
+//<== PPgTabControl [shadow2004]
 }
 
 CPreferencesDlg::~CPreferencesDlg()
@@ -113,13 +152,45 @@ BOOL CPreferencesDlg::OnInitDialog()
 	BOOL bResult = CTreePropSheet::OnInitDialog();
 	InitWindowStyles(this);
 
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+	int nPage = 0;
+#endif
+//<== PPgTabControl [shadow2004]
 	for (int i = 0; i < m_pages.GetSize(); i++)
 	{
 		if (GetPage(i)->m_psp.pszTemplate == m_pPshStartPage)
 		{
+
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+
+			if (i>=13)
+			{
+				if (i == 13) 
+				{	// Connection2 / Reask&Quickstart
+					SetActivePage(2);
+			    }
+				if (i == 14) 
+				{	// Connection3 / Hardlimit
+					SetActivePage(2);
+				}
+
+					m_wndConnection.InitTab(false,StartPageConnection);
+					m_wndConnection2.InitTab(false,StartPageConnection);
+					m_wndConnection3.InitTab(false,StartPageConnection);
+					break;
+				}
+				else
+				{
 			SetActivePage(i);
 			break;
 		}
+
+#endif
+//<== PPgTabControl [shadow2004]
+
+			}
 	}
 
 	Localize();	
@@ -159,9 +230,13 @@ void CPreferencesDlg::Localize()
 		pTree->SetItemText(GetPageTreeItem(9), RemoveAmbersand(GetResString(IDS_SCHEDULER)));
 		pTree->SetItemText(GetPageTreeItem(10), RemoveAmbersand(GetResString(IDS_PW_WS)));
 		pTree->SetItemText(GetPageTreeItem(11), RemoveAmbersand(GetResString(IDS_PW_TWEAK)));
-		pTree->SetItemText(GetPageTreeItem(12), RemoveAmbersand(_T("NextEMF")/*GetResString(IDS_NEXTEMF)*/));// NextEMF-Pref [cyrex200]
+		pTree->SetItemText(GetPageTreeItem(12), RemoveAmbersand(GetResString(IDS_NEXTEMF)));// NextEMF-Pref [cyrex200]
+//==> PPgTabControl [shadow2004]
+		pTree->SetItemText(GetPageTreeItem(13), RemoveAmbersand(_T(" "))); // Connection 2
+		pTree->SetItemText(GetPageTreeItem(14), RemoveAmbersand(_T(" "))); // Connection 3
+//<== PPgTabControl [shadow2004]
 	#if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
-		pTree->SetItemText(GetPageTreeItem(13), _T("Debug"));// changed 12=>13 [cyrex2001]
+		pTree->SetItemText(GetPageTreeItem(15), _T("Debug"));
 	#endif
 	}
 
@@ -212,3 +287,38 @@ void CPreferencesDlg::SetStartPage(UINT uStartPageID)
 {
 	m_pPshStartPage = MAKEINTRESOURCE(uStartPageID);
 }
+
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+void CPreferencesDlg::SwitchTab(int Page)
+{
+	
+	if(m_hWnd && IsWindowVisible()){
+		CPropertyPage* activepage = GetActivePage();
+
+		// Connection 1-2
+		if (activepage == &m_wndConnection || activepage == &m_wndConnection2 || activepage == &m_wndConnection3){
+			if (Page == 0) {
+				SetActivePage(&m_wndConnection);
+				ActivePageConnection = 0;
+				StartPageConnection = 0;
+				m_wndConnection.InitTab(false,0);
+			}
+			if (Page == 1) {
+				SetActivePage(&m_wndConnection2);
+				ActivePageConnection = 13;
+				StartPageConnection = 1;
+				m_wndConnection2.InitTab(false,1);
+			}
+			if (Page == 2) {
+				SetActivePage(&m_wndConnection3);
+				ActivePageConnection = 14;
+				StartPageConnection = 2;
+				m_wndConnection3.InitTab(false,2);
+			}
+		}
+
+	}
+}
+#endif
+//<== PPgTabControl [shadow2004]

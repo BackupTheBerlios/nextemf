@@ -1295,7 +1295,7 @@ void CKademliaUDPListener::processFirewalledResponse (const byte *packetData, ui
 		theApp.emuledlg->ShowConnectionState();
 //==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA
-		if(thePrefs.IsreaskSourceAfterIPChange())
+		if(thePrefs.IsReaskSourceAfterIPChange())
 			theApp.CheckIDChange();
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]

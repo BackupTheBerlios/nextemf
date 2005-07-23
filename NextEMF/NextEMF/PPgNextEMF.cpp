@@ -73,38 +73,6 @@ CPPgNextEMF::CPPgNextEMF()
 	m_htiAutoSetResumeOrder = NULL;
 #endif
 //<== Linear Prio [shadow2004]
-
-	//==> QUICKSTART or RASAIC [cyrex2001]
-#if defined (QUICKSTART) || defined (RSAIC_MAELLA)
-	m_htiCon = NULL;
-#endif
-	//<== QUICKSTART or RASAIC [cyrex2001]
-
-	//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_MAELLA
-	m_htiIsreaskSourceAfterIPChange = NULL; 
-#endif //Reask sourcen after ip change
-	//<==Reask sourcen after ip change [cyrex2001]
-
-	//==>Quickstart [cyrex2001]
-#ifdef QUICKSTART
-	m_htiQuickStart = NULL;
-	m_htiQuickStartMaxTime = NULL;
-	m_htiQuickStartMaxConnPerFive = NULL;
-	m_htiQuickStartMaxConn = NULL;
-	m_htiQuickStartAfterIPChange = NULL;
-#endif //Quickstart
-	//<==Quickstart [cyrex2001]
-
-//==>WiZaRd/Max AutoHardLimit [cyrex2001]
-#ifdef AHL
-	m_htiHardLimit = NULL;
-	m_htiAutoHLUpdateTimer = NULL; 
-	m_htiUseAutoHL = NULL;
-	m_htiMinFileLimit = NULL;
-	m_htiMaxSourcesHL = NULL;
-#endif //WiZaRd/Max AutoHardLimit
-//<==WiZaRd/Max AutoHardLimit [cyrex2001]	
 }
 
 CPPgNextEMF::~CPPgNextEMF()
@@ -117,17 +85,6 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_PPG_NEXTEMF_OPTS, m_ctrlTreeOptions);
 	if (!m_bInitializedTreeOpts)
 	{
-	//==> QUICKSTART or RASAIC [cyrex2001]
-#if defined (QUICKSTART) || defined (RSAIC_MAELLA)
-		int iImgCon = 8;
-#endif
-	//<== QUICKSTART or RASAIC [cyrex2001]
-
-//==>WiZaRd/Max AutoHardLimit [cyrex2001]
-#ifdef AHL
-		int iImgHardLimit = 8;
-#endif
-//<==WiZaRd/Max AutoHardLimit [cyrex2001]	
 		int iImgSecurity = 8;
 //==> Emulate others by WiZaRd & Spike [shadow2004]
 #ifdef EMULATE
@@ -148,16 +105,6 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		CImageList* piml = m_ctrlTreeOptions.GetImageList(TVSIL_NORMAL);
 		if (piml)
 		{
-//==> QUICKSTART or RASAIC [cyrex2001]
-#if defined (QUICKSTART) || defined (RSAIC_MAELLA)
-			iImgCon = piml->Add(CTempIconLoader(_T("CONNECTION")));
-#endif
-//<== QUICKSTART or RASAIC [cyrex2001]
-//==>WiZaRd/Max AutoHardLimit [cyrex2001]
-#ifdef AHL
-			iImgHardLimit = piml->Add(CTempIconLoader(_T("HARDLIMIT")));
-#endif
-//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 			iImgSecurity = piml->Add(CTempIconLoader(_T("SECURITY")));
 //==> Emulate others by WiZaRd & Spike [shadow2004]
 #ifdef EMULATE
@@ -175,50 +122,6 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 #endif
 //<== Linear Prio [shadow2004]
 		}
-	//==> QUICKSTART or RASAIC [cyrex2001]
-#if defined (QUICKSTART) || defined (RSAIC_MAELLA)
-		m_htiCon = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_CON_CONTROL), iImgCon, TVI_ROOT);
-		//==> Bold Categories by $icK$ [shadow2004]
-		m_ctrlTreeOptions.SetItemState(m_htiCon, TVIS_BOLD, TVIS_BOLD);
-		//<== Bold Categories by $icK$ [shadow2004]
-#endif
-		//<== QUICKSTART or RASAIC [cyrex2001]
-
-		//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_MAELLA
-		m_htiIsreaskSourceAfterIPChange = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK ), m_htiCon, m_bIsreaskSourceAfterIPChange);
-#endif //Reask sourcen after ip change
-		//<==Reask sourcen after ip change [cyrex2001]
-
-		//==>Quickstart [cyrex2001]
-#ifdef QUICKSTART
-		m_htiQuickStart = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_QUICK_START), m_htiCon, m_bQuickStart);
-		m_htiQuickStartMaxTime = m_ctrlTreeOptions.InsertItem(GetResString(IDS_QUICK_START_MAX_TIME), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT,  m_htiCon);
-		m_ctrlTreeOptions.AddEditBox(m_htiQuickStartMaxTime, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		m_htiQuickStartMaxConnPerFive = m_ctrlTreeOptions.InsertItem(GetResString(IDS_QUICK_START_MAX_CONN_PER_FIVE), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT,  m_htiCon);
-		m_ctrlTreeOptions.AddEditBox(m_htiQuickStartMaxConnPerFive, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		m_htiQuickStartMaxConn = m_ctrlTreeOptions.InsertItem(GetResString(IDS_QUICK_START_MAX_CONN), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT,  m_htiCon);
-		m_ctrlTreeOptions.AddEditBox(m_htiQuickStartMaxConn, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		m_htiQuickStartAfterIPChange = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_QUICK_START_AFTER_IP_CHANGE), m_htiCon, m_bQuickStartAfterIPChange);
-		m_ctrlTreeOptions.Expand(m_htiCon, TVE_EXPAND);
-#endif //Quickstart
-		//<==Quickstart [cyrex2001]
-//==>WiZaRd/Max AutoHardLimit [cyrex2001]
-#ifdef AHL
-		m_htiHardLimit = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_HARDLIMIT), iImgHardLimit, TVI_ROOT);
-		//==> Bold Categories by $icK$ [shadow2004]
-		m_ctrlTreeOptions.SetItemState(m_htiHardLimit, TVIS_BOLD, TVIS_BOLD);
-		//<== Bold Categories by $icK$ [shadow2004]
-		m_htiUseAutoHL = m_ctrlTreeOptions.InsertCheckBox(GetResString(IDS_USE_GLOBALHL), m_htiHardLimit, m_bUseAutoHL);
-		m_htiAutoHLUpdateTimer = m_ctrlTreeOptions.InsertItem(GetResString(IDS_GLOBALHL_UPDATE_TIMER), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiHardLimit);
-		m_ctrlTreeOptions.AddEditBox(m_htiAutoHLUpdateTimer, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		m_htiMaxSourcesHL = m_ctrlTreeOptions.InsertItem(GetResString(IDS_MAX_SOURCE_HARDLIMIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT,m_htiHardLimit);
-		m_ctrlTreeOptions.AddEditBox(m_htiMaxSourcesHL, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		m_htiMinFileLimit = m_ctrlTreeOptions.InsertItem(GetResString(IDS_MIN_SOURCE_HARDLIMIT), TREEOPTSCTRLIMG_EDIT, TREEOPTSCTRLIMG_EDIT, m_htiHardLimit);
-		m_ctrlTreeOptions.AddEditBox(m_htiMinFileLimit, RUNTIME_CLASS(CNumTreeOptionsEdit));
-		m_ctrlTreeOptions.Expand(m_htiHardLimit, TVE_EXPAND);
-#endif //WiZaRd/Max AutoHardLimit
-//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 		m_htiSecurity = m_ctrlTreeOptions.InsertGroup(GetResString(IDS_SECURITY), iImgSecurity, TVI_ROOT);
 //==> Bold Categories by $icK$ [shadow2004]
 		m_ctrlTreeOptions.SetItemState(m_htiSecurity, TVIS_BOLD, TVIS_BOLD);
@@ -275,35 +178,6 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 		m_bInitializedTreeOpts = true;
 	}
 
-	//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_MAELLA
-	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiIsreaskSourceAfterIPChange, m_bIsreaskSourceAfterIPChange); 
-#endif //Reask sourcen after ip change
-	//<==Reask sourcen after ip change [cyrex2001]
-
-	//==>Quickstart [cyrex2001]
-#ifdef QUICKSTART
-	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiQuickStart, m_bQuickStart);
-	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiQuickStartMaxTime, m_iQuickStartMaxTime);
-	DDV_MinMaxInt(pDX, m_iQuickStartMaxTime, 8, 18);
-	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiQuickStartMaxConnPerFive, m_iQuickStartMaxConnPerFive);
-	DDV_MinMaxInt(pDX, m_iQuickStartMaxConnPerFive, 5, 200);
-	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiQuickStartMaxConn, m_iQuickStartMaxConn);
-	DDV_MinMaxInt(pDX, m_iQuickStartMaxConn, 200, 2000);
-	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiQuickStartAfterIPChange, m_bQuickStartAfterIPChange);
-#endif //Quickstart
-	//<==Quickstart [cyrex2001]
-//==>WiZaRd/Max AutoHardLimit [cyrex2001]
-#ifdef AHL
-	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiUseAutoHL, m_bUseAutoHL);
-	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiAutoHLUpdateTimer, m_iAutoHLUpdateTimer);
-	DDV_MinMaxInt(pDX, m_iAutoHLUpdateTimer, 30, 80);
-	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiMaxSourcesHL, m_iMaxSourcesHL);
-	DDV_MinMaxInt(pDX, m_iMaxSourcesHL, 1000, 5000);
-	DDX_TreeEdit(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiMinFileLimit, m_iMinFileLimit);
-	DDV_MinMaxInt(pDX, m_iMinFileLimit, 10, 50);
-#endif //WiZaRd/Max AutoHardLimit
-//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS
 	DDX_TreeCheck(pDX, IDC_PPG_NEXTEMF_OPTS, m_htiEnableAntiNickThief, m_bEnableAntiNickThief);
@@ -342,29 +216,6 @@ void CPPgNextEMF::DoDataExchange(CDataExchange* pDX)
 
 BOOL CPPgNextEMF::OnInitDialog()
 {
-//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_MAELLA
-m_bIsreaskSourceAfterIPChange = thePrefs.isreaskSourceAfterIPChange;
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
-
-//==>Quickstart [cyrex2001]
-#ifdef QUICKSTART
-m_bQuickStart = thePrefs.isQuickStart;
-m_iQuickStartMaxTime = (int)(thePrefs.QuickStartMaxTime);
-m_iQuickStartMaxConnPerFive = (int)(thePrefs.QuickStartMaxConnPerFive);
-m_iQuickStartMaxConn = (int)(thePrefs.QuickStartMaxConn);
-m_bQuickStartAfterIPChange = thePrefs.isQuickStartAfterIPChange;
-#endif //Quickstart
-//<==Quickstart [cyrex2001]
-//==>WiZaRd/Max AutoHardLimit [cyrex2001]
-#ifdef AHL
-	m_iAutoHLUpdateTimer = (int) thePrefs.m_iAutoHLUpdateTimer; 
-	m_bUseAutoHL = thePrefs.m_bUseAutoHL;
-	m_iMaxSourcesHL = (int) thePrefs.m_iMaxSourcesHL;
-	m_iMinFileLimit = (int) thePrefs.m_iMinFileLimit;
-#endif //WiZaRd/Max AutoHardLimit
-//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS
 	m_bEnableAntiNickThief = thePrefs.m_bAntiNickThief;
@@ -422,29 +273,6 @@ BOOL CPPgNextEMF::OnApply()
 	
 	if (!UpdateData())
 		return FALSE;
-	//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_MAELLA
-	thePrefs.isreaskSourceAfterIPChange = m_bIsreaskSourceAfterIPChange;
-#endif //Reask sourcen after ip change
-	//<==Reask sourcen after ip change [cyrex2001]
-
-	//==>Quickstart [cyrex2001]
-#ifdef QUICKSTART
-	thePrefs.isQuickStart = m_bQuickStart;
-	thePrefs.QuickStartMaxTime = m_iQuickStartMaxTime;
-	thePrefs.QuickStartMaxConnPerFive = m_iQuickStartMaxConnPerFive;
-	thePrefs.QuickStartMaxConn = m_iQuickStartMaxConn;
-	thePrefs.isQuickStartAfterIPChange = m_bQuickStartAfterIPChange;
-#endif //Quickstart
-	//<==Quickstart [cyrex2001]
-//==>WiZaRd/Max AutoHardLimit [cyrex2001]
-#ifdef AHL
-	thePrefs.m_iAutoHLUpdateTimer = m_iAutoHLUpdateTimer; 
-	thePrefs.m_bUseAutoHL = m_bUseAutoHL;
-	thePrefs.m_iMaxSourcesHL = m_iMaxSourcesHL;
-	thePrefs.m_iMinFileLimit = m_iMinFileLimit;
-#endif //WiZaRd/Max AutoHardLimit
-//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS
 	thePrefs.m_bAntiNickThief = m_bEnableAntiNickThief;
@@ -492,29 +320,6 @@ void CPPgNextEMF::Localize(void)
 	{
 		SetWindowText(MOD_VERSION);
 		GetDlgItem(IDC_WARNING)->SetWindowText(GetResString(IDS_TWEAKS_WARNING));
-		//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_MAELLA
-		if (m_htiIsreaskSourceAfterIPChange) m_ctrlTreeOptions.SetItemText(m_htiIsreaskSourceAfterIPChange, GetResString(IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK ));
-#endif //Reask sourcen after ip change
-		//<==Reask sourcen after ip change [cyrex2001]
-
-		//==>Quickstart [cyrex2001]
-#ifdef QUICKSTART		
-		if (m_htiQuickStart) m_ctrlTreeOptions.SetItemText(m_htiQuickStart, GetResString(IDS_QUICK_START));
-		if (m_htiQuickStartMaxTime) m_ctrlTreeOptions.SetEditLabel(m_htiQuickStartMaxTime, GetResString(IDS_QUICK_START_MAX_TIME));
-		if (m_htiQuickStartMaxConnPerFive) m_ctrlTreeOptions.SetEditLabel(m_htiQuickStartMaxConnPerFive, GetResString(IDS_QUICK_START_MAX_CONN_PER_FIVE));
-		if (m_htiQuickStartMaxConn) m_ctrlTreeOptions.SetEditLabel(m_htiQuickStartMaxConn, GetResString(IDS_QUICK_START_MAX_CONN));
-		if (m_htiQuickStartAfterIPChange) m_ctrlTreeOptions.SetItemText(m_htiQuickStartAfterIPChange, GetResString(IDS_QUICK_START_AFTER_IP_CHANGE));
-#endif //Quickstart
-		//<==Quickstart [cyrex2001]
-//==>WiZaRd/Max AutoHardLimit [cyrex2001]
-#ifdef AHL
-		if (m_htiUseAutoHL) m_ctrlTreeOptions.SetItemText(m_htiUseAutoHL, GetResString(IDS_USE_GLOBALHL));
-		if (m_htiAutoHLUpdateTimer) m_ctrlTreeOptions.SetEditLabel(m_htiAutoHLUpdateTimer, GetResString(IDS_GLOBALHL_UPDATE_TIMER));
-		if (m_htiMaxSourcesHL) m_ctrlTreeOptions.SetEditLabel(m_htiMaxSourcesHL, GetResString(IDS_MAX_SOURCE_HARDLIMIT));
-		if (m_htiMinFileLimit) m_ctrlTreeOptions.SetEditLabel(m_htiMinFileLimit, GetResString(IDS_MIN_SOURCE_HARDLIMIT));
-#endif //WiZaRd/Max AutoHardLimit
-//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS
 	    if (m_htiEnableAntiNickThief) m_ctrlTreeOptions.SetItemText(m_htiEnableAntiNickThief, GetResString(IDS_ANTINICKTHIEF));
@@ -555,30 +360,6 @@ void CPPgNextEMF::OnDestroy()
 	m_ctrlTreeOptions.DeleteAllItems();
 	m_ctrlTreeOptions.DestroyWindow();
 	m_bInitializedTreeOpts = false;
-	//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_MAELLA
-	m_htiIsreaskSourceAfterIPChange = NULL;
-#endif //Reask sourcen after ip change
-	//<==Reask sourcen after ip change [cyrex2001]
-
-	//==>Quickstart [cyrex2001]
-#ifdef QUICKSTART
-	m_htiQuickStart = NULL;
-	m_htiQuickStartMaxTime = NULL;
-	m_htiQuickStartMaxConnPerFive = NULL;
-	m_htiQuickStartMaxConn = NULL;
-	m_htiQuickStartAfterIPChange = NULL;
-#endif //Quickstart
-	//<==Quickstart [cyrex2001]
-//==>WiZaRd/Max AutoHardLimit [cyrex2001]
-#ifdef AHL
-	m_htiHardLimit = NULL;
-	m_htiAutoHLUpdateTimer = NULL; 
-	m_htiUseAutoHL = NULL;
-	m_htiMaxSourcesHL = NULL;
-	m_htiMinFileLimit = NULL;
-#endif //WiZaRd/Max AutoHardLimit
-//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 //==>WiZaRd AntiLeechClass [cyrex2001]
 #ifdef ANTI_LEECH_CLASS
 	m_htiEnableAntiNickThief = NULL;

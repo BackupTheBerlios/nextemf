@@ -2,6 +2,17 @@
 |Changes eMule 0.46a NextEMF v0.6
 |=<|  BETA 1  |>=================
 
+added	: Tabbed Settings to the preferences by J.C.Conner / eMulefan83 [shadow2004]
+		
+changed	: Tabbed Settings
+			# Reask and Quickstart moves to Connection-settings "Reask/Quickstart" [shadow2004]
+				- limited Quickstart max connections to 100 - 2000  [shadow2004]
+				- limited Quickstart max connections per 5 sec to 5 - 200  [shadow2004]
+			# Hardlimit moves to Connection-settings "Hardlimit" [shadow2004]
+				- limited Hardlimit-Timer to 30 - 80 sec. [shadow2004]
+				- limited max global sources to 1000 - 5000 [shadow2004]
+				- limited min sources per file to 10 - 50 [shadow2004]
+				
 changed	: switched original Creditsystem with Xman1's [shadow2004]
 
 

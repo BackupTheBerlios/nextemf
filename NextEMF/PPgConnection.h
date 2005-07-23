@@ -81,4 +81,19 @@ protected:
 	afx_msg void OnEnKillfocusMaxup();
 #endif
 //<== SlotSpeed [shadow2004]
+
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+private:
+	enum eTab	{NONE, Connection1,Connection2,Connection3};
+	CTabCtrl	m_tabCtr;
+	eTab		m_currentTab;
+	CImageList	m_imageList;
+	void		SetTab(eTab tab);
+	
+public:
+	afx_msg void OnTcnSelchangeTabConnection1(NMHDR *pNMHDR, LRESULT *pResult);
+	void	InitTab(bool firstinit, int Page = 0);
+#endif
+//<== PPgTabControl [shadow2004]
 };

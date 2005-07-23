@@ -17,9 +17,7 @@
 #pragma once
 
 //==> Toolbar [shadow2004]
-#ifndef TOOLBAR
-const CString strDefaultToolbar = _T("00990102030405060799080910");
-#endif
+//const CString strDefaultToolbar = _T("00990102030405060799080910");
 //<== Toolbar [shadow2004]
 
 enum EViewSharedFilesAccess{
@@ -434,10 +432,7 @@ public:
 	static	bool	networked2k;
 
 //==> Toolbar [shadow2004]
-#ifndef TOOLBAR
-	// toolbar
-	static	CString	m_sToolbarSettings;
-#endif
+//	static	CString	m_sToolbarSettings;
 //<== Toolbar [shadow2004]
 	static	bool	m_bReBarToolbar;
 
@@ -535,15 +530,14 @@ public:
 
 	//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA //Reask sourcen after ip change
-	static bool	isreaskSourceAfterIPChange;
-	static bool	m_breaskSourceAfterIPChange;
+	static bool	m_bReaskSourceAfterIPChange;
+	static bool	IsReaskSourceAfterIPChange()	{return m_bReaskSourceAfterIPChange;}
 #endif //Reask sourcen after ip change
 	//<==Reask sourcen after ip change [cyrex2001]
 
 	//==>Quickstart [cyrex2001]
 #ifdef QUICKSTART //Quickstart
 	static bool	m_bQuickStart;
-	static bool	isQuickStart;
 	static uint16  m_iQuickStartMaxTime;
 	static uint16  QuickStartMaxTime;
 	static uint16  m_iQuickStartMaxConn;
@@ -551,7 +545,6 @@ public:
 	static uint16  m_iQuickStartMaxConnPerFive;
 	static uint16  QuickStartMaxConnPerFive;
 	static bool	m_bQuickStartAfterIPChange;
-	static bool	isQuickStartAfterIPChange;
 #endif //Quickstart
 	//<==Quickstart [cyrex2001]
 //==>WiZaRd/Max AutoHardLimit [cyrex2001]
@@ -1154,11 +1147,8 @@ public:
 	static	bool	GetShowActiveDownloadsBold()				{ return m_bShowActiveDownloadsBold; }
 
 //==> Toolbar [shadow2004]
-#ifndef TOOLBAR
-	//Toolbar
-	static	const CString& GetToolbarSettings()					{ return m_sToolbarSettings; }
-	static	void	SetToolbarSettings(const CString& in)		{ m_sToolbarSettings = in; }
-#endif
+//	static	const CString& GetToolbarSettings()					{ return m_sToolbarSettings; }
+//	static	void	SetToolbarSettings(const CString& in)		{ m_sToolbarSettings = in; }
 //<== Toolbar [shadow2004]
 	static	bool	GetReBarToolbar()							{ return m_bReBarToolbar; }
 	static	bool	GetUseReBarToolbar();
@@ -1325,15 +1315,10 @@ public:
 #endif
 //<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 
-	//==>Reask sourcen after ip change [cyrex2001]
-#ifdef RSAIC_MAELLA //Reask sourcen after ip change
-	static bool	IsreaskSourceAfterIPChange()			{ return isreaskSourceAfterIPChange; } 
-#endif //Reask sourcen after ip change
-//<==Reask sourcen after ip change [cyrex2001]
-
 //==>Quickstart [cyrex2001]
 #ifdef QUICKSTART //Quickstart
-static bool	GetQuickStart()							{return isQuickStart;}
+static bool	GetQuickStart()							{return m_bQuickStart;}
+static bool	GetQuickStartAfterIPChange()			{return m_bQuickStartAfterIPChange;}
 static void	SetMaxCon(int in)						{maxconnections=in;} 
 static uint16	GetMaxCon()							{return maxconnections;}
 static void	SetQuickStartMaxTime(int in)			{ m_iQuickStartMaxTime = in; }
@@ -1342,7 +1327,6 @@ static void	SetQuickStartMaxConn(int in)			{ QuickStartMaxConn = in; }
 static uint16  GetQuickStartMaxConn()				{ return QuickStartMaxConn; }
 static void    SetQuickStartMaxConnPerFive(int in)	{ QuickStartMaxConnPerFive = in; }
 static uint16  GetQuickStartMaxConnPerFive()		{ return QuickStartMaxConnPerFive; }
-static bool	GetQuickStartAfterIPChange()			{return isQuickStartAfterIPChange;}
 #endif //Quickstart
 //<==Quickstart [cyrex2001]
 //==>WiZaRd/Max AutoHardLimit [cyrex2001]

@@ -20,10 +20,8 @@
 #include "TitleMenu.h"
 
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR
 #include "EnBitmap.h"
 #include "NextEMF/xSkinButton.h"
-#endif
 //<== Toolbar [shadow2004]
 
 namespace Kademlia {
@@ -39,9 +37,7 @@ class CKnownFileList;
 class CMainFrameDropTarget;
 class CMuleStatusBarCtrl;
 //==> Toolbar [shadow2004]
-#ifndef TOOLBAR
-class CMuleToolbarCtrl;
-#endif
+//class CMuleToolbarCtrl;
 //<== Toolbar [shadow2004]
 class CPreferencesDlg;
 class CSearchDlg;
@@ -67,9 +63,7 @@ class CMiniMule;
 class CemuleDlg : public CTrayDialog
 {
 //==> Toolbar [shadow2004]
-#ifndef TOOLBAR
-	friend class CMuleToolbarCtrl;
-#endif
+//	friend class CMuleToolbarCtrl;
 //<== Toolbar [shadow2004]
 	friend class CMiniMule;
 
@@ -135,16 +129,13 @@ public:
 	CTaskbarNotifier* m_wndTaskbarNotifier;
 	CReBarCtrl		m_ctlMainTopReBar;
 //==> Toolbar [shadow2004]
-#ifndef TOOLBAR
-	CMuleToolbarCtrl* toolbar;
-#endif
+//	CMuleToolbarCtrl* toolbar;
 //<== Toolbar [shadow2004]
 	CKademliaWnd*	kademliawnd;
 	CWnd*			activewnd;
 	uint8			status;
 
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR
 	CEnBitmap m_co_ToolLeft;
 	CEnBitmap m_co_ToolMid;
 	CEnBitmap m_co_ToolRight;
@@ -161,8 +152,6 @@ public:
 	afx_msg void OnBnClickedBtnStatistic();
 	afx_msg void OnBnClickedBtnPreferences();
 	afx_msg void OnBnClickedBtnTools();
-	afx_msg void OnBnClickedBtnIrc();
-#endif
 //<== Toolbar [shadow2004]
 
 protected:
@@ -295,7 +284,6 @@ protected:
 	afx_msg LRESULT OnCloseMiniMule(WPARAM wParam, LPARAM lParam);
 
 //==> Toolbar [shadow2004]
-#ifdef TOOLBAR
 	CxSkinButton	m_co_ConnectBtn;
 	CxSkinButton	m_co_KademliaBtn;
 	CxSkinButton	m_co_ServerBtn;
@@ -307,7 +295,6 @@ protected:
 	CxSkinButton	m_co_PreferencesBtn;
 	CxSkinButton	m_co_ToolsBtn;
 	CxSkinButton	m_co_HelpBtn;
-#endif
 //<== Toolbar [shadow2004]
 };
 

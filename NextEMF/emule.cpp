@@ -1701,7 +1701,7 @@ void CemuleApp::CheckIDChange(void)
 		{
 		ReaskID = GetPublicIP();
 		}
-	if(thePrefs.IsreaskSourceAfterIPChange()&& (m_lastValidId != 0 && ReaskID != 0 && m_lastValidId != ReaskID))
+	if(thePrefs.IsReaskSourceAfterIPChange()&& (m_lastValidId != 0 && ReaskID != 0 && m_lastValidId != ReaskID))
 		{
 		//==>Quickstart [cyrex2001]
 #ifdef QUICKSTART //Quickstart

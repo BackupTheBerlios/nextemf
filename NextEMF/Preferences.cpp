@@ -38,9 +38,7 @@
 #include "StatisticsDlg.h"
 #include "Log.h"
 //==> Toolbar [shadow2004]
-#ifndef TOOLBAR
-#include "MuleToolbarCtrl.h"
-#endif
+//#include "MuleToolbarCtrl.h"
 //<== Toolbar [shadow2004]
 
 #ifdef _DEBUG
@@ -389,9 +387,7 @@ bool	CPreferences::m_bUseSecureIdent;
 bool	CPreferences::networkkademlia;
 bool	CPreferences::networked2k;
 //==> Toolbar [shadow2004]
-#ifndef TOOLBAR
-CString	CPreferences::m_sToolbarSettings;
-#endif
+//CString	CPreferences::m_sToolbarSettings;
 //<== Toolbar [shadow2004]
 bool	CPreferences::m_bReBarToolbar;
 bool	CPreferences::m_bPreviewEnabled;
@@ -477,15 +473,13 @@ bool	CPreferences::m_bAutoSetResumeOrder;
 
 //==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA //Reask sourcen after ip change
-bool	CPreferences::isreaskSourceAfterIPChange;
-bool	CPreferences::m_breaskSourceAfterIPChange;
+bool	CPreferences::m_bReaskSourceAfterIPChange;
 #endif //Reask sourcen after ip change
 //<==Reask sourcen after ip change [cyrex2001]
 
 //==>Quickstart [cyrex2001]
 #ifdef QUICKSTART //Quickstart
 bool	CPreferences::m_bQuickStart;
-bool	CPreferences::isQuickStart;
 uint16  CPreferences::m_iQuickStartMaxTime;
 uint16  CPreferences::QuickStartMaxTime;
 uint16  CPreferences::m_iQuickStartMaxConn;
@@ -493,7 +487,6 @@ uint16  CPreferences::QuickStartMaxConn;
 uint16  CPreferences::m_iQuickStartMaxConnPerFive;
 uint16  CPreferences::QuickStartMaxConnPerFive;
 bool	CPreferences::m_bQuickStartAfterIPChange;
-bool	CPreferences::isQuickStartAfterIPChange;
 #endif //Quickstart
 //<==Quickstart [cyrex2001]
 //==>WiZaRd/Max AutoHardLimit [cyrex2001]
@@ -1810,10 +1803,7 @@ void CPreferences::SavePreferences()
 	//ini.WriteBool(_T("ShowCopyEd2kLinkCmd"),m_bShowCopyEd2kLinkCmd);
 
 //==> Toolbar [shadow2004]
-#ifndef TOOLBAR
-	// Toolbar
-	ini.WriteString(_T("ToolbarSetting"), m_sToolbarSettings);
-#endif
+//	ini.WriteString(_T("ToolbarSetting"), m_sToolbarSettings);
 //<== Toolbar [shadow2004]
 
 	ini.WriteBinary(_T("HyperTextFont"), (LPBYTE)&m_lfHyperText, sizeof m_lfHyperText);
@@ -1927,17 +1917,17 @@ ini.WriteFloat(_T("uploadslotspeed"),m_slotspeed,_T("NextEMF"));
 
 	//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA //Reask sourcen after ip change
-	ini.WriteBool(_T("ReaskSourceAfterIPChange"),isreaskSourceAfterIPChange,_T("NextEMF"));
+	ini.WriteBool(_T("ReaskSourceAfterIPChange"),m_bReaskSourceAfterIPChange,_T("NextEMF"));
 #endif //Reask sourcen after ip change
 	//<==Reask sourcen after ip change [cyrex2001]
 
 	//==>Quickstart [cyrex2001]
 #ifdef QUICKSTART //Quickstart
-	ini.WriteBool(_T("QuickStart"), isQuickStart,_T("NextEMF"));
+	ini.WriteBool(_T("QuickStart"), m_bQuickStart,_T("NextEMF"));
 	ini.WriteInt(_T("QuickStartMaxTime"), QuickStartMaxTime,_T("NextEMF"));
 	ini.WriteInt(_T("QuickStartMaxConn"), QuickStartMaxConn,_T("NextEMF"));
 	ini.WriteInt(_T("QuickStartMaxConnPerFive"), QuickStartMaxConnPerFive,_T("NextEMF"));
-	ini.WriteBool(_T("QuickStartAfterIPChange"), isQuickStartAfterIPChange,_T("NextEMF"));
+	ini.WriteBool(_T("QuickStartAfterIPChange"), m_bQuickStartAfterIPChange,_T("NextEMF"));
 #endif //Quickstart
 	//<==Quickstart [cyrex2001]
 //==>WiZaRd/Max AutoHardLimit [cyrex2001]
@@ -2416,10 +2406,7 @@ void CPreferences::LoadPreferences()
 	m_bUseOldTimeRemaining= ini.GetBool(_T("UseSimpleTimeRemainingcomputation"),false);
 
 //==> Toolbar [shadow2004]
-#ifndef TOOLBAR
-	// Toolbar
-	m_sToolbarSettings = ini.GetString(_T("ToolbarSetting"), strDefaultToolbar);
-#endif
+//	m_sToolbarSettings = ini.GetString(_T("ToolbarSetting"), strDefaultToolbar);
 //<== Toolbar [shadow2004]
 	m_bReBarToolbar = ini.GetBool(_T("ReBarToolbar"), 1);
 	m_iStraightWindowStyles=ini.GetInt(_T("StraightWindowStyles"),0);
@@ -2590,25 +2577,36 @@ void CPreferences::LoadPreferences()
 
 	//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA //Reask sourcen after ip change
-	isreaskSourceAfterIPChange = ini.GetBool(_T("ReaskSourceAfterIPChange"),false, _T("NextEMF"));
+	m_bReaskSourceAfterIPChange = ini.GetBool(_T("ReaskSourceAfterIPChange"),false, _T("NextEMF"));
 #endif //Reask sourcen after ip change
 	//<==Reask sourcen after ip change [cyrex2001]
 
 	//==>Quickstart [cyrex2001]
 #ifdef QUICKSTART //Quickstart
 	QuickStartMaxTime=ini.GetInt(_T("QuickStartMaxTime"), 10, _T("NextEMF"));
-	QuickStartMaxConn=ini.GetInt(_T("QuickStartMaxConn"), (maxconnections*3)/*1001*/, _T("NextEMF"));
-	QuickStartMaxConnPerFive=ini.GetInt(_T("QuickStartMaxConnPerFive"), (MaxConperFive*3)/*151*/, _T("NextEMF"));
-	isQuickStart=ini.GetBool(_T("QuickStart"),false, _T("NextEMF"));
-	isQuickStartAfterIPChange=ini.GetBool(_T("QuickStartAfterIPChange"),false, _T("NextEMF"));
+	if (QuickStartMaxTime < 8 || QuickStartMaxTime >18 ) QuickStartMaxTime = 10;
+
+	QuickStartMaxConn=ini.GetInt(_T("QuickStartMaxConn"), (maxconnections*3), _T("NextEMF"));
+	if (QuickStartMaxConn < 100 || QuickStartMaxConn > 2000) QuickStartMaxConn = 1001;
+
+	QuickStartMaxConnPerFive=ini.GetInt(_T("QuickStartMaxConnPerFive"), (MaxConperFive*3), _T("NextEMF"));
+	if (QuickStartMaxConnPerFive < 5 || QuickStartMaxConnPerFive > 200) QuickStartMaxConnPerFive = 51;
+
+	m_bQuickStart=ini.GetBool(_T("QuickStart"),false, _T("NextEMF"));
+	m_bQuickStartAfterIPChange=ini.GetBool(_T("QuickStartAfterIPChange"),false, _T("NextEMF"));
 #endif //Quickstart
 //<==Quickstart [cyrex2001]
 //==>WiZaRd/Max AutoHardLimit [cyrex2001]
 #ifdef AHL
     m_iAutoHLUpdateTimer = ini.GetInt(_T("AutoHLUpdate"), 50, _T("NextEMF")); 
+	if (m_iAutoHLUpdateTimer < 30 || m_iAutoHLUpdateTimer > 80) m_iAutoHLUpdateTimer = 50;
+
     m_bUseAutoHL = ini.GetBool(_T("AutoHL"), true, _T("NextEMF"));
-	m_iMaxSourcesHL = ini.GetInt(_T("MaxSourcesHL"), 4500, _T("NextEMF"));
+	m_iMaxSourcesHL = ini.GetInt(_T("MaxSourcesHL"), 4000, _T("NextEMF"));
+	if (m_iMaxSourcesHL < 1000 || m_iMaxSourcesHL > 5000) m_iMaxSourcesHL = 4000;
+
 	m_iMinFileLimit = ini.GetInt(_T("MinFileLimit"), 15, _T("NextEMF"));
+	if (m_iMinFileLimit < 10 || m_iMinFileLimit > 50) m_iMinFileLimit = 15;
 #endif //WiZaRd/Max AutoHardLimit
 //<==WiZaRd/Max AutoHardLimit [cyrex2001]
 

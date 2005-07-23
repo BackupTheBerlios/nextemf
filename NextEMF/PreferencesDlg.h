@@ -18,6 +18,10 @@
 #include "otherfunctions.h"
 #include "TreePropSheet.h"
 #include ".\NextEMF\PPgNextEMF.h"// NextEMF-Pref [cyrex2001]
+//==> PPgTabControl [shadow2004]
+#include ".\NextEMF\PPgConnection2.h" //Connection 2
+#include ".\NextEMF\PPgConnection3.h" //Connection 3
+//<== PPgTabControl [shadow2004]
 
 class CPreferencesDlg : public CTreePropSheet
 {
@@ -44,6 +48,13 @@ public:
 	CPPgDebug		m_wndDebug;
 #endif
 
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+	CPPgConnection2		m_wndConnection2;
+	CPPgConnection3		m_wndConnection3;
+#endif
+//<== PPgTabControl [shadow2004]
+
 	void Localize();
 	void SetStartPage(UINT uStartPageID);
 
@@ -58,4 +69,39 @@ protected:
 	afx_msg void OnDestroy();
 	afx_msg void OnHelp();
 	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
+
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+public:	
+	void SwitchTab(int page);
+
+/*	int ActivePageGeneral;
+	int ActivePageDisplay;*/
+	int ActivePageConnection;
+/*	int ActivePageServer;
+	int ActivePageDirectory;
+	int ActivePageFiles;
+	int ActivePageNotify;
+	int ActivePageStats;
+	int ActivePageSecurity;
+	int ActivePageSheduler;
+	int ActivePageWebServer;
+	int	ActivePageTweaks;
+	int ActivePageDebug;
+
+	int StartPageGeneral;
+	int StartPageDisplay;*/
+	int StartPageConnection;
+/*	int StartPageServer;
+	int StartPageDirectory;
+	int StartPageFiles;
+	int StartPageNotify;
+	int StartPageStats;
+	int StartPageSecurity;
+	int StartPageSheduler;
+	int StartPageWebServer;
+	int	StartPageTweaks;
+	int StartPageDebug;*/
+#endif
+//<== PPgTabControl [shadow2004]
 };

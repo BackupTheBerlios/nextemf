@@ -2211,7 +2211,58 @@
 #define IDR_TOOLBAR_LEFT                7054
 #define IDR_TOOLBAR_CENTER              7055
 #define IDR_TOOLBAR_RIGHT               7056
+#define IDS_NEXTEMF                     7100
 
+///////////////////////////////////////////////
+// PPG
+//_____________________________________________
+
+//==> PPG Connetion 2 Reask/Quickstart
+#define IDD_PPG_CONNECTION2             8000
+#define IDC_TAB_CONNECTION1             8101
+#define IDC_TAB_CONNECTION2             8102
+#define IDC_CON2_REASK                  8103
+#define IDC_CON2_ACTIVQS                8104
+#define IDC_CON2_QSMAXCON               8105
+#define IDC_CON2_QSMAXCON_LBL1          8106
+#define IDC_CON2_QSMAXCON5              8108
+#define IDC_CON2_QSMAXCON5_LBL1         8109
+#define IDC_CON2_QSTIME                 8110
+#define IDC_CON2_QSTIME_LBL1            8111
+#define IDC_CON2_QSTIME_LBL2            8112
+#define IDC_CON2_QSAFTERZT              8113
+//STRINGS
+#define IDS_CON1_NAME                   8114
+#define IDS_CON2_NAME                   8115
+#define IDS_CON2_REASK                  8116
+#define IDS_CON2_ACTIVQS                8117
+#define IDS_CON2_QSMAXCON_LBL1          8118
+#define IDS_CON2_QSMAXCON5_LBL1         8119
+#define IDS_CON2_QSTIME_LBL1            8120
+#define IDS_CON2_QSTIME_LBL2            8121
+#define IDS_CON2_QSAFTERZT              8122
+//<== PPG Connetion 2 Reask/Quickstart
+
+//==> PPG Connetion 3 Hardlimit
+#define IDD_PPG_CONNECTION3             8130
+#define IDC_TAB_CONNECTION3             8131
+#define IDC_CON3_GHLACTIV               8132
+#define IDC_CON3_GHLTIME                8133
+#define IDC_CON3_GHLTIME_LBL1           8134
+#define IDC_CON3_GHLTIME_LBL2           8135
+#define IDC_CON3_GHLMAXQ                8136
+#define IDC_CON3_GHLMAXQ_LBL1           8137
+#define IDC_CON3_GHLMINQ                8138
+#define IDC_CON3_GHLMINQ_LBL1           8139
+#define IDC_CON3_GHLMINQ_LBL2           8140
+//STRINGS
+#define IDS_CON3_NAME                   8141
+#define IDS_CON3_GHLACTIV               8142
+#define IDS_CON3_GHLTIME_LBL1           8143
+#define IDS_CON3_GHLTIME_LBL2           8144
+#define IDS_CON3_GHLMAXQ_LBL1           8145
+#define IDS_CON3_GHLMINQ_LBL1           8146
+//<== PPG Connetion 3 Hardlimit
 
 // Next default values for new objects
 // 
@@ -2219,7 +2270,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        1551
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         2952
+#define _APS_NEXT_CONTROL_VALUE         2966
 #define _APS_NEXT_SYMED_VALUE           1517
 #endif
 #endif

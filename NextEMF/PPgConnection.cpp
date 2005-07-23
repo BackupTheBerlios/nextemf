@@ -33,6 +33,12 @@
 #include "ClientUDPSocket.h"
 #include "LastCommonRouteFinder.h"
 
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+#include "preferencesdlg.h"
+#endif
+//<== PPgTabControl [shadow2004]
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -75,12 +81,28 @@ BEGIN_MESSAGE_MAP(CPPgConnection, CPropertyPage)
 	ON_BN_CLICKED(IDC_NETWORK_KADEMLIA, OnSettingsChange)
 	ON_WM_HELPINFO()
 	ON_BN_CLICKED(IDC_OPENPORTS, OnBnClickedOpenports)
+
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB_CONNECTION1, OnTcnSelchangeTabConnection1)
+#endif
+//<== PPgTabControl [shadow2004]
+
 END_MESSAGE_MAP()
 
 CPPgConnection::CPPgConnection()
 	: CPropertyPage(CPPgConnection::IDD)
 {
 	guardian = false;
+
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+	m_imageList.DeleteImageList();
+	m_imageList.Create(16, 16, theApp.m_iDfltImageListColorFlags | ILC_MASK, 14+1, 0);
+	m_imageList.Add(CTempIconLoader(_T("CONNECTION")));
+	m_imageList.Add(CTempIconLoader(_T("HARDLIMIT")));
+#endif
+//<== PPgTabControl [shadow2004]
 }
 
 CPPgConnection::~CPPgConnection()
@@ -108,6 +130,12 @@ void CPPgConnection::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_MAXUP_SLIDER, m_ctlMaxUp);
 #endif
 //<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+	DDX_Control(pDX, IDC_TAB_CONNECTION1, m_tabCtr);
+#endif
+//<== PPgTabControl [shadow2004]
 }
 
 void CPPgConnection::OnEnChangeTCP()
@@ -175,6 +203,12 @@ void CPPgConnection::OnEnChangeUDPDisable()
 BOOL CPPgConnection::OnInitDialog()
 {
 	CPropertyPage::OnInitDialog();
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+	InitTab(true);
+	m_tabCtr.SetCurSel(0);
+#endif
+//<== PPgTabControl [shadow2004]
 	InitWindowStyles(this);
 
 	LoadSettings();
@@ -801,3 +835,26 @@ void CPPgConnection::OnEnKillfocusMaxup()
 }
 #endif
 //<== SlotSpeed [shadow2004]
+
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+void CPPgConnection::InitTab(bool firstinit, int Page)
+{
+	if (firstinit) {
+		m_tabCtr.DeleteAllItems();
+		m_tabCtr.SetImageList(&m_imageList);
+		m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, Connection1, GetResString(IDS_CON1_NAME), 0, (LPARAM)Connection1); 
+		m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, Connection2, GetResString(IDS_CON2_NAME), 0, (LPARAM)Connection2); 
+		m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, Connection3, GetResString(IDS_CON3_NAME), 1, (LPARAM)Connection3); 
+	}
+
+	m_tabCtr.SetCurSel(Page);
+}
+void CPPgConnection::OnTcnSelchangeTabConnection1(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	int cur_sel = m_tabCtr.GetCurSel();
+	theApp.emuledlg->preferenceswnd->SwitchTab(cur_sel);
+	*pResult = 0;
+}
+#endif
+//<== PPgTabControl [shadow2004]

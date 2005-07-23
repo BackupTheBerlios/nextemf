@@ -20,7 +20,6 @@
 #include "PPgNotify.h"
 #include "Preferences.h"
 #include "OtherFunctions.h"
-#include "Preferences.h"
 #include "HelpIDs.h"
 #include "TaskbarNotifier.h"
 

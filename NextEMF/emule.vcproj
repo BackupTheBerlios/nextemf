@@ -90,7 +90,7 @@
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;MODVERSION;WINSOCK2;ANTI_LEECHER_LOG;ANTI_LEECH_CLASS;FSSTATS;EMULATE;OPTIM;CSP;SNAFU;ANTI_MODFAKER;FAF;SLOT;QUICKSTART;RSAIC_MAELLA;AHL;TOOLBAR;XCS"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;MODVERSION;WINSOCK2;ANTI_LEECHER_LOG;ANTI_LEECH_CLASS;FSSTATS;EMULATE;OPTIM;CSP;SNAFU;ANTI_MODFAKER;FAF;SLOT;QUICKSTART;RSAIC_MAELLA;AHL;XCS;PPGCTRL"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
 				BufferSecurityCheck="TRUE"
@@ -1626,6 +1626,99 @@
 				RelativePath="res\all.ico">
 			</File>
 			<File
+				RelativePath=".\res\Toolbar\btn_connect_click.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_connect_normal.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_connect_over.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_disconnect_over.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_files_click.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_files_normal.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_files_over.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_kad_click.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_kad_normal.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_kad_over.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_msg_click.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_msg_normal.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_msg_over.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_search_click.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_search_normal.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_search_over.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_server_click.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_server_normal.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_server_over.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_settings_click.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_settings_normal.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_settings_over.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_stats_click.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_stats_normal.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_stats_over.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_tools_click.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_tools_normal.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_tools_over.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_transfer_click.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_transfer_normal.bmp">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\btn_transfer_over.bmp">
+			</File>
+			<File
 				RelativePath="res\Cancel.ico">
 			</File>
 			<File
@@ -2272,6 +2365,15 @@
 				RelativePath="res\TaskbarNotifier.gif">
 			</File>
 			<File
+				RelativePath=".\res\Toolbar\toolbar_center.jpg">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\toolbar_left.jpg">
+			</File>
+			<File
+				RelativePath=".\res\Toolbar\toolbar_right.jpg">
+			</File>
+			<File
 				RelativePath="res\Tools.ico">
 			</File>
 			<File
@@ -2417,6 +2519,18 @@
 			</File>
 			<File
 				RelativePath=".\NextEMF\NextEMF.h">
+			</File>
+			<File
+				RelativePath=".\NextEMF\PPgConnection2.cpp">
+			</File>
+			<File
+				RelativePath=".\NextEMF\PPgConnection2.h">
+			</File>
+			<File
+				RelativePath=".\NextEMF\PPgConnection3.cpp">
+			</File>
+			<File
+				RelativePath=".\NextEMF\PPgConnection3.h">
 			</File>
 			<File
 				RelativePath=".\NextEMF\PPgNextEMF.cpp">

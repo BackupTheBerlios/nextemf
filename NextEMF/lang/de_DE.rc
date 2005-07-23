@@ -1876,26 +1876,25 @@ BEGIN
     IDS_STATS_OTHER         "Sonstiges"
     IDS_STATS_STILLUP       "Am Hochladen"
     IDS_STATS_CANCELED      "Abgebrochen"
-    IDS_USE_GLOBALHL        "Globales Hardlimit aktivieren? (Deaktiviert manuelles Hardlimit)"
-    IDS_GLOBALHL_UPDATE_TIMER 
-                            "Zeit bis zur nächsten Überprüfung des Hardlimits [30-80 sec.]"
-    IDS_MAX_SOURCE_HARDLIMIT 
-                            "Max. Quellen für das globale Hardlimit [1000-5000]"
-    IDS_MIN_SOURCE_HARDLIMIT "Min. Quellenlimit für jede Datei [10-50]"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK 
-                            "Sofortige Quellenabfrage, nach der Zwangstrennung aktivieren?"
-    IDS_QUICK_START         "Schnellstart aktivieren?"
-    IDS_QUICK_START_MAX_CONN "max.Verbindungen für den Schnellstart"
-    IDS_QUICK_START_MAX_CONN_PER_FIVE "max.Verb./5sec für den Schnellstart"
-    IDS_QUICK_START_AFTER_IP_CHANGE 
-                            "Schnellstart, nach der Zwangstrennug aktivieren?"
-    IDS_QUICK_START_MAX_TIME 
-                            "Wie lange soll der Schnellstart aktiviert sein? [8-18min]"
-    IDS_CON_CONTROL         "Verbindungskontrolle"
+    IDS_CON1_NAME           "Allgemein"
+    IDS_CON2_NAME           "Reask/Schnellstart"
+    IDS_CON2_REASK          "Neuabfrage aller Quellen nach IP-Wechsel"
+    IDS_CON2_ACTIVQS        "Aktiviere Schnellstart"
+    IDS_CON2_QSAFTERZT      "Schnellstart nach IP-Wechsel"
+    IDS_CON2_QSMAXCON_LBL1  "Max. Verbindungen  [100 - 2000]"
+    IDS_CON2_QSMAXCON5_LBL1 "Max. Verbindungen/5 Sek. [5 - 200]"
+    IDS_CON2_QSTIME_LBL1    "Schnellstart-Dauer"
+    IDS_CON2_QSTIME_LBL2    "Min."
+    IDS_CON3_NAME           "Hard Limit"
+    IDS_CON3_GHLACTIV       "Aktivierte globales Hard Limit"
+    IDS_CON3_GHLTIME_LBL1   "Timer für globales Hard Limit"
+    IDS_CON3_GHLTIME_LBL2   "Sek."
+    IDS_CON3_GHLMAXQ_LBL1   "Max. Gesamtquellenanzahl"
+    IDS_CON3_GHLMINQ_LBL1   "Min. Quellenanzahl pro Datei "
 END
 
 #endif    // Deutsch (Deutschland) resources
