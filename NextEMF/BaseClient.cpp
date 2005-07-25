@@ -1581,10 +1581,8 @@ bool CUpDownClient::TryToConnect(bool bIgnoreMaxCon, CRuntimeClass* pClassSocket
 					if( GetBuddyIP() && GetBuddyPort())
 					{
 						CSafeMemFile bio(34);
-						Kademlia::CUInt128 buddy(GetBuddyID());
-						bio.WriteUInt128(&buddy);
-						Kademlia::CUInt128 file(reqfile->GetFileHash());
-						bio.WriteUInt128(&file);
+						bio.WriteUInt128(&Kademlia::CUInt128(GetBuddyID()));
+						bio.WriteUInt128(&Kademlia::CUInt128(reqfile->GetFileHash()));
 						bio.WriteUInt16(thePrefs.GetPort());
 						if (thePrefs.GetDebugClientKadUDPLevel() > 0 || thePrefs.GetDebugClientUDPLevel() > 0)
 							DebugSend("KadCallbackReq", this);
@@ -1599,8 +1597,7 @@ bool CUpDownClient::TryToConnect(bool bIgnoreMaxCon, CRuntimeClass* pClassSocket
 						//Create search to find buddy.
 						Kademlia::CSearch *findSource = new Kademlia::CSearch;
 						findSource->setSearchTypes(Kademlia::CSearch::FINDSOURCE);
-						Kademlia::CUInt128 ID(GetBuddyID());
-						findSource->setTargetID(ID);
+						findSource->setTargetID(Kademlia::CUInt128(GetBuddyID()));
 						findSource->addFileID(Kademlia::CUInt128(reqfile->GetFileHash()));
 						if(Kademlia::CSearchManager::startSearch(findSource))
 						{

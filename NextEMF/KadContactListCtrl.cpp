@@ -35,7 +35,6 @@ enum ECols
 {
 	colID = 0,
 	colType,
-	colContact,
 	colDistance
 };
 
@@ -63,7 +62,6 @@ void CKadContactListCtrl::Init()
 
 	InsertColumn(colID,GetResString(IDS_ID),LVCFMT_LEFT,100);
 	InsertColumn(colType,GetResString(IDS_TYPE) ,LVCFMT_LEFT,50);
-	InsertColumn(colContact, GetResString(IDS_KADCONTACTLAB) ,LVCFMT_LEFT,50);
 	InsertColumn(colDistance,GetResString(IDS_KADDISTANCE),LVCFMT_LEFT,50);
 	SetAllIcons();
 	Localize();
@@ -93,9 +91,8 @@ void CKadContactListCtrl::SetAllIcons()
 	iml.Create(16,16,theApp.m_iDfltImageListColorFlags|ILC_MASK,0,1);
 	iml.SetBkColor(CLR_NONE);
 	iml.Add(CTempIconLoader(_T("Contact0")));
+	iml.Add(CTempIconLoader(_T("Contact1")));
 	iml.Add(CTempIconLoader(_T("Contact2")));
-	iml.Add(CTempIconLoader(_T("Contact4")));
-	//right now we only have 3 types... But this may change in the future..
 	iml.Add(CTempIconLoader(_T("Contact3")));
 	iml.Add(CTempIconLoader(_T("Contact4")));
 	ASSERT( (GetStyle() & LVS_SHAREIMAGELISTS) == 0 );
@@ -111,12 +108,13 @@ void CKadContactListCtrl::Localize()
 	hdi.mask = HDI_TEXT;
 	CString strRes;
 
-	for (int icol=0;icol< pHeaderCtrl->GetItemCount() ;icol++) {
-		switch (icol) {
-			case 0: strRes = GetResString(IDS_ID); break;
-			case 1: strRes = GetResString(IDS_TYPE); break;
-			case 2: strRes = GetResString(IDS_KADCONTACTLAB); break;
-			case 3: strRes = GetResString(IDS_KADDISTANCE); break;
+	for (int icol=0;icol< pHeaderCtrl->GetItemCount() ;icol++) 
+	{
+		switch (icol) 
+		{
+			case colID: strRes = GetResString(IDS_ID); break;
+			case colType: strRes = GetResString(IDS_TYPE); break;
+			case colDistance: strRes = GetResString(IDS_KADDISTANCE); break;
 		}
 	
 		hdi.pszText = strRes.GetBuffer();
@@ -145,12 +143,6 @@ void CKadContactListCtrl::UpdateContact(int iItem, const Kademlia::CContact* con
 
 		SetItem(iItem,0,LVIF_IMAGE,0,contact->getType()>4?4:contact->getType(),0,0,0,0);
 	}
-	
-	if(contact->madeContact())
-		id = GetResString(IDS_YES);
-	else
-		id = GetResString(IDS_NO);
-	SetItemText(iItem,colContact,id);
 }
 
 void CKadContactListCtrl::UpdateKadContactCount()
@@ -261,9 +253,6 @@ int CKadContactListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamS
 		}
 		case colType:
 			iResult = item1->getType() - item2->getType();
-			break;
-		case colContact:
-			iResult = item1->madeContact() - item2->madeContact();
 			break;
 		case colDistance:
 			{

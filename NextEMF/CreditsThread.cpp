@@ -542,7 +542,7 @@ void CCreditsThread::InitText()
 	m_arCredits.Add(_T("S:05"));	
 	m_arCredits.Add(_T("01:06:Breton: KAD-Korvigelloù an Drouizig"));
 	m_arCredits.Add(_T("S:05"));	
-	m_arCredits.Add(_T("01:06:Bulgarian: DapKo"));
+	m_arCredits.Add(_T("01:06:Bulgarian: DapKo, Dumper"));
 	m_arCredits.Add(_T("S:05"));	
 	m_arCredits.Add(_T("01:06:Catalan: LeChuck"));
 	m_arCredits.Add(_T("S:05"));
@@ -576,7 +576,7 @@ void CCreditsThread::InitText()
 	m_arCredits.Add(_T("S:05"));
 	m_arCredits.Add(_T("01:06:Korean: pooz"));
 	m_arCredits.Add(_T("S:05"));
-	m_arCredits.Add(_T("01:06:Latvian: Ai"));
+	m_arCredits.Add(_T("01:06:Latvian: Zivs"));
 	m_arCredits.Add(_T("S:05"));
 	m_arCredits.Add(_T("01:06:Lithuanian: Daan"));
 	m_arCredits.Add(_T("S:05"));

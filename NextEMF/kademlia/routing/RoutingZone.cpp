@@ -173,7 +173,7 @@ void CRoutingZone::readFile(void)
 				type	= file.ReadUInt8();
 				if(::IsGoodIPPort(ntohl(ip),udpPort))
 				{
-					if( type < 2)
+					if( type < 4)
 						add(id, ip, udpPort, tcpPort, type);
 				}
 			}
@@ -270,7 +270,7 @@ bool CRoutingZone::add(const CUInt128 &id, uint32 ip, uint16 port, uint16 tport,
 			}
 			else if (m_bin->getRemaining() > 0)
 			{
-				c = new CContact(id, ip, port, tport, type);
+				c = new CContact(id, ip, port, tport);
 				retVal = m_bin->add(c);
 				if(retVal)
 				{
@@ -286,7 +286,7 @@ bool CRoutingZone::add(const CUInt128 &id, uint32 ip, uint16 port, uint16 tport,
 			else 
 			{
 				merge();
-				c = new CContact(id, ip, port, tport, type);
+				c = new CContact(id, ip, port, tport);
 				retVal = m_bin->add(c);
 				if(retVal)
 				{
@@ -571,7 +571,7 @@ void CRoutingZone::onSmallTimer(void)
 		for (it = entries.begin(); it != entries.end(); it++)
 		{
 			c = *it;
-			if ( c->getType() > 1)
+			if ( c->getType() == 4)
 			{
 				if (((c->m_expires > 0) && (c->m_expires <= now)))
 				{
@@ -583,7 +583,7 @@ void CRoutingZone::onSmallTimer(void)
 					continue;
 				}
 			}
-			if(c->m_expires == 0 && c->madeContact() == false)
+			if(c->m_expires == 0)
 				c->m_expires = now;
 		}
 		c = NULL;
@@ -593,7 +593,7 @@ void CRoutingZone::onSmallTimer(void)
 			c = m_bin->getOldest();
 		if( c != NULL )
 		{
-			if ( c->m_expires >= now || c->getType() == 2)
+			if ( c->m_expires >= now || c->getType() == 4)
 			{
 				m_bin->remove(c);
 				m_bin->m_entries.push_back(c);
@@ -607,7 +607,7 @@ void CRoutingZone::onSmallTimer(void)
 	}
 	if(c != NULL)
 	{
-		c->setType(c->getType()+1);
+		c->checkingType();
 		if (thePrefs.GetDebugClientKadUDPLevel() > 0)
 			DebugSend("KadHelloReq", c->getIPAddress(), c->getUDPPort());
 		CKademlia::getUDPListener()->sendMyDetails(KADEMLIA_HELLO_REQ, c->getIPAddress(), c->getUDPPort());

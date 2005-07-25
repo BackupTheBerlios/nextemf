@@ -77,8 +77,9 @@ CSearch::CSearch()
 	m_created = time(NULL);
 	m_searchTerms = NULL;
 	m_type = (uint32)-1;
-	m_count = 0;
-	m_countSent = 0;
+	m_answers = 0;
+	m_totalRequestAnswers = 0;
+	m_kadPacketSent = 0;
 	m_searchID = (uint32)-1;
 	m_keywordPublish = NULL;
 	(void)m_fileName;
@@ -89,6 +90,7 @@ CSearch::CSearch()
 	bio2 = NULL;
 	bio3 = NULL;
 	theApp.emuledlg->kademliawnd->searchList->SearchAdd(this);
+	m_lastResponse = time(NULL);
 }
 
 CSearch::~CSearch()
@@ -127,7 +129,7 @@ void CSearch::go(void)
 	{
 		CUInt128 distance(CKademlia::getPrefs()->getKadID());
 		distance.xor(m_target);
-		CKademlia::getRoutingZone()->getClosestTo(1, m_target, distance, 50, &m_possible, true, true);
+		CKademlia::getRoutingZone()->getClosestTo(3, m_target, distance, 50, &m_possible, true, true);
 	}
 	if (m_possible.empty())
 		return;
@@ -148,7 +150,7 @@ void CSearch::go(void)
 		m_tried[it->first] = c;
 		m_possible.erase(it);
 		// Send request
-		c->setType(c->getType()+1);
+		c->checkingType();
 		CUInt128 check;
 		c->getClientID(&check);
 		sendFindValue(check, c->getIPAddress(), c->getUDPPort());
@@ -212,20 +214,40 @@ void CSearch::jumpStart(void)
 		return;
 	}
 
-	// Move to tried
-	CContact *c = m_possible.begin()->second;
-	m_tried[m_possible.begin()->first] = c;
-	m_possible.erase(m_possible.begin());
+	if (m_lastResponse + SEC(3) > (uint32)time(NULL))
+		return;
 
+	while(!m_possible.empty())
+	{
+		CContact *c = m_possible.begin()->second;
+	
+		//Have we already tried to contact this node.
+		if (m_tried.count(m_possible.begin()->first) > 0)
+		{
+			//Did we get a response from this node, if so, try to store or get info.
+			if(m_responded.count(m_possible.begin()->first) > 0)
+				StorePacket();
+			m_possible.erase(m_possible.begin());
+		}
+		else
+		{
+	// Move to tried
+	m_tried[m_possible.begin()->first] = c;
 	// Send request
-	c->setType(c->getType()+1);
+			c->checkingType();
 	CUInt128 check;
 	c->getClientID(&check);
 	sendFindValue(check, c->getIPAddress(), c->getUDPPort());
+			break;
+		}
+	}
 }
 
 void CSearch::processResponse(uint32 fromIP, uint16 fromPort, ContactList *results)
 {
+	if(results)
+		m_lastResponse = time(NULL);
+
 	// Remember the contacts to be deleted when finished
 	ContactList::iterator response;
 	for (response = results->begin(); response != results->end(); response++)
@@ -234,7 +256,7 @@ void CSearch::processResponse(uint32 fromIP, uint16 fromPort, ContactList *resul
 	// Not interested in responses for FIND_NODE, will be added to contacts by udp listener
 	if (m_type == NODE)
 	{
-		m_count++;
+		m_answers++;
 		m_possible.clear();
 		delete results;
 		theApp.emuledlg->kademliawnd->searchList->SearchRef(this);
@@ -246,24 +268,19 @@ void CSearch::processResponse(uint32 fromIP, uint16 fromPort, ContactList *resul
 	CContact *from;
 	CUInt128 distance;
 	CUInt128 fromDistance;
-	bool returnedCloser;
 
 	try
 	{
-		// Find the person who sent this
-		returnedCloser = false;
+		//Find contact that is responding.
 		for (tried = m_tried.begin(); tried != m_tried.end(); tried++)
 		{
 			fromDistance = tried->first;
 			from = tried->second;
 
-
 			if ((from->getIPAddress() == fromIP) && (from->getUDPPort() == fromPort))
 			{
 				// Add to list of people who responded
 				m_responded[fromDistance] = from;
-
-				returnedCloser = false;
 
 				// Loop through their responses
 				for (response = results->begin(); response != results->end(); response++)
@@ -273,14 +290,17 @@ void CSearch::processResponse(uint32 fromIP, uint16 fromPort, ContactList *resul
 					c->getClientID(&distance);
 					distance.xor(m_target);
 
-					// Ignore if already tried
+					// Ignore this contact if already know him
+					if (m_possible.count(distance) > 0)	
+						continue;
 					if (m_tried.count(distance) > 0)	
 						continue;
 
+					// Add to possible
+					m_possible[distance] = c;
+
 					if (distance < fromDistance)
 					{
-						returnedCloser = true;
-						// If in top 3 responses
 						bool top = false;
 						if (m_best.size() < ALPHA_QUERY)
 						{
@@ -293,6 +313,7 @@ void CSearch::processResponse(uint32 fromIP, uint16 fromPort, ContactList *resul
 							it--;
 							if (distance < it->first)
 							{
+								//rotate best list
 								m_best.erase(it);
 								m_best[distance] = c;
 								top = true;
@@ -301,33 +322,49 @@ void CSearch::processResponse(uint32 fromIP, uint16 fromPort, ContactList *resul
 						
 						if (top)
 						{
-
 							// Add to tried
 							m_tried[distance] = c;
 							// Send request
-							c->setType(c->getType()+1);
+							c->checkingType();
 							CUInt128 check;
 							c->getClientID(&check);
 							sendFindValue(check, c->getIPAddress(), c->getUDPPort());
 						}
-						else
-						{
-							// Add to possible
-							m_possible[distance] = c;
-						}
 					}
 				}
-
-				// We don't want anything from these people, so just increment the counter.
 				if( m_type == NODECOMPLETE )
-				{
-					m_count++;
+						{
+					m_answers++;
 					theApp.emuledlg->kademliawnd->searchList->SearchRef(this);
 				}
-				// Ask 'from' for the file if closest
-				else if (!returnedCloser && ( !thePrefs.FilterLANIPs() || fromDistance.get32BitChunk(0) < SEARCHTOLERANCE))
+				break;			
+			}
+		}
+						}
+	catch (...) 
+	{
+		AddDebugLogLine(false, _T("Exception in CSearch::processResponse"));
+					}
+	delete results;
+				}
+
+void CSearch::StorePacket()
 				{
-					switch(m_type){
+	ASSERT(!m_possible.empty());
+
+	CContact *from;
+	CUInt128 fromDistance;
+	ContactMap::const_iterator possible;
+
+	possible = m_possible.begin();
+	fromDistance = possible->first;
+	from = possible->second;
+
+	if(thePrefs.FilterLANIPs() && fromDistance.get32BitChunk(0) > SEARCHTOLERANCE)
+		return;
+
+	switch(m_type)
+				{
 						case FILE:
 						case KEYWORD:
 						{
@@ -342,6 +379,8 @@ void CSearch::processResponse(uint32 fromIP, uint16 fromPort, ContactList *resul
 							// the data in 'm_searchTerms' is to be sent several times. do not pass the m_searchTerms (CSafeMemFile) to 'sendPacket' as it would get detached.
 							//udpListner->sendPacket(m_searchTerms, KADEMLIA_SEARCH_REQ, from->getIPAddress(), from->getUDPPort());
 							CKademlia::getUDPListener()->sendPacket(m_searchTerms->GetBuffer(), (UINT)m_searchTerms->GetLength(), KADEMLIA_SEARCH_REQ, from->getIPAddress(), from->getUDPPort());
+			m_totalRequestAnswers++;
+			theApp.emuledlg->kademliawnd->searchList->SearchRef(this);
 							break;
 						}
 						case NOTES:
@@ -350,11 +389,13 @@ void CSearch::processResponse(uint32 fromIP, uint16 fromPort, ContactList *resul
 							bio.WriteUInt128(&m_target);
 							bio.WriteUInt128(&CKademlia::getPrefs()->getKadID());
 							CKademlia::getUDPListener()->sendPacket( &bio, KADEMLIA_SRC_NOTES_REQ, from->getIPAddress(), from->getUDPPort());
+			m_totalRequestAnswers++;
+			theApp.emuledlg->kademliawnd->searchList->SearchRef(this);
 							break;
 						}
 						case STOREFILE:
 						{
-							if( m_count > SEARCHSTOREFILE_TOTAL )
+			if( m_answers > SEARCHSTOREFILE_TOTAL )
 							{
 								prepareToStop();
 								break;
@@ -400,6 +441,7 @@ void CSearch::processResponse(uint32 fromIP, uint16 fromPort, ContactList *resul
 								}
 
 								CKademlia::getUDPListener()->publishPacket(from->getIPAddress(), from->getUDPPort(),m_target,id, taglist);
+				m_totalRequestAnswers++;
 								theApp.emuledlg->kademliawnd->searchList->SearchRef(this);
 								TagList::const_iterator it;
 								for (it = taglist.begin(); it != taglist.end(); it++)
@@ -409,7 +451,7 @@ void CSearch::processResponse(uint32 fromIP, uint16 fromPort, ContactList *resul
 						}
 						case STOREKEYWORD:
 						{
-							if( m_count > SEARCHSTOREKEYWORD_TOTAL )
+			if( m_answers > SEARCHSTOREKEYWORD_TOTAL )
 							{
 								prepareToStop();
 								break;
@@ -419,22 +461,21 @@ void CSearch::processResponse(uint32 fromIP, uint16 fromPort, ContactList *resul
 								if (thePrefs.GetDebugClientKadUDPLevel() > 0)
 									DebugSend("KadStoreKeywReq", from->getIPAddress(), from->getUDPPort());
 								CKademlia::getUDPListener()->sendPacket( packet1, ((1024*50)-bio1->getAvailable()), from->getIPAddress(), from->getUDPPort() );
-								theApp.emuledlg->kademliawnd->searchList->SearchRef(this);
 							}
 							if( bio2 )
 							{
 								if (thePrefs.GetDebugClientKadUDPLevel() > 0)
 									DebugSend("KadStoreKeywReq", from->getIPAddress(), from->getUDPPort());
 								CKademlia::getUDPListener()->sendPacket( packet2, ((1024*50)-bio2->getAvailable()), from->getIPAddress(), from->getUDPPort() );
-								theApp.emuledlg->kademliawnd->searchList->SearchRef(this);
 							}
 							if( bio3 )
 							{
 								if (thePrefs.GetDebugClientKadUDPLevel() > 0)
 									DebugSend("KadStoreKeywReq", from->getIPAddress(), from->getUDPPort());
 								CKademlia::getUDPListener()->sendPacket( packet3, ((1024*50)-bio3->getAvailable()), from->getIPAddress(), from->getUDPPort() );
+			}
+			m_totalRequestAnswers++;
 								theApp.emuledlg->kademliawnd->searchList->SearchRef(this);
-							}
 							break;
 						}
 						case STORENOTES:
@@ -469,14 +510,14 @@ void CSearch::processResponse(uint32 fromIP, uint16 fromPort, ContactList *resul
 								}
 
 								CKademlia::getUDPListener()->sendPacket( packet, sizeof(packet)-bio.getAvailable(), KADEMLIA_PUB_NOTES_REQ, from->getIPAddress(), from->getUDPPort());
-
+				m_totalRequestAnswers++;
 								theApp.emuledlg->kademliawnd->searchList->SearchRef(this);
 							}
 							break;
 						}
 						case FINDBUDDY:
 						{
-							if( m_count > SEARCHFINDBUDDY_TOTAL )
+			if( m_answers > SEARCHFINDBUDDY_TOTAL )
 							{
 								prepareToStop();
 								break;
@@ -486,13 +527,13 @@ void CSearch::processResponse(uint32 fromIP, uint16 fromPort, ContactList *resul
 							bio.WriteUInt128(&CKademlia::getPrefs()->getClientHash());
 							bio.WriteUInt16(thePrefs.GetPort());
 							CKademlia::getUDPListener()->sendPacket( &bio, KADEMLIA_FINDBUDDY_REQ, from->getIPAddress(), from->getUDPPort());
-							m_count++;
+			m_answers++;
 							theApp.emuledlg->kademliawnd->searchList->SearchRef(this);
 							break;
 						}
 						case FINDSOURCE:
 						{
-							if( m_count > SEARCHFINDSOURCE_TOTAL )
+			if( m_answers > SEARCHFINDSOURCE_TOTAL )
 							{
 								prepareToStop();
 								break;
@@ -504,21 +545,12 @@ void CSearch::processResponse(uint32 fromIP, uint16 fromPort, ContactList *resul
 							bio.WriteUInt128(&m_fileIDs.front());
 							bio.WriteUInt16(thePrefs.GetPort());
 							CKademlia::getUDPListener()->sendPacket( &bio, KADEMLIA_CALLBACK_REQ, from->getIPAddress(), from->getUDPPort());
-							m_count++;
+			m_answers++;
 							theApp.emuledlg->kademliawnd->searchList->SearchRef(this);
 							break;
 						}
 					}
 				}
-			}
-		}
-	} 
-	catch (...) 
-	{
-		AddDebugLogLine(false, _T("Exception in CSearch::processResponse"));
-	}
-	delete results;
-}
 
 void CSearch::processResult(uint32 fromIP, uint16 fromPort, const CUInt128 &answer, TagList *info)
 {
@@ -584,7 +616,8 @@ void CSearch::processResultFile(uint32 fromIP, uint16 fromPort, const CUInt128 &
 		case 1:
 		case 3:
 		{
-			m_count++;
+			m_answers++;
+			theApp.emuledlg->kademliawnd->searchList->SearchRef(this);
 			theApp.downloadqueue->KademliaSearchFile(m_searchID, &answer, &buddy, type, ip, tcp, udp, serverip, serverport, clientid);
 			break;
 		}
@@ -679,13 +712,17 @@ void CSearch::processResultNotes(uint32 fromIP, uint16 fromPort, const CUInt128 
 	//If file->AddNote is successfull, we can just increase the count and exit..
 	if( file && file->AddNote(entry) )
 	{
-		m_count++;
+		m_answers++;
+		theApp.emuledlg->kademliawnd->searchList->SearchRef(this);
 		return;
 	}
 
 	//If file->AddNote fails, we check if searchlist->AddNotes was successfull to increase counter.
 	if (flag)
-		m_count++;
+	{
+		m_answers++;
+		theApp.emuledlg->kademliawnd->searchList->SearchRef(this);
+	}
 
 	//We always delete the entry object if file->AddNote failes..
 	delete entry;
@@ -778,7 +815,8 @@ void CSearch::processResultKeyword(uint32 fromIP, uint16 fromPort, const CUInt12
 
 	if (interested)
 	{
-		m_count++;
+		m_answers++;
+		theApp.emuledlg->kademliawnd->searchList->SearchRef(this);
 		theApp.searchlist->KademliaSearchKeyword(m_searchID, &answer, name, size, type, 8, 
 				2, TAG_FILEFORMAT, (LPCTSTR)format, 
 				2, TAG_MEDIA_ARTIST, (LPCTSTR)artist, 
@@ -821,7 +859,7 @@ void CSearch::sendFindValue(const CUInt128 &check, uint32 ip, uint16 port)
 		}
 		bio.WriteUInt128(&m_target);
 		bio.WriteUInt128(&check);
-		m_countSent++;
+		m_kadPacketSent++;
 		theApp.emuledlg->kademliawnd->searchList->SearchRef(this);
 		if (thePrefs.GetDebugClientKadUDPLevel() > 0)
 		{

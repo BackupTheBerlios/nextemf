@@ -424,7 +424,7 @@ BOOL CPPgTweaks::OnInitDialog()
 	m_bFirewallStartup = ((thePrefs.GetWindowsVersion() == _WINVER_XP_) ? thePrefs.m_bOpenPortsOnStartUp : 0); 
 	m_bDisablePeerCache = !thePrefs.m_bPeerCacheEnabled;
 
-    m_bDynUpEnabled = thePrefs.IsDynUpEnabled();
+    m_bDynUpEnabled = thePrefs.m_bDynUpEnabled;
     m_iDynUpMinUpload = thePrefs.GetMinUpload();
     m_iDynUpPingTolerance = thePrefs.GetDynUpPingTolerance();
     m_iDynUpPingToleranceMilliseconds = thePrefs.GetDynUpPingToleranceMilliseconds();

@@ -87,21 +87,16 @@ CCollectionFile::CCollectionFile(CFileDataIO* in_data)
 
 CCollectionFile::CCollectionFile(CAbstractFile* pAbstractFile) : CAbstractFile(pAbstractFile)
 {
-	if(!GetTag(FT_FILEHASH))
+	ClearTags();
+
 		taglist.Add(new CTag(FT_FILEHASH, pAbstractFile->GetFileHash()));
-
-	if(!GetTag(FT_FILESIZE))
 		taglist.Add(new CTag(FT_FILESIZE, pAbstractFile->GetFileSize()));
-
-	if(!GetTag(FT_FILENAME))
 		taglist.Add(new CTag(FT_FILENAME, pAbstractFile->GetFileName()));
 
-	if(pAbstractFile->GetFileComment().Compare(_T("")))
-		if(!GetTag(FT_FILECOMMENT))
+	if(!pAbstractFile->GetFileComment().IsEmpty())
 			taglist.Add(new CTag(FT_FILECOMMENT, pAbstractFile->GetFileComment()));
 
 	if(pAbstractFile->GetFileRating())
-		if(!GetTag(FT_FILERATING))
 			taglist.Add(new CTag(FT_FILERATING, pAbstractFile->GetFileRating()));
 
 	UpdateFileRatingCommentAvail();

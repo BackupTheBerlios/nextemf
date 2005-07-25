@@ -218,13 +218,13 @@ bool CUpDownClient::AskForDownload()
 	}
 	m_bUDPPending = false;
     SwapToAnotherFile(_T("A4AF check before tcp file reask. CUpDownClient::AskForDownload()"), true, false, false, NULL, true, true);
-	//==>Reask sourcen after ip change [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA
 	// Maella -Unnecessary Protocol Overload-
 	m_dwNextTCPAskedTime = ::GetTickCount() + GetJitteredFileReaskTime();
 	// Maella end
 #endif //Reask sourcen after ip change
-	//<==Reask sourcen after ip change [cyrex2001]
+//<==Reask sourcen after ip change [cyrex2001]
 	SetDownloadState(DS_CONNECTING);
 	return TryToConnect();
 }
@@ -253,15 +253,15 @@ bool CUpDownClient::IsSourceRequestAllowed(CPartFile* partfile, bool sourceExcha
 	return (
 	         //if client has the correct extended protocol
 	         ExtProtocolAvailable() && GetSourceExchangeVersion() > 1 &&
-	 //==>WiZaRd/Max AutoHardLimit [cyrex2001]
-    #ifdef AHL
+//==>WiZaRd/Max AutoHardLimit [cyrex2001]
+#ifdef AHL
              partfile->GetFileHardLimitSoft() > uSources &&
-    #else //
+#else //
 	         //AND if we need more sources
 	         reqfile->GetMaxSourcePerFileSoft() > uSources &&
 	         //AND if...
-    #endif //WiZaRd/Max AutoHardLimit
-    //<==WiZaRd/Max AutoHardLimit [cyrex2001]
+#endif //WiZaRd/Max AutoHardLimit
+//<==WiZaRd/Max AutoHardLimit [cyrex2001]
 	         (
 	           //source is not complete and file is very rare
 	           ( !m_bCompleteSource
@@ -703,14 +703,14 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason
 		{
 			case DS_CONNECTING:
 	            m_dwLastTriedToConnect = ::GetTickCount();
-				//==>Reask sourcen after ip change [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA
 				// Maella -Unnecessary Protocol Overload-
 				// Delay the next refresh of the download session initiated from CPartFile::Process()
 				m_dwNextTCPAskedTime = ::GetTickCount() + GetJitteredFileReaskTime();
 				// Maella end
 #endif //Reask sourcen after ip change
-				//<==Reask sourcen after ip change [cyrex2001]
+//<==Reask sourcen after ip change [cyrex2001]
 				break;
 			case DS_TOOMANYCONNSKAD:
 				//This client had already been set to DS_CONNECTING.
@@ -740,6 +740,9 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason
 
 		if (reqfile){
 		    if(nNewState == DS_DOWNLOADING){
+                if(thePrefs.GetLogUlDlEvents())
+                    AddDebugLogLine(DLP_VERYLOW, false, _T("Download session started. User: %s in SetDownloadState(). New State: %i"), DbgGetClientInfo(), nNewState);
+
 			    reqfile->AddDownloadingSource(this);
 		    }
 		    else if(m_nDownloadState == DS_DOWNLOADING){
@@ -764,7 +767,8 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason
 						pszReason = _T("NNP. You don't need any parts from this client.");
 				}
 
-				AddDebugLogLine(DLP_VERYLOW, false, _T("Download session ended. User: %s in SetDownloadState(). New State: %i, Length: %s, Transferred: %s. Reason: %s"), DbgGetClientInfo(), nNewState, CastSecondsToHM(GetDownTimeDifference(false)/1000), CastItoXBytes(GetSessionDown(), false, false), pszReason);
+                if(thePrefs.GetLogUlDlEvents())
+                    AddDebugLogLine(DLP_VERYLOW, false, _T("Download session ended: %s User: %s in SetDownloadState(). New State: %i, Length: %s, Transferred: %s."), pszReason, DbgGetClientInfo(), nNewState, CastSecondsToHM(GetDownTimeDifference(false)/1000), CastItoXBytes(GetSessionDown(), false, false));
 			}
 #endif
 //<== Extended Failed/Success Statistic by NetF [shadow2004]
@@ -927,11 +931,13 @@ void CUpDownClient::SendBlockRequests()
 
     // prevent locking of too many blocks when we are on a slow (probably standby/trickle) slot
     int blockCount = 3;
-    if(IsEmuleClient() && m_byCompatibleClient==0) {
+    if(IsEmuleClient() && m_byCompatibleClient==0 && reqfile->GetFileSize()-reqfile->GetCompletedSize() <= PARTSIZE*4) {
+        // if there's less than two chunks left, request fewer blocks for
+        // slow downloads, so they don't lock blocks from faster clients.
         // Only trust eMule clients to be able to handle less blocks than three
-        if(GetDatarate() < 600) {
+        if(GetDownloadDatarate() < 600) {
             blockCount = 1;
-        } else if(GetDatarate() < 1200) {
+        } else if(GetDownloadDatarate() < 1200) {
             blockCount = 2;
         }
     }
@@ -1422,14 +1428,14 @@ void CUpDownClient::UDPReaskACK(uint16 nNewQR)
 	m_bUDPPending = false;
 	SetRemoteQueueRank(nNewQR, true);
     SetLastAskedTime();
-	//==>Reask sourcen after ip change [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA
 	// Keep a track when this file was asked for the last time to avoid a Ban()
 	if(reqfile)
 		m_partStatusMap[reqfile].dwStartUploadReqTime = GetTickCount();
 	// Maella end
 #endif //Reask sourcen after ip change
-	//<==Reask sourcen after ip change [cyrex2001]
+//<==Reask sourcen after ip change [cyrex2001]
 }
 
 void CUpDownClient::UDPReaskFNF()
@@ -1465,7 +1471,7 @@ void CUpDownClient::UDPReaskFNF()
 void CUpDownClient::UDPReaskForDownload()
 {
 	ASSERT ( reqfile );
-	//==>Reask sourcen after ip change [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA
 	// This method can be called only every 30 seconds
 	if((reqfile == NULL) || // No file to ping
@@ -1473,7 +1479,7 @@ void CUpDownClient::UDPReaskForDownload()
 		(GetTickCount() - m_dwLastUDPReaskTime < 30000)) // Every 30 seconds only
 		return;
 #endif //Reask sourcen after ip change
-	//<==Reask sourcen after ip change [cyrex2001]
+//<==Reask sourcen after ip change [cyrex2001]
 	if(!reqfile || m_bUDPPending)
 		return;
 	
@@ -1481,12 +1487,12 @@ void CUpDownClient::UDPReaskForDownload()
 	if( m_nTotalUDPPackets > 3 && ((float)(m_nFailedUDPPackets/m_nTotalUDPPackets) > .3))
 		return;
 
-	//==>Reask sourcen after ip change [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA
 	// Time stamp
 	m_dwLastUDPReaskTime = GetTickCount();
 #endif //Reask sourcen after ip change
-	//<==Reask sourcen after ip change [cyrex2001]
+//<==Reask sourcen after ip change [cyrex2001]
 	//the line "m_bUDPPending = true;" use to be here
 	if(m_nUDPPort != 0 && thePrefs.GetUDPPort() != 0 &&
 		!theApp.IsFirewalled() && !(socket && socket->IsConnected())) 
@@ -1612,13 +1618,13 @@ const bool CUpDownClient::SwapToRightFile(CPartFile* SwapTo, CPartFile* cur_file
 
                 DWORD tempTick = ::GetTickCount();
                 bool rightFileHasHigherPrio = CPartFile::RightFileHasHigherPrio(SwapTo, cur_file);
-				//==>Reask sourcen after ip change [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA
 				uint32 allNnpReaskTime = GetJitteredFileReaskTime()*2*(m_OtherNoNeeded_list.GetSize() + ((GetDownloadState() == DS_NONEEDEDPARTS)?1:0)); // wait two reask interval for each nnp file before reasking an nnp file
 #else
-				uint32 allNnpReaskTime = FILEREASKTIME*2*(m_OtherNoNeeded_list.GetSize() + ((GetDownloadState() == DS_NONEEDEDPARTS)?1:0)); // wait two reask interval for each nnp file before reasking an nnp file
+                uint32 allNnpReaskTime = FILEREASKTIME*2*(m_OtherNoNeeded_list.GetSize() + ((GetDownloadState() == DS_NONEEDEDPARTS)?1:0)); // wait two reask interval for each nnp file before reasking an nnp file
 #endif //Reask sourcen after ip change
-				//<==Reask sourcen after ip change [cyrex2001]
+//<==Reask sourcen after ip change [cyrex2001]
                 if(!SwapToIsNNPFile && (!curFileisNNPFile || GetLastAskedTime(cur_file) == 0 || tempTick-GetLastAskedTime(cur_file) > allNnpReaskTime) && rightFileHasHigherPrio ||
                    SwapToIsNNPFile && curFileisNNPFile &&
                    (
@@ -1975,7 +1981,7 @@ bool CUpDownClient::DoSwap(CPartFile* SwapTo, bool bRemoveCompletely, LPCTSTR re
 		theApp.emuledlg->transferwnd->downloadlistctrl.AddSource(reqfile,this,true);
     } else {
         m_fileReaskTimes.RemoveKey(reqfile);
-		//==>Reask sourcen after ip change [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA
 		// Maella -Unnecessary Protocol Overload-
 		PartStatusMap::iterator it = m_partStatusMap.find(reqfile); 
@@ -1985,7 +1991,7 @@ bool CUpDownClient::DoSwap(CPartFile* SwapTo, bool bRemoveCompletely, LPCTSTR re
 			}
 		//Maella end
 #endif //Reask sourcen after ip change
-		//<==Reask sourcen after ip change [cyrex2001]
+//<==Reask sourcen after ip change [cyrex2001]
     }
 
 //==> Extended Failed/Success Statistic by NetF [shadow2004]
@@ -2059,7 +2065,7 @@ uint32 CUpDownClient::GetTimeUntilReask(const CPartFile* file, const bool allowS
         } else if(useGivenNNP && givenNNP ||
                   file == reqfile && GetDownloadState() == DS_NONEEDEDPARTS ||
                   file != reqfile && IsInNoNeededList(file)) {
-					  //==>Reask sourcen after ip change [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA
 					  // Maella -Spread Request- (idea SlugFiller)
 					  reaskTime = GetJitteredFileReaskTime()*2;
@@ -2067,11 +2073,11 @@ uint32 CUpDownClient::GetTimeUntilReask(const CPartFile* file, const bool allowS
 						  reaskTime = GetJitteredFileReaskTime();
 						  // Maella -Spread Request- (idea SlugFiller)
 #else
-					  reaskTime = FILEREASKTIME*2;
-					  } else {
-						  reaskTime = FILEREASKTIME;
+            reaskTime = FILEREASKTIME*2;
+        } else {
+            reaskTime = FILEREASKTIME;
 #endif //Reask sourcen after ip change
-						  //<==Reask sourcen after ip change [cyrex2001]
+//<==Reask sourcen after ip change [cyrex2001]
         }
 
         if(tick-lastAskedTimeTick < reaskTime) {

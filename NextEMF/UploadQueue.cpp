@@ -262,7 +262,7 @@ void CUploadQueue::UpdateActiveClientsInfo(DWORD curTick) {
 
     m_iHighestNumberOfFullyActivatedSlotsSinceLastCall = tempHighest;
 
-    // save 15 minutes of data about number of fully active clients
+    // save some data about number of fully active clients
     uint32 tempMaxRemoved = 0;
     while(!activeClients_tick_list.IsEmpty() && !activeClients_list.IsEmpty() && curTick-activeClients_tick_list.GetHead() > 20*1000) {
         activeClients_tick_list.RemoveHead();
@@ -341,9 +341,9 @@ void CUploadQueue::Process() {
 				delete cur_client;
 			}
 		} else {
-            cur_client->SendBlockData();
-        }
-	}
+				cur_client->SendBlockData();
+			}
+		}
 
     // Save used bandwidth for speed calculations
 	uint64 sentBytes = theApp.uploadBandwidthThrottler->GetNumberOfSentBytesSinceLastCallAndReset();
@@ -390,7 +390,7 @@ bool CUploadQueue::AcceptNewClient(uint32 curUploadSlots){
         MaxSpeed = theApp.lastCommonRouteFinder->GetUpload()/1024;        
     else
 		MaxSpeed = thePrefs.GetMaxUpload();
-	
+
 //==> SlotSpeed [shadow2004]
 #ifdef SLOT
 	if(curUploadSlots > GetActiveUploadsCount()) 
@@ -404,16 +404,16 @@ bool CUploadQueue::AcceptNewClient(uint32 curUploadSlots){
         curUploadSlots >= 4 &&
         (
          curUploadSlots >= (datarate/UPLOAD_CHECK_CLIENT_DR) ||
-         curUploadSlots >= ((uint32)MaxSpeed)*1024/UPLOAD_CLIENT_DATARATE ||
+			 curUploadSlots >= ((uint32)MaxSpeed)*1024/UPLOAD_CLIENT_DATARATE ||
          (
           thePrefs.GetMaxUpload() == UNLIMITED &&
           !thePrefs.IsDynUpEnabled() &&
-          thePrefs.GetMaxGraphUploadRate() > 0 &&
-          curUploadSlots >= ((uint32)thePrefs.GetMaxGraphUploadRate())*1024/UPLOAD_CLIENT_DATARATE
+          thePrefs.GetMaxGraphUploadRate(true) > 0 &&
+          curUploadSlots >= ((uint32)thePrefs.GetMaxGraphUploadRate(false))*1024/UPLOAD_CLIENT_DATARATE
          )
         )
     ) // max number of clients to allow for all circumstances
-	    return false;
+			return false;
 
 	return true;
 }
@@ -478,8 +478,8 @@ bool CUploadQueue::ForceNewClient(bool allowEmptyWaitingQueue) {
     if(m_iHighestNumberOfFullyActivatedSlotsSinceLastCall > (uint32)uploadinglist.GetSize()) {
         // uploadThrottler requests another slot. If throttler says it needs another slot, we will allow more slots
         // than what we require ourself. Never allow more slots than to give each slot high enough average transfer speed, though (checked above).
-        if(thePrefs.GetLogUlDlEvents() && waitinglist.GetSize() > 0)
-            AddDebugLogLine(false, _T("UploadQueue: Added new slot since throttler needs it. m_iHighestNumberOfFullyActivatedSlotsSinceLastCall: %i uploadinglist.GetSize(): %i tick: %i"), m_iHighestNumberOfFullyActivatedSlotsSinceLastCall, uploadinglist.GetSize(), ::GetTickCount());
+        //if(thePrefs.GetLogUlDlEvents() && waitinglist.GetSize() > 0)
+        //    AddDebugLogLine(false, _T("UploadQueue: Added new slot since throttler needs it. m_iHighestNumberOfFullyActivatedSlotsSinceLastCall: %i uploadinglist.GetSize(): %i tick: %i"), m_iHighestNumberOfFullyActivatedSlotsSinceLastCall, uploadinglist.GetSize(), ::GetTickCount());
         return true;
     }
 
@@ -641,7 +641,7 @@ void CUploadQueue::AddClientToQueue(CUpDownClient* client, bool bIgnoreTimelimit
 		client->SetCollectionUploadSlot(true);
 		RemoveFromWaitingQueue(client, true);
 		AddUpNextClient(_T("Collection Priority Slot"), client);
-		return;	// Xman1 Collection Slot Fix
+		return;
 	}
 	else
 		client->SetCollectionUploadSlot(false);
@@ -889,7 +889,7 @@ VOID CALLBACK CUploadQueue::UploadTimer(HWND hwnd, UINT uMsg,UINT_PTR idEvent,DW
         // Elandal: ThreadSafeLogging <--
 
 		// ZZ:UploadSpeedSense -->
-		theApp.lastCommonRouteFinder->SetPrefs(thePrefs.IsDynUpEnabled(), theApp.uploadqueue->GetDatarate(), thePrefs.GetMinUpload()*1024, (thePrefs.GetMaxUpload() != 0)?thePrefs.GetMaxUpload()*1024:thePrefs.GetMaxGraphUploadRate()*1024, thePrefs.IsDynUpUseMillisecondPingTolerance(), (thePrefs.GetDynUpPingTolerance() > 100)?((thePrefs.GetDynUpPingTolerance()-100)/100.0f):0, thePrefs.GetDynUpPingToleranceMilliseconds(), thePrefs.GetDynUpGoingUpDivider(), thePrefs.GetDynUpGoingDownDivider(), thePrefs.GetDynUpNumberOfPings(), 20); // PENDING: Hard coded min pLowestPingAllowed
+		theApp.lastCommonRouteFinder->SetPrefs(thePrefs.IsDynUpEnabled(), theApp.uploadqueue->GetDatarate(), thePrefs.GetMinUpload()*1024, (thePrefs.GetMaxUpload() != 0)?thePrefs.GetMaxUpload()*1024:thePrefs.GetMaxGraphUploadRate(false)*1024, thePrefs.IsDynUpUseMillisecondPingTolerance(), (thePrefs.GetDynUpPingTolerance() > 100)?((thePrefs.GetDynUpPingTolerance()-100)/100.0f):0, thePrefs.GetDynUpPingToleranceMilliseconds(), thePrefs.GetDynUpGoingUpDivider(), thePrefs.GetDynUpGoingDownDivider(), thePrefs.GetDynUpNumberOfPings(), 20); // PENDING: Hard coded min pLowestPingAllowed
 		// ZZ:UploadSpeedSense <--
 
         theApp.uploadqueue->Process();
@@ -961,6 +961,9 @@ VOID CALLBACK CUploadQueue::UploadTimer(HWND hwnd, UINT uMsg,UINT_PTR idEvent,DW
 					}
 				}
 			}
+
+            theApp.uploadqueue->UpdateDatarates();
+            
 			//save rates every second
 			theStats.RecordRate();
 
@@ -985,6 +988,7 @@ VOID CALLBACK CUploadQueue::UploadTimer(HWND hwnd, UINT uMsg,UINT_PTR idEvent,DW
 				theApp.listensocket->Process();
 				theApp.OnlineSig(); // Added By Bouc7 
 				theApp.emuledlg->ShowTransferRate();
+				thePrefs.EstimateMaxUploadCap(theApp.uploadqueue->GetDatarate()/1024);
 				
 				if (!thePrefs.TransferFullChunks())
 					theApp.uploadqueue->UpdateMaxClientScore();
@@ -1056,12 +1060,10 @@ void CUploadQueue::UpdateDatarates() {
 }
 
 uint32 CUploadQueue::GetDatarate() {
-    UpdateDatarates();
     return datarate;
 }
 
 uint32 CUploadQueue::GetToNetworkDatarate() {
-    UpdateDatarates();
     if(datarate > friendDatarate) {
         return datarate - friendDatarate;
     } else {

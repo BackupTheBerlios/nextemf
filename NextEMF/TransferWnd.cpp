@@ -31,6 +31,7 @@
 #include "SharedFileList.h"
 #include "DropDownButton.h"
 #include "ToolTipCtrlX.h"
+#include "SharedFilesWnd.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -980,11 +981,14 @@ BOOL CTransferWnd::OnCommand(WPARAM wParam, LPARAM lParam)
 				EditCatTabLabel(newindex);
 				thePrefs.SaveCats();
 				VerifyCatTabSize();
+				if (CompareDirectories(thePrefs.GetIncomingDir(), thePrefs.GetCatPath(newindex)))
+					theApp.emuledlg->sharedfileswnd->Reload();
 			}
 			break;
 		}
 		case MP_CAT_EDIT: {
 			m_nLastCatTT=-1;
+			CString oldincpath=thePrefs.GetCatPath(rightclickindex);
 			CCatDialog dialog(rightclickindex);
 			dialog.DoModal();
 
@@ -995,6 +999,8 @@ BOOL CTransferWnd::OnCommand(WPARAM wParam, LPARAM lParam)
 			theApp.emuledlg->searchwnd->UpdateCatTabs();
 			theApp.emuledlg->transferwnd->downloadlistctrl.UpdateCurrentCategoryView();
 			thePrefs.SaveCats();
+			if (CompareDirectories(oldincpath, thePrefs.GetCatPath(rightclickindex) ))
+				theApp.emuledlg->sharedfileswnd->Reload();
 			break;
 		}
 		case MP_CAT_REMOVE: {
@@ -1011,7 +1017,7 @@ BOOL CTransferWnd::OnCommand(WPARAM wParam, LPARAM lParam)
 			theApp.emuledlg->searchwnd->UpdateCatTabs();
 			VerifyCatTabSize();
 			if (toreload)
-				theApp.sharedfiles->Reload();
+				theApp.emuledlg->sharedfileswnd->Reload();
 			break;
 		}
 
@@ -1687,9 +1693,9 @@ void CTransferWnd::ResetTransToolbar()
 	m_btnWnd1->MoveWindow(&rc);
 	SetWnd1Icons();
 
-		m_btnWnd1->ModifyStyle(TBSTYLE_TOOLTIPS, 0);
-		m_btnWnd1->SetExtendedStyle(m_btnWnd1->GetExtendedStyle() & ~TBSTYLE_EX_MIXEDBUTTONS);
-		m_btnWnd1->RecalcLayout(true);
+	m_btnWnd1->ModifyStyle(TBSTYLE_TOOLTIPS, 0);
+	m_btnWnd1->SetExtendedStyle(m_btnWnd1->GetExtendedStyle() & ~TBSTYLE_EX_MIXEDBUTTONS);
+	m_btnWnd1->RecalcLayout(true);
 
 	AddAnchor(*m_btnWnd1, TOP_LEFT);
 }

@@ -528,14 +528,14 @@ public:
 #endif
 //<== SlotSpeed [shadow2004]
 
-	//==>Reask sourcen after ip change [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA //Reask sourcen after ip change
 	static bool	m_bReaskSourceAfterIPChange;
 	static bool	IsReaskSourceAfterIPChange()	{return m_bReaskSourceAfterIPChange;}
 #endif //Reask sourcen after ip change
-	//<==Reask sourcen after ip change [cyrex2001]
+//<==Reask sourcen after ip change [cyrex2001]
 
-	//==>Quickstart [cyrex2001]
+//==>Quickstart [cyrex2001]
 #ifdef QUICKSTART //Quickstart
 	static bool	m_bQuickStart;
 	static uint16  m_iQuickStartMaxTime;
@@ -546,7 +546,7 @@ public:
 	static uint16  QuickStartMaxConnPerFive;
 	static bool	m_bQuickStartAfterIPChange;
 #endif //Quickstart
-	//<==Quickstart [cyrex2001]
+//<==Quickstart [cyrex2001]
 //==>WiZaRd/Max AutoHardLimit [cyrex2001]
 #ifdef AHL
     static  uint16    m_iMaxSourcesHL; 
@@ -1158,7 +1158,7 @@ public:
 	static	void	SetSearchMethod(int iMethod)				{ m_iSearchMethod = iMethod; }
 
 	// ZZ:UploadSpeedSense -->
-	static	bool	IsDynUpEnabled()							{ return m_bDynUpEnabled; }
+	static	bool	IsDynUpEnabled();
 	static	void	SetDynUpEnabled(bool newValue)				{ m_bDynUpEnabled = newValue; }
 	static	int		GetDynUpPingTolerance()						{ return m_iDynUpPingTolerance; }
 	static	int		GetDynUpGoingUpDivider()					{ return m_iDynUpGoingUpDivider; }
@@ -1234,6 +1234,8 @@ public:
 	static  void	ImportOldTableSetup();
 	static  void	IniCopy(CString si, CString di);
 
+	static	void	EstimateMaxUploadCap(uint32 nCurrentUpload);
+
 //////////////////////////////////////////////////////////////////////////////////////////
 ///// NextEMF-Option
 //==>WiZaRd AntiLeechClass [cyrex2001]
@@ -1279,6 +1281,7 @@ public:
 	static float	maxdownload;
 	static float	maxGraphDownloadRate;
 	static float	maxGraphUploadRate;
+	static float	maxGraphUploadRateEstimated;
 
 	static float	GetMaxUpload()  {return maxupload;}
 	static void	SetMaxUpload(float in)	{maxupload = in;}
@@ -1286,8 +1289,8 @@ public:
 	static float	GetMaxDownload() ; // rate limited
 	static void	SetMaxDownload(float in) {maxdownload = in;}
 
-	static float	GetMaxGraphUploadRate()  {return maxGraphUploadRate;}
-	static void	SetMaxGraphUploadRate(float in) {maxGraphUploadRate=in;}
+	static int	GetMaxGraphUploadRate(bool bEstimateIfUnlimited);
+	static void	SetMaxGraphUploadRate(float in);
 
 	static float	GetMaxGraphDownloadRate()  {return maxGraphDownloadRate;}
 	static void	SetMaxGraphDownloadRate(float in) {maxGraphDownloadRate=in;}
@@ -1298,6 +1301,7 @@ public:
 	static	uint16	maxdownload;
 	static	int	maxGraphDownloadRate;
 	static	int	maxGraphUploadRate;
+	static	uint32	maxGraphUploadRateEstimated;
 
 	static	uint16	GetMaxUpload()	{return maxupload;}
 	static	void	SetMaxUpload(uint16 in);
@@ -1305,8 +1309,8 @@ public:
 	static	uint16	GetMaxDownload();
 	static	void	SetMaxDownload(uint16 in);
 
-	static	int	GetMaxGraphUploadRate()		{return maxGraphUploadRate;}
-	static	void	SetMaxGraphUploadRate(int in)	{maxGraphUploadRate	=(in)?in:16;}
+	static	int	GetMaxGraphUploadRate(bool bEstimateIfUnlimited);
+	static	void	SetMaxGraphUploadRate(int in);
 
 	static	int	GetMaxGraphDownloadRate()		{return maxGraphDownloadRate;}
 	static	void	SetMaxGraphDownloadRate(int in) {maxGraphDownloadRate=(in)?in:96;}

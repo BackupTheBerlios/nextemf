@@ -287,8 +287,7 @@ void CCommentDialog::OnBnClickedSearchKad()
 			{
 				Kademlia::CSearch *notes = new Kademlia::CSearch;
 				notes->setSearchTypes(Kademlia::CSearch::NOTES);
-				Kademlia::CUInt128 ID(file->GetFileHash());
-				notes->setTargetID(ID);
+				notes->setTargetID(Kademlia::CUInt128(file->GetFileHash()));
 				if( !Kademlia::CSearchManager::startSearch(notes) )
 					AfxMessageBox(GetResString(IDS_KADSEARCHALREADY),MB_OK | MB_ICONINFORMATION,0);
 			}

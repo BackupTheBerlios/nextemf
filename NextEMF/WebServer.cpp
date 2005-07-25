@@ -526,28 +526,46 @@ void CWebServer::ProcessURL(ThreadData Data)
 			CKnownFile* kf=theApp.sharedfiles->GetFileByID(_GetFileHash(_ParseURL(Data.sURL, _T("filehash")),FileHash) );
 			
 			if (kf) {
-				if (thePrefs.GetMaxWebUploadFileSizeMB() != 0 && kf->GetFileSize() > thePrefs.GetMaxWebUploadFileSizeMB()*1024*1024)
+				if (thePrefs.GetMaxWebUploadFileSizeMB() != 0 && kf->GetFileSize() > thePrefs.GetMaxWebUploadFileSizeMB()*1024*1024) {
 					Data.pSocket->SendReply( "HTTP/1.1 403 Forbidden\r\n" );
+					return;
+				}
 				else {
 					CFile file;
 					if(file.Open(kf->GetFilePath(), CFile::modeRead|CFile::shareDenyWrite|CFile::typeBinary))
 					{
 						DWORD filesize=(DWORD)kf->GetFileSize();
 
-						USES_CONVERSION;
-						char* buffer=new char[filesize];
-						DWORD size=file.Read(buffer,filesize);
-						file.Close();
-						CString contenttype;
-						contenttype.Format( _T("Content-Type: application/octet-stream\r\nContent-Description: \"%s\"\r\nContent-Disposition: attachment; filename=\"%s\";\r\nContent-Transfer-Encoding: binary\r\n"),kf->GetFileName(),kf->GetFileName() );
-						Data.pSocket->SendContent( T2CA(contenttype), buffer, size);
-						delete[] buffer;
+						#define SENDFILEBUFSIZE 2048
+						char* buffer=(char*)malloc(SENDFILEBUFSIZE);
+						if (!buffer) {
+							Data.pSocket->SendReply( "HTTP/1.1 500 Internal Server Error\r\n" );
+							return;
+						}
 						
+						USES_CONVERSION;
+						char szBuf[512];
+						int nLen = wsprintfA(szBuf, "HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Description: \"%s\"\r\nContent-Disposition: attachment; filename=\"%s\";\r\nContent-Transfer-Encoding: binary\r\nContent-Length: %ld\r\n\r\n", 
+							T2CA(kf->GetFileName()),
+							T2CA(kf->GetFileName()),
+							filesize);
+						Data.pSocket->SendData(szBuf, nLen);
+
+						DWORD r=1;
+						while (filesize && r) {
+							r=file.Read(buffer,SENDFILEBUFSIZE);
+							filesize-=r;
+							Data.pSocket->SendData(buffer, r);
+						}
+						file.Close();
+
+						delete[] buffer;
 						CoUninitialize();
 						return;
 					}
 					else {
 						Data.pSocket->SendReply( "HTTP/1.1 404 File not found\r\n" );
+						return;
 					}
 				}
 			}
@@ -902,7 +920,7 @@ CString CWebServer::_GetHeader(ThreadData Data, long lSession)
 	
 
 	if(thePrefs.GetMaxUpload() == UNLIMITED)
-		_stprintf(HTTPHeader, _T("%.1f"), static_cast<double>(100 * theApp.uploadqueue->GetDatarate()) / 1024 / thePrefs.GetMaxGraphUploadRate());
+		_stprintf(HTTPHeader, _T("%.1f"), static_cast<double>(100 * theApp.uploadqueue->GetDatarate()) / 1024 / thePrefs.GetMaxGraphUploadRate(true));
 	else
 		_stprintf(HTTPHeader, _T("%.1f"), static_cast<double>(100 * theApp.uploadqueue->GetDatarate()) / 1024 / thePrefs.GetMaxUpload());
 	Out.Replace(_T("[UploadValue]"), HTTPHeader);
@@ -3737,12 +3755,12 @@ CString CWebServer::_GetGraphs(ThreadData Data)
 #ifdef FAF
 	s1.Format(_T("%u"), (int)thePrefs.GetMaxGraphDownloadRate()+4 );
 	Out.Replace(_T("[MaxDownload]"), s1);
-	s1.Format(_T("%u"), (int)thePrefs.GetMaxGraphUploadRate()+4 );
+	s1.Format(_T("%u"), (int)thePrefs.GetMaxGraphUploadRate(true)+4 );
 	Out.Replace(_T("[MaxUpload]"), s1);
 #else
 	s1.Format(_T("%u"), thePrefs.GetMaxGraphDownloadRate()+4 );
 	Out.Replace(_T("[MaxDownload]"), s1);
-	s1.Format(_T("%u"), thePrefs.GetMaxGraphUploadRate()+4 );
+	s1.Format(_T("%u"), thePrefs.GetMaxGraphUploadRate(true)+4 );
 	Out.Replace(_T("[MaxUpload]"), s1);
 #endif
 //<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
@@ -4154,7 +4172,7 @@ CString CWebServer::_GetPreferences(ThreadData Data)
 	sT.Format(_T("%.1f"), thePrefs.GetMaxGraphDownloadRate());
 	Out.Replace(_T("[MaxCapDownVal]"), sT);
 
-	sT.Format(_T("%.1f"), thePrefs.GetMaxGraphUploadRate());
+	sT.Format(_T("%.1f"), thePrefs.GetMaxGraphUploadRate(true));
 	Out.Replace(_T("[MaxCapUpVal]"), sT);
 #else
 	sT.Format(_T("%u"), thePrefs.GetMaxDownload()==UNLIMITED?0:thePrefs.GetMaxDownload());
@@ -4166,7 +4184,7 @@ CString CWebServer::_GetPreferences(ThreadData Data)
 	sT.Format(_T("%u"), thePrefs.GetMaxGraphDownloadRate() );
 	Out.Replace(_T("[MaxCapDownVal]"), sT);
 
-	sT.Format(_T("%u"), thePrefs.GetMaxGraphUploadRate() );
+	sT.Format(_T("%u"), thePrefs.GetMaxGraphUploadRate(true) );
 	Out.Replace(_T("[MaxCapUpVal]"), sT);
 #endif
 //<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-

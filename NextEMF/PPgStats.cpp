@@ -40,6 +40,7 @@ BEGIN_MESSAGE_MAP(CPPgStats, CPropertyPage)
 	ON_CBN_SELCHANGE(IDC_CRATIO, OnCbnSelchangeCRatio)
 	ON_EN_CHANGE(IDC_CGRAPHSCALE, OnEnChangeCGraphScale)
 	ON_WM_HELPINFO()
+	ON_WM_DESTROY()
 END_MESSAGE_MAP()
 
 CPPgStats::CPPgStats()
@@ -55,7 +56,12 @@ CPPgStats::CPPgStats()
 
 CPPgStats::~CPPgStats()
 {
+}
+
+void CPPgStats::OnDestroy()
+{
 	delete[] m_pdwStatsColors;
+	m_pdwStatsColors = NULL;
 }
 
 void CPPgStats::DoDataExchange(CDataExchange* pDX)

@@ -59,11 +59,13 @@ float	CPreferences::maxupload;
 float	CPreferences::maxdownload;
 float	CPreferences::maxGraphDownloadRate;
 float	CPreferences::maxGraphUploadRate;
+float	CPreferences::maxGraphUploadRateEstimated = 0.0f;
 #else
 uint16	CPreferences::maxupload;
 uint16	CPreferences::maxdownload;
 int	CPreferences::maxGraphDownloadRate;
 int	CPreferences::maxGraphUploadRate;
+uint32	CPreferences::maxGraphUploadRateEstimated = 0;
 #endif
 //<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 
@@ -721,15 +723,13 @@ void CPreferences::SetStandartValues()
 
 bool CPreferences::IsTempFile(const CString& rstrDirectory, const CString& rstrName)
 {
-	bool bFound = false;		// FIX by WiZaRd
+	bool bFound = false;
 	for (int i=0;i<tempdir.GetCount() && !bFound;i++) 
-		if (!CompareDirectories(rstrDirectory, GetTempDir(i))) 
+		if (CompareDirectories(rstrDirectory, GetTempDir(i))==0)
 			bFound = true; //ok, found a directory 
+	
 	if(!bFound) //found nowhere - not a tempfile... 
 		return false;
-/*	for (int i=0;i<tempdir.GetCount();i++)
-		if (CompareDirectories(rstrDirectory, GetTempDir(i) ))
-		return false;*/
 
 	// do not share a file from the temp directory, if it matches one of the following patterns
 	CString strNameLower(rstrName);
@@ -802,7 +802,7 @@ bool CPreferences::IsConfigFile(const CString& rstrDirectory, const CString& rst
 #ifdef FAF
 float CPreferences::GetMaxDownload() {
 	//dont be a Lam3r :)
-	const float maxUpload = (GetMaxUpload() >= UNLIMITED) ? GetMaxGraphUploadRate() : GetMaxUpload();
+	const float maxUpload = (GetMaxUpload() >= UNLIMITED) ? GetMaxGraphUploadRate(true) : GetMaxUpload();
 	if(maxUpload < 4.0f)
 		return (3.0f * maxUpload < maxdownload) ? 3.0f * maxUpload : maxdownload;
 	else if(maxUpload < 11.0f) //Xman changed to 11
@@ -1638,19 +1638,19 @@ void CPreferences::SavePreferences()
 	}
 	ini.WriteString(_T("TempDirs"), tempdirs);
 
-    ini.WriteInt(_T("MinUpload"), minupload);
+        ini.WriteInt(_T("MinUpload"), minupload);
 
 //==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 #ifdef FAF
 	ini.WriteFloat(_T("MaxUpload"), maxupload);
 	ini.WriteFloat(_T("MaxDownload"), maxdownload);
 	ini.WriteFloat(_T("DownloadCapacity"), maxGraphDownloadRate);
-	ini.WriteFloat(_T("UploadCapacity"), maxGraphUploadRate);
+	ini.WriteFloat(_T("UploadCapacityNew"), maxGraphUploadRate);
 #else
 	ini.WriteInt(_T("MaxUpload"),maxupload);
 	ini.WriteInt(_T("MaxDownload"),maxdownload);
 	ini.WriteInt(_T("DownloadCapacity"),maxGraphDownloadRate);
-	ini.WriteInt(_T("UploadCapacity"),maxGraphUploadRate);
+	ini.WriteInt(_T("UploadCapacityNew"),maxGraphUploadRate);
 #endif
 //<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 
@@ -1915,13 +1915,13 @@ ini.WriteFloat(_T("uploadslotspeed"),m_slotspeed,_T("NextEMF"));
 #endif
 //<== SlotSpeed [shadow2004]
 
-	//==>Reask sourcen after ip change [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA //Reask sourcen after ip change
 	ini.WriteBool(_T("ReaskSourceAfterIPChange"),m_bReaskSourceAfterIPChange,_T("NextEMF"));
 #endif //Reask sourcen after ip change
-	//<==Reask sourcen after ip change [cyrex2001]
+//<==Reask sourcen after ip change [cyrex2001]
 
-	//==>Quickstart [cyrex2001]
+//==>Quickstart [cyrex2001]
 #ifdef QUICKSTART //Quickstart
 	ini.WriteBool(_T("QuickStart"), m_bQuickStart,_T("NextEMF"));
 	ini.WriteInt(_T("QuickStartMaxTime"), QuickStartMaxTime,_T("NextEMF"));
@@ -1929,7 +1929,7 @@ ini.WriteFloat(_T("uploadslotspeed"),m_slotspeed,_T("NextEMF"));
 	ini.WriteInt(_T("QuickStartMaxConnPerFive"), QuickStartMaxConnPerFive,_T("NextEMF"));
 	ini.WriteBool(_T("QuickStartAfterIPChange"), m_bQuickStartAfterIPChange,_T("NextEMF"));
 #endif //Quickstart
-	//<==Quickstart [cyrex2001]
+//<==Quickstart [cyrex2001]
 //==>WiZaRd/Max AutoHardLimit [cyrex2001]
 #ifdef AHL
     ini.WriteInt(_T("AutoHLUpdate"), m_iAutoHLUpdateTimer,_T("NextEMF")); 
@@ -2141,25 +2141,62 @@ void CPreferences::LoadPreferences()
 //==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 #ifdef FAF
 	maxGraphDownloadRate=ini.GetFloat(_T("DownloadCapacity"),96);
-	if (maxGraphDownloadRate==0) maxGraphDownloadRate=96;
-	maxGraphUploadRate=ini.GetFloat(_T("UploadCapacity"),16);
-	if (maxGraphUploadRate==0) maxGraphUploadRate=16;
-	minupload=ini.GetInt(_T("MinUpload"), 1);
+	if (maxGraphDownloadRate==0) 
+            maxGraphDownloadRate=96;
+	maxGraphUploadRate=ini.GetFloat(_T("UploadCapacityNew"),-1);
+	if (maxGraphUploadRate==0) 
+			maxGraphUploadRate=UNLIMITED;
+	else if (maxGraphUploadRate == -1)
+	{
+		// converting value from prior versions
+		float nOldUploadCapacity = ini.GetFloat(_T("UploadCapacity"), 16);
+		if (nOldUploadCapacity ==16 && ini.GetFloat(_T("MaxUpload"),12) == 12)
+		{
+			// either this is a complete new install, or the prior version used the default value
+			// in both cases, set the new default values to unlimited
+			maxGraphUploadRate = UNLIMITED;
+			ini.WriteFloat(_T("MaxUpload"),UNLIMITED, _T("eMule"));
+		}
+		else
+			maxGraphUploadRate = nOldUploadCapacity; // use old custoum value			
+	}
+
+	minupload=ini.GetInt(_T("MinUpload"), UNLIMITED);
 	maxupload=ini.GetFloat(_T("MaxUpload"),12);
 
-	if (maxupload>maxGraphUploadRate && maxupload!=UNLIMITED) maxupload=maxGraphUploadRate*.8f;
-	maxdownload=ini.GetFloat(_T("MaxDownload"),76);
-	if (maxdownload>maxGraphDownloadRate && maxdownload!=UNLIMITED) maxdownload=maxGraphDownloadRate*.8;
+	if (maxupload > maxGraphUploadRate && maxupload!=UNLIMITED) 
+		maxupload = maxGraphUploadRate*.8f;
+	
+	maxdownload=ini.GetFloat(_T("MaxDownload"),UNLIMITED);
+	if (maxdownload > maxGraphDownloadRate && maxdownload!=UNLIMITED) 
+		maxdownload = maxGraphDownloadRate * .8;
 #else
 	maxGraphDownloadRate=ini.GetInt(_T("DownloadCapacity"),96);
-	if (maxGraphDownloadRate==0) maxGraphDownloadRate=96;
-	maxGraphUploadRate=ini.GetInt(_T("UploadCapacity"),16);
-	if (maxGraphUploadRate==0) maxGraphUploadRate=16;
-	minupload=ini.GetInt(_T("MinUpload"), 1);
-	maxupload=ini.GetInt(_T("MaxUpload"),12);
+	if (maxGraphDownloadRate==0)
+		maxGraphDownloadRate=96;
+	
+	maxGraphUploadRate = ini.GetInt(_T("UploadCapacityNew"),-1);
+	if (maxGraphUploadRate == 0)
+		maxGraphUploadRate = UNLIMITED;
+	else if (maxGraphUploadRate == -1){
+		// converting value from prior versions
+		int nOldUploadCapacity = ini.GetInt(_T("UploadCapacity"), 16);
+		if (nOldUploadCapacity == 16 && ini.GetInt(_T("MaxUpload"),12) == 12){
+			// either this is a complete new install, or the prior version used the default value
+			// in both cases, set the new default values to unlimited
+			maxGraphUploadRate = UNLIMITED;
+			ini.WriteInt(_T("MaxUpload"),UNLIMITED, _T("eMule"));
+		}
+		else
+			maxGraphUploadRate = nOldUploadCapacity; // use old custoum value
+	}
 
-	if (maxupload > maxGraphUploadRate && maxupload != UNLIMITED) maxupload = (uint16)(maxGraphUploadRate * .8);
-	maxdownload=ini.GetInt(_T("MaxDownload"),76);
+	minupload=ini.GetInt(_T("MinUpload"), UNLIMITED);
+	maxupload=ini.GetInt(_T("MaxUpload"),12);
+	if (maxupload > maxGraphUploadRate && maxupload != UNLIMITED)
+		maxupload = (uint16)(maxGraphUploadRate * .8);
+	
+	maxdownload=ini.GetInt(_T("MaxDownload"), UNLIMITED);
 	if (maxdownload > maxGraphDownloadRate && maxdownload != UNLIMITED) maxdownload = (uint16)(maxGraphDownloadRate * .8);
 #endif
 //<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
@@ -2575,13 +2612,13 @@ void CPreferences::LoadPreferences()
 #endif
 //<== SlotSpeed [shadow2004]
 
-	//==>Reask sourcen after ip change [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA //Reask sourcen after ip change
-	m_bReaskSourceAfterIPChange = ini.GetBool(_T("ReaskSourceAfterIPChange"),false, _T("NextEMF"));
+	m_bReaskSourceAfterIPChange = ini.GetBool(_T("ReaskSourceAfterIPChange"),true, _T("NextEMF"));
 #endif //Reask sourcen after ip change
-	//<==Reask sourcen after ip change [cyrex2001]
+//<==Reask sourcen after ip change [cyrex2001]
 
-	//==>Quickstart [cyrex2001]
+//==>Quickstart [cyrex2001]
 #ifdef QUICKSTART //Quickstart
 	QuickStartMaxTime=ini.GetInt(_T("QuickStartMaxTime"), 10, _T("NextEMF"));
 	if (QuickStartMaxTime < 8 || QuickStartMaxTime >18 ) QuickStartMaxTime = 10;
@@ -2598,7 +2635,7 @@ void CPreferences::LoadPreferences()
 //<==Quickstart [cyrex2001]
 //==>WiZaRd/Max AutoHardLimit [cyrex2001]
 #ifdef AHL
-    m_iAutoHLUpdateTimer = ini.GetInt(_T("AutoHLUpdate"), 50, _T("NextEMF")); 
+    m_iAutoHLUpdateTimer = ini.GetInt(_T("AutoHLUpdate"), 50, _T("NextEMF"));
 	if (m_iAutoHLUpdateTimer < 30 || m_iAutoHLUpdateTimer > 80) m_iAutoHLUpdateTimer = 50;
 
     m_bUseAutoHL = ini.GetBool(_T("AutoHL"), true, _T("NextEMF"));
@@ -2945,4 +2982,39 @@ bool CPreferences::IsRunAsUserEnabled(){
 bool CPreferences::GetUseReBarToolbar()
 {
 	return GetReBarToolbar() && theApp.m_ullComCtrlVer >= MAKEDLLVERULL(5,8,0,0);
+}
+
+int	CPreferences::GetMaxGraphUploadRate(bool bEstimateIfUnlimited){
+	if (maxGraphUploadRate != UNLIMITED || !bEstimateIfUnlimited){
+		return maxGraphUploadRate;
+	}
+	else{
+		if (maxGraphUploadRateEstimated != 0){
+			return maxGraphUploadRateEstimated +4;
+		}
+		else
+			return 16;
+	}
+}
+
+void CPreferences::EstimateMaxUploadCap(uint32 nCurrentUpload){
+	if (maxGraphUploadRateEstimated+1 < nCurrentUpload){
+		maxGraphUploadRateEstimated = nCurrentUpload;
+		if (maxGraphUploadRate == UNLIMITED && theApp.emuledlg && theApp.emuledlg->statisticswnd)
+			theApp.emuledlg->statisticswnd->SetARange(false, thePrefs.GetMaxGraphUploadRate(true));
+	}
+}
+
+//==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+#ifdef FAF
+void CPreferences::SetMaxGraphUploadRate(float in){
+#else
+void CPreferences::SetMaxGraphUploadRate(int in){
+#endif
+//<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
+	maxGraphUploadRate	=(in) ? in : UNLIMITED;
+}
+
+bool CPreferences::IsDynUpEnabled()	{
+	return m_bDynUpEnabled || maxGraphUploadRate == UNLIMITED;
 }

@@ -1260,8 +1260,7 @@ void CSharedFileList::Publish()
 								if( !aFiles[f]->IsPartFile() )
 								{
 									count++;
-									Kademlia::CUInt128 kadFileID(aFiles[f]->GetFileHash());
-									pSearch->addFileID(kadFileID);
+									pSearch->addFileID(Kademlia::CUInt128(aFiles[f]->GetFileHash()));
 									if( count > 150 )
 									{
 										//We only publish up to 150 files per keyword publish then rotate the list.
@@ -1302,9 +1301,7 @@ void CSharedFileList::Publish()
 				{
 					if(pCurKnownFile->PublishSrc())
 					{
-						Kademlia::CUInt128 kadFileID;
-						kadFileID.setValue(pCurKnownFile->GetFileHash());
-						if(Kademlia::CSearchManager::prepareLookup(Kademlia::CSearch::STOREFILE, true, kadFileID )==NULL)
+						if(Kademlia::CSearchManager::prepareLookup(Kademlia::CSearch::STOREFILE, true, Kademlia::CUInt128(pCurKnownFile->GetFileHash()))==NULL)
 							pCurKnownFile->SetLastPublishTimeKadSrc(0,0);
 					}	
 				}
@@ -1327,9 +1324,7 @@ void CSharedFileList::Publish()
 				{
 					if(pCurKnownFile->PublishNotes())
 					{
-						Kademlia::CUInt128 kadFileID;
-						kadFileID.setValue(pCurKnownFile->GetFileHash());
-						if(Kademlia::CSearchManager::prepareLookup(Kademlia::CSearch::STORENOTES, true, kadFileID )==NULL)
+						if(Kademlia::CSearchManager::prepareLookup(Kademlia::CSearch::STORENOTES, true, Kademlia::CUInt128(pCurKnownFile->GetFileHash()))==NULL)
 							pCurKnownFile->SetLastPublishTimeKadNotes(0);
 					}	
 				}

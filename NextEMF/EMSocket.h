@@ -44,13 +44,14 @@ public:
 	virtual ~CEMSocket();
 
 	virtual void 	SendPacket(Packet* packet, bool delpacket = true, bool controlpacket = true, uint32 actualPayloadSize = 0);
-    bool    HasQueues();
     bool	IsConnected() const {return byConnected == ES_CONNECTED;}
 	uint8	GetConState() const {return byConnected;}
 	virtual bool IsRawDataMode() const { return false; }
 	void	SetDownloadLimit(uint32 limit);
 	void	DisableDownloadLimit();
 	BOOL	AsyncSelect(long lEvent);
+	virtual bool IsBusy() const			{return m_bBusy;}
+    virtual bool HasQueues() const		{return (sendbuffer || standartpacket_queue.GetCount() > 0 || controlpacket_queue.GetCount() > 0);} // not trustworthy threaded? but it's ok if we don't get the correct result now and then
 
 	virtual UINT GetTimeOut() const;
 	virtual void SetTimeOut(UINT uTimeOut);

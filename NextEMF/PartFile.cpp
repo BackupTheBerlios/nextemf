@@ -2288,12 +2288,12 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 								break;
 								}
 						else
-						    if( ((dwCurTick - lastpurgetime) > MIN2MS(1)) && (GetSourceCount() >= (GetMaxSources()*.8 )) )
-						    {
-							    theApp.downloadqueue->RemoveSource( cur_src );
-							    lastpurgetime = dwCurTick;
-							    break;
-						    }						
+						if( ((dwCurTick - lastpurgetime) > MIN2MS(1)) && (GetSourceCount() >= (GetMaxSources()*.8 )) )
+						{
+							theApp.downloadqueue->RemoveSource( cur_src );
+							lastpurgetime = dwCurTick;
+							break;
+						}
 #else //														    					    
 						if( ((dwCurTick - lastpurgetime) > MIN2MS(1)) && (GetSourceCount() >= (GetMaxSources()*.8 )) )
 						{
@@ -2304,7 +2304,7 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 #endif //WiZaRd/Max AutoHardLimit
 //<==WiZaRd/Max AutoHardLimit [cyrex2001]						
 					}
-				//==>Reask sourcen after ip change [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA
 				// Maella -Unnecessary Protocol Overload-
 				// Maella -Spread Request- (idea SlugFiller)					
@@ -2324,19 +2324,19 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 					}
 				// Maella end
 #else
-				//Give up to 1 min for UDP to respond.. If we are within one min of TCP reask, do not try..
-				if (theApp.IsConnected() && cur_src->GetTimeUntilReask() < MIN2MS(2) && cur_src->GetTimeUntilReask() > SEC2MS(1) && ::GetTickCount()-cur_src->getLastTriedToConnectTime() > 20*60*1000) // ZZ:DownloadManager (one resk timestamp for each file)
-					cur_src->UDPReaskForDownload();
+					//Give up to 1 min for UDP to respond.. If we are within one min of TCP reask, do not try..
+					if (theApp.IsConnected() && cur_src->GetTimeUntilReask() < MIN2MS(2) && cur_src->GetTimeUntilReask() > SEC2MS(1) && ::GetTickCount()-cur_src->getLastTriedToConnectTime() > 20*60*1000) // ZZ:DownloadManager (one resk timestamp for each file)
+						cur_src->UDPReaskForDownload();
 				}
 #endif //Reask sourcen after ip change
-			//<==Reask sourcen after ip change [cyrex2001]
+//<==Reask sourcen after ip change [cyrex2001]
 				case DS_CONNECTING:
 				case DS_TOOMANYCONNS:
 				case DS_TOOMANYCONNSKAD:
 				case DS_NONE:
 				case DS_WAITCALLBACK:
 				case DS_WAITCALLBACKKAD:
-					//==>Reask sourcen after ip change [cyrex2001]
+//==>Reask sourcen after ip change [cyrex2001]
 #ifdef RSAIC_MAELLA
 					// Maella -Spread Request- (idea SlugFiller)
 					// Maella -Unnecessary Protocol Overload-
@@ -2360,14 +2360,14 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 						}
 					// Maella end
 #else
-					{
+				{
 					if (theApp.IsConnected() && cur_src->GetTimeUntilReask() == 0 && ::GetTickCount()-cur_src->getLastTriedToConnectTime() > 20*60*1000) // ZZ:DownloadManager (one resk timestamp for each file)
-						{
+					{
 						if(!cur_src->AskForDownload()) // NOTE: This may *delete* the client!!
 							break; //I left this break here just as a reminder just in case re rearange things..
-						}
+					}
 #endif //Reask sourcen after ip change
-					//<==Reask sourcen after ip change [cyrex2001]
+//<==Reask sourcen after ip change [cyrex2001]
 					break;
 				}
 			}
@@ -2409,9 +2409,7 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 				theApp.downloadqueue->SetLastKademliaFileRequest();
 				if (!GetKadFileSearchID())
 				{
-					Kademlia::CUInt128 kadFileID;
-					kadFileID.setValue(GetFileHash());
-					Kademlia::CSearch* pSearch = Kademlia::CSearchManager::prepareLookup(Kademlia::CSearch::FILE, true, kadFileID);
+					Kademlia::CSearch* pSearch = Kademlia::CSearchManager::prepareLookup(Kademlia::CSearch::FILE, true, Kademlia::CUInt128(GetFileHash()));
 					if (pSearch)
 					{
 						if(m_TotalSearchesKad < 7)
@@ -2431,10 +2429,7 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 				theApp.downloadqueue->SetLastKademliaFileRequest();
 				if (!GetKadFileSearchID())
 				{
-					Kademlia::CUInt128 kadFileID;
-					kadFileID.setValue(GetFileHash());
-					Kademlia::CSearch* pSearch = Kademlia::CSearchManager::prepareLookup(Kademlia::CSearch::FILE, true, kadFileID);
-					if (pSearch)
+					Kademlia::CSearch* pSearch = Kademlia::CSearchManager::prepareLookup(Kademlia::CSearch::FILE, true, Kademlia::CUInt128(GetFileHash()));					if (pSearch)
 					{
 						if(m_TotalSearchesKad < 7)
 							m_TotalSearchesKad++;
@@ -2470,13 +2465,13 @@ uint32 CPartFile::Process(uint32 reducedownload, uint8 m_icounter/*in percent*/)
 				}
 			else 
 				{
-		        // check if we want new sources from server
-		        if ( !m_bLocalSrcReqQueued && ((!m_LastSearchTime) || (dwCurTick - m_LastSearchTime) > SERVERREASKTIME) && theApp.serverconnect->IsConnected()
-			        && GetMaxSourcePerFileSoft() > GetSourceCount() && !stopped )
-		            {
-			        m_bLocalSrcReqQueued = true;
-			        theApp.downloadqueue->SendLocalSrcRequest(this);
-		            }
+		// check if we want new sources from server
+		if ( !m_bLocalSrcReqQueued && ((!m_LastSearchTime) || (dwCurTick - m_LastSearchTime) > SERVERREASKTIME) && theApp.serverconnect->IsConnected()
+			&& GetMaxSourcePerFileSoft() > GetSourceCount() && !stopped )
+		{
+			m_bLocalSrcReqQueued = true;
+			theApp.downloadqueue->SendLocalSrcRequest(this);
+		}
 				}
 #else
 		// check if we want new sources from server
@@ -4190,7 +4185,7 @@ void CPartFile::AddClientSources(CSafeMemFile* sources, uint8 sourceexchangevers
 		} 
 		else
 			break;
-		}
+	}
 #else //
 		if (GetMaxSources() > GetSourceCount())
 		{
@@ -5446,7 +5441,7 @@ bool CPartFile::CheckShowItemInGivenCat(int inCategory) /*const*/
 			case 14 : ret= (ED2KFT_DOCUMENT == GetED2KFileTypeID(GetFileName()));break;
 			case 15 : ret= (ED2KFT_IMAGE == GetED2KFileTypeID(GetFileName()));break;
 			case 16 : ret= (ED2KFT_PROGRAM == GetED2KFileTypeID(GetFileName()));break;
-			case 18 : ret= RegularExpressionMatch(thePrefs.GetCategory(inCategory)->regexp ,GetFileName());
+			case 18 : ret= RegularExpressionMatch(thePrefs.GetCategory(inCategory)->regexp ,GetFileName());break;
 			case 20 : ret= (ED2KFT_EMULECOLLECTION == GetED2KFileTypeID(GetFileName()));break;
 		}
 	}

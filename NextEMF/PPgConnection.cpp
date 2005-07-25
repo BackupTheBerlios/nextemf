@@ -234,13 +234,16 @@ void CPPgConnection::LoadSettings(void)
 		CheckDlgButton(IDC_UDPDISABLE, (thePrefs.udpport == 0));
 
 		GetDlgItem(IDC_UDPPORT)->EnableWindow(thePrefs.udpport > 0);
-	
+
 //==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 #ifdef FAF
 		strBuffer.Format(_T("%.1f"),(float) thePrefs.maxGraphDownloadRate);
 		GetDlgItem(IDC_DOWNLOAD_CAP)->SetWindowText(strBuffer);
 
-		strBuffer.Format(_T("%.1f"), (float)thePrefs.maxGraphUploadRate);
+	        if (thePrefs.maxGraphUploadRate != UNLIMITED)
+		     strBuffer.Format(_T("%.1f"), (float)thePrefs.maxGraphUploadRate);
+	        else
+		     strBuffer = _T("0");
 		GetDlgItem(IDC_UPLOAD_CAP)->SetWindowText(strBuffer);
 
 		if(thePrefs.GetMaxDownload() >= UNLIMITED){
@@ -269,17 +272,20 @@ void CPPgConnection::LoadSettings(void)
 		m_ctlMaxDown.SetRange(1, thePrefs.maxGraphDownloadRate);
 		SetRateSliderTicks(m_ctlMaxDown);
 
+		if (thePrefs.maxGraphUploadRate != UNLIMITED)
 		strBuffer.Format(_T("%d"), thePrefs.maxGraphUploadRate);
+		else
+			strBuffer = _T("0");
 		GetDlgItem(IDC_UPLOAD_CAP)->SetWindowText(strBuffer);
 
-		m_ctlMaxUp.SetRange(1, thePrefs.maxGraphUploadRate);
+		m_ctlMaxUp.SetRange(1, thePrefs.GetMaxGraphUploadRate(true));
 		SetRateSliderTicks(m_ctlMaxUp);
 
 		CheckDlgButton( IDC_DLIMIT_LBL, (thePrefs.maxdownload != UNLIMITED));
 		CheckDlgButton( IDC_ULIMIT_LBL, (thePrefs.maxupload != UNLIMITED));
 
 		m_ctlMaxDown.SetPos((thePrefs.maxdownload != UNLIMITED) ? thePrefs.maxdownload : thePrefs.maxGraphDownloadRate);
-		m_ctlMaxUp.SetPos((thePrefs.maxupload != UNLIMITED) ? thePrefs.maxupload : thePrefs.maxGraphUploadRate);
+		m_ctlMaxUp.SetPos((thePrefs.maxupload != UNLIMITED) ? thePrefs.maxupload : thePrefs.GetMaxGraphUploadRate(true));
 #endif
 //<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 
@@ -345,7 +351,7 @@ BOOL CPPgConnection::OnApply()
 	TCHAR buffer[510];
 //==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 #ifdef FAF
-	float lastMaxGraphUploadRate = thePrefs.GetMaxGraphUploadRate();
+	float lastMaxGraphUploadRate = thePrefs.GetMaxGraphUploadRate(true);
 	float lastMaxGraphDownloadRate = thePrefs.GetMaxGraphDownloadRate();
 #else
 	int lastmaxgu = thePrefs.maxGraphUploadRate;
@@ -414,13 +420,13 @@ BOOL CPPgConnection::OnApply()
 		thePrefs.SetMaxDownload((download <= 0.0f || download >= UNLIMITED) ? UNLIMITED : (float)download);
 	}
 
-	if (thePrefs.GetMaxGraphUploadRate() < thePrefs.GetMaxUpload() && thePrefs.GetMaxUpload() != UNLIMITED)
-		thePrefs.SetMaxUpload(thePrefs.GetMaxGraphUploadRate() * 0.8f);
+	if (thePrefs.GetMaxGraphUploadRate(true) < thePrefs.GetMaxUpload() && thePrefs.GetMaxUpload() != UNLIMITED)
+		thePrefs.SetMaxUpload(thePrefs.GetMaxGraphUploadRate(true) * 0.8f);
 
 	if (thePrefs.GetMaxGraphDownloadRate() < thePrefs.GetMaxDownload() && thePrefs.GetMaxDownload() != UNLIMITED)
 		thePrefs.SetMaxDownload(thePrefs.GetMaxGraphDownloadRate() * 0.8f);
 #else
-	m_ctlMaxUp.SetRange(1, thePrefs.GetMaxGraphUploadRate(), TRUE);
+	m_ctlMaxUp.SetRange(1, thePrefs.GetMaxGraphUploadRate(true), TRUE);
 	SetRateSliderTicks(m_ctlMaxUp);
 
     {
@@ -431,8 +437,8 @@ BOOL CPPgConnection::OnApply()
 	else
 		    ulSpeed = m_ctlMaxUp.GetPos();
 
-	    if (thePrefs.GetMaxGraphUploadRate() < ulSpeed && ulSpeed != UNLIMITED)
-		    ulSpeed = ((uint16)(thePrefs.GetMaxGraphUploadRate() * 0.8));
+	    if (thePrefs.GetMaxGraphUploadRate(true) < ulSpeed && ulSpeed != UNLIMITED)
+		    ulSpeed = ((uint16)(thePrefs.GetMaxGraphUploadRate(true) * 0.8));
 
         if(ulSpeed > thePrefs.GetMaxUpload()) {
             // make USS go up to higher ul limit faster
@@ -521,11 +527,11 @@ BOOL CPPgConnection::OnApply()
 
 	thePrefs.autoconnect = IsDlgButtonChecked(IDC_AUTOCONNECT)!=0;
 	thePrefs.reconnect = IsDlgButtonChecked(IDC_RECONN)!=0;
-		
+
 //==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 #ifdef FAF
-	if(lastMaxGraphUploadRate != thePrefs.GetMaxGraphUploadRate()) 
-		theApp.emuledlg->statisticswnd->SetARange(false, (int)thePrefs.GetMaxGraphUploadRate());
+	if(lastMaxGraphUploadRate != thePrefs.GetMaxGraphUploadRate(true)) 
+		theApp.emuledlg->statisticswnd->SetARange(false, (int)thePrefs.GetMaxGraphUploadRate(true));
 	if(lastMaxGraphDownloadRate != thePrefs.GetMaxGraphDownloadRate())
 		theApp.emuledlg->statisticswnd->SetARange(true, (int)thePrefs.GetMaxGraphDownloadRate());
 #else

@@ -2564,16 +2564,6 @@
 				RelativePath=".\Optimizer\optimize.h">
 			</File>
 		</Filter>
-		<Filter
-			Name="Documents"
-			Filter="">
-			<File
-				RelativePath="..\docs\kademlia\changelog.txt">
-			</File>
-			<File
-				RelativePath="..\docs\readme.txt">
-			</File>
-		</Filter>
 	</Files>
 	<Globals>
 		<Global

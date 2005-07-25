@@ -485,7 +485,7 @@ void CKademliaUDPListener::processKademliaRequest (const byte *packetData, uint3
 
 	// Get required number closest to target
 	ContactMap results;
-	CKademlia::getRoutingZone()->getClosestTo(0, target, distance, (int)type, &results);
+	CKademlia::getRoutingZone()->getClosestTo(2, target, distance, (int)type, &results);
 	uint16 count = (uint16)results.size();
 
 	// Write response
@@ -565,7 +565,7 @@ void CKademliaUDPListener::processKademliaResponse (const byte *packetData, uint
 			if(::IsGoodIPPort(ntohl(ip),port))
 			{
 				routingZone->add(id, ip, port, tport, type);
-				results->push_back(new CContact(id, ip, port, tport, type, target));
+				results->push_back(new CContact(id, ip, port, tport, target));
 			}
 		}
 	}
@@ -579,11 +579,14 @@ void CKademliaUDPListener::processKademliaResponse (const byte *packetData, uint
 
 void CKademliaUDPListener::Free(SSearchTerm* pSearchTerms)
 {
+	if(pSearchTerms)
+	{
 	if (pSearchTerms->left)
 		Free(pSearchTerms->left);
 	if (pSearchTerms->right)
 		Free(pSearchTerms->right);
 	delete pSearchTerms;
+}
 }
 
 static CString* _pstrDbgSearchExpr;

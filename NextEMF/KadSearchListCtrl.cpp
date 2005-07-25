@@ -205,10 +205,10 @@ void CKadSearchListCtrl::UpdateSearch(int iItem, const Kademlia::CSearch* search
 	id.Format( _T("%u (%u|%u)"), search->getNodeLoad(), search->getNodeLoadResonse(), search->getNodeLoadTotal() );
 	SetItemText(iItem, colLoad, id );
 
-	id.Format( _T("%u"), search->getCount() );
+	id.Format( _T("%u"), search->getAnswers());
 	SetItemText(iItem, colResponses, id );
 
-	id.Format( _T("%u"), search->getCountSent());
+	id.Format( _T("%u|%u"), search->getKadPacketSent(), search->getRequestAnswer());
 	SetItemText(iItem, colPacketsSent, id );
 }
 
@@ -315,10 +315,10 @@ int CKadSearchListCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSo
 			iResult = item1->getNodeLoad() - item2->getNodeLoad();
 			break;
 		case colResponses:
-			iResult = item1->getCount() - item2->getCount();
+			iResult = item1->getAnswers() - item2->getAnswers();
 			break;
 		case colPacketsSent:
-			iResult = item1->getCountSent() - item2->getCountSent();
+			iResult = item1->getKadPacketSent() - item2->getKadPacketSent();
 			break;
 		default:
 			return 0;

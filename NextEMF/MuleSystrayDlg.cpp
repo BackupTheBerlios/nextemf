@@ -401,13 +401,13 @@ void CMuleSystrayDlg::OnChangeDowntxt()
 void CMuleSystrayDlg::OnChangeUptxt() 
 {
 	UpdateData();
-	if(thePrefs.GetMaxGraphUploadRate() == UNLIMITED)
+	if(thePrefs.GetMaxGraphUploadRate(true) == UNLIMITED)
 	{
 		if(m_nUpSpeedTxt > 16)
 			m_nUpSpeedTxt = 16;
 	} else {
-		if(m_nUpSpeedTxt > thePrefs.GetMaxGraphUploadRate())
-			m_nUpSpeedTxt = thePrefs.GetMaxGraphUploadRate();
+		if(m_nUpSpeedTxt > thePrefs.GetMaxGraphUploadRate(true))
+			m_nUpSpeedTxt = thePrefs.GetMaxGraphUploadRate(true);
 	}
 	m_ctrlUpSpeedSld.SetPos(m_nUpSpeedTxt);
 	

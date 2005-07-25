@@ -47,7 +47,7 @@ namespace Kademlia {
 #define ALPHA_QUERY					3
 #define LOG_BASE_EXPONENT			5
 #define HELLO_TIMEOUT				20
-#define SEARCH_JUMPSTART			2
+#define SEARCH_JUMPSTART			1
 #define SEARCH_LIFETIME				45
 #define SEARCHFILE_LIFETIME			45
 #define SEARCHKEYWORD_LIFETIME		45

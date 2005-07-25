@@ -23,6 +23,8 @@
 #include "LastCommonRouteFinder.h"
 #include "OtherFunctions.h"
 #include "emuledlg.h"
+#include "uploadqueue.h"
+#include "preferences.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -336,6 +338,21 @@ void UploadBandwidthThrottler::Pause(bool paused) {
     }
 }
 
+uint32 UploadBandwidthThrottler::CalculateChangeDelta(uint32 numberOfConsecutiveChanges) const {
+    switch(numberOfConsecutiveChanges) {
+        case 0: return 50;
+        case 1: return 50;
+        case 2: return 128;
+        case 3: return 256;
+        case 4: return 512;
+        case 5: return 1*1024;
+        case 6: return 1*1024+512;
+        case 7: return 2*1024;
+        case 8: return 3*1024;
+        default: return 4*1024;
+    }
+}
+
 /**
  * Start the thread. Called from the constructor in this class.
  *
@@ -368,6 +385,17 @@ UINT UploadBandwidthThrottler::RunInternal() {
     uint32 rememberedSlotCounter = 0;
     DWORD lastTickReachedBandwidth = ::GetTickCount();
 
+	uint32 nEstiminatedLimit = 0;
+	sint32 nSlotsBusyLevel = 0;
+	DWORD nUploadStartTime = 0;
+    uint32 numberOfConsecutiveUpChanges = 0;
+    uint32 numberOfConsecutiveDownChanges = 0;
+    uint32 changesCount = 0;
+    uint32 loopsCount = 0;
+
+    bool estimateChangedLog = false;
+    bool lotsOfLog = false;
+
 	while(doRun) {
         pauseEvent->Lock();
 
@@ -375,6 +403,109 @@ UINT UploadBandwidthThrottler::RunInternal() {
 
 		// Get current speed from UploadSpeedSense
 		allowedDataRate = theApp.lastCommonRouteFinder->GetUpload();
+
+        // When no upload limit has been set in options, try to guess a good upload limit.
+		bool bUploadUnlimited = thePrefs.GetMaxUpload() == UNLIMITED;
+        if (bUploadUnlimited) {
+            loopsCount++;
+
+            // check busy level for all the slots (WSAEWOULDBLOCK status)
+            int cBusy = 0;
+            uint32 nCanSend = 0;
+			for (int i = 0; i < m_StandardOrder_list.GetSize(); i++){
+                if (m_StandardOrder_list[i] != NULL && m_StandardOrder_list[i]->HasQueues()) {
+                    nCanSend++;
+
+                    if(m_StandardOrder_list[i]->IsBusy())
+					    cBusy++;
+                }
+			}
+
+            if(nCanSend > 0) {
+			    float fBusyPercent = ((float)cBusy/(float)nCanSend) * 100;
+                if (cBusy > 2 && fBusyPercent > 75.00f && nSlotsBusyLevel < 255){
+				    nSlotsBusyLevel++;
+                    changesCount++;
+                    if(thePrefs.GetVerbose() && lotsOfLog && nSlotsBusyLevel%25==0) theApp.QueueDebugLogLine(false,_T("Throttler: nSlotsBusyLevel: %i Guessed limit: %0.5f changesCount: %i loopsCount: %i"), nSlotsBusyLevel, (float)nEstiminatedLimit/1024.00f, changesCount, loopsCount);
+			    }
+			    else if ( (cBusy <= 2 || fBusyPercent < 25.00f) && nSlotsBusyLevel > (-255)){
+				    nSlotsBusyLevel--;
+                    changesCount++;
+                    if(thePrefs.GetVerbose() && lotsOfLog && nSlotsBusyLevel%25==0) theApp.QueueDebugLogLine(false,_T("Throttler: nSlotsBusyLevel: %i Guessed limit: %0.5f changesCount %i loopsCount: %i"), nSlotsBusyLevel, (float)nEstiminatedLimit/1024.00f, changesCount, loopsCount);
+                }
+			}
+
+            if(nUploadStartTime == 0) {
+		        if (m_StandardOrder_list.GetSize() >= 3)
+			        nUploadStartTime = ::GetTickCount();
+            } else if(::GetTickCount()- nUploadStartTime > SEC2MS(60)) {
+			    if (theApp.uploadqueue){
+				    if (nEstiminatedLimit == 0){ // no autolimit was set yet
+					    if (nSlotsBusyLevel >= 250){ // sockets indicated that the BW limit has been reached
+						    nEstiminatedLimit = theApp.uploadqueue->GetDatarate();
+						    allowedDataRate = min(nEstiminatedLimit, allowedDataRate);
+						    nSlotsBusyLevel = -200;
+                            if(thePrefs.GetVerbose() && estimateChangedLog) theApp.QueueDebugLogLine(false,_T("Throttler: Set inital estimated limit to %0.5f changesCount: %i loopsCount: %i"), (float)nEstiminatedLimit/1024.00f, changesCount, loopsCount);
+                            changesCount = 0;
+                            loopsCount = 0;
+					    }
+				    }
+				    else{
+                        if (nSlotsBusyLevel > 250){
+                            if(changesCount > 500 || changesCount > 300 && loopsCount > 1000 || loopsCount > 2000) {
+                                numberOfConsecutiveDownChanges = 0;
+                            }
+                            numberOfConsecutiveDownChanges++;
+                            uint32 changeDelta = CalculateChangeDelta(numberOfConsecutiveDownChanges);
+
+                            // Don't lower speed below 1 KBytes/s
+                            if(nEstiminatedLimit < changeDelta + 1024) {
+                                if(nEstiminatedLimit > 1024) {
+                                    changeDelta = nEstiminatedLimit - 1024;
+                                } else {
+                                    changeDelta = 0;
+                                }
+                            }
+                            ASSERT(nEstiminatedLimit >= changeDelta + 1024);
+    						nEstiminatedLimit -= changeDelta;
+
+                            if(thePrefs.GetVerbose() && estimateChangedLog) theApp.QueueDebugLogLine(false,_T("Throttler: REDUCED limit #%i with %i bytes to: %0.5f changesCount: %i loopsCount: %i"), numberOfConsecutiveDownChanges, changeDelta, (float)nEstiminatedLimit/1024.00f, changesCount, loopsCount);
+
+                            numberOfConsecutiveUpChanges = 0;
+						    nSlotsBusyLevel = 0;
+                            changesCount = 0;
+                            loopsCount = 0;
+					    }
+                        else if (nSlotsBusyLevel < (-250)){
+                            if(changesCount > 500 || changesCount > 300 && loopsCount > 1000 || loopsCount > 2000) {
+                                numberOfConsecutiveUpChanges = 0;
+                            }
+                            numberOfConsecutiveUpChanges++;
+                            uint32 changeDelta = CalculateChangeDelta(numberOfConsecutiveUpChanges);
+
+                            // Don't raise speed unless we are under current allowedDataRate
+                            if(nEstiminatedLimit+changeDelta > allowedDataRate) {
+                                if(nEstiminatedLimit < allowedDataRate) {
+                                    changeDelta = allowedDataRate - nEstiminatedLimit;
+                                } else {
+                                    changeDelta = 0;
+                                }
+                            }
+                            ASSERT(nEstiminatedLimit < allowedDataRate && nEstiminatedLimit+changeDelta <= allowedDataRate || nEstiminatedLimit >= allowedDataRate && changeDelta == 0);
+                            nEstiminatedLimit += changeDelta;
+
+                            if(thePrefs.GetVerbose() && estimateChangedLog) theApp.QueueDebugLogLine(false,_T("Throttler: INCREASED limit #%i with %i bytes to: %0.5f changesCount: %i loopsCount: %i"), numberOfConsecutiveUpChanges, changeDelta, (float)nEstiminatedLimit/1024.00f, changesCount, loopsCount);
+
+                            numberOfConsecutiveDownChanges = 0;
+						    nSlotsBusyLevel = 0;
+                            changesCount = 0;
+                            loopsCount = 0;
+					    }
+					    allowedDataRate = min(nEstiminatedLimit, allowedDataRate);
+				    } 
+			    }
+            }
+		}
 
 		uint32 minFragSize = 1300;
         uint32 doubleSendSize = minFragSize*2; // send two packages at a time so they can share an ACK
@@ -546,6 +677,8 @@ UINT UploadBandwidthThrottler::RunInternal() {
 			}
 		    realBytesToSpend -= spentBytes*1000;
 
+            // If we couldn't spend all allocated bandwidth this loop, some of it is allowed to be saved
+            // and used the next loop
 		    if(realBytesToSpend < -(((sint64)m_StandardOrder_list.GetSize()+1)*minFragSize)*1000) {
 			    sint64 newRealBytesToSpend = -(((sint64)m_StandardOrder_list.GetSize()+1)*minFragSize)*1000;
     
@@ -568,6 +701,7 @@ UINT UploadBandwidthThrottler::RunInternal() {
                 }
             }
 		    
+            // save info about how much bandwidth we've managed to use since the last time someone polled us about used bandwidth
 		    m_SentBytesSinceLastCall += spentBytes;
 		    m_SentBytesSinceLastCallOverhead += spentOverhead;
     

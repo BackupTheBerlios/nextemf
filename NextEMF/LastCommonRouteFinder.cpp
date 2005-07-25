@@ -360,7 +360,7 @@ UINT LastCommonRouteFinder::RunInternal() {
 			pingLocker.Lock();
 			m_pingAverage = 0;
 			m_lowestPing = 0;
-			m_state = _T("Preparing...");
+			m_state = GetResString(IDS_USS_STATE_PREPARING);
 			pingLocker.Unlock();
 
 			// Calculate a good starting value for the upload control. If the user has entered a max upload value, we use that. Otherwise 10 KBytes/s
@@ -557,13 +557,13 @@ UINT LastCommonRouteFinder::RunInternal() {
                         SetUpload(maxUpload);
 
 						pingLocker.Lock();
-						m_state = _T("Waiting...");
+						m_state = GetResString(IDS_USS_STATE_WAITING);
 						pingLocker.Unlock();
 
 						prefsEvent->Lock(3*60*1000);
 
                         pingLocker.Lock();
-                        m_state = _T("Preparing...");
+						m_state = GetResString(IDS_USS_STATE_PREPARING);
                         pingLocker.Unlock();
 					}
 
@@ -586,12 +586,12 @@ UINT LastCommonRouteFinder::RunInternal() {
 					    stHostToPingAddr.s_addr = hostToPing;
 					    theApp.QueueDebugLogLine(false,_T("UploadSpeedSense: Found last common host. HostToPing: %s"), ipstr(stHostToPingAddr));
 				    } else {
-					    theApp.QueueDebugLogLine(false,_T("UploadSpeedSense: Tracerouting failed too many times. Disabling Upload SpeedSense."));
-					    theApp.QueueLogLine(true,_T("UploadSpeedSense: Tracerouting failed too many times. Disabling Upload SpeedSense."));
+					    theApp.QueueDebugLogLine(false,GetResString(IDS_USS_TRACEROUTEOFTENFAILED));
+						theApp.QueueLogLine(true, GetResString(IDS_USS_TRACEROUTEOFTENFAILED));
 					    enabled = false;
 
 					    pingLocker.Lock();
-					    m_state = _T("Error.");
+						m_state = GetResString(IDS_USS_STATE_ERROR);
 					    pingLocker.Unlock();
 
 					    // PENDING: this may not be thread safe
@@ -680,8 +680,8 @@ UINT LastCommonRouteFinder::RunInternal() {
             }
 
 			if(doRun && enabled) {
-				theApp.QueueDebugLogLine(false,_T("UploadSpeedSense: Done with preparations. Starting control of upload speed. (First 60 seconds will be in fast reaction mode)"));
-				theApp.QueueLogLine(true,_T("UploadSpeedSense: Done with preparations. Starting control of upload speed. (First 60 seconds will be in fast reaction mode)"));
+				theApp.QueueDebugLogLine(false, GetResString(IDS_USS_STARTING));
+				theApp.QueueLogLine(true, GetResString(IDS_USS_STARTING)  );
             }
 
 			pingLocker.Lock();
@@ -728,14 +728,15 @@ UINT LastCommonRouteFinder::RunInternal() {
 				uint32 goingDownDivider = m_goingDownDivider;
 				uint32 numberOfPingsForAverage = m_iNumberOfPingsForAverage;
 				lowestInitialPingAllowed = m_LowestInitialPingAllowed; // PENDING
+                uint32 curUpload = m_CurUpload;
 
                 bool initiateFastReactionPeriod = m_initiateFastReactionPeriod;
                 m_initiateFastReactionPeriod = false;
 				prefsLocker.Unlock();
 
                 if(initiateFastReactionPeriod) {
-                    theApp.QueueDebugLogLine(false,_T("UploadSpeedSense: Raised upload limit in prefs detected. Going into fast reaction mode for 60 seconds."));
-                    theApp.QueueLogLine(true,_T("UploadSpeedSense: Raised upload limit in prefs detected. Going into fast reaction mode for 60 seconds."));
+                    theApp.QueueDebugLogLine(false, GetResString(IDS_USS_MANUALUPLOADLIMITDETECTED));
+					theApp.QueueLogLine(true, GetResString(IDS_USS_MANUALUPLOADLIMITDETECTED) );
 
                     // the first 60 seconds will use hardcoded up/down slowness that is faster
                     initTime = ::GetTickCount();
@@ -863,9 +864,11 @@ UINT LastCommonRouteFinder::RunInternal() {
 
 					// Calculate change of upload speed
 					if(hping < 0) {
+						//Ping too high
+						acceptNewClient = false;
+
 						// lower the speed
 						sint64 ulDiff = hping*1024*10 / (sint64)(goingDownDivider*initial_ping);
-						acceptNewClient = false;
 
 						//theApp.QueueDebugLogLine(false,_T("UploadSpeedSense: Down! Ping cur %i ms. Ave %I64i ms %i values. New Upload %i + %I64i = %I64i"), raw_ping, pingDelaysTotal/pingDelays.GetCount(), pingDelays.GetCount(), upload, ulDiff, upload+ulDiff);
 						// prevent underflow
@@ -875,9 +878,12 @@ UINT LastCommonRouteFinder::RunInternal() {
 							upload = 0;
 						}
 					} else if(hping > 0) {
+						//Ping lower than max allowed
+						acceptNewClient = true;
+
+						if(curUpload+30*1024 > upload) {
 						// raise the speed
 						uint64 ulDiff = hping*1024*10 / (uint64)(goingUpDivider*initial_ping);
-						acceptNewClient = true;
 
 						//theApp.QueueDebugLogLine(false,_T("UploadSpeedSense: Up! Ping cur %i ms. Ave %I64i ms %i values. New Upload %i + %I64i = %I64i"), raw_ping, pingDelaysTotal/pingDelays.GetCount(), pingDelays.GetCount(), upload, ulDiff, upload+ulDiff);
 						// prevent overflow
@@ -886,6 +892,7 @@ UINT LastCommonRouteFinder::RunInternal() {
 						} else {
 							upload = _I32_MAX;
                         }
+					}
 					}
 					prefsLocker.Lock();
 					if (upload < minUpload) {

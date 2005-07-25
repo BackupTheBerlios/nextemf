@@ -54,7 +54,7 @@ enum ECols
 
 IMPLEMENT_DYNAMIC(CCollectionCreateDialog, CDialog)
 CCollectionCreateDialog::CCollectionCreateDialog(CWnd* pParent /*=NULL*/)
-	: CDialog(CCollectionCreateDialog::IDD, pParent)
+	: CResizableDialog(CCollectionCreateDialog::IDD, pParent)
 	, m_pCollection(NULL)
 	, m_bSharedFiles(false)
 {
@@ -62,6 +62,8 @@ CCollectionCreateDialog::CCollectionCreateDialog(CWnd* pParent /*=NULL*/)
 
 CCollectionCreateDialog::~CCollectionCreateDialog()
 {
+	if (m_icoWnd)
+		VERIFY( DestroyIcon(m_icoWnd) );
 }
 
 void CCollectionCreateDialog::DoDataExchange(CDataExchange* pDX)
@@ -83,7 +85,7 @@ void CCollectionCreateDialog::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CCollectionCreateDialog, CDialog)
+BEGIN_MESSAGE_MAP(CCollectionCreateDialog, CResizableDialog)
 	ON_BN_CLICKED(IDC_COLLECTIONREMOVE, OnBnClickedCollectionremove)
 	ON_BN_CLICKED(IDC_COLLECTIONADD, OnBnClickedCollectionadd)
 	ON_BN_CLICKED(IDC_CCOLL_SAVE, OnBnClickedOk)
@@ -100,7 +102,7 @@ END_MESSAGE_MAP()
 
 
 
-void CCollectionCreateDialog::SetCollection(CCollection* pCollection)
+void CCollectionCreateDialog::SetCollection(CCollection* pCollection, bool create)
 {
 	if(!pCollection)
 	{
@@ -108,6 +110,8 @@ void CCollectionCreateDialog::SetCollection(CCollection* pCollection)
 		return;
 	}
 	m_pCollection = pCollection;
+	m_bCreatemode=create;
+
 }
 
 BOOL CCollectionCreateDialog::OnInitDialog(void)
@@ -119,10 +123,14 @@ BOOL CCollectionCreateDialog::OnInitDialog(void)
 		ASSERT(0);
 		return TRUE;
 	}
+	SetIcon(m_icoWnd = theApp.LoadIcon(_T("Collection")), FALSE);
+	if (m_bCreatemode)
+		SetWindowText(GetResString(IDS_CREATECOLLECTION));
+	else
+		SetWindowText(GetResString(IDS_MODIFYCOLLECTION));
 
-	SetWindowText(GetResString(IDS_CREATECOLLECTION));
-	m_CollectionListCtrl.Init(_T("CreateR"));
-	m_CollectionAvailListCtrl.Init(_T("CreateL"));
+	m_CollectionListCtrl.Init(_T("CollectionCreateR"));
+	m_CollectionAvailListCtrl.Init(_T("CollectionCreateL"));
 
 	m_AddCollectionButton.SetIcon(theApp.LoadIcon(_T("FORWARD")));
 	m_RemoveCollectionButton.SetIcon(theApp.LoadIcon(_T("BACK")));
@@ -136,6 +144,28 @@ BOOL CCollectionCreateDialog::OnInitDialog(void)
 	SetDlgItemText(IDC_CCOLL_STATIC_NAME,GetResString(IDS_SW_NAME) + _T(":") );
 	SetDlgItemText(IDC_CCOLL_BASICOPTIONS, GetResString(IDS_LD_BASICOPT) );
 	SetDlgItemText(IDC_CCOLL_ADVANCEDOPTIONS,GetResString(IDS_LD_ADVANCEDOPT));
+
+	AddAnchor(IDC_COLLECTIONAVAILLIST, TOP_LEFT, BOTTOM_CENTER);
+	AddAnchor(IDC_COLLECTIONLISTCTRL, TOP_CENTER, BOTTOM_RIGHT);
+	AddAnchor(IDC_COLLECTIONLISTLABEL, TOP_CENTER);
+	AddAnchor(IDC_COLLECTIONLISTICON, TOP_CENTER);
+
+	AddAnchor(IDC_COLLECTIONADD, TOP_CENTER);
+	AddAnchor(IDC_COLLECTIONREMOVE, TOP_CENTER);
+
+	AddAnchor(IDC_CCOLL_SAVE, BOTTOM_RIGHT);
+	AddAnchor(IDC_CCOLL_CANCEL, BOTTOM_RIGHT);
+
+	AddAnchor(IDC_CCOLL_BASICOPTIONS, BOTTOM_LEFT, BOTTOM_RIGHT);
+	AddAnchor(IDC_CCOLL_ADVANCEDOPTIONS, BOTTOM_LEFT, BOTTOM_RIGHT);
+	AddAnchor(IDC_CCOLL_STATIC_NAME, BOTTOM_LEFT);
+
+
+	AddAnchor(IDC_COLLECTIONNAMEEDIT, BOTTOM_LEFT, BOTTOM_RIGHT);
+	AddAnchor(IDC_COLLECTIONCREATEFORMAT, BOTTOM_LEFT, BOTTOM_RIGHT);
+	AddAnchor(IDC_COLLECTIONCREATESIGNCHECK, BOTTOM_LEFT, BOTTOM_RIGHT);
+	
+
 
 	POSITION pos = m_pCollection->m_CollectionFilesMap.GetStartPosition();
 	CCollectionFile* pCollectionFile;
@@ -152,6 +182,7 @@ BOOL CCollectionCreateDialog::OnInitDialog(void)
 
 	m_CollectionCreateFormatCheck.SetCheck(m_pCollection->m_bTextFormat);
 	OnBnClickedCollectioncreateformat();
+	GetDlgItem(IDC_CCOLL_SAVE)->EnableWindow( m_CollectionListCtrl.GetItemCount()>0);
 
 	return TRUE;
 }
@@ -174,6 +205,7 @@ void CCollectionCreateDialog::AddSelectedFiles(void)
 		if(pCollectionFile)
 			m_CollectionListCtrl.AddFileToList(pCollectionFile);
 	}
+	GetDlgItem(IDC_CCOLL_SAVE)->EnableWindow( m_CollectionListCtrl.GetItemCount()>0);
 }
 
 void CCollectionCreateDialog::RemoveSelectedFiles(void)
@@ -193,6 +225,7 @@ void CCollectionCreateDialog::RemoveSelectedFiles(void)
 		m_CollectionListCtrl.RemoveFileFromList(pCollectionFile);
 		m_pCollection->RemoveFileFromCollection(pCollectionFile);
 	}
+	GetDlgItem(IDC_CCOLL_SAVE)->EnableWindow( m_CollectionListCtrl.GetItemCount()>0);
 }
 
 void CCollectionCreateDialog::OnBnClickedCollectionremove()

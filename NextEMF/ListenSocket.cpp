@@ -388,9 +388,7 @@ bool CClientReqSocket::ProcessPacket(const BYTE* packet, uint32 size, UINT opcod
 							client->InfoPacketsReceived();
 
 						if( client->GetKadPort() )
-						{
 							Kademlia::CKademlia::bootstrap(ntohl(client->GetIP()), client->GetKadPort());
-						}
 					}
 					break;
 				}
@@ -1209,6 +1207,9 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 					theStats.AddDownDataOverheadFileRequest(uRawSize);
 					client->CheckHandshakeFinished(OP_EMULEPROT, opcode);
 
+					if( client->GetKadPort() )
+						Kademlia::CKademlia::bootstrap(ntohl(client->GetIP()), client->GetKadPort());
+
 					CSafeMemFile data_in(packet, size);
 					uchar reqfilehash[16];
 					data_in.ReadHash16(reqfilehash);
@@ -1356,6 +1357,9 @@ bool CClientReqSocket::ProcessExtPacket(const BYTE* packet, uint32 size, UINT op
 						DebugRecv("OP_MultiPacketAns", client, (size >= 16) ? packet : NULL);
 					theStats.AddDownDataOverheadFileRequest(uRawSize);
 					client->CheckHandshakeFinished(OP_EMULEPROT, opcode);
+
+					if( client->GetKadPort() )
+						Kademlia::CKademlia::bootstrap(ntohl(client->GetIP()), client->GetKadPort());
 
 					CSafeMemFile data_in(packet, size);
 					uchar reqfilehash[16];

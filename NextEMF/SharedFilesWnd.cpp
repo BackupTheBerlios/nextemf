@@ -110,11 +110,10 @@ BOOL CSharedFilesWnd::OnInitDialog()
 
 	int PosStatVinit = rcSpl.left;
 	int PosStatVnew = rc.left + thePrefs.GetSplitterbarPositionShared() + 2;
-
+	
 	if (thePrefs.GetSplitterbarPositionShared() > SPLITTER_RANGE_MAX)
 		PosStatVnew = SPLITTER_RANGE_MAX;
-	else if (thePrefs.GetSplitterbarPositionShared() < SPLITTER_RANGE_MIN) // FIX by WiZaRd
-	//else if (thePrefs.GetSplitterbarPositionFriend() < SPLITTER_RANGE_MIN)
+	else if (thePrefs.GetSplitterbarPositionShared() < SPLITTER_RANGE_MIN)
 		PosStatVnew = SPLITTER_RANGE_MIN;
 	rcSpl.left = PosStatVnew;
 	rcSpl.right = PosStatVnew + SPLITTER_WIDTH;

@@ -186,7 +186,7 @@ BOOL CStatisticsDlg::OnInitDialog()
 	GetDlgItem(IDC_SCOPE_U)->DestroyWindow();
 	ScreenToClient(rect);
 	m_UploadOMeter.Create(WS_VISIBLE | WS_CHILD, rect, this, IDC_SCOPE_U);
-	SetARange(false, thePrefs.GetMaxGraphUploadRate());
+	SetARange(false, thePrefs.GetMaxGraphUploadRate(true));
 	m_UploadOMeter.SetYUnits(GetResString(IDS_KBYTESPERSEC));
 	
 	// Setup additional graph-scope

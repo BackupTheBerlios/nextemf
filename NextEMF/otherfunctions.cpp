@@ -1170,6 +1170,7 @@ struct SED2KFileType
     { _T(".far"),   ED2KFT_AUDIO },
     { _T(".flac"),  ED2KFT_AUDIO },
     { _T(".it"),    ED2KFT_AUDIO },
+    { _T(".m4a"),   ED2KFT_AUDIO },
     { _T(".mdl"),   ED2KFT_AUDIO },
     { _T(".med"),   ED2KFT_AUDIO },
     { _T(".mid"),   ED2KFT_AUDIO },

@@ -1058,6 +1058,8 @@
 #define IDS_PASTE                       1170
 #define IDS_SEARCHAUTHORCOLLECTION      1171
 #define IDS_ERR_DUPL_FILES              1172
+#define IDS_USS_TRACEROUTEOFTENFAILED   1173
+#define IDS_USS_STARTING                1174
 #define IDS_A4AF                        1175
 #define IDS_AUTOCAT_LABEL               1178
 #define IDS_SHOWEXTSETTINGS             1179
@@ -1427,6 +1429,10 @@
 #define IDS_VIEWCOLLECTION              1557
 #define IDS_COLL_TEXTFORMAT             1558
 #define IDS_RUNNINGRESTRICTED           1559
+#define IDS_USS_MANUALUPLOADLIMITDETECTED 1560
+#define IDS_USS_STATE_PREPARING         1561
+#define IDS_USS_STATE_WAITING           1562
+#define IDS_USS_STATE_ERROR             1563
 #define IDC_ANIMATE1                    2000
 #define IDC_STATUS                      2001
 #define IDC_FILESTATUS                  2002
@@ -1511,6 +1517,7 @@
 #define IDC_TEMPFILES                   2144
 #define IDC_WIZ_APPLY_BUTTON            2149
 #define IDC_WIZ_CANCEL_BUTTON           2153
+#define IDC_WIZ_UNKNOWN_BUTTON          2154
 #define IDC_UNCLIST                     2155
 #define IDC_PORT                        2162
 #define IDC_APPLY                       2164
@@ -2159,14 +2166,14 @@
 #define IDS_QUICK_START_MAX_CONN_PER_FIVE 3253
 #define IDS_QUICK_START_AFTER_IP_CHANGE 3254
 #define IDS_QUICK_START_MAX_TIME        3255
-#define IDS_CON_CONTROL					3256
-#define IDS_USE_GLOBALHL				3300
-#define IDS_GLOBALHL_UPDATE_TIMER		3301
-#define IDS_MAX_SOURCE_HARDLIMIT		3302
-#define IDS_MIN_SOURCE_HARDLIMIT		3303
+#define IDS_CON_CONTROL                 3256
+#define IDS_USE_GLOBALHL                3300
+#define IDS_GLOBALHL_UPDATE_TIMER       3301
+#define IDS_MAX_SOURCE_HARDLIMIT        3302
+#define IDS_MIN_SOURCE_HARDLIMIT        3303
 
 #define IDC_BTN_CONNECT                 7000
-#define IDC_BTN_KADEMLIA               7001
+#define IDC_BTN_KADEMLIA                7001
 #define IDC_BTN_SEARCH                  7002
 #define IDC_BTN_SERVER                  7003
 #define IDC_BTN_FILES                   7004
@@ -2177,9 +2184,9 @@
 #define IDC_BTN_TRANSFER                7010
 #define IDC_BTN_IRC                     7011
 #define IDD_SPEEDGRAPH                  7012
-#define IDB_KADEMLIA_OVER              7020
-#define IDB_KADEMLIA_CLICK             7021
-#define IDB_KADEMLIA_NORMAL            7022
+#define IDB_KADEMLIA_OVER               7020
+#define IDB_KADEMLIA_CLICK              7021
+#define IDB_KADEMLIA_NORMAL             7022
 #define IDB_CONNECT_OVER                7023
 #define IDB_CONNECT_CLICK               7024
 #define IDB_CONNECT_NORMAL              7025

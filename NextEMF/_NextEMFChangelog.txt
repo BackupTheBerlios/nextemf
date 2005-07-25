@@ -2,6 +2,8 @@
 |Changes eMule 0.46a NextEMF v0.6
 |=<|  BETA 1  |>=================
 
+merged	: eMule v0.46c Beta
+
 added	: Tabbed Settings to the preferences by J.C.Conner / eMulefan83 [shadow2004]
 		
 changed	: Tabbed Settings
@@ -15,6 +17,14 @@ changed	: Tabbed Settings
 				
 changed	: switched original Creditsystem with Xman1's [shadow2004]
 
+updated	: Libs
+			# zlib to 1.2.3 [shadow2004]
+			# lib png to 1.2.8 [shadow2004]
+			# cximage to 5.99c [shadow2004]
+			# crypto lib to 5.2.1 [shadow2004]
+		  also used
+			# resizeable lib 1.3 [shadow2004]
+			# id3 lib 3.8.3 [shadow2004]
 
 /////////////////////////////////
 |Changes eMule 0.46a NextEMF v0.5

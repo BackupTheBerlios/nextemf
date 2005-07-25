@@ -18,19 +18,23 @@
 #pragma once
 #include "afxcmn.h"
 #include "CollectionListCtrl.h"
+#include "ResizableLib\ResizableDialog.h"
 #include "afxwin.h"
 
 // CCollectionViewDialog dialog
 
 class CCollection;
 
-class CCollectionViewDialog : public CDialog
+class CCollectionViewDialog : public CResizableDialog
 {
 	DECLARE_DYNAMIC(CCollectionViewDialog)
 
 public:
 	CCollectionViewDialog(CWnd* pParent = NULL);   // standard constructor
 	virtual ~CCollectionViewDialog();
+
+	void SetCollection(CCollection* pCollection);
+	virtual BOOL OnInitDialog(void);
 
 // Dialog Data
 	enum { IDD = IDD_COLLECTIONVIEWDIALOG };
@@ -40,15 +44,13 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 private:
-	CCollection* m_pCollection;
-public:
-	void SetCollection(CCollection* pCollection);
-	virtual BOOL OnInitDialog(void);
-private:
-	CCollectionListCtrl m_CollectionViewList;
-public:
-	afx_msg void OnNMDblclkCollectionvewlist(NMHDR *pNMHDR, LRESULT *pResult);
 	void DownloadSelected(void);
+
+	CCollectionListCtrl m_CollectionViewList;
+	CCollection* m_pCollection;
+	HICON	m_icovWnd;
+
+	afx_msg void OnNMDblclkCollectionvewlist(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnBnClickedViewcollectiondl();
 	afx_msg void OnBnClickedOk();
 	CButton m_AddNewCatagory;

@@ -159,7 +159,7 @@ BEGIN
     CONTROL         "",IDC_LOGBOX,"Static",SS_BLACKFRAME | NOT WS_VISIBLE,9,
                     207,348,75
     CONTROL         "",IDC_DEBUG_LOG,"Static",SS_BLACKFRAME | NOT WS_VISIBLE,
-                     9,207,348,75
+                    9,207,348,75
     CONTROL         "",IDC_SPLITTER_SERVER,"Static",SS_BLACKFRAME | NOT 
                     WS_VISIBLE,4,178,357,4
     CONTROL         "",IDC_LEECHERLOG,"Static",SS_BLACKFRAME | NOT 
@@ -695,9 +695,9 @@ BEGIN
                     WS_GROUP | WS_TABSTOP,176,168,66,11
     CONTROL         "kByte/s",IDC_KBYTES,"Button",BS_AUTORADIOBUTTON | 
                     BS_FLAT | WS_TABSTOP,176,180,66,11
-    DEFPUSHBUTTON   "Apply",IDC_WIZ_APPLY_BUTTON,141,203,50,14,BS_FLAT | 
+    DEFPUSHBUTTON   "Apply",IDC_WIZ_APPLY_BUTTON,136,204,55,14,BS_FLAT | 
                     WS_GROUP
-    PUSHBUTTON      "Cancel",IDC_WIZ_CANCEL_BUTTON,199,203,50,14,BS_FLAT
+    PUSHBUTTON      "Cancel",IDC_WIZ_CANCEL_BUTTON,194,204,56,14,BS_FLAT
     GROUPBOX        "Operating System",IDC_WIZ_OS_FRAME,7,7,242,25,BS_FLAT
     GROUPBOX        "Concurrent Downloads",IDC_WIZ_CONCURENTDOWN_FRAME,7,37,
                     242,25,BS_FLAT
@@ -2373,9 +2373,9 @@ TRAYBTN_BLUE            BITMAP                  "res\\TrayBtnBlue.bmp"
 TRAYBTN_METALLIC        BITMAP                  "res\\TrayBtnMetallic.bmp"
 TRAYBTN_HOMESTEAD       BITMAP                  "res\\TrayBtnHomestead.bmp"
 //==> Toolbar [shadow2004]
-IDB_KADEMLIA_OVER      BITMAP                   "res\\Toolbar\\btn_kad_over.bmp"
-IDB_KADEMLIA_CLICK     BITMAP                   "res\\Toolbar\\btn_kad_click.bmp"
-IDB_KADEMLIA_NORMAL    BITMAP                   "res\\Toolbar\\btn_kad_normal.bmp"
+IDB_KADEMLIA_OVER       BITMAP                  "res\\Toolbar\\btn_kad_over.bmp"
+IDB_KADEMLIA_CLICK      BITMAP                  "res\\Toolbar\\btn_kad_click.bmp"
+IDB_KADEMLIA_NORMAL     BITMAP                  "res\\Toolbar\\btn_kad_normal.bmp"
 IDB_SERVER_CLICK        BITMAP                  "res\\Toolbar\\btn_server_click.bmp"
 IDB_SERVER_NORMAL       BITMAP                  "res\\Toolbar\\btn_server_normal.bmp"
 IDB_SERVER_OVER         BITMAP                  "res\\Toolbar\\btn_server_over.bmp"
@@ -2521,8 +2521,8 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 //
 
 IDD_COLLECTIONCREATEDIALOG DIALOGEX 0, 0, 470, 326
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
-    WS_SYSMENU
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | 
+    WS_SYSMENU | WS_THICKFRAME
 CAPTION "Dialog"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
@@ -2530,7 +2530,7 @@ BEGIN
     PUSHBUTTON      "Cancel",IDC_CCOLL_CANCEL,398,308,65,14,BS_FLAT
     CONTROL         "",IDC_COLLECTIONLISTCTRL,"SysListView32",LVS_REPORT | 
                     LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | WS_TABSTOP,249,17,
-                    213,194,WS_EX_STATICEDGE
+                    214,194,WS_EX_STATICEDGE
     CONTROL         "",IDC_COLLECTIONAVAILLIST,"SysListView32",LVS_REPORT | 
                     LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | WS_TABSTOP,7,17,212,
                     193,WS_EX_STATICEDGE
@@ -2556,20 +2556,20 @@ BEGIN
                     40,BS_FLAT
 END
 
-IDD_COLLECTIONVIEWDIALOG DIALOGEX 0, 0, 417, 270
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | 
-    WS_SYSMENU
+IDD_COLLECTIONVIEWDIALOG DIALOGEX 0, 0, 418, 270
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU | 
+    WS_THICKFRAME
 CAPTION "Dialog"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "Exit",IDC_VCOLL_CLOSE,344,251,66,14,BS_FLAT
+    DEFPUSHBUTTON   "Exit",IDC_VCOLL_CLOSE,345,251,66,14,BS_FLAT
     CONTROL         "",IDC_COLLECTIONVEWLIST,"SysListView32",LVS_REPORT | 
-                    LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | WS_TABSTOP,7,17,403,
+                    LVS_OWNERDRAWFIXED | LVS_ALIGNLEFT | WS_TABSTOP,7,17,404,
                     140,WS_EX_STATICEDGE
     PUSHBUTTON      "Download",IDC_VIEWCOLLECTIONDL,273,251,66,14,BS_FLAT
     CONTROL         "Add new downloads in a Collection Catagory",
                     IDC_COLLECTIONVIEWCATEGORYCHECK,"Button",BS_AUTOCHECKBOX | 
-                    BS_FLAT | WS_TABSTOP,24,226,286,10
+                    BS_FLAT | WS_TABSTOP,24,226,377,10
     LTEXT           "Collection List",IDC_COLLECTIONVIEWLISTLABEL,24,7,99,8
     ICON            "",IDC_COLLECTIONVIEWLISTICON,7,7,21,20
     LTEXT           "Author: ",IDC_COLLECTIONVIEWAUTHORLABEL,24,179,85,8
@@ -2579,8 +2579,8 @@ BEGIN
                     ES_READONLY | NOT WS_BORDER
     EDITTEXT        IDC_COLLECTIONVIEWAUTHORKEY,118,194,288,12,ES_MULTILINE | 
                     ES_READONLY | NOT WS_BORDER
-    GROUPBOX        "Details",IDC_VCOLL_DETAILS,7,167,403,42,BS_FLAT
-    GROUPBOX        "Options",IDC_VCOLL_OPTIONS,7,213,403,30,BS_FLAT
+    GROUPBOX        "Details",IDC_VCOLL_DETAILS,7,167,404,42,BS_FLAT
+    GROUPBOX        "Options",IDC_VCOLL_OPTIONS,7,213,404,30,BS_FLAT
 END
 
 
@@ -2609,7 +2609,7 @@ BEGIN
     IDD_COLLECTIONVIEWDIALOG, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 410
+        RIGHTMARGIN, 411
         VERTGUIDE, 24
         VERTGUIDE, 78
         VERTGUIDE, 118
@@ -4020,6 +4020,9 @@ BEGIN
     IDS_PASTE               "Paste"
     IDS_SEARCHAUTHORCOLLECTION "Search Author's Collections"
     IDS_ERR_DUPL_FILES      "Duplicate shared files: ""%s"" and ""%s"""
+    IDS_USS_TRACEROUTEOFTENFAILED 
+                            "UploadSpeedSense: Tracerouting failed too many times. Disabling Upload SpeedSense."
+    IDS_USS_STARTING        "UploadSpeedSense: Done with preparations. Starting control of upload speed. (First 60 seconds will be in fast reaction mode)"
     IDS_A4AF                "Source Handling"
     IDS_AUTOCAT_LABEL       "Auto cat-assignment (pattern, separated by |)"
     IDS_SHOWEXTSETTINGS     "Show more controls (advanced mode controls)"
@@ -4472,6 +4475,11 @@ BEGIN
     IDS_VIEWCOLLECTION      "View Collection"
     IDS_COLL_TEXTFORMAT     "Save collection In A Simple Text Format"
     IDS_RUNNINGRESTRICTED   "eMule is running with reduced privileges"
+    IDS_USS_MANUALUPLOADLIMITDETECTED 
+                            "UploadSpeedSense: Raised upload limit in prefs detected. Going into fast reaction mode for 60 seconds."
+    IDS_USS_STATE_PREPARING "Preparing..."
+    IDS_USS_STATE_WAITING   "Waiting..."
+    IDS_USS_STATE_ERROR     "Error!"
 END
 
 STRINGTABLE 

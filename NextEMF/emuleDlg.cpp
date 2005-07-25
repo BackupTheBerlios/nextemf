@@ -547,8 +547,8 @@ BOOL CemuleDlg::OnInitDialog()
 //<== Toolbar [shadow2004]
 			SetActiveDialog(kademliawnd);
 			break;
+			}
 		}
-	}
 	}
 
 	// if still no active window, activate server window
@@ -1938,7 +1938,7 @@ void CemuleDlg::OnTrayRButtonUp(CPoint pt)
 	}
 
 	m_pSystrayDlg = new CMuleSystrayDlg(this, pt,
-										thePrefs.GetMaxGraphUploadRate(), thePrefs.GetMaxGraphDownloadRate(),
+										thePrefs.GetMaxGraphUploadRate(true), thePrefs.GetMaxGraphDownloadRate(),
 										thePrefs.GetMaxUpload(), thePrefs.GetMaxDownload());
 	if (m_pSystrayDlg)
 	{
@@ -1981,11 +1981,11 @@ void CemuleDlg::AddSpeedSelectorSys(CMenu* addToMenu)
 	if (m_menuUploadCtrl.CreateMenu())
 	{
 		//m_menuUploadCtrl.AddMenuTitle(GetResString(IDS_PW_TIT_UP));
-		text.Format(_T("20%%\t%i %s"),  (uint16)(thePrefs.GetMaxGraphUploadRate()*0.2),GetResString(IDS_KBYTESPERSEC));	m_menuUploadCtrl.AppendMenu(MF_STRING, MP_QS_U20,  text);
-		text.Format(_T("40%%\t%i %s"),  (uint16)(thePrefs.GetMaxGraphUploadRate()*0.4),GetResString(IDS_KBYTESPERSEC));	m_menuUploadCtrl.AppendMenu(MF_STRING, MP_QS_U40,  text);
-		text.Format(_T("60%%\t%i %s"),  (uint16)(thePrefs.GetMaxGraphUploadRate()*0.6),GetResString(IDS_KBYTESPERSEC));	m_menuUploadCtrl.AppendMenu(MF_STRING, MP_QS_U60,  text);
-		text.Format(_T("80%%\t%i %s"),  (uint16)(thePrefs.GetMaxGraphUploadRate()*0.8),GetResString(IDS_KBYTESPERSEC));	m_menuUploadCtrl.AppendMenu(MF_STRING, MP_QS_U80,  text);
-		text.Format(_T("100%%\t%i %s"), (uint16)(thePrefs.GetMaxGraphUploadRate()),GetResString(IDS_KBYTESPERSEC));		m_menuUploadCtrl.AppendMenu(MF_STRING, MP_QS_U100, text);
+		text.Format(_T("20%%\t%i %s"),  (uint16)(thePrefs.GetMaxGraphUploadRate(true)*0.2),GetResString(IDS_KBYTESPERSEC));	m_menuUploadCtrl.AppendMenu(MF_STRING, MP_QS_U20,  text);
+		text.Format(_T("40%%\t%i %s"),  (uint16)(thePrefs.GetMaxGraphUploadRate(true)*0.4),GetResString(IDS_KBYTESPERSEC));	m_menuUploadCtrl.AppendMenu(MF_STRING, MP_QS_U40,  text);
+		text.Format(_T("60%%\t%i %s"),  (uint16)(thePrefs.GetMaxGraphUploadRate(true)*0.6),GetResString(IDS_KBYTESPERSEC));	m_menuUploadCtrl.AppendMenu(MF_STRING, MP_QS_U60,  text);
+		text.Format(_T("80%%\t%i %s"),  (uint16)(thePrefs.GetMaxGraphUploadRate(true)*0.8),GetResString(IDS_KBYTESPERSEC));	m_menuUploadCtrl.AppendMenu(MF_STRING, MP_QS_U80,  text);
+		text.Format(_T("100%%\t%i %s"), (uint16)(thePrefs.GetMaxGraphUploadRate(true)),GetResString(IDS_KBYTESPERSEC));		m_menuUploadCtrl.AppendMenu(MF_STRING, MP_QS_U100, text);
 		m_menuUploadCtrl.AppendMenu(MF_SEPARATOR);
 		
 		if (GetRecMaxUpload()>0) {
@@ -2454,7 +2454,7 @@ void CemuleDlg::QuickSpeedOther(UINT nID)
 			thePrefs.SetMaxDownload((float)(1));
 			break ;
 		case MP_QS_UA: 
-			thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate()-2));
+			thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate(true)-2));
 			thePrefs.SetMaxDownload((float)(thePrefs.GetMaxGraphDownloadRate()));
 			break ;
 #else
@@ -2462,7 +2462,7 @@ void CemuleDlg::QuickSpeedOther(UINT nID)
 			thePrefs.SetMaxDownload((uint16)(1));
 			break ;
 		case MP_QS_UA: 
-			thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate()));
+			thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate(true)));
 			thePrefs.SetMaxDownload((uint16)(thePrefs.GetMaxGraphDownloadRate()));
 			break ;
 #endif
@@ -2476,28 +2476,28 @@ void CemuleDlg::QuickSpeedUpload(UINT nID)
 	switch (nID) {
 //==> Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
 #ifdef FAF
-		case MP_QS_U10: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate()*0.1)); break ;
-		case MP_QS_U20: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate()*0.2)); break ;
-		case MP_QS_U30: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate()*0.3)); break ;
-		case MP_QS_U40: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate()*0.4)); break ;
-		case MP_QS_U50: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate()*0.5)); break ;
-		case MP_QS_U60: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate()*0.6)); break ;
-		case MP_QS_U70: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate()*0.7)); break ;
-		case MP_QS_U80: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate()*0.8)); break ;
-		case MP_QS_U90: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate()*0.9)); break ;
+		case MP_QS_U10: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate(true)*0.1)); break ;
+		case MP_QS_U20: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate(true)*0.2)); break ;
+		case MP_QS_U30: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate(true)*0.3)); break ;
+		case MP_QS_U40: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate(true)*0.4)); break ;
+		case MP_QS_U50: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate(true)*0.5)); break ;
+		case MP_QS_U60: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate(true)*0.6)); break ;
+		case MP_QS_U70: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate(true)*0.7)); break ;
+		case MP_QS_U80: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate(true)*0.8)); break ;
+		case MP_QS_U90: thePrefs.SetMaxUpload((float)(thePrefs.GetMaxGraphUploadRate(true)*0.9)); break ;
 #else
-		case MP_QS_U10: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate()*0.1)); break ;
-		case MP_QS_U20: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate()*0.2)); break ;
-		case MP_QS_U30: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate()*0.3)); break ;
-		case MP_QS_U40: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate()*0.4)); break ;
-		case MP_QS_U50: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate()*0.5)); break ;
-		case MP_QS_U60: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate()*0.6)); break ;
-		case MP_QS_U70: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate()*0.7)); break ;
-		case MP_QS_U80: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate()*0.8)); break ;
-		case MP_QS_U90: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate()*0.9)); break ;
+		case MP_QS_U10: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate(true)*0.1)); break ;
+		case MP_QS_U20: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate(true)*0.2)); break ;
+		case MP_QS_U30: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate(true)*0.3)); break ;
+		case MP_QS_U40: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate(true)*0.4)); break ;
+		case MP_QS_U50: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate(true)*0.5)); break ;
+		case MP_QS_U60: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate(true)*0.6)); break ;
+		case MP_QS_U70: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate(true)*0.7)); break ;
+		case MP_QS_U80: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate(true)*0.8)); break ;
+		case MP_QS_U90: thePrefs.SetMaxUpload((uint16)(thePrefs.GetMaxGraphUploadRate(true)*0.9)); break ;
 #endif
 //<== Maella [FAF] -Allow Bandwidth Settings in <1KB Incremements-
-		case MP_QS_U100: thePrefs.SetMaxUpload(thePrefs.GetMaxGraphUploadRate()); break ;
+		case MP_QS_U100: thePrefs.SetMaxUpload(thePrefs.GetMaxGraphUploadRate(true)); break ;
 //		case MP_QS_UPC: thePrefs.SetMaxUpload(UNLIMITED); break ;
 		case MP_QS_UP10: thePrefs.SetMaxUpload(GetRecMaxUpload()); break ;
 	}
@@ -2539,17 +2539,17 @@ void CemuleDlg::QuickSpeedDownload(UINT nID)
 #ifdef FAF
 float CemuleDlg::GetRecMaxUpload() {
 	
-	if (thePrefs.GetMaxGraphUploadRate()<7) return 0;
-	if (thePrefs.GetMaxGraphUploadRate()<15) return thePrefs.GetMaxGraphUploadRate()-1.5f;
-	return (thePrefs.GetMaxGraphUploadRate()-2.5f);
+	if (thePrefs.GetMaxGraphUploadRate(true)<7) return 0;
+	if (thePrefs.GetMaxGraphUploadRate(true)<15) return thePrefs.GetMaxGraphUploadRate(true)-1.5f;
+	return (thePrefs.GetMaxGraphUploadRate(true)-2.5f);
 
 }
 #else
 int CemuleDlg::GetRecMaxUpload() {
 	
-	if (thePrefs.GetMaxGraphUploadRate()<7) return 0;
-	if (thePrefs.GetMaxGraphUploadRate()<15) return thePrefs.GetMaxGraphUploadRate()-3;
-	return (thePrefs.GetMaxGraphUploadRate()-4);
+	if (thePrefs.GetMaxGraphUploadRate(true)<7) return 0;
+	if (thePrefs.GetMaxGraphUploadRate(true)<15) return thePrefs.GetMaxGraphUploadRate(true)-3;
+	return (thePrefs.GetMaxGraphUploadRate(true)-4);
 
 }
 #endif

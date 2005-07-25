@@ -48,13 +48,15 @@ enum ECols
 
 IMPLEMENT_DYNAMIC(CCollectionViewDialog, CDialog)
 CCollectionViewDialog::CCollectionViewDialog(CWnd* pParent /*=NULL*/)
-	: CDialog(CCollectionViewDialog::IDD, pParent)
+	: CResizableDialog(CCollectionViewDialog::IDD, pParent)
 	, m_pCollection(NULL)
 {
 }
 
 CCollectionViewDialog::~CCollectionViewDialog()
 {
+	if (m_icovWnd)
+		VERIFY( DestroyIcon(m_icovWnd) );
 }
 
 void CCollectionViewDialog::DoDataExchange(CDataExchange* pDX)
@@ -71,7 +73,7 @@ void CCollectionViewDialog::DoDataExchange(CDataExchange* pDX)
 }
 
 
-BEGIN_MESSAGE_MAP(CCollectionViewDialog, CDialog)
+BEGIN_MESSAGE_MAP(CCollectionViewDialog, CResizableDialog)
 	ON_NOTIFY(NM_DBLCLK, IDC_COLLECTIONVEWLIST, OnNMDblclkCollectionvewlist)
 	ON_BN_CLICKED(IDC_VIEWCOLLECTIONDL, OnBnClickedViewcollectiondl)
 	ON_BN_CLICKED(IDC_VCOLL_CLOSE, OnBnClickedOk)
@@ -100,7 +102,8 @@ BOOL CCollectionViewDialog::OnInitDialog(void)
 		return TRUE;
 	}
 
-	m_CollectionViewList.Init(_T("View"));
+	m_CollectionViewList.Init(_T("CollectionView"));
+	SetIcon(m_icovWnd = theApp.LoadIcon(_T("Collection_View")), FALSE);
 
 	m_AddNewCatagory.SetCheck(false);
 
@@ -118,6 +121,19 @@ BOOL CCollectionViewDialog::OnInitDialog(void)
 
 	m_CollectionViewAuthor.SetWindowText(m_pCollection->m_sCollectionAuthorName);
 	m_CollectionViewAuthorKey.SetWindowText(m_pCollection->GetAuthorKeyHashString());
+
+
+	AddAnchor(IDC_COLLECTIONVEWLIST, TOP_LEFT, BOTTOM_RIGHT);
+	AddAnchor(IDC_VCOLL_DETAILS, BOTTOM_LEFT, BOTTOM_RIGHT);
+	AddAnchor(IDC_VCOLL_OPTIONS, BOTTOM_LEFT, BOTTOM_RIGHT);
+	AddAnchor(IDC_COLLECTIONVIEWAUTHORLABEL, BOTTOM_LEFT);
+	AddAnchor(IDC_COLLECTIONVIEWAUTHORKEYLABEL, BOTTOM_LEFT);
+	AddAnchor(IDC_COLLECTIONVIEWCATEGORYCHECK, BOTTOM_LEFT);
+	AddAnchor(IDC_COLLECTIONVIEWAUTHOR, BOTTOM_LEFT, BOTTOM_RIGHT);
+	AddAnchor(IDC_COLLECTIONVIEWAUTHORKEY, BOTTOM_LEFT, BOTTOM_RIGHT);
+	AddAnchor(IDC_VCOLL_CLOSE, BOTTOM_RIGHT);
+	AddAnchor(IDC_VIEWCOLLECTIONDL, BOTTOM_RIGHT);
+
 
 	POSITION pos = m_pCollection->m_CollectionFilesMap.GetStartPosition();
 	CCollectionFile* pCollectionFile;

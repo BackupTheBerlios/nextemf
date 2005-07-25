@@ -188,6 +188,8 @@ class CUpDownClient : public CObject
 
 	friend class CUploadQueue;
 public:
+    void PrintUploadStatus();
+
 	//base
 	CUpDownClient(CClientReqSocket* sender = 0);
 	CUpDownClient(CPartFile* in_reqfile, uint16 in_port, uint32 in_userid, uint32 in_serverup, uint16 in_serverport, bool ed2kID = false);
@@ -825,7 +827,7 @@ private:
 	uint32 m_dwNextTCPAskedTime;  // Time of the next refresh for the download session with TCP
 	// Maella end
 #endif //Reask sourcen after ip change
-	//<==Reask sourcen after ip change [cyrex2001]
+//<==Reask sourcen after ip change [cyrex2001]
 };
 //#pragma pack()
 

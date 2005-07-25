@@ -18,6 +18,7 @@
 #pragma once
 #include "afxcmn.h"
 #include "CollectionListCtrl.h"
+#include "ResizableLib\ResizableDialog.h"
 #include "afxwin.h"
 
 // CCollectionCreateDialog dialog
@@ -25,14 +26,14 @@
 class CCollection;
 class CCollectionFile;
 
-class CCollectionCreateDialog : public CDialog
+class CCollectionCreateDialog : public CResizableDialog
 {
 	DECLARE_DYNAMIC(CCollectionCreateDialog)
 
 public:
 	CCollectionCreateDialog(CWnd* pParent = NULL);   // standard constructor
 	virtual ~CCollectionCreateDialog();
-	void SetCollection(CCollection* pCollection);
+	void SetCollection(CCollection* pCollection, bool create);
 
 // Dialog Data
 	enum { IDD = IDD_COLLECTIONCREATEDIALOG };
@@ -73,4 +74,6 @@ private:
 	bool m_bSharedFiles;
 	CButton m_CollectionViewShareButton;
 	CButton m_CollectionCreateFormatCheck;
+	HICON	m_icoWnd;
+	bool	m_bCreatemode;
 };

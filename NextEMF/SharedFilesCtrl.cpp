@@ -771,7 +771,7 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					pCollection->AddFileToCollection(selectedList.GetNext(pos),true);
 				}
 				CCollectionCreateDialog dialog;
-				dialog.SetCollection(pCollection);
+				dialog.SetCollection(pCollection,true);
 				dialog.DoModal();
 				//We delete this collection object because when the newly created
 				//collection file is added to the sharedfile list, it is read and verified
@@ -811,7 +811,7 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 				{
 					CCollectionCreateDialog dialog;
 					CCollection* pCollection = new CCollection(file->m_pCollection);
-					dialog.SetCollection(pCollection);
+					dialog.SetCollection(pCollection,false);
 					dialog.DoModal();
 					delete pCollection;				
 				}

@@ -1817,6 +1817,14 @@ BEGIN
     IDS_COLL_TEXTFORMAT     "Kollektion im einfachen Textformat speichern"
     IDS_SEARCHAUTHORCOLLECTION "Suche Kollektionen des Autors"
     IDS_ERR_DUPL_FILES      "Doppelte freigegebene Datei: ""%s"" und ""%s"""
+    IDS_USS_TRACEROUTEOFTENFAILED 
+                            "UploadSpeedSense: Tracerouting zu oft fehlgeschlafen. UploadSpeedSense wird deaktiviert."
+    IDS_USS_STARTING        "UploadSpeedSense: Vorbereitungen beendet. Regelung der Uploadgeschwindigkeit wird gestartet. (erste 60 Sekunden im schnellen Reaktionsmodus)"
+    IDS_USS_MANUALUPLOADLIMITDETECTED 
+                            "UploadSpeedSense: Änderung des Uploadlimits in den Einstellungen festgestellt. Für 60 Sekunden wird der schnelle Reaktionsmodus aktiviert."
+    IDS_USS_STATE_PREPARING "Vorbereitung..."
+    IDS_USS_STATE_WAITING   "Warte..."
+    IDS_USS_STATE_ERROR     "Fehler!"
 END
 
 //////////////////////////////                    NextEMF Strings                 /////////////////////////////////////////
