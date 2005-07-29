@@ -2,9 +2,11 @@
 |Changes eMule 0.46a NextEMF v0.6
 |=<|  BETA 1  |>=================
 
-merged	: eMule v0.46c Beta
+merged	: eMule v0.46c
 
 added	: Tabbed Settings to the preferences by J.C.Conner / eMulefan83 [shadow2004]
+added	: Autoupdate IPFilter adapted by iONiX and MorphXT [shadow2004]
+added	: Autoupdate IPFilter after IP-Change [shadow2004]
 		
 changed	: Tabbed Settings
 			# Reask and Quickstart moves to Connection-settings "Reask/Quickstart" [shadow2004]
@@ -14,8 +16,20 @@ changed	: Tabbed Settings
 				- limited Hardlimit-Timer to 30 - 80 sec. [shadow2004]
 				- limited max global sources to 1000 - 5000 [shadow2004]
 				- limited min sources per file to 10 - 50 [shadow2004]
+			# IP-Filter-Settings moved to Security-settings "IP-Filter" [shadow2004]
+				- Autoupdatefunctions included [shadow2004]
 				
 changed	: switched original Creditsystem with Xman1's [shadow2004]
+changed	: Quickstart afte IP-Change now works too, when Reask is disabled
+
+fix		: Show DLEvent in Log [shadow2004]
+fix		: Bug in Statistic-Dlg. Windows is now actualized, when switching to Statistic [shadow2004]
+fix		: Assertion Errors by SlugFiller in HTRichEdit.cpp & HyperTextCtrl.cpp [shadow2004]
+fix		: MemSet Fix by Avi-3k [shadow2004]
+fix		: Selection-Fix for MuleCtrlList.cpp by Avi-3k [shadow2004]
+fix		: Sort-Fixes in DonloadClientList.cpp by Avi-3k [shadow2004]
+fix		: SetModified Fix for PPgFiles.cpp by eMulefan83 [shadow2004]
+fix		: Open Folder Fix in SharedListCtrl.cpp by Avi-3k [shadow2004]
 
 updated	: Libs
 			# zlib to 1.2.3 [shadow2004]

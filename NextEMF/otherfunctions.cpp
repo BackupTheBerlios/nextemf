@@ -2813,3 +2813,21 @@ bool DoCollectionRegFix(bool checkOnly)
 	}
 	return false;
 }
+
+//==>IPFilter-Autoupdate [shadow2004]
+#ifdef IPFILTER
+long FileSize(LPCTSTR fileName){
+	CFile file;
+	CFileException e;
+	long size=0;
+	
+	if(file.Open(fileName, CFile::modeRead|CFile::shareDenyWrite|CFile::typeBinary, &e))
+	{
+		size=file.GetLength();
+		file.Close();
+		return size;
+	}
+	return 0;
+}
+#endif
+//<==IPFilter-Autoupdate [shadow2004]

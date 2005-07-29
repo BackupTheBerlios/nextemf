@@ -530,9 +530,9 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "",IDC_TAB_CONNECTION2,"SysTabControl32",0x0,0,0,230,244
     CONTROL         "Reask sources after IP change",IDC_CON2_REASK,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,7,25,202,10
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,7,25,202,10
     CONTROL         "Enable Quickstart",IDC_CON2_ACTIVQS,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,7,45,202,10
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,7,45,202,10
     EDITTEXT        IDC_CON2_QSMAXCON,14,60,38,12,ES_AUTOHSCROLL | 
                     ES_NUMBER
     LTEXT           "Max connections",IDC_CON2_QSMAXCON_LBL1,60,62,120,8
@@ -544,7 +544,7 @@ BEGIN
     CONTROL         "",IDC_CON2_QSTIME,"msctls_trackbar32",TBS_AUTOTICKS |
                     WS_TABSTOP,14,100,202,11,WS_EX_STATICEDGE
     CONTROL         "Quickstart after IP change",IDC_CON2_QSAFTERZT,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,14,115,202,10
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,14,115,202,10
 END
 
 IDD_PPG_CONNECTION3 DIALOGEX 0, 0, 230, 244
@@ -555,7 +555,7 @@ FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
     CONTROL         "",IDC_TAB_CONNECTION3,"SysTabControl32",0x0,0,0,230,244
     CONTROL         "Enable global hardlimit",IDC_CON3_GHLACTIV,"Button",
-                    BS_AUTOCHECKBOX | WS_TABSTOP,7,25,202,10
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,7,25,202,10
     LTEXT           "Timer for global hardlimit",IDC_CON3_GHLTIME_LBL1,14,40,120,8
     RTEXT           "",IDC_CON3_GHLTIME_LBL2,151,40,51,8
     CONTROL         "",IDC_CON3_GHLTIME,"msctls_trackbar32",TBS_AUTOTICKS |
@@ -932,41 +932,54 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Security"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    GROUPBOX        "IP Filter",IDC_STATIC_IPFILTER,7,5,216,75,BS_FLAT
-    CONTROL         "Filter servers too (rejects dynIP-servers)",
-                    IDC_FILTERSERVERBYIPFILTER,"Button",BS_AUTOCHECKBOX | 
-                    BS_FLAT | WS_TABSTOP,14,16,206,10
-    LTEXT           "Filterlevel:",IDC_STATIC_FILTERLEVEL,14,34,54,8
-    LTEXT           "<",IDC_STATIC_FILTERLEVEL2,75,34,8,9
-    EDITTEXT        IDC_FILTERLEVEL,84,32,30,12,ES_AUTOHSCROLL | ES_NUMBER
-    PUSHBUTTON      "Reload",IDC_RELOADFILTER,117,32,50,12,BS_FLAT
-    PUSHBUTTON      "Edit",IDC_EDITFILTER,169,32,50,12,BS_FLAT
-    LTEXT           "Update from URL: (filter.dat- or PeerGuardian-format)",
-                    IDC_STATIC_UPDATEFROM,14,50,202,8
-    EDITTEXT        IDC_UPDATEURL,14,60,158,12,ES_AUTOHSCROLL
-    PUSHBUTTON      "v",IDC_DD,172,60,11,12,BS_CENTER | BS_FLAT
-    PUSHBUTTON      "Load",IDC_LOADURL,184,60,35,12,BS_FLAT
-    GROUPBOX        "Messages",IDC_MSG,7,83,216,78,BS_FLAT
+    CONTROL         "",IDC_TAB_SECURITY1,"SysTabControl32",0x0,0,0,230,244
+    GROUPBOX        "Messages",IDC_MSG,7,25,216,80,BS_FLAT
     LTEXT           "Filter messages containing: (Separator | )",
-                    IDC_FILTERLABEL,13,93,205,8
-    EDITTEXT        IDC_FILTER,14,103,206,22,ES_MULTILINE | ES_AUTOHSCROLL
+                    IDC_FILTERLABEL,13,35,205,8
+    EDITTEXT        IDC_FILTER,14,45,202,22,ES_MULTILINE | ES_AUTOHSCROLL
     CONTROL         "Accept from friends only",IDC_MSGONLYFRIENDS,"Button",
-                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,14,128,202,8
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,14,70,202,8
     CONTROL         "Only from valid senders",IDC_MSGONLYSEC,"Button",
-                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,14,139,202,8
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,14,80,202,8
     CONTROL         "Advanced spamfilter",IDC_ADVSPAMFILTER,"Button",
-                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,14,149,202,10
-    GROUPBOX        "Comments",IDC_STATIC_COMMENTS,7,164,216,39,BS_FLAT
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,14,90,202,10
+    GROUPBOX        "Comments",IDC_STATIC_COMMENTS,7,110,216,40,BS_FLAT
     LTEXT           "Ignore Comments containing: (Separator | )",
-                    IDC_FILTERCOMMENTSLABEL,14,175,205,8
-    EDITTEXT        IDC_COMMENTFILTER,14,185,206,13,ES_MULTILINE | 
+                    IDC_FILTERCOMMENTSLABEL,14,120,202,8
+    EDITTEXT        IDC_COMMENTFILTER,14,130,202,13,ES_MULTILINE | 
                     ES_AUTOHSCROLL
-    GROUPBOX        "Misc",IDC_SEC_MISC,7,205,216,34,BS_FLAT
+    GROUPBOX        "Misc",IDC_SEC_MISC,7,155,216,35,BS_FLAT
     CONTROL         "Use secure Identification",IDC_USESECIDENT,"Button",
-                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,14,215,202,10
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,14,165,202,10
     CONTROL         "Run eMule as unprivileged user",IDC_RUNASUSER,"Button",
                     BS_AUTOCHECKBOX | BS_FLAT | WS_DISABLED | WS_TABSTOP,14,
-                    226,202,10
+                    175,202,10
+END
+
+IDD_PPG_SECURITY2 DIALOGEX 0, 0, 230, 241
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Security 2"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CONTROL         "",IDC_TAB_SECURITY2,"SysTabControl32",0x0,0,0,230,244
+    GROUPBOX        "IP-Filter (Version %d)",IDC_SEC2_IPFILTER,7,25,216,145,BS_FLAT
+    CONTROL         "Filter servers too (rejects dynIP-servers)",IDC_SEC2_IPFSERVER,"Button",
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,14,40,202,8
+    LTEXT           "Filterlevel:",IDC_SEC2_IPFLEVEL_LBL1,14,57,54,8
+    LTEXT           "<",IDC_SEC2_IPFLEVEL_LBL2,75,57,8,9
+    EDITTEXT        IDC_SEC2_IPFLEVEL,84,55,30,12,ES_AUTOHSCROLL | ES_NUMBER
+    PUSHBUTTON      "Reload",IDC_SEC2_IPFRELOAD,117,55,50,12,BS_FLAT
+    PUSHBUTTON      "Edit",IDC_SEC2_IPFEDIT,169,55,50,12,BS_FLAT
+    GROUPBOX        "Update",IDC_SEC2_IPFUPDATE,14,75,202,90,BS_FLAT
+    LTEXT           "Update from URL: (filter.dat or .zip)",
+                    IDC_SEC2_IPFURL_LBL1,21,90,188,8
+    EDITTEXT        IDC_SEC2_IPFURL,21,100,188,12,ES_AUTOHSCROLL
+    PUSHBUTTON      "Reset",IDC_SEC2_IPFRESET,107,115,50,12,BS_FLAT
+    PUSHBUTTON      "Load",IDC_SEC2_IPFLOAD,159,115,50,12,BS_FLAT
+    CONTROL         "Auto-Update on start-up",IDC_SEC2_IPFAUTOUPDATE,"Button",
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,21,135,188,8
+    CONTROL         "Auto-Update after IP-change",IDC_SEC2_IPFAUTOUPDATEAIPC,"Button",
+                    BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,28,150,174,8
 END
 
 IDD_INPUTBOX DIALOGEX 0, 0, 250, 56
@@ -2856,9 +2869,7 @@ BEGIN
     IDS_ERR_BADSERVERLISTRECEIVED "Invalid serverlist packet received"
     IDS_STATUS              "Status"
     IDS_DL_REMAINS          "Remaining"
-    IDS_UPDATEFROM          "Update from URL: (filter.dat- or PeerGuardian-format)"
     IDS_QL_USERNAME         "User Name"
-    IDS_LOADURL             "Load"
     IDS_DELETEAFTERALLOC    "File '%s' is currently allocating disk space and will be deleted afterwards"
     IDS_ERR_PACKAGEHANDLING "Unhandled error while processing packet from server (%s)"
     IDS_QL_RATING           "Rating"
@@ -3686,10 +3697,6 @@ BEGIN
     IDS_PF_WATCHCB          "Watch clipboard for eD2K file links"
     IDS_SECURITY            "Security"
     IDS_IPFILTERLOADED      "%i IP filters loaded"
-    IDS_IPFILTER            "IP Filter"
-    IDS_EDIT                "Edit..."
-    IDS_FILTERLEVEL         "Filterlevel"
-    IDS_FILTERSERVERBYIPFILTER "Filter servers too (rejects dynIP-servers)"
     IDS_FILTERCOMMENTSLABEL "Ignore comments containing: (Separator | )"
     IDS_CLIENTLIST          "Known Clients"
     IDS_FOLDER              "Folder"
@@ -4506,6 +4513,22 @@ BEGIN
     IDS_CON3_GHLMINQ_LBL1   "Min sources per file"
 END
 
+STRINGTABLE
+BEGIN
+    IDS_SEC1_NAME           "General"
+    IDS_SEC2_NAME           "IP-Filter"
+    IDS_SEC2_IPFILTER       "IP-Filter (version"
+    IDS_SEC2_IPFSERVER      "Filter servers too (rejects dynIP-servers)"
+    IDS_SEC2_IPFLEVEL_LBL1  "Filterlevel:"
+    IDS_SEC2_IPFRELOAD      "Reload"
+    IDS_SEC2_IPFEDIT        "Edit..."
+    IDS_SEC2_IPFUPDATE      "Update"
+    IDS_SEC2_IPFURL_LBL1    "Update from URL: (filter.dat or .zip)"
+    IDS_SEC2_IPFRESET       "Reset"
+    IDS_SEC2_IPFLOAD        "Load"
+    IDS_SEC2_IPFAUTOUPDATE  "Auto-Update on start-up"
+    IDS_SEC2_IPFAUTOUPDATEAIPC "Auto-Update after IP-change"
+END
 #endif    // Englisch (USA) resources
 /////////////////////////////////////////////////////////////////////////////
 

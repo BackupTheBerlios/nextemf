@@ -758,9 +758,17 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason
 			if(socket)
 				socket->SetTimeOut(CONNECTION_TIMEOUT);
 
+			if (thePrefs.GetLogUlDlEvents()) {
 //==> Extended Failed/Success Statistic by NetF [shadow2004]
 #ifndef FSSTATS
-			if (thePrefs.GetLogUlDlEvents()) {
+				switch( nNewState )
+				{
+					case DS_NONEEDEDPARTS:
+						pszReason = _T("NNP. You don't need any parts from this client.");
+				}
+#endif
+//<== Extended Failed/Success Statistic by NetF [shadow2004]
+				LPCTSTR pszReason;
 				switch( nNewState )
 				{
 					case DS_NONEEDEDPARTS:
@@ -770,8 +778,6 @@ void CUpDownClient::SetDownloadState(EDownloadState nNewState, LPCTSTR pszReason
                 if(thePrefs.GetLogUlDlEvents())
                     AddDebugLogLine(DLP_VERYLOW, false, _T("Download session ended: %s User: %s in SetDownloadState(). New State: %i, Length: %s, Transferred: %s."), pszReason, DbgGetClientInfo(), nNewState, CastSecondsToHM(GetDownTimeDifference(false)/1000), CastItoXBytes(GetSessionDown(), false, false));
 			}
-#endif
-//<== Extended Failed/Success Statistic by NetF [shadow2004]
 
 			ResetSessionDown();
 

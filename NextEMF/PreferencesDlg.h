@@ -21,6 +21,7 @@
 //==> PPgTabControl [shadow2004]
 #include ".\NextEMF\PPgConnection2.h" //Connection 2
 #include ".\NextEMF\PPgConnection3.h" //Connection 3
+#include ".\NextEMF\PPgSecurity2.h"   //Security 2
 //<== PPgTabControl [shadow2004]
 
 class CPreferencesDlg : public CTreePropSheet
@@ -52,6 +53,7 @@ public:
 #ifdef PPGCTRL
 	CPPgConnection2		m_wndConnection2;
 	CPPgConnection3		m_wndConnection3;
+	CPPgSecurity2		m_wndSecurity2;
 #endif
 //<== PPgTabControl [shadow2004]
 
@@ -82,9 +84,9 @@ public:
 	int ActivePageDirectory;
 	int ActivePageFiles;
 	int ActivePageNotify;
-	int ActivePageStats;
+	int ActivePageStats;*/
 	int ActivePageSecurity;
-	int ActivePageSheduler;
+/*	int ActivePageSheduler;
 	int ActivePageWebServer;
 	int	ActivePageTweaks;
 	int ActivePageDebug;
@@ -96,9 +98,9 @@ public:
 	int StartPageDirectory;
 	int StartPageFiles;
 	int StartPageNotify;
-	int StartPageStats;
+	int StartPageStats;*/
 	int StartPageSecurity;
-	int StartPageSheduler;
+/*	int StartPageSheduler;
 	int StartPageWebServer;
 	int	StartPageTweaks;
 	int StartPageDebug;*/

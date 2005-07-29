@@ -25,6 +25,12 @@
 #include "Preferences.h"
 #include "emuledlg.h"
 #include "Log.h"
+//==>IPFilter-Autoupdate [shadow2004]
+#ifdef IPFILTER
+#include "HttpDownloadDlg.h"
+#include "ZipFile.h"
+#endif
+//<==IPFilter-Autoupdate [shadow2004]
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -71,6 +77,7 @@ CString CIPFilter::GetDefaultFilePath() const
 
 int CIPFilter::LoadFromDefaultFile(bool bShowResponse)
 {
+	CWaitCursor curHourglass;
 	RemoveAllIPFilters();
 	return AddFromFile(GetDefaultFilePath(), bShowResponse);
 }
@@ -471,3 +478,109 @@ bool CIPFilter::RemoveIPFilter(const SIPFilter* pFilter)
 	}
 	return false;
 }
+
+//==>IPFilter-Autoupdate [shadow2004]
+#ifdef IPFILTER
+void CIPFilter::UpdateIPFilterURL()
+{
+	CString sbuffer;
+	CString strURL = thePrefs.GetUpdateURLIPFilter();
+	strURL.TrimRight(_T(".txt"));
+	strURL.TrimRight(_T(".dat"));
+	strURL.TrimRight(_T(".zip"));
+	strURL.Append(_T(".txt"));
+
+	TCHAR szTempFilePath[_MAX_PATH];
+	_tmakepath(szTempFilePath, NULL, thePrefs.GetAppDir(), DFLT_IPFILTER_FILENAME, _T("tmp"));
+	FILE* readFile= _tfsopen(szTempFilePath, _T("r"), _SH_DENYWR);
+
+	CHttpDownloadDlg dlgDownload;
+	dlgDownload.m_strTitle = _T("Downloading IP filter version file");
+	dlgDownload.m_sURLToDownload = strURL;
+	dlgDownload.m_sFileToDownloadInto = szTempFilePath;
+
+	if (dlgDownload.DoModal() != IDOK)
+	{
+		_tremove(szTempFilePath);
+		AddLogLine(true, _T("Error downloading %s"), strURL);
+		return;
+	}
+	readFile = _tfsopen(szTempFilePath, _T("r"), _SH_DENYWR);
+
+	char buffer[9];
+	int lenBuf = 9;
+	fgets(buffer,lenBuf,readFile);
+	sbuffer = buffer;
+	sbuffer = sbuffer.Trim();
+	fclose(readFile);
+	_tremove(szTempFilePath);
+
+	if (thePrefs.GetIPfilterVersion()< (uint32) _tstoi(sbuffer) || !PathFileExists(GetDefaultFilePath()) || FileSize(GetDefaultFilePath()) < 10240) {
+
+		CString IPFilterURL = thePrefs.GetUpdateURLIPFilter();
+
+		_tmakepath(szTempFilePath, NULL, thePrefs.GetConfigDir(), DFLT_IPFILTER_FILENAME, _T("tmp"));
+
+		CHttpDownloadDlg dlgDownload;
+		dlgDownload.m_strTitle = _T("Downloading IP filter file");
+		dlgDownload.m_sURLToDownload = IPFilterURL;
+		dlgDownload.m_sFileToDownloadInto = szTempFilePath;
+		if (dlgDownload.DoModal() != IDOK || FileSize(szTempFilePath) < 10240)
+		{
+			_tremove(szTempFilePath);
+			AddLogLine(true, _T("IP Filter download failed"));
+			return;
+		}
+
+		bool bIsZipFile = false;
+		bool bUnzipped = false;
+		CZIPFile zip;
+		if (zip.Open(szTempFilePath))
+		{
+			bIsZipFile = true;
+
+			CZIPFile::File* zfile = zip.GetFile(_T("guarding.p2p"));
+			if (zfile)
+			{
+				TCHAR szTempUnzipFilePath[MAX_PATH];
+				_tmakepath(szTempUnzipFilePath, NULL, thePrefs.GetConfigDir(), DFLT_IPFILTER_FILENAME, _T(".unzip.tmp"));
+				if (zfile->Extract(szTempUnzipFilePath))
+				{
+					zip.Close();
+					zfile = NULL;
+
+					if (_tremove(GetDefaultFilePath()) != 0)
+						TRACE("*** Error: Failed to remove default IP filter file \"%s\" - %s\n", theApp.ipfilter->GetDefaultFilePath(), _tcserror(errno));
+					if (_trename(szTempUnzipFilePath, GetDefaultFilePath()) != 0)
+						TRACE("*** Error: Failed to rename uncompressed IP filter file \"%s\" to default IP filter file \"%s\" - %s\n", szTempUnzipFilePath, theApp.ipfilter->GetDefaultFilePath(), _tcserror(errno));
+					if (_tremove(szTempFilePath) != 0)
+						TRACE("*** Error: Failed to remove temporary IP filter file \"%s\" - %s\n", szTempFilePath, _tcserror(errno));
+					bUnzipped = true;
+				}
+				else
+					AddLogLine(true, _T("Failed to extract IP filter file from downloaded IP filter ZIP file \"%s\"."), szTempFilePath);
+			}
+			else
+				AddLogLine(true, _T("Downloaded IP filter file \"%s\" is a ZIP file with unexpected content."), szTempFilePath);
+
+			zip.Close();
+		}
+
+		if (!bIsZipFile && !bUnzipped)
+		{
+			_tremove(GetDefaultFilePath());
+			_trename(szTempFilePath, GetDefaultFilePath());
+		}
+
+		if(bIsZipFile && !bUnzipped){
+			return;
+		}
+
+		LoadFromDefaultFile();
+            
+		thePrefs.SetIpfilterVersion(_tstoi(sbuffer));
+		thePrefs.Save();
+	}
+}
+#endif
+//<==IPFilter-Autoupdate [shadow2004]

@@ -64,8 +64,10 @@ CHTRichEditCtrl::CHTRichEditCtrl()
 
 CHTRichEditCtrl::~CHTRichEditCtrl()
 {
-	if (m_hArrowCursor != NULL)
-		VERIFY( ::DestroyCursor(m_hArrowCursor) );
+//==>Assertion Errors [shadow2004]
+//	if (m_hArrowCursor != NULL)
+//		VERIFY( ::DestroyCursor(m_hArrowCursor) );
+//<==Assertion Errors [shadow2004]
 }
 
 void CHTRichEditCtrl::Localize(){

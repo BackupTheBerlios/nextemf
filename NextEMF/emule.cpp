@@ -1701,17 +1701,21 @@ void CemuleApp::CheckIDChange(void)
 		{
 		ReaskID = GetPublicIP();
 		}
-	if(thePrefs.IsReaskSourceAfterIPChange()&& (m_lastValidId != 0 && ReaskID != 0 && m_lastValidId != ReaskID))
+	if(m_lastValidId != 0 && ReaskID != 0 && m_lastValidId != ReaskID)
 		{
+			AddLogLine (false, _T("IP-Change detected.")); 
 		//==>Quickstart [cyrex2001]
 #ifdef QUICKSTART //Quickstart
 		if(thePrefs.GetQuickStart() && thePrefs.GetQuickStartAfterIPChange())
 			{
+					AddLogLine (false, _T("Starting Quickstart after IP-Change.")); 
 			theApp.downloadqueue->quickflag = 0;
 			theApp.downloadqueue->quickflags = 0;
 			}
 #endif //Quickstart
 		//<==Quickstart [cyrex2001]
+			if (thePrefs.IsReaskSourceAfterIPChange())
+				{
 		theApp.clientlist->TrigReaskForDownload(true);
 		AddLogLine (false, _T("Change from IP:%s (%s ID:%u) to IP:%s (%s ID:%u) detected%s"), 
 			ipstr(m_lastValidId),
@@ -1722,6 +1726,17 @@ void CemuleApp::CheckIDChange(void)
 			ReaskID,
 			(m_lastValidId < 16777216 && ReaskID < 16777216) ? 
 			_T("") : _T(", all sources will be reasked on 1...10 minutes"));
+		}
+//==>IPFilter-Autoupdate [shadow2004]
+#ifdef IPFILTER
+				if (thePrefs.IsAutoUpdateIPFilterAIPCEnabled())
+					{
+						AddLogLine (false, _T("Checking for IP-Filter-Update."));
+						theApp.ipfilter->UpdateIPFilterURL();
+					}
+#endif
+//<==IPFilter-Autoupdate [shadow2004]
+
 		}
 	m_lastValidId = ReaskID;
 	}

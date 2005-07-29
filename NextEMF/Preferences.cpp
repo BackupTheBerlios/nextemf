@@ -502,6 +502,15 @@ uint16	CPreferences::m_iMinFileLimit;
 #endif //WiZaRd/Max AutoHardLimit
 //<==WiZaRd/Max AutoHardLimit [cyrex2001]
 
+//==>IPFilter-Autoupdate [shadow2004]
+#ifdef IPFILTER
+TCHAR	CPreferences::UpdateURLIPFilter[256];
+bool	CPreferences::AutoUpdateIPFilter;
+bool	CPreferences::AutoUpdateIPFilterAIPC;
+uint32	CPreferences::m_IPfilterVersion; 
+#endif
+//<==IPFilter-Autoupdate [shadow2004]
+
 CPreferences::CPreferences()
 {
 #ifdef _DEBUG
@@ -1938,6 +1947,15 @@ ini.WriteFloat(_T("uploadslotspeed"),m_slotspeed,_T("NextEMF"));
 	ini.WriteInt(_T("MinFileLimit"),m_iMinFileLimit,_T("NextEMF"));
 #endif //WiZaRd/Max AutoHardLimit
 //<==WiZaRd/Max AutoHardLimit [cyrex2001]	
+
+//==>IPFilter-Autoupdate [shadow2004]
+#ifdef IPFILTER
+	ini.WriteInt(_T("IPFilterVersion"),m_IPfilterVersion,_T("NextEMF")); 
+	ini.WriteBool(_T("AutoUpdateIPFilter"),AutoUpdateIPFilter,_T("NextEMF"));
+	ini.WriteBool(_T("AutoUpdateIPFilterAIPC"),AutoUpdateIPFilterAIPC,_T("NextEMF"));
+ 	ini.WriteString(_T("UpdateURLIPFilter"),UpdateURLIPFilter,_T("NextEMF"));
+#endif
+//<==IPFilter-Autoupdate [shadow2004]
 }
 
 void CPreferences::ResetStatsColor(int index)
@@ -2161,8 +2179,8 @@ void CPreferences::LoadPreferences()
 			maxGraphUploadRate = nOldUploadCapacity; // use old custoum value			
 	}
 
-	minupload=ini.GetInt(_T("MinUpload"), UNLIMITED);
-	maxupload=ini.GetFloat(_T("MaxUpload"),12);
+	minupload=ini.GetInt(_T("MinUpload"), 1);
+	maxupload=ini.GetFloat(_T("MaxUpload"),UNLIMITED);
 
 	if (maxupload > maxGraphUploadRate && maxupload!=UNLIMITED) 
 		maxupload = maxGraphUploadRate*.8f;
@@ -2191,8 +2209,8 @@ void CPreferences::LoadPreferences()
 			maxGraphUploadRate = nOldUploadCapacity; // use old custoum value
 	}
 
-	minupload=ini.GetInt(_T("MinUpload"), UNLIMITED);
-	maxupload=ini.GetInt(_T("MaxUpload"),12);
+	minupload=ini.GetInt(_T("MinUpload"), 1);
+	maxupload=ini.GetInt(_T("MaxUpload"),UNLIMITED);
 	if (maxupload > maxGraphUploadRate && maxupload != UNLIMITED)
 		maxupload = (uint16)(maxGraphUploadRate * .8);
 	
@@ -2646,6 +2664,15 @@ void CPreferences::LoadPreferences()
 	if (m_iMinFileLimit < 10 || m_iMinFileLimit > 50) m_iMinFileLimit = 15;
 #endif //WiZaRd/Max AutoHardLimit
 //<==WiZaRd/Max AutoHardLimit [cyrex2001]
+
+//==>IPFilter-Autoupdate [shadow2004]
+#ifdef IPFILTER
+	m_IPfilterVersion=ini.GetInt(_T("IPFilterVersion"),0, _T("NextEMF")); 
+	AutoUpdateIPFilter=ini.GetBool(_T("AutoUPdateIPFilter"),true, _T("NextEMF")); 
+	AutoUpdateIPFilterAIPC=ini.GetBool(_T("AutoUPdateIPFilterAIPC"),true, _T("NextEMF")); 
+	_stprintf(UpdateURLIPFilter,_T("%s"),ini.GetString(_T("UpdateURLIPFilter"),_T("http://emulepawcio.sourceforge.net/nieuwe_site/Ipfilter_fakes/ipfilter.zip")), _T("NextEMF"));
+#endif
+//<==IPFilter-Autoupdate [shadow2004]
 
 	LoadCats();
 	SetLanguage();

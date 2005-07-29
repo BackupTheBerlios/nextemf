@@ -127,6 +127,13 @@ bool CServerList::Init()
 	strPath.Format(_T("%sstaticservers.dat"), thePrefs.GetConfigDir());
 	AddServersFromTextFile(strPath);
 
+//==>IPFilter-Autoupdate [shadow2004]
+#ifdef IPFILTER
+	if (thePrefs.IsAutoUPdateIPFilterEnabled())
+		theApp.ipfilter->UpdateIPFilterURL();
+#endif
+//<==IPFilter-Autoupdate [shadow2004]
+
     theApp.serverlist->GiveServersForTraceRoute();
     
     return bRes;

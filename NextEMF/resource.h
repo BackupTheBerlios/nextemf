@@ -1472,10 +1472,8 @@
 #define IDC_COLOR_BUTTON                2059
 #define IDC_EDITADR                     2060
 #define IDC_BROWSE                      2061
-#define IDC_RELOADFILTER                2062
 #define IDC_REB                         2062
 #define IDC_HOTMENU                     2063
-#define IDC_LOADURL                     2063
 #define IDC_WSRELOADTMPL                2064
 #define IDC_BOOTSTRAPBUTTON             2065
 #define IDC_PV_EXIT                     2066
@@ -1785,7 +1783,6 @@
 #define IDC_CMT_TEXT                    2538
 #define IDC_DEBUG_LOG                   2541
 #define IDC_TITLE                       2542
-#define IDC_FILTERLEVEL                 2543
 #define IDC_TEXT                        2544
 #define IDC_WSPORT                      2545
 #define IDC_WSTIMEOUT                   2546
@@ -1847,14 +1844,8 @@
 #define IDC_STATIC_DLTOof               2622
 #define IDC_STATIC_AUTOCAT              2623
 #define IDC_STATIC_REGEXP               2624
-#define IDC_FILTERSERVERBYIPFILTER      2626
-#define IDC_STATIC_FILTERLEVEL          2627
-#define IDC_STATIC_IPFILTER             2628
 #define IDC_STATIC_COMMENTS             2629
 #define IDC_CLIENTLIST                  2630
-#define IDC_STATIC_UPDATEFROM           2630
-#define IDC_STATIC_FILTERLEVEL2         2631
-#define IDC_EDITFILTER                  2632
 #define IDC_CATCOLOR                    2633
 #define IDC_FILTERCOMMENTSLABEL         2634
 #define IDC_WATCHCB                     2635
@@ -1991,7 +1982,6 @@
 #define IDC_FD_CORR                     2794
 #define IDC_FD_RECOV                    2795
 #define IDC_FD_COMPR                    2796
-#define IDC_UPDATEURL                   2797
 #define IDC_DD                          2799
 #define IDC_TRAY_EXIT                   2802
 #define IDC_DOWNKB                      2803
@@ -2270,6 +2260,40 @@
 #define IDS_CON3_GHLMAXQ_LBL1           8145
 #define IDS_CON3_GHLMINQ_LBL1           8146
 //<== PPG Connetion 3 Hardlimit
+
+//==> PPG Security2 IPFilter
+#define IDD_PPG_SECURITY2               8150
+#define IDC_TAB_SECURITY1               8151
+#define IDC_TAB_SECURITY2               8152
+#define IDC_SEC2_IPFILTER               8153
+#define IDC_SEC2_IPFSERVER              8154
+#define IDC_SEC2_IPFLEVEL               8155
+#define IDC_SEC2_IPFLEVEL_LBL1          8156
+#define IDC_SEC2_IPFLEVEL_LBL2          8157
+#define IDC_SEC2_IPFRELOAD              8158
+#define IDC_SEC2_IPFEDIT                8159
+#define IDC_SEC2_IPFUPDATE              8160
+#define IDC_SEC2_IPFURL                 8161
+#define IDC_SEC2_IPFURL_LBL1            8162
+#define IDC_SEC2_IPFRESET               8163
+#define IDC_SEC2_IPFLOAD                8164
+#define IDC_SEC2_IPFAUTOUPDATE          8165
+#define IDC_SEC2_IPFAUTOUPDATEAIPC      8166
+//STRINGS
+#define IDS_SEC1_NAME                   8167
+#define IDS_SEC2_NAME                   8168
+#define IDS_SEC2_IPFILTER               8169
+#define IDS_SEC2_IPFSERVER              8170
+#define IDS_SEC2_IPFLEVEL_LBL1          8171
+#define IDS_SEC2_IPFRELOAD              8172
+#define IDS_SEC2_IPFEDIT                8173
+#define IDS_SEC2_IPFUPDATE              8174
+#define IDS_SEC2_IPFURL_LBL1            8175
+#define IDS_SEC2_IPFRESET               8176
+#define IDS_SEC2_IPFLOAD                8177
+#define IDS_SEC2_IPFAUTOUPDATE          8178
+#define IDS_SEC2_IPFAUTOUPDATEAIPC      8179
+//<== PPG Security2 IPFilter
 
 // Next default values for new objects
 // 

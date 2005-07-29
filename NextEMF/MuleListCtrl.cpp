@@ -889,13 +889,18 @@ void CMuleListCtrl::OnKeyDown(UINT nChar,UINT nRepCnt,UINT nFlags)
 	if (nChar == 'A' && ::GetAsyncKeyState(VK_CONTROL)<0)
 	{
 		// Ctrl+A: Select all items
-		LV_ITEM theItem;
+//==>SelectionFix for MuleListCtrl [shadow2004]
+/*		LV_ITEM theItem;
 		theItem.mask= LVIF_STATE;
 		theItem.iItem= -1;
 		theItem.iSubItem= 0;
 		theItem.state= LVIS_SELECTED;
 		theItem.stateMask= 2;
-		SetItemState(-1, &theItem);
+		SetItemState(-1, &theItem);*/
+		UINT flag = LVIS_SELECTED | LVIS_FOCUSED; 
+		for (int i=0; i<GetItemCount(); i++) 
+			SetItemState(i, flag, flag);
+//<==SelectionFix for MuleListCtrl [shadow2004]
 	}
 	else if (nChar==VK_DELETE)
 		PostMessage(WM_COMMAND, MPG_DELETE, 0);

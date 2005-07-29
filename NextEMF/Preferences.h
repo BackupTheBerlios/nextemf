@@ -547,6 +547,7 @@ public:
 	static bool	m_bQuickStartAfterIPChange;
 #endif //Quickstart
 //<==Quickstart [cyrex2001]
+
 //==>WiZaRd/Max AutoHardLimit [cyrex2001]
 #ifdef AHL
     static  uint16    m_iMaxSourcesHL; 
@@ -557,6 +558,15 @@ public:
 	static  uint16    m_iMinFileLimit; 
 #endif //WiZaRd/Max AutoHardLimit
 //<==WiZaRd/Max AutoHardLimit [cyrex2001]	
+
+//==>IPFilter-Autoupdate [shadow2004]
+#ifdef IPFILTER
+	static TCHAR		UpdateURLIPFilter[256];
+	static bool			AutoUpdateIPFilter; 
+	static bool			AutoUpdateIPFilterAIPC; 
+	static uint32		m_IPfilterVersion; 
+#endif
+//<==IPFilter-Autoupdate [shadow2004]
 
 	enum Table
 	{
@@ -1345,6 +1355,16 @@ static uint16  GetQuickStartMaxConnPerFive()		{ return QuickStartMaxConnPerFive;
 	static  void    SetMinFileLimit(uint16 i)           {m_iMinFileLimit = i;}
 #endif //WiZaRd/Max AutoHardLimit
 //<==WiZaRd/Max AutoHardLimit [cyrex2001]
+
+//==>IPFilter-Autoupdate [shadow2004]
+#ifdef IPFILTER
+	static	CString	GetUpdateURLIPFilter()				{return CString(UpdateURLIPFilter);}
+	static	uint32	GetIPfilterVersion()				{return m_IPfilterVersion;}
+	static	void	SetIpfilterVersion(uint32 version)	{m_IPfilterVersion = version;}
+	static bool		IsAutoUPdateIPFilterEnabled()		{ return AutoUpdateIPFilter; }
+	static bool		IsAutoUpdateIPFilterAIPCEnabled()	{ return AutoUpdateIPFilterAIPC; }
+#endif
+//<==IPFilter-Autoupdate [shadow2004]
 
 protected:
 	static	CString appdir;

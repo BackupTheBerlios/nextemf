@@ -14,13 +14,9 @@ public:
 	enum { IDD = IDD_PPG_SECURITY };
 
 	void Localize(void);
-	void DeleteDDB();
-
-protected:
-	CCustomAutoComplete* m_pacIPFilterURL;
-
 	void LoadSettings(void);
 
+protected:
 	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
 	virtual BOOL OnInitDialog();
 	virtual BOOL OnApply();
@@ -29,13 +25,23 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 	afx_msg void OnSettingsChange()					{ SetModified(); }
-	afx_msg void OnReloadIPFilter();
-	afx_msg void OnEditIPFilter();
-	afx_msg void OnLoadIPFFromURL();
-	afx_msg void OnEnChangeUpdateUrl();
-	afx_msg void OnDDClicked();
 	afx_msg void OnHelp();
 	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
 public:
 	afx_msg void OnBnClickedRunasuser();
+
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+private:
+	enum eTab	{NONE, Security1,Security2};
+	CTabCtrl	m_tabCtr;
+	eTab		m_currentTab;
+	CImageList	m_imageList;
+	void		SetTab(eTab tab);
+	
+public:
+	afx_msg void OnTcnSelchangeTabSecurity1(NMHDR *pNMHDR, LRESULT *pResult);
+	void	InitTab(bool firstinit, int Page = 0);
+#endif
+//<== PPgTabControl [shadow2004]
 };

@@ -780,7 +780,16 @@ bool CClientCreditsList::Debug_CheckCrypting()
 	newcredits->m_dwCryptRndChallengeFrom = challenge;
 	// create signature with fake priv key
 	uchar pachSignature[200];
-	memset(pachSignature,200,0);
+//==>MemSet FIX [shadow2004]
+//	memset(pachSignature,200,0);
+//==> Optimizer [shadow2004]
+#ifdef OPTIM
+	memzero(pachSignature,200);
+#else
+	memset(pachSignature,0,200);
+#endif
+//<== Optimizer [shadow2004]
+//<==>MemSet FIX [shadow2004]
 	uint8 sigsize = CreateSignature(newcredits,pachSignature,200,0,false, &priv);
 
 

@@ -500,7 +500,8 @@ int CDownloadClientsCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParam
 				iResult=-1;
 			break;
 		}
-		case 3:
+//==>Sort-Fix [shadow2004]
+/*		case 3:
 			iResult=CompareUnsigned(item2->GetDownloadDatarate(), item1->GetDownloadDatarate());
 			break;
 		case 103:
@@ -529,11 +530,36 @@ int CDownloadClientsCtrl::SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParam
 			break;
 		case 107: 
 			iResult=CompareUnsigned(item2->GetSourceFrom(), item1->GetSourceFrom());
+			break;*/
+		case 3:
+		case 103:
+			iResult=CompareUnsigned(item1->GetDownloadDatarate(), item2->GetDownloadDatarate());
 			break;
+		case 4:
+		case 104: 
+			iResult=CompareUnsigned(item1->GetPartCount(), item2->GetPartCount());
+			break;
+		case 5:
+		case 105:
+			iResult=CompareUnsigned(item1->GetSessionDown(), item2->GetSessionDown());
+			break;
+		case 6:
+		case 106:
+			iResult=CompareUnsigned(item1->GetSessionUp(), item2->GetSessionUp());
+			break;
+		case 7: 
+		case 107: 
+			iResult=CompareUnsigned(item1->GetSourceFrom(), item2->GetSourceFrom());
+			break;
+//<==Sort-Fix [shadow2004]
 		default:
 			iResult=0;
 			break;
 	}
+//==>Sort-Fix [shadow2004]
+	if (lParamSort>=103)
+		iResult*=-1;
+//<==Sort-Fix [shadow2004]
 	int dwNextSort;
 	//call secondary sortorder, if this one results in equal
 	//(Note: yes I know this call is evil OO wise, but better than changing a lot more code, while we have only one instance anyway - might be fixed later)

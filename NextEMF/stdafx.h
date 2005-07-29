@@ -64,6 +64,7 @@
 #include <atlcoll.h>
 #include <afxcoll.h>
 #include <afxtempl.h>
+#include <math.h>
 //==> Optimizer [shadow2004]
 #ifdef OPTIM
 #include ".\Optimizer\optimize.h"

@@ -264,10 +264,16 @@ public:
 		m_bInitialized = FALSE;
 		m_hLib = NULL;
 		m_ullVersion = 0;
+		// MediaInfoLib - v0.4.0.1
 		m_pfnMediaInfo4_Open = NULL;
 		m_pfnMediaInfo4_Close = NULL;
 		m_pfnMediaInfo4_Get = NULL;
 		m_pfnMediaInfo4_Count_Get = NULL;
+		// MediaInfoLib - v0.5 - v0.6.1
+		m_pfnMediaInfo5_Open = NULL;
+		// MediaInfoLib - v0.7+
+		m_pfnMediaInfo_New = NULL;
+		m_pfnMediaInfo_Delete = NULL;
 		m_pfnMediaInfo_Open = NULL;
 		m_pfnMediaInfo_Close = NULL;
 		m_pfnMediaInfo_Get = NULL;
@@ -320,20 +326,39 @@ public:
 				// - if one of 2 last numbers change, there is a garanty that the DLL is compatible with old one.
 				// So you should test the version of the DLL, and if one of the 2 first numbers change, not load it.
 				// ---
-				// eMule currently handles v0.5.1.0 and v0.6.0.0
+				// eMule currently handles v0.5.1.0, v0.6.0.0, v0.6.1.0
 				else if (ullVersion >= MAKEDLLVERULL(0, 5, 0, 0) && ullVersion < MAKEDLLVERULL(0, 7, 0, 0))
 				{
 					// Don't use 'MediaInfo_Info_Version' with version v0.5+. This function is exported,
 					// can be called, but does not return a valid version string..
 
+					(FARPROC &)m_pfnMediaInfo5_Open = GetProcAddress(m_hLib, "MediaInfo_Open");
+					(FARPROC &)m_pfnMediaInfo_Close = GetProcAddress(m_hLib, "MediaInfo_Close");
+					(FARPROC &)m_pfnMediaInfo_Get = GetProcAddress(m_hLib, "MediaInfo_Get");
+					(FARPROC &)m_pfnMediaInfo_Count_Get = GetProcAddress(m_hLib, "MediaInfo_Count_Get");
+					if (m_pfnMediaInfo5_Open && m_pfnMediaInfo_Close && m_pfnMediaInfo_Get) {
+						m_ullVersion = ullVersion;
+						return TRUE;
+					}
+					m_pfnMediaInfo5_Open = NULL;
+					m_pfnMediaInfo_Close = NULL;
+					m_pfnMediaInfo_Get = NULL;
+					m_pfnMediaInfo_Count_Get = NULL;
+				}
+				else if (ullVersion >= MAKEDLLVERULL(0, 7, 0, 0) && ullVersion < MAKEDLLVERULL(0, 8, 0, 0))
+				{
+					(FARPROC &)m_pfnMediaInfo_New = GetProcAddress(m_hLib, "MediaInfo_New");
+					(FARPROC &)m_pfnMediaInfo_Delete = GetProcAddress(m_hLib, "MediaInfo_Delete");
 					(FARPROC &)m_pfnMediaInfo_Open = GetProcAddress(m_hLib, "MediaInfo_Open");
 					(FARPROC &)m_pfnMediaInfo_Close = GetProcAddress(m_hLib, "MediaInfo_Close");
 					(FARPROC &)m_pfnMediaInfo_Get = GetProcAddress(m_hLib, "MediaInfo_Get");
 					(FARPROC &)m_pfnMediaInfo_Count_Get = GetProcAddress(m_hLib, "MediaInfo_Count_Get");
-					if (m_pfnMediaInfo_Open && m_pfnMediaInfo_Close && m_pfnMediaInfo_Get) {
+					if (m_pfnMediaInfo_New && m_pfnMediaInfo_Delete && m_pfnMediaInfo_Open && m_pfnMediaInfo_Close && m_pfnMediaInfo_Get) {
 						m_ullVersion = ullVersion;
 						return TRUE;
 					}
+					m_pfnMediaInfo_New = NULL;
+					m_pfnMediaInfo_Delete = NULL;
 					m_pfnMediaInfo_Open = NULL;
 					m_pfnMediaInfo_Close = NULL;
 					m_pfnMediaInfo_Get = NULL;
@@ -357,14 +382,22 @@ public:
 			USES_CONVERSION;
 			return (*m_pfnMediaInfo4_Open)(T2A(File));
 		}
-		else if (m_pfnMediaInfo_Open)
-			return (*m_pfnMediaInfo_Open)(File);
+		else if (m_pfnMediaInfo5_Open)
+			return (*m_pfnMediaInfo5_Open)(File);
+		else if (m_pfnMediaInfo_New) {
+			void* Handle = (*m_pfnMediaInfo_New)();
+			if (Handle)
+				(*m_pfnMediaInfo_Open)(Handle, File);
+			return Handle;
+		}
 		return NULL;
 	}
 
 	void Close(void* Handle)
 	{
-		if (m_pfnMediaInfo4_Close)
+		if (m_pfnMediaInfo_Delete)
+			(*m_pfnMediaInfo_Delete)(Handle);	// File is automaticly closed
+		else if (m_pfnMediaInfo4_Close)
 			(*m_pfnMediaInfo4_Close)(Handle);
 		else if (m_pfnMediaInfo_Close)
 			(*m_pfnMediaInfo_Close)(Handle);
@@ -402,10 +435,15 @@ protected:
 	int   (__stdcall *m_pfnMediaInfo4_Count_Get)(void* Handle, stream_t_C StreamKind, int StreamNumber);
 
 	// MediaInfoLib - v0.5+
-	void*			(__stdcall *m_pfnMediaInfo_Open)(const wchar_t* File);
+	void*			(__stdcall *m_pfnMediaInfo5_Open)(const wchar_t* File);
 	void			(__stdcall *m_pfnMediaInfo_Close)(void* Handle);
 	const wchar_t*	(__stdcall *m_pfnMediaInfo_Get)(void* Handle, stream_t_C StreamKind, int StreamNumber, const wchar_t* Parameter, info_t_C KindOfInfo, info_t_C KindOfSearch);
 	int				(__stdcall *m_pfnMediaInfo_Count_Get)(void* Handle, stream_t_C StreamKind, int StreamNumber);
+
+	// MediaInfoLib - v0.7+
+	int				(__stdcall *m_pfnMediaInfo_Open)(void* Handle, const wchar_t* File);
+	void*			(__stdcall *m_pfnMediaInfo_New)();
+	void			(__stdcall *m_pfnMediaInfo_Delete)(void* Handle);
 };
 
 CMediaInfoDLL theMediaInfoDLL;

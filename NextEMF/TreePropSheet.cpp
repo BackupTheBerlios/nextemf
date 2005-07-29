@@ -401,7 +401,8 @@ HTREEITEM CTreePropSheet::CreatePageTreeItem(LPCTSTR lpszPath, HTREEITEM hParent
 #ifdef PPGCTRL
 	if (
 		strTopMostItem != "Connection 2" && // Connection 2
-		strTopMostItem != "Connection 3"    // Connection 3
+		strTopMostItem != "Connection 3" && // Connection 3
+        strTopMostItem != "Security 2" 
 		) 
 	{ 
 
@@ -1009,10 +1010,10 @@ void CTreePropSheet::OnPageTreeSelChanging(NMHDR *pNotifyStruct, LRESULT *plResu
 		if (nPage == 8 && theApp.emuledlg->preferenceswnd->ActivePageStats >= 1)
 			nPage = theApp.emuledlg->preferenceswnd->ActivePageStats;
 		if (nPage == 9 && theApp.emuledlg->preferenceswnd->ActivePageIrc >= 1)
-			nPage = theApp.emuledlg->preferenceswnd->ActivePageIrc;
-		if (nPage == 10 && theApp.emuledlg->preferenceswnd->ActivePageSecurity >= 1)
+			nPage = theApp.emuledlg->preferenceswnd->ActivePageIrc;*/
+		if (nPage == 8 && theApp.emuledlg->preferenceswnd->ActivePageSecurity >= 1)
 			nPage = theApp.emuledlg->preferenceswnd->ActivePageSecurity;
-		if (nPage == 11 && theApp.emuledlg->preferenceswnd->ActivePageSheduler >= 1)
+/*		if (nPage == 11 && theApp.emuledlg->preferenceswnd->ActivePageSheduler >= 1)
 			nPage = theApp.emuledlg->preferenceswnd->ActivePageSheduler;
 		if (nPage == 12 && theApp.emuledlg->preferenceswnd->ActivePageWebServer >= 1)
 			nPage = theApp.emuledlg->preferenceswnd->ActivePageWebServer;
@@ -1021,7 +1022,7 @@ void CTreePropSheet::OnPageTreeSelChanging(NMHDR *pNotifyStruct, LRESULT *plResu
 			nPage = theApp.emuledlg->preferenceswnd->ActivePageDebug;	
 	#endif*/
 #endif
-//<==> PPgTabControl [shadow2004]
+//<== PPgTabControl [shadow2004]
 
 		bResult = SetActivePage(nPage);
 	}

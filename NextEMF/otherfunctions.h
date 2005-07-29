@@ -15,7 +15,6 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
-#include <math.h>
 
 class CAbstractFile;
 class CKnownFile;
@@ -352,3 +351,9 @@ bool AdjustNTFSDaylightFileTime(uint32& ruFileDate, LPCTSTR pszFilePath);
 //
 uint16 GetRandomUInt16();
 uint32 GetRandomUInt32();
+
+//==>IPFilter-Autoupdate [shadow2004]
+#ifdef IPFILTER
+long FileSize(LPCTSTR fileName);
+#endif
+//<==IPFilter-Autoupdate [shadow2004]

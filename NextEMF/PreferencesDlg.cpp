@@ -47,8 +47,11 @@ CPreferencesDlg::CPreferencesDlg()
 	m_wndSecurity.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndScheduler.m_psp.dwFlags &= ~PSH_HASHELP;
 	m_wndNextEMF.m_psp.dwFlags &= ~PSH_HASHELP;// NextEMF-Pref [cyrex2001]
+//==> PPgTabControl [shadow2004]
 	m_wndConnection2.m_psp.dwFlags &= ~PSH_HASHELP; // Connection 2
 	m_wndConnection3.m_psp.dwFlags &= ~PSH_HASHELP; // Connection 3
+	m_wndSecurity2.m_psp.dwFlags &= ~PSH_HASHELP;		// Security 2
+//<== PPgTabControl [shadow2004]
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
 	m_wndDebug.m_psp.dwFlags &= ~PSH_HASHELP;
 #endif
@@ -87,9 +90,10 @@ CPreferencesDlg::CPreferencesDlg()
 //==> PPgTabControl [shadow2004]
 	AddPage(&m_wndConnection2);								// 13
 	AddPage(&m_wndConnection3);								// 14
+	AddPage(&m_wndSecurity2);								// 15
 //<== PPgTabControl [shadow2004]
 #if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
-	AddPage(&m_wndDebug);									// 15
+	AddPage(&m_wndDebug);									// 16
 #endif
 
 	SetTreeViewMode(TRUE, TRUE, TRUE);
@@ -106,9 +110,9 @@ CPreferencesDlg::CPreferencesDlg()
 	ActivePageDirectory			= 0;
 	ActivePageFiles				= 0;
 	ActivePageNotify			= 0;
-	ActivePageStats				= 0;
+	ActivePageStats				= 0;*/
 	ActivePageSecurity			= 0;
-	ActivePageSheduler			= 0;
+/*	ActivePageSheduler			= 0;
 	ActivePageWebServer			= 0;
 	ActivePageTweaks			= 0;
 	ActivePageDebug				= 0;
@@ -120,9 +124,9 @@ CPreferencesDlg::CPreferencesDlg()
 	StartPageDirectory			= 0;
 	StartPageFiles				= 0;
 	StartPageNotify				= 0;
-	StartPageStats				= 0;
+	StartPageStats				= 0;*/
 	StartPageSecurity			= 0;
-	StartPageSheduler			= 0;
+/*	StartPageSheduler			= 0;
 	StartPageWebServer			= 0;
 	StartPageTweaks				= 0;
 	StartPageDebug				= 0;*/
@@ -175,10 +179,17 @@ BOOL CPreferencesDlg::OnInitDialog()
 				{	// Connection3 / Hardlimit
 					SetActivePage(2);
 				}
+				if (i == 15) 
+				{	// Security2 / IP-Filter
+					SetActivePage(8);
+				}
+
 
 					m_wndConnection.InitTab(false,StartPageConnection);
 					m_wndConnection2.InitTab(false,StartPageConnection);
 					m_wndConnection3.InitTab(false,StartPageConnection);
+					m_wndSecurity.InitTab(false,StartPageSecurity);
+					m_wndSecurity2.InitTab(false,StartPageSecurity);
 					break;
 				}
 				else
@@ -234,9 +245,10 @@ void CPreferencesDlg::Localize()
 //==> PPgTabControl [shadow2004]
 		pTree->SetItemText(GetPageTreeItem(13), RemoveAmbersand(_T(" "))); // Connection 2
 		pTree->SetItemText(GetPageTreeItem(14), RemoveAmbersand(_T(" "))); // Connection 3
+		pTree->SetItemText(GetPageTreeItem(15), RemoveAmbersand(_T(" "))); // Security 2
 //<== PPgTabControl [shadow2004]
 	#if defined(_DEBUG) || defined(USE_DEBUG_DEVICE)
-		pTree->SetItemText(GetPageTreeItem(15), _T("Debug"));
+		pTree->SetItemText(GetPageTreeItem(16), _T("Debug"));
 	#endif
 	}
 
@@ -296,7 +308,7 @@ void CPreferencesDlg::SwitchTab(int Page)
 	if(m_hWnd && IsWindowVisible()){
 		CPropertyPage* activepage = GetActivePage();
 
-		// Connection 1-2
+		// Connection 1-3
 		if (activepage == &m_wndConnection || activepage == &m_wndConnection2 || activepage == &m_wndConnection3){
 			if (Page == 0) {
 				SetActivePage(&m_wndConnection);
@@ -318,6 +330,21 @@ void CPreferencesDlg::SwitchTab(int Page)
 			}
 		}
 
+		// Security 1-2
+		if (activepage == &m_wndSecurity || activepage == &m_wndSecurity2){
+			if (Page == 0) {
+				SetActivePage(&m_wndSecurity);
+				ActivePageSecurity = 0;
+				StartPageSecurity = 0;
+				m_wndSecurity.InitTab(false,0);
+			}
+			if (Page == 1) {
+				SetActivePage(&m_wndSecurity2);
+				ActivePageSecurity = 15;
+				StartPageSecurity = 1;
+				m_wndSecurity2.InitTab(false,1);
+			}
+		}
 	}
 }
 #endif

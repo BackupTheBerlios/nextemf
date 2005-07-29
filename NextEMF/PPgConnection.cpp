@@ -536,7 +536,7 @@ BOOL CPPgConnection::OnApply()
 		theApp.emuledlg->statisticswnd->SetARange(true, (int)thePrefs.GetMaxGraphDownloadRate());
 #else
 	if (lastmaxgu != thePrefs.maxGraphUploadRate) 
-		theApp.emuledlg->statisticswnd->SetARange(false, thePrefs.maxGraphUploadRate);
+		theApp.emuledlg->statisticswnd->SetARange(false, thePrefs.GetMaxGraphUploadRate(true));
 	if (lastmaxgd!=thePrefs.maxGraphDownloadRate)
 		theApp.emuledlg->statisticswnd->SetARange(true, thePrefs.maxGraphDownloadRate);
 #endif

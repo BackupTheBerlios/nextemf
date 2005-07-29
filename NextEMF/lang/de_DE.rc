@@ -534,7 +534,7 @@ BEGIN
     IDS_PW_RDEAD            "Lösche tote Server nach"
     IDS_PW_RETRIES          "Fehlversuchen"
     IDS_PW_SCORE            "Benutze Prioritäts-System"
-    IDS_PW_USC              "Server-Adressen vom verbundenem Server beziehen"
+    IDS_PW_USC              "Server-Adressen vom verbundenen Server beziehen"
     IDS_PW_UCC              "Server-Adressen von verbundenen Clients beziehen"
     IDS_PW_FILTER           "Server- und Client LAN-IPs filtern"
     IDS_PW_USS              "Serverliste beim Programmstart aktualisieren"
@@ -1488,7 +1488,7 @@ BEGIN
     IDS_KADOVERHEAD         "Kad Overhead (Pakete): %s (%s)"
     IDS_FIND                "Suche..."
     IDS_LOG_BANNED_CLIENTS  "Logge gebannte Clients"
-    IDS_LOG_RATING_RECV     "Logge empfangende Dateibeschreibungen/Bewertungen"
+    IDS_LOG_RATING_RECV     "Logge empfangene Dateibeschreibungen/Bewertungen"
 END
 
 STRINGTABLE 
@@ -1905,6 +1905,22 @@ BEGIN
     IDS_CON3_GHLMINQ_LBL1   "Min. Quellenanzahl pro Datei "
 END
 
+STRINGTABLE
+BEGIN
+    IDS_SEC1_NAME           "Allgemein"
+    IDS_SEC2_NAME           "IP-Filter"
+    IDS_SEC2_IPFILTER       "IP-Filter (Version"
+    IDS_SEC2_IPFSERVER      "Filtere auch Server (weist auch dynIP-Server ab)"
+    IDS_SEC2_IPFLEVEL_LBL1  "Filterstufe:"
+    IDS_SEC2_IPFRELOAD      "Neu Laden"
+    IDS_SEC2_IPFEDIT        "Bearbeiten"
+    IDS_SEC2_IPFUPDATE      "Aktualisieren"
+    IDS_SEC2_IPFURL_LBL1    "Update von URL: (filter.dat or .zip)"
+    IDS_SEC2_IPFRESET       "Zurücksetzen"
+    IDS_SEC2_IPFLOAD        "Laden"
+    IDS_SEC2_IPFAUTOUPDATE  "Auto-Update beim Start"
+    IDS_SEC2_IPFAUTOUPDATEAIPC "Auto-Update nach IP-Wechsel"
+END
 #endif    // Deutsch (Deutschland) resources
 /////////////////////////////////////////////////////////////////////////////
 

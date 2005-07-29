@@ -536,6 +536,8 @@ void CCreditsThread::InitText()
 	m_arCredits.Add(_T("S:20"));
 	
 	
+	m_arCredits.Add(_T("01:06:Arabic: Dody"));
+	m_arCredits.Add(_T("S:05"));	
 	m_arCredits.Add(_T("01:06:Albanian: Besmir"));
 	m_arCredits.Add(_T("S:05"));	
 	m_arCredits.Add(_T("01:06:Basque: TXiKi"));

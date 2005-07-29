@@ -52,7 +52,11 @@ public:
 	bool IsFiltered(uint32 IP, UINT level) /*const*/;
 	LPCTSTR GetLastHit() const;
 	const CIPFilterArray& GetIPFilter() const;
-
+//==>IPFilter-Autoupdate [shadow2004]
+#ifdef IPFILTER
+	void    UpdateIPFilterURL();
+#endif
+//<==IPFilter-Autoupdate [shadow2004]
 private:
 	const SIPFilter* m_pLastHit;
 	CIPFilterArray m_iplist;

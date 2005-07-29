@@ -647,11 +647,15 @@ BOOL CSharedFilesCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 					OpenFile(file);
 				break; 
 			case MP_OPENFOLDER:
-				if (file && !file->IsPartFile()){
-					CString path = file->GetPath();
+				if (file && !file->IsPartFile())
+//==> Open Folder Fix [shadow2004]
+//				{
+/*					CString path = file->GetPath();
 					int bspos = path.ReverseFind(_T('\\'));
-					ShellExecute(NULL, _T("open"), path.Left(bspos), NULL, NULL, SW_SHOW);
-				}
+					ShellExecute(NULL, _T("open"), path.Left(bspos), NULL, NULL, SW_SHOW);*/
+					ShellExecute(NULL, _T("open"), file->GetPath(), NULL, NULL, SW_SHOW);
+//				}
+//<== Open Folder Fix [shadow2004]
 				break; 
 			case MP_RENAME:
 			case MPG_F2:

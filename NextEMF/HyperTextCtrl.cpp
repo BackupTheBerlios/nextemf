@@ -1753,13 +1753,18 @@ void CHyperTextCtrl::LoadHandCursor() {
 		HCURSOR hTempCursor = ::LoadCursor(hModule, MAKEINTRESOURCE(106));
 		if (hTempCursor){
 			m_LinkCursor = CopyCursor(hTempCursor);
-			VERIFY( DestroyCursor(hTempCursor) );
+//==>Assertion Errors [shadow2004]
+//			VERIFY( DestroyCursor(hTempCursor) );
+//<==Assertion Errors [shadow2004]
 		}
 		FreeLibrary(hModule);
 	}
 
 	if (m_LinkCursor == NULL){
 		//this shouldn't happen... but just in case
-		m_LinkCursor = LoadCursor(NULL,IDC_ARROW);
+//==>Assertion Errors [shadow2004]
+//		m_LinkCursor = LoadCursor(NULL,IDC_ARROW);
+		m_LinkCursor = CopyCursor(::LoadCursor(NULL,IDC_ARROW));
+//<==Assertion Errors [shadow2004]
 	}
 }
