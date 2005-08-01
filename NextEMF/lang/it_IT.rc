@@ -1907,10 +1907,10 @@ BEGIN
     IDS_SEC2_IPFEDIT        "Modifica..."
     IDS_SEC2_IPFUPDATE      "aggiorna"
     IDS_SEC2_IPFURL_LBL1    "aggiorna dall'url: (filter.dat o .zip)"
-    IDS_SEC2_IPFRESET       "azzera"
+    IDS_SEC2_IPFRESET       "ripristina"
     IDS_SEC2_IPFLOAD        "carcia"
-    IDS_SEC2_IPFAUTOUPDATE  "autoaggionamento all'avvio"
-    IDS_SEC2_IPFAUTOUPDATEAIPC "autoaggiornamento dopo cambio ip"
+    IDS_SEC2_IPFAUTOUPDATE  "auto aggionamento all'avvio"
+    IDS_SEC2_IPFAUTOUPDATEAIPC "auto aggiornamento dopo cambio ip"
 END
 
 #endif    // Italian (Italy) resources
