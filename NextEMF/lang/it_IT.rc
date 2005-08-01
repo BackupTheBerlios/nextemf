@@ -1875,24 +1875,42 @@ BEGIN
     IDS_STATS_OTHER         "Altro"
     IDS_STATS_STILLUP       "Ancora in Upload"
     IDS_STATS_CANCELED      "Cancellato"
-    IDS_USE_GLOBALHL        "abilita fonti max/file globale"
-    IDS_GLOBALHL_UPDATE_TIMER "durata delle fonti max/file globale [30-80 sec.]"
-    IDS_MAX_SOURCE_HARDLIMIT "fonti massime per l'hardlimit [1000-5000]"
-    IDS_MIN_SOURCE_HARDLIMIT "limite minimo di fonti x file [10-50]"
 END
 
 STRINGTABLE 
 BEGIN
-    IDS_PPG_NEXTEMF_REASK_SOURCE_AFTER_IP_CHANGE_CHECK 
-                            "richiedi fonti dopo riconnessione del modem(cambio ip)"
-    IDS_QUICK_START         "avvio veloce"
-    IDS_QUICK_START_MAX_CONN "connessioni massime"
-    IDS_QUICK_START_MAX_CONN_PER_FIVE "connessioni massime/5 sec"
-    IDS_QUICK_START_AFTER_IP_CHANGE 
-                            "avvio veloce dopo cambio ip"
-    IDS_QUICK_START_MAX_TIME 
-                            "durata dell'avvio veloce [8-18min]"
-    IDS_CON_CONTROL         "controllo connessioni"
+    IDS_CON1_NAME           "globale"
+    IDS_CON2_NAME           "richiedi/avvio veloce"
+    IDS_CON2_REASK          "richiedi fonti dopo riconnessione del modem(cambio ip)"
+    IDS_CON2_ACTIVQS        "avvio veloce"
+    IDS_CON2_QSAFTERZT      "vvio veloce dopo cambio ip"
+    IDS_CON2_QSMAXCON_LBL1  "connessioni massime  [100 - 2000]"
+    IDS_CON2_QSMAXCON5_LBL1 "connessioni massime/5 sec [5 - 200]"
+    IDS_CON2_QSTIME_LBL1    "durata dell'avvio veloce"
+    IDS_CON2_QSTIME_LBL2    "min."
+    IDS_CON3_NAME           "max/file globale"
+    IDS_CON3_GHLACTIV       "abilita fonti max/file globale"
+    IDS_CON3_GHLTIME_LBL1   "durata delle fonti max/file globale"
+    IDS_CON3_GHLTIME_LBL2   "sec."
+    IDS_CON3_GHLMAXQ_LBL1   "fonti massime per l'hardlimit"
+    IDS_CON3_GHLMINQ_LBL1   "limite minimo di fonti x file"
+END
+
+STRINGTABLE
+BEGIN
+    IDS_SEC1_NAME           "globale"
+    IDS_SEC2_NAME           "Filtri-IP"
+    IDS_SEC2_IPFILTER       "Filtri-IP (versione"
+    IDS_SEC2_IPFSERVER      "Filtra anche i Server (Compresi i Server con DNS)"
+    IDS_SEC2_IPFLEVEL_LBL1  "Livello filtro:"
+    IDS_SEC2_IPFRELOAD      "Aggiorna"
+    IDS_SEC2_IPFEDIT        "Modifica..."
+    IDS_SEC2_IPFUPDATE      "aggiorna"
+    IDS_SEC2_IPFURL_LBL1    "aggiorna dall'url: (filter.dat o .zip)"
+    IDS_SEC2_IPFRESET       "azzera"
+    IDS_SEC2_IPFLOAD        "carcia"
+    IDS_SEC2_IPFAUTOUPDATE  "autoaggionamento all'avvio"
+    IDS_SEC2_IPFAUTOUPDATEAIPC "autoaggiornamento dopo cambio ip"
 END
 
 #endif    // Italian (Italy) resources

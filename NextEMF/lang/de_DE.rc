@@ -1915,7 +1915,7 @@ BEGIN
     IDS_SEC2_IPFRELOAD      "Neu Laden"
     IDS_SEC2_IPFEDIT        "Bearbeiten"
     IDS_SEC2_IPFUPDATE      "Aktualisieren"
-    IDS_SEC2_IPFURL_LBL1    "Update von URL: (filter.dat or .zip)"
+    IDS_SEC2_IPFURL_LBL1    "Update von URL: (filter.dat oder .zip)"
     IDS_SEC2_IPFRESET       "Zurücksetzen"
     IDS_SEC2_IPFLOAD        "Laden"
     IDS_SEC2_IPFAUTOUPDATE  "Auto-Update beim Start"
