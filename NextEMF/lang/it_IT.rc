@@ -679,7 +679,7 @@ BEGIN
     IDS_SF_USER             "Utenti Totali"
     IDS_SF_FILE             "File Totali"
     IDS_UPLOADTIME          "Durata Upload"
-    IDS_LASTSEENCOMPL       "Ultima Volta Completo:"
+    IDS_LASTSEENCOMPL       "Visto Completo:"
     IDS_YES                 "Si"
     IDS_NO                  "No"
     IDS_UNBAN               "Togli il Ban"
@@ -747,11 +747,11 @@ STRINGTABLE
 BEGIN
     IDS_DOWNLOADMOVIECHUNKS "Prova a scaricare prima le Parti necessari all'anteprima"
     IDS_UPDATEQUEUE         "Non aggiornare la coda in tempo reale"
-    IDS_RECOVER_SINGLE      "1 File recuperato."
-    IDS_RECOVER_MULTIPLE    "%ld File recuperati."
-    IDS_ATTEMPTING_RECOVERY "Recupero dell'archivio in corso..."
-    IDS_RECOVERY_SUCCESSFUL "Recupero dell'archivio riuscito."
-    IDS_RECOVERY_FAILED     "Recupero dell'archivio fallito."
+    IDS_RECOVER_SINGLE      "Recupero Archivio: 1 File recuperato."
+    IDS_RECOVER_MULTIPLE    "Recupero Archivio: %ld File recuperati."
+    IDS_ATTEMPTING_RECOVERY "Recupero Archivio: iniziato..."
+    IDS_RECOVERY_SUCCESSFUL "Recupero Archivio: riuscito!"
+    IDS_RECOVERY_FAILED     "Recupero Archivio: fallito."
     IDS_STARTNEXTFILE       "Scarica il successivo File in pausa al termine di un Download"
     IDS_FULLCHUNKTRANS      "Prova ad inviare a tutti delle Parti complete"
     IDS_MANUALSERVERHIGHPRIO "Dai automaticamente Priorità ""Alta"" ai Server aggiunti"
@@ -777,7 +777,7 @@ BEGIN
     IDS_PW_TBN_ONDOWNLOAD   "Viene terminato un Download"
     IDS_PW_EKDEV_OPTIONS    "Notifiche"
     IDS_PW_TASKBARNOTIFIER  "PopUp dei messaggi"
-    IDS_PW_TBN_OPTIONS      "Avvertimi quando"
+    IDS_PW_TBN_OPTIONS      "Avvertimi quando:"
     IDS_TBN_NEWCHATMSG      "Messaggio da"
 END
 
@@ -1061,7 +1061,7 @@ BEGIN
     IDS_DISABLEQUEUELIST    "Disattiva la lista dei Client in Coda"
     IDS_USECREDITSYSTEM     "Usa il Sistema dei Crediti (Favorirai chi ti fa scaricare)"
     IDS_FIRSTAUTODOWN       "Vuoi che eMule gestisca le priorità dei File in Download?\n\nAttivando quest'opzione permetterai ad eMule di controllare che i File con molte fonti non interferiscano con quelli con poche fonti.\n\nQuest'opzione avrà effetto solo sui Download futuri."
-    IDS_FIRSTAUTOUP         "Vuoi che eMule gestisca le priorità degli Upload?\n\nAttivando quest'opzione consentirai ad eMule di accelerare la diffusione dei File più rari, inviando di meno i File popolari.\nDisattivando quest'opzione consentirai ad eMule di inviare con la stessa intensità i File rari e quelli popolari. Quest'opzione avrà effetto solo sui File condivisi in futuro."
+    IDS_FIRSTAUTOUP         "Vuoi che eMule gestisca le priorità degli Upload?\n\nAttivando quest'opzione consentirai ad eMule di accelerare la diffusione dei File più rari, inviando di meno i File popolari.\nDisattivando quest'opzione consentirai ad eMule di inviare con la stessa intensità i File rari e quelli popolari.\n\nQuest'opzione avrà effetto solo sui File condivisi in futuro."
     IDS_FIRSTCREDITSYSTEM   "Vuoi favorire tutti gli utenti che ti inviano dei File?\n\nÈ questo che si intende con il Sistema dei Crediti. Attivando quest'opzione, ci aiuterai a combattere i 'Leecher' (coloro che scaricano senza condividere, o che tolgono il File dalla condivisione subito dopo averlo scaricato). Se sei un Releaser è facile che tu voglia disattivare quest'opzione."
     IDS_FIRSTFULLCHUNK      "Vuoi inviare parti complete?\n\nAttivando quest'opzione darai ai Client ai quali invii File una possibilità maggiore di completare il Download di una parte intera (9.5 Mb). Disattivandola farai girare la tua coda più velocemente. Se sei un Releaser è facile che tu voglia attivare quest'opzione."
     IDS_FIRSTSAFECON        "Vuoi che eMule si connetta ai Server utilizzando una connessione sicura?\n\nDisattivando questa funzione, permetterai ad eMule di connettersi ai Server più velocemente, ma sarà maggiore la possibilità di ottenere falsi ID Bassi."
@@ -1144,7 +1144,7 @@ BEGIN
     IDS_FILEHASH            "Hash File"
     IDS_GLOBALSEARCH2       "Ricerca Globale"
     IDS_AUTH                "Autenticazione"
-    IDS_SHOWCATINFO         "Mostra informazioni sui Download nei tab delle categorie"
+    IDS_SHOWCATINFO         "Mostra informazioni sui Download nei Tab delle categorie"
     IDS_SW_SEARCHINGINFO    "Ricerca in corso. I risultati saranno mostrati a breve!"
     IDS_LOGENTRY            "Registra Accesso"
 END
@@ -1194,10 +1194,10 @@ END
 STRINGTABLE 
 BEGIN
     IDS_SHAREDREQDENIED     "L'utente ""%s"" (%u) ha negato l'accesso alla lista delle cartelle e/o dei File condivisi"
-    IDS_AUTOCLEANUPFN       "Pulisci in automatico i Nomi dei File dei nuovi Download"
+    IDS_AUTOCLEANUPFN       "Pulizia automatica Nomi dei nuovi Download"
     IDS_ONNEWDOWNLOAD       "Inizializzazioni"
     IDS_FILTERFILENAMEWORD  "Inserisci le parole da filtrare, seperate da |"
-    IDS_FNFILTERTITLE       "Modifica il filtro delle parole per la pulizia dei Nomi File"
+    IDS_FNFILTERTITLE       "Modifica filtro delle parole per pulizia Nomi File"
     IDS_CHANGECATVIEW       "Seleziona Filtro Visuale"
     IDS_STATUS_NOTCOMPLETED "Incompleto"
     IDS_STATS_CUMULATIVE    "Totale"
@@ -1334,7 +1334,7 @@ STRINGTABLE
 BEGIN
     IDS_VERSION             "Versione"
     IDS_PASTE               "Incolla"
-    IDS_A4AF                "Gestione Fonte"
+    IDS_A4AF                "Gestione Fonti"
     IDS_AUTOCAT_LABEL       "Riconoscimento automatico della Categoria: (Separatore | )"
     IDS_SHOWEXTSETTINGS     "Mostra più controlli (Controlli Avanzati)"
     IDS_TREEOPTIONS_TRUE    "Vero"
@@ -1357,7 +1357,7 @@ BEGIN
                             "La cartella dei File temporanei non può corrispondere ad una cartella di installazione di eMule."
     IDS_WRN_INCTEMP_SAME    "La cartella dei File temporanei e dei File scaricati non possono coincidere."
     IDS_SHOWDWLPERCENTAGE   "Mostra Percentuale di completamento nella Barra del Progresso"
-    IDS_TBN_ONNEWDOWNLOAD   "Download Aggiunto"
+    IDS_TBN_ONNEWDOWNLOAD   "Viene aggiunto un Download"
     IDS_ARTIST              "Artista"
     IDS_ALBUM               "Album"
 END
@@ -1705,7 +1705,7 @@ BEGIN
     IDS_DEADSOURCES         "Fonti Inattive"
     IDS_LARGEICONS          "Icone Grandi"
     IDS_SMALLICONS          "Icone Piccole"
-    IDS_SHORTTAGS           "Tag Corti"
+    IDS_SHORTTAGS           "Tag Brevi"
     IDS_THELOAD             "Carico"
     IDS_PACKSENT            "Pacchetti Inviati"
     IDS_RESPONSES           "Risposte"
@@ -1807,7 +1807,15 @@ BEGIN
     IDS_VIEWCOLLECTION      "Vedi Collezione"
     IDS_COLL_TEXTFORMAT     "Salva Collezione in formato testo"
     IDS_SEARCHAUTHORCOLLECTION "Cerca l'Autore delle Collezioni"
-    IDS_ERR_DUPL_FILES      "Duplicate shared files: ""%s"" and ""%s"""
+    IDS_ERR_DUPL_FILES      "Files condivisi doppi: ""%s"" e ""%s"""
+    IDS_USS_TRACEROUTEOFTENFAILED 
+                            "UploadSpeedSense: Traceroute fallito troppe volte. Upload SpeedSense disattivato."
+    IDS_USS_STARTING        "UploadSpeedSense: Preparazione completata. Avvio del controllo della velocità di upload. (Nei primi 60 secondi sarà nella modalità di reazione veloce)"
+    IDS_USS_MANUALUPLOADLIMITDETECTED 
+                            "UploadSpeedSense: Trovato un Limite di upload. Avviata la modalità di reazione veloce per i primi 60 secondi."
+    IDS_USS_STATE_PREPARING "Preparazione..."
+    IDS_USS_STATE_WAITING   "Attesa..."
+    IDS_USS_STATE_ERROR     "Errore!"
 END
 
 //////////////////////////////                    NextEMF Strings                 /////////////////////////////////////////

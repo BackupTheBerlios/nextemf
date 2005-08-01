@@ -1398,25 +1398,9 @@ void CemuleDlg::SetActiveDialog(CWnd* dlg)
 	{
 		if (thePrefs.ShowCatTabInfos()) transferwnd->UpdateCatTabTitles();
 //==> Toolbar [shadow2004]
-//	toolbar->PressMuleButton(TBBTN_TRANSFERS);
 	}
-/*	else if (dlg == serverwnd){
-		toolbar->PressMuleButton(TBBTN_SERVER);
-	}*/
 	else if (dlg == chatwnd)	chatwnd->chatselector.ShowChat();
-//		toolbar->PressMuleButton(TBBTN_MESSAGES);
-//	}
-/*	else if (dlg == sharedfileswnd){
-		toolbar->PressMuleButton(TBBTN_SHARED);
-	}
-	else if (dlg == searchwnd){
-		toolbar->PressMuleButton(TBBTN_SEARCH);
-	}*/
 	else if (dlg == statisticswnd)		statisticswnd->ShowStatistics();
-//		toolbar->PressMuleButton(TBBTN_STATS);
-/*	else if	(dlg == kademliawnd){
-		toolbar->PressMuleButton(TBBTN_KAD);*/
-//	}
 //<== Toolbar [shadow2004]
 	}
 

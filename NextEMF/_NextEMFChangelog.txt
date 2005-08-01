@@ -1,6 +1,6 @@
 /////////////////////////////////
 |Changes eMule 0.46a NextEMF v0.6
-|=<|  BETA 1  |>=================
+|=<| FINAL  |>===================
 
 merged	: eMule v0.46c
 
@@ -39,6 +39,8 @@ updated	: Libs
 		  also used
 			# resizeable lib 1.3 [shadow2004]
 			# id3 lib 3.8.3 [shadow2004]
+updated	: german language [shadow2004]
+updated	: italian language by wolf
 
 /////////////////////////////////
 |Changes eMule 0.46a NextEMF v0.5
@@ -125,8 +127,11 @@ update  : italian Language File (19.06.2005) [maraglio16]
 	
 |GraFiX
 -------
-	christitus
 	hateman
+
+|Translators
+------------
+	[IT] wolf (ddos.isleoftortuga.org)
 
 |BetaTester
 -----------
