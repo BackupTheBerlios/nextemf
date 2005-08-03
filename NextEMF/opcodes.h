@@ -91,7 +91,9 @@
 #define	MAX_SOURCES_FILE_SOFT	750
 #define	MAX_SOURCES_FILE_UDP	50
 #define SESSIONMAXTRANS			(9.3*1024*1024) // 9.3 Mbytes. "Try to send complete chunks" always sends this amount of data
+//==>Xman Full Chunk [shadow2004]
 #define SESSIONMAXTIME			HR2MS(2)	//1 hour
+//<==Xman Full Chunk [shadow2004]
 #define	MAXFILECOMMENTLEN		50
 #define	PARTSIZE				9728000
 #define	MAX_EMULE_FILE_SIZE		4290048000	// (4294967295/PARTSIZE)*PARTSIZE

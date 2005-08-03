@@ -109,6 +109,10 @@ CUpDownClient::CUpDownClient(CPartFile* in_reqfile, uint16 in_port, uint32 in_us
 
 void CUpDownClient::Init()
 {
+//==>Xman Full Chunk [shadow2004]
+	upendsoon=false;
+//<==Xman Full Chunk [shadow2004]
+
 	credits = 0;
 	m_nSumForAvgUpDataRate = 0;
 	m_bAddNextConnect = false;

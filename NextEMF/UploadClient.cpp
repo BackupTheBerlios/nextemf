@@ -354,8 +354,17 @@ void CUpDownClient::CreateNextBlockPackage(){
 	try{
         // Buffer new data if current buffer is less than 100 KBytes
         while (!m_BlockRequests_queue.IsEmpty() &&
-               (m_addedPayloadQueueSession <= GetQueueSessionPayloadUp() || m_addedPayloadQueueSession-GetQueueSessionPayloadUp() < 100*1024)) {
-
+//==>Xman Full Chunk [shadow2004]
+//               (m_addedPayloadQueueSession <= GetQueueSessionPayloadUp() || m_addedPayloadQueueSession-GetQueueSessionPayloadUp() < 100*1024)) {
+               (m_addedPayloadQueueSession <= GetQueueSessionPayloadUp() || m_addedPayloadQueueSession-GetQueueSessionPayloadUp() < EMBLOCKSIZE)) { //Xman changed  
+			//Xman Full Chunk
+		    //at this point we do the check if it is time to kick the client
+		    //if we kick soon, we don't add new packages
+			upendsoon=theApp.uploadqueue->CheckForTimeOver(this);
+			if(upendsoon==true)
+				break;
+			//Xman end
+//<==Xman Full Chunk [shadow2004]
 			Requested_Block_Struct* currentblock = m_BlockRequests_queue.GetHead();
 			CKnownFile* srcfile = theApp.sharedfiles->GetFileByID(currentblock->FileID);
 			if (!srcfile)
@@ -696,8 +705,10 @@ void CUpDownClient::SetUploadFileID(CKnownFile* newreqfile)
 void CUpDownClient::AddReqBlock(Requested_Block_Struct* reqblock)
 {
     if(GetUploadState() != US_UPLOADING) {
-        if(thePrefs.GetLogUlDlEvents())
-            AddDebugLogLine(DLP_LOW, false, _T("UploadClient: Client tried to add req block when not in upload slot! Prevented req blocks from being added. %s"), DbgGetClientInfo());
+//==>Xman Full Chunk [shadow2004]
+//        if(thePrefs.GetLogUlDlEvents())
+//            AddDebugLogLine(DLP_LOW, false, _T("UploadClient: Client tried to add req block when not in upload slot! Prevented req blocks from being added. %s"), DbgGetClientInfo());
+//<==Xman Full Chunk [shadow2004]
 		delete reqblock;
         return;
     }
@@ -772,7 +783,10 @@ uint32 CUpDownClient::SendBlockData(){
         sentBytesPayload = s->GetSentPayloadSinceLastCallAndReset();
         m_nCurQueueSessionPayloadUp = (UINT)(m_nCurQueueSessionPayloadUp + sentBytesPayload);
 
-        if (theApp.uploadqueue->CheckForTimeOver(this)) {
+//==>Xman Full Chunk [shadow2004]
+//        if (theApp.uploadqueue->CheckForTimeOver(this)) {
+		if (upendsoon && socket->StandardPacketQueueIsEmpty()) {
+//<==Xman Full Chunk [shadow2004]
 //==> Extended Failed/Success Statistic by NetF [shadow2004]
 #ifdef FSSTATS
             theApp.uploadqueue->RemoveFromUploadQueue(this, _T("Completed transfer"), true, false, REASON_Limit);
@@ -783,6 +797,9 @@ uint32 CUpDownClient::SendBlockData(){
 			SendOutOfPartReqsAndAddToWaitingQueue();
         } 
 		else {
+//==>Xman Full Chunk [shadow2004]
+            if(upendsoon==false)
+//<==Xman Full Chunk [shadow2004]
             // read blocks from file and put on socket
             CreateNextBlockPackage();
         }
@@ -1053,3 +1070,59 @@ void CUpDownClient::SetCollectionUploadSlot(bool bValue){
 	ASSERT( !IsDownloading() || bValue == m_bCollectionUploadSlot );
 	m_bCollectionUploadSlot = bValue;
 }
+
+//==>Xman Full Chunk [shadow2004]
+// Checks if it is next requested block from another chunk of the actual file or from another file 
+// 
+// [Returns] 
+//   true : Next requested block is from another different chunk or file than last downloaded block 
+//   false: Next requested block is from same chunk that last downloaded block 
+bool CUpDownClient::IsDifferentPartBlock()
+{ 
+	Requested_Block_Struct* lastBlock;
+	Requested_Block_Struct* currBlock;
+	uint32 lastDone = 0;
+	uint32 currRequested = 0;
+	
+	bool different = false;
+	
+	try {
+		// Check if we have good lists and proceed to check for different chunks
+		if (!m_BlockRequests_queue.IsEmpty() && !m_DoneBlocks_list.IsEmpty())
+		{
+			// Calculate corresponding parts to blocks
+			//lastBlock = m_DoneBlocks_list.GetTail(); //Xman: with this method we give 1 chunk min and 2.8MB max if chunk border was reached
+			lastBlock = m_DoneBlocks_list.GetHead();
+			lastDone = lastBlock->StartOffset / PARTSIZE;
+			currBlock = m_BlockRequests_queue.GetHead(); 
+			currRequested = currBlock->StartOffset / PARTSIZE; 
+             
+			// Test is we are asking same file and same part
+			//
+			if ( lastDone != currRequested && GetSessionUp() >= 2621440 )  //Xman-Full-Chunk: Client is allowed to get min 2,5 MB
+			{ 
+				different = true;
+				
+				if(thePrefs.GetLogUlDlEvents()){
+					AddDebugLogLine(false, _T("%s: Upload session will end soon due to new chunk."), this->GetUserName());
+				}				
+			}
+			if (md4cmp(lastBlock->FileID, currBlock->FileID) != 0 && GetSessionUp() >= 2621440 )  //Xman-Full-Chunk: Client is allowed to get min 2,5 MB
+			{ 
+				different = true;
+				
+				if(thePrefs.GetLogUlDlEvents()){
+					AddDebugLogLine(false, _T("%s: Upload session will end soon due to different file."), this->GetUserName());
+				}
+			}
+		} 
+   	}
+   	catch(...)
+   	{ 
+			AddDebugLogLine(false, _T("%s: Upload session ended due to error."), this->GetUserName());
+      		different = true; 
+   	} 
+
+	return different; 
+}
+//<==Xman Full Chunk [shadow2004]

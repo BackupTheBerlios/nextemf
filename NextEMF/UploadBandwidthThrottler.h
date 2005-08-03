@@ -41,6 +41,9 @@ public:
     void EndThread();
 
     void Pause(bool paused);
+//==>Xman Full Chunk [shadow2004]
+	uint16	GetNumberOfFullyActivatedSlots()	{return m_highestNumberOfFullyActivatedSlots;}
+//<==Xman Full Chunk [shadow2004]
 private:
     static UINT RunProc(LPVOID pParam);
     UINT RunInternal();

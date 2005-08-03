@@ -69,6 +69,10 @@ public:
 
     uint32	GetNeededBytes();
 
+//==>Xman Full Chunk [shadow2004]
+	bool StandardPacketQueueIsEmpty() const {return standartpacket_queue.IsEmpty()!=0;}
+//<==Xman Full Chunk [shadow2004]
+
 #ifdef _DEBUG
 	// Diagnostic Support
 	virtual void AssertValid() const;

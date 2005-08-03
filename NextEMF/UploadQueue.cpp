@@ -725,6 +725,10 @@ bool CUploadQueue::RemoveFromUploadQueue(CUpDownClient* client, LPCTSTR pszReaso
             client->m_bAddNextConnect = false;
 			uploadinglist.RemoveAt(curPos);
 
+//==>Xman Full Chunk [shadow2004]
+			//set the flag back
+			client->upendsoon=false;
+//<==Xman Full Chunk [shadow2004]
             bool removed = theApp.uploadBandwidthThrottler->RemoveFromStandardList(client->socket);
             bool pcRemoved = theApp.uploadBandwidthThrottler->RemoveFromStandardList((CClientReqSocket*)client->m_pPCUpSocket);
 			(void)removed;
@@ -821,37 +825,54 @@ bool CUploadQueue::CheckForTimeOver(CUpDownClient* client){
 			return true;
 		}
 	}
+//==>Xman Full Chunk [shadow2004]	
+bool returnvalue=false;
 	
-	if (!thePrefs.TransferFullChunks()){
 	    if( client->GetUpStartTimeDelay() > SESSIONMAXTIME){ // Try to keep the clients from downloading for ever
 		    if (thePrefs.GetLogUlDlEvents())
-			    AddDebugLogLine(DLP_LOW, false, _T("%s: Upload session ended due to max time %s."), client->GetUserName(), CastSecondsToHM(SESSIONMAXTIME/1000));
-		    return true;
+		    AddDebugLogLine(DLP_LOW, false, _T("%s: Upload session will end soon due to max time %s."), client->GetUserName(), CastSecondsToHM(SESSIONMAXTIME/1000));
+	    returnvalue=true;
 	    }
+
+
+	//Xman: we allow a min of 1.5 MB
+	if (!thePrefs.TransferFullChunks() && client->GetSessionUp() >= 1572864){
 
 		// Cache current client score
 		const uint32 score = client->GetScore(true, true);
 
 		// Check if another client has a bigger score
-		if (score < GetMaxClientScore() && m_dwRemovedClientByScore < GetTickCount()) {
+		//Xman max allowed are 10 MB
+		if ((score < GetMaxClientScore() || client->GetSessionUp() >= 10485760) && m_dwRemovedClientByScore < GetTickCount()) {
 			if (thePrefs.GetLogUlDlEvents())
-				AddDebugLogLine(DLP_VERYLOW, false, _T("%s: Upload session ended due to score."), client->GetUserName());
+				AddDebugLogLine(DLP_VERYLOW, false, _T("%s: Upload session will end soon due to score."), client->GetUserName());
 			//Set timer to prevent to many uploadslot getting kick do to score.
 			//Upload slots are delayed by a min of 1 sec and the maxscore is reset every 5 sec.
 			//So, I choose 6 secs to make sure the maxscore it updated before doing this again.
 			m_dwRemovedClientByScore = GetTickCount()+SEC2MS(6);
-			return true;
+			returnvalue=true;
 		}
 	}
-	else{
+	
+	if(thePrefs.TransferFullChunks() && (client->IsDifferentPartBlock() || client->GetQueueSessionPayloadUp() > SESSIONMAXTRANS))
+	{	
 		// Allow the client to download a specified amount per session
-		if( client->GetQueueSessionPayloadUp() > SESSIONMAXTRANS ){
-			if (thePrefs.GetLogUlDlEvents())
+			if (thePrefs.GetLogUlDlEvents() && client->GetQueueSessionPayloadUp() > SESSIONMAXTRANS)
 				AddDebugLogLine(DLP_DEFAULT, false, _T("%s: Upload session ended due to max transferred amount. %s"), client->GetUserName(), CastItoXBytes(SESSIONMAXTRANS, false, false));
-			return true;
+			returnvalue=true;
 		}
+	
+
+	if(returnvalue==true)
+	{
+		//client->upendsoon=true;
+		//if we don't have enough slots after this clients ends, accept a new one
+		if((uint16)uploadinglist.GetCount()-theApp.uploadBandwidthThrottler->GetNumberOfFullyActivatedSlots()<=1)
+			AddUpNextClient(_T("Accept new client, because other client Upload end soon"));
 	}
-	return false;
+
+	return returnvalue;
+//<==Xman Full Chunk [shadow2004]
 }
 
 void CUploadQueue::DeleteAll(){

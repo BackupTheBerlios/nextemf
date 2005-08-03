@@ -22,6 +22,10 @@ public:
     virtual uint32	GetNeededBytes() = 0;
 	virtual bool	IsBusy() const = 0;
     virtual bool    HasQueues() const = 0;
+
+//==>Xman Full Chunk [shadow2004]
+	virtual bool StandardPacketQueueIsEmpty() const = false ;
+//<==Xman Full Chunk [shadow2004]
 };
 
 // <-- ZZ:UploadBandWithThrottler (UDP)

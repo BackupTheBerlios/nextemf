@@ -583,6 +583,11 @@ public:
 #endif //Modversion
 //<==Modversion [shadow2004]
 
+//==>Xman Full Chunk [shadow2004]
+	bool upendsoon;
+	bool 			IsDifferentPartBlock();
+//<==Xman Full Chunk [shadow2004]
+
 protected:
 	int		m_iHttpSendState;
 	uint32	m_uPeerCacheDownloadPushId;
