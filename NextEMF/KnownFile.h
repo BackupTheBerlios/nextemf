@@ -152,9 +152,20 @@ protected:
 	bool	GrabImage(CString strFileName, uint8 nFramesToGrab, double dStartTime, bool bReduceColor, uint16 nMaxWidth, void* pSender);
 	bool	LoadTagsFromFile(CFileDataIO* file);
 	bool	LoadDateFromFile(CFileDataIO* file);
+	//==> Nicehash by CB Mod [cyrex2001]
+#ifdef NICEHASH
+	// CreateHash I
+	void	CreateHash(CFile* pFile, UINT uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL, bool enableNiceHash = FALSE) const;
+	// CreateHash II
+	bool	CreateHash(FILE* fp, UINT uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL) const;
+	// CreateHash III
+	bool	CreateHash(const uchar* pucData, UINT uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL) const;
+#else
 	void	CreateHash(CFile* pFile, UINT uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL) const;
 	bool	CreateHash(FILE* fp, UINT uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL) const;
 	bool	CreateHash(const uchar* pucData, UINT uSize, uchar* pucHash, CAICHHashTree* pShaHashOut = NULL) const;
+#endif // Nicehash 
+	//<== Nicehash by CB Mod [cyrex2001]
 	virtual void	UpdateFileRatingCommentAvail();
 
 	CArray<uchar*, uchar*>	hashlist;

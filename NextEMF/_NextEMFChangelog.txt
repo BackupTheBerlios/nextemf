@@ -3,6 +3,7 @@
 |=<| Beta 1  |>==================
 
 added	: Xman Full Chunk Upload [shadow2004]
+added	: Nicehash by CB-mod [cyrex2001]
 
 /////////////////////////////////
 |Changes eMule 0.46c NextEMF v0.6

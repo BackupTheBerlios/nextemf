@@ -510,6 +510,11 @@ bool	CPreferences::AutoUpdateIPFilterAIPC;
 uint32	CPreferences::m_IPfilterVersion; 
 #endif
 //<==IPFilter-Autoupdate [shadow2004]
+//==> Nicehash by CB Mod [cyrex2001]
+#ifdef NICEHASH
+uint32 CPreferences::m_iNiceHashLoadWeight;
+#endif // Nicehash 
+//<== Nicehash by CB Mod [cyrex2001]
 
 CPreferences::CPreferences()
 {
@@ -1956,6 +1961,11 @@ ini.WriteFloat(_T("uploadslotspeed"),m_slotspeed,_T("NextEMF"));
  	ini.WriteString(_T("UpdateURLIPFilter"),UpdateURLIPFilter,_T("NextEMF"));
 #endif
 //<==IPFilter-Autoupdate [shadow2004]
+	//==> Nicehash by CB Mod [cyrex2001]
+#ifdef NICEHASH
+	ini.WriteInt(_T("NiceHash"), m_iNiceHashLoadWeight,_T("NextEMF"));
+#endif // Nicehash 
+	//<== Nicehash by CB Mod [cyrex2001]
 }
 
 void CPreferences::ResetStatsColor(int index)
@@ -2673,6 +2683,11 @@ void CPreferences::LoadPreferences()
 	_stprintf(UpdateURLIPFilter,_T("%s"),ini.GetString(_T("UpdateURLIPFilter"),_T("http://emulepawcio.sourceforge.net/nieuwe_site/Ipfilter_fakes/ipfilter.zip")), _T("NextEMF"));
 #endif
 //<==IPFilter-Autoupdate [shadow2004]
+	//==> Nicehash by CB Mod [cyrex2001]
+#ifdef NICEHASH
+	m_iNiceHashLoadWeight = ini.GetInt(_T("NiceHash"), 100, _T("NextEMF"));
+#endif // Nicehash 
+	//<== Nicehash by CB Mod [cyrex2001]
 
 	LoadCats();
 	SetLanguage();

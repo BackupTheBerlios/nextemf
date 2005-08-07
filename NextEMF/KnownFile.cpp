@@ -1081,7 +1081,13 @@ bool CKnownFile::WriteToFile(CFileDataIO* file)
 	return true;
 }
 
+//==> Nicehash by CB Mod [cyrex2001]
+#ifdef NICEHASH
+void CKnownFile::CreateHash(CFile* pFile, UINT Length, uchar* pMd4HashOut, CAICHHashTree* pShaHashOut, bool enableNiceHash) const
+#else
 void CKnownFile::CreateHash(CFile* pFile, UINT Length, uchar* pMd4HashOut, CAICHHashTree* pShaHashOut) const
+#endif // Nicehash 
+//<== Nicehash by CB Mod [cyrex2001]
 {
 	ASSERT( pFile != NULL );
 	ASSERT( pMd4HashOut != NULL || pShaHashOut != NULL );
@@ -1092,6 +1098,24 @@ void CKnownFile::CreateHash(CFile* pFile, UINT Length, uchar* pMd4HashOut, CAICH
 	uint32	nIACHPos = 0;
 	CAICHHashAlgo* pHashAlg = m_pAICHHashSet->GetNewHashAlgo();
 	CMD4 md4;
+
+	//==> Nicehash by CB Mod [cyrex2001]
+#ifdef NICEHASH
+	ULONGLONG timeStart=0;
+	ULONGLONG activeTime=0;
+	int sleepTime = 150; //ms
+	int roundTime = 300; //ms
+
+	if (enableNiceHash) {
+		int load = thePrefs.GetNiceHashLoadWeight();
+
+		if (load > 100) load = 100;
+		if (load < 10) load = 10;
+		activeTime = roundTime*load/100;
+		timeStart = ::GetTickCount();
+		}
+#endif // Nicehash 
+	//<== Nicehash by CB Mod [cyrex2001]
 
 	while (Required >= 64){
         uint32 len = Required / 64; 
@@ -1121,6 +1145,21 @@ void CKnownFile::CreateHash(CFile* pFile, UINT Length, uchar* pMd4HashOut, CAICH
 			md4.Add(X, len*64);
 		}
 		Required -= len*64;
+		//==> Nicehash by CB Mod [cyrex2001]
+#ifdef NICEHASH
+		if (enableNiceHash) {
+			if (activeTime && activeTime < roundTime) { // If not 100% load
+				if(::GetTickCount() - timeStart >= activeTime) {
+					Sleep(sleepTime);
+					timeStart = ::GetTickCount();
+					Sleep(1);
+					}
+			//if (thePrefs.GetVerbose())
+			//	AddDebugLogLine(true, GetResString(IDS_NICEHASH_ENABLED));
+				}
+			}
+#endif // Nicehash 
+		//<== Nicehash by CB Mod [cyrex2001]
 	}
 
 	Required = Length % 64;
@@ -1168,7 +1207,13 @@ bool CKnownFile::CreateHash(FILE* fp, UINT uSize, uchar* pucHash, CAICHHashTree*
 	CStdioFile file(fp);
 	try
 	{
+	//==> Nicehash by CB Mod [cyrex2001]
+#ifdef NICEHASH
+		CreateHash(&file, uSize, pucHash, pShaHashOut, true); // Enable NiceHash
+#else
 		CreateHash(&file, uSize, pucHash, pShaHashOut);
+#endif // Nicehash 
+	//<== Nicehash by CB Mod [cyrex2001]
 		bResult = true;
 	}
 	catch(CFileException* ex)

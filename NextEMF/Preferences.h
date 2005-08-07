@@ -567,6 +567,11 @@ public:
 	static uint32		m_IPfilterVersion; 
 #endif
 //<==IPFilter-Autoupdate [shadow2004]
+	//==> Nicehash by CB Mod [cyrex2001]
+#ifdef NICEHASH
+	static uint32 m_iNiceHashLoadWeight;
+#endif // Nicehash 
+	//<== Nicehash by CB Mod [cyrex2001]
 
 	enum Table
 	{
@@ -1365,6 +1370,11 @@ static uint16  GetQuickStartMaxConnPerFive()		{ return QuickStartMaxConnPerFive;
 	static bool		IsAutoUpdateIPFilterAIPCEnabled()	{ return AutoUpdateIPFilterAIPC; }
 #endif
 //<==IPFilter-Autoupdate [shadow2004]
+//==> Nicehash by CB Mod [cyrex2001]
+#ifdef NICEHASH
+	static	int	GetNiceHashLoadWeight()	{return m_iNiceHashLoadWeight;}
+#endif // Nicehash 
+//<== Nicehash by CB Mod [cyrex2001]
 
 protected:
 	static	CString appdir;
