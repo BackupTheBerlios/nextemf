@@ -1,6 +1,10 @@
 #pragma once
 
+//==> XPMenu [shadow2004]
+#ifndef XPMEN
 #include "TitleMenu.h"
+#endif
+//<== XPMenu [shadow2004]
 
 class CHTRichEditCtrl : public CRichEditCtrl
 {
@@ -10,8 +14,7 @@ public:
 	CHTRichEditCtrl();
 	virtual ~CHTRichEditCtrl();
 
-	void Init(LPCTSTR pszTitle, LPCTSTR pszSkinKey = NULL);
-	void SetProfileSkinKey(LPCTSTR pszSkinKey);
+	void Init(LPCTSTR pszTitle);
 	void SetTitle(LPCTSTR pszTitle);
 	void Localize();
 
@@ -43,7 +46,6 @@ protected:
 	bool m_bNoPaint;
 	bool m_bEnErrSpace;
 	CString m_strTitle;
-	CString m_strSkinKey;
 	bool m_bRestoreFormat;
 	CHARFORMAT m_cfDefault;
 	bool m_bForceArrowCursor;
@@ -69,4 +71,9 @@ protected:
 	afx_msg BOOL OnEnLink(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnSysColorChange();
 	afx_msg BOOL OnSetCursor(CWnd* pWnd, UINT nHitTest, UINT message);
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+	afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
+#endif
+//<== XPMenu [shadow2004]
 };

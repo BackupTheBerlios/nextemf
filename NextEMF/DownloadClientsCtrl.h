@@ -57,6 +57,11 @@ protected:
 	afx_msg	void OnColumnClick( NMHDR* pNMHDR, LRESULT* pResult);
 	afx_msg void OnNMDblclkDownloadClientlist(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnGetDispInfo(NMHDR* pNMHDR, LRESULT* pResult);
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+	afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
+#endif
+//<== XPMenu [shadow2004]
 	static int CALLBACK SortProc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort);
 	static int Compare(CUpDownClient* client1, CUpDownClient* client2, CPartFile* file1, CPartFile* file2, LPARAM lParamSort, int sortMod);
 };

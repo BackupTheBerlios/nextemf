@@ -359,7 +359,7 @@ void CTreePropSheet::RefillPageTree()
 #ifndef PPGCTRL
 		ASSERT(hItem);
 #endif
-//<==> PPgTabControl [shadow2004]
+//<== PPgTabControl [shadow2004]
 		if (hItem)
 		{
 			m_pwndPageTree->SetItemData(hItem, nPage);
@@ -402,7 +402,8 @@ HTREEITEM CTreePropSheet::CreatePageTreeItem(LPCTSTR lpszPath, HTREEITEM hParent
 	if (
 		strTopMostItem != "Connection 2" && // Connection 2
 		strTopMostItem != "Connection 3" && // Connection 3
-        strTopMostItem != "Security 2" 
+		strTopMostItem != "Files 2" &&		// Files 2
+        strTopMostItem != "Security 2"		// Security 2
 		) 
 	{ 
 
@@ -1002,10 +1003,10 @@ void CTreePropSheet::OnPageTreeSelChanging(NMHDR *pNotifyStruct, LRESULT *plResu
 		if (nPage == 4 && theApp.emuledlg->preferenceswnd->ActivePageServer >= 1)
 			nPage = theApp.emuledlg->preferenceswnd->ActivePageServer;
 		if (nPage == 5 && theApp.emuledlg->preferenceswnd->ActivePageDirectory >= 1)
-			nPage = theApp.emuledlg->preferenceswnd->ActivePageDirectory;
-		if (nPage == 6 && theApp.emuledlg->preferenceswnd->ActivePageFiles >= 1)
+			nPage = theApp.emuledlg->preferenceswnd->ActivePageDirectory;*/
+		if (nPage == 5 && theApp.emuledlg->preferenceswnd->ActivePageFiles >= 1)
 			nPage = theApp.emuledlg->preferenceswnd->ActivePageFiles;
-		if (nPage == 7 && theApp.emuledlg->preferenceswnd->ActivePageNotify >= 1)
+/*		if (nPage == 7 && theApp.emuledlg->preferenceswnd->ActivePageNotify >= 1)
 			nPage = theApp.emuledlg->preferenceswnd->ActivePageNotify;
 		if (nPage == 8 && theApp.emuledlg->preferenceswnd->ActivePageStats >= 1)
 			nPage = theApp.emuledlg->preferenceswnd->ActivePageStats;

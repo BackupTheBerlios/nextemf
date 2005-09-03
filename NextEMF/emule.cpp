@@ -1679,6 +1679,48 @@ void CemuleApp::OptimizerInfo(void)
 		AddLogLine(false,_T("Optimizations disabled"));
 		break;
 	}
+	CString strCPU; //Cpu Extensions
+	CString strLXcache; //Lx-Cache Size
+	if (cpu.DoesCPUSupportFeature(MMX_FEATURE))
+		strCPU += _T("MMX ");
+
+	if (cpu.DoesCPUSupportFeature(MMX_PLUS_FEATURE))
+		strCPU += _T("MMX+ ");	
+
+	if (cpu.DoesCPUSupportFeature(SSE_FEATURE))
+		strCPU += _T("SSE ");
+
+	if (cpu.DoesCPUSupportFeature(SSE2_FEATURE))
+		strCPU += _T("SSE2 ");
+
+	if (cpu.DoesCPUSupportFeature(AMD_3DNOW_FEATURE))
+		strCPU += _T("3DNOW ");
+
+	if (cpu.DoesCPUSupportFeature(AMD_3DNOW_PLUS_FEATURE))
+		strCPU += _T("3DNOW+ ");
+
+	if (cpu.DoesCPUSupportFeature(IA64_FEATURE))
+		strCPU += _T("IA64 ");
+
+	if (cpu.DoesCPUSupportFeature(MP_CAPABLE))
+		strCPU += _T("MP_CAPABLE ");
+
+	if (cpu.DoesCPUSupportFeature(L1CACHE_FEATURE)) {
+		strLXcache+=_T("L1->");
+		strLXcache+=CastItoXBytes ( (uint32) cpu.GetProcessorCacheXSize (L1CACHE_FEATURE)*1024);
+	}
+	if (cpu.DoesCPUSupportFeature(L2CACHE_FEATURE)) {
+		strLXcache+=_T(" L2->");
+		strLXcache+=CastItoXBytes ( (uint32) cpu.GetProcessorCacheXSize (L2CACHE_FEATURE)*1024);
+	}
+	if (cpu.DoesCPUSupportFeature(L3CACHE_FEATURE)) {
+		strLXcache+=_T(" L3->");
+		strLXcache+=CastItoXBytes ( (uint32) cpu.GetProcessorCacheXSize (L3CACHE_FEATURE)*1024);
+	}
+
+	AddLogLine(false, strLXcache);
+	AddLogLine(false, strCPU);
+
 	AddLogLine(false,_T("********   Optimizer   ********"));
 }
 #endif

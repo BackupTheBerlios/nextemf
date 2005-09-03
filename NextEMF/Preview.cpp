@@ -279,7 +279,13 @@ void CPreviewApps::UpdateApps()
 	}
 }
 
+//==> XPMenu [shadow2004]
+//#ifdef XPMEN
+//int CPreviewApps::GetAllMenuEntries(CMenuXP* rMenu, const CPartFile* file)
+//#else
 int CPreviewApps::GetAllMenuEntries(CMenu& rMenu, const CPartFile* file)
+//#endif
+//<== XPMenu [shadow2004]
 {
 	UpdateApps();
 
@@ -294,7 +300,13 @@ int CPreviewApps::GetAllMenuEntries(CMenu& rMenu, const CPartFile* file)
 			if (file->GetCompletedSize() >= 16*1024)
 				bEnabled = true;
 		}
+//==> XPMenu [shadow2004]
+//#ifdef XPMEN
+//		rMenu->AppendODMenu(MF_STRING | (bEnabled ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_PREVIEW_APP_MIN + i, rSvc.strTitle));
+//#else
 		rMenu.AppendMenu(MF_STRING | (bEnabled ? MF_ENABLED : MF_GRAYED), MP_PREVIEW_APP_MIN + i, rSvc.strTitle);
+//#endif
+//<== XPMenu [shadow2004]
 	}
 	return m_aApps.GetCount();
 }

@@ -533,7 +533,11 @@ BOOL CPPgTweaks::OnApply()
 	thePrefs.m_iQueueSize = m_iQueueSize;
 	if (thePrefs.m_bExtControls != m_bExtControls) {
 		thePrefs.m_bExtControls = m_bExtControls;
+//==> XPMenu [shadow2004]
+#ifndef XPMEN
 		theApp.emuledlg->transferwnd->downloadlistctrl.CreateMenues();
+#endif
+//<== XPMenu [shadow2004]
 		theApp.emuledlg->searchwnd->CreateMenus();
 		theApp.emuledlg->sharedfileswnd->sharedfilesctrl.CreateMenues();
 	}

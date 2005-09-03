@@ -52,6 +52,11 @@ protected:
 	afx_msg void OnNMDblclk(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnGetDispInfo(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnSysColorChange();
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+	afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
+#endif
+//<== XPMenu [shadow2004]
 
 private:
 	CImageList imagelist;

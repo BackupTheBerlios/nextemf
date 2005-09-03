@@ -29,6 +29,12 @@
 #include "Opcodes.h"
 #include "Log.h"
 #include "ToolTipCtrlX.h"
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+#include "NextEMF/MenuXP.h"
+#include "ModVersion.h"
+#endif
+//<== XPMenu [shadow2004]
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -46,6 +52,11 @@ BEGIN_MESSAGE_MAP(CServerListCtrl, CMuleListCtrl)
 	ON_WM_CONTEXTMENU()
 	ON_WM_SYSCOLORCHANGE()
 	ON_NOTIFY_REFLECT(NM_CUSTOMDRAW, OnNMCustomdraw)
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+	ON_WM_MEASUREITEM()
+#endif
+//<== XPMenu [shadow2004]
 END_MESSAGE_MAP()
 
 CServerListCtrl::CServerListCtrl()
@@ -380,7 +391,51 @@ void CServerListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 
 		bFirstItem = false;
 	}
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+	CMenuXP *ServerMenu = new CMenuXP;
+	ServerMenu->CreatePopupMenu();
+	ServerMenu->SetMenuStyle(CMenuXP::STYLE_STARTMENU);
+	ServerMenu->AddSideBar(new CMenuXPSideBar(17, MOD_VERSION));
+	ServerMenu->SetSideBarStartColor(RGB(0,0,0));
+	ServerMenu->SetSideBarEndColor(RGB(200,200,200));
+	ServerMenu->SetSelectedBarColor(RGB(100,100,100));
+	ServerMenu->SetBackBitmap(_T("IDR_MENU_BACK"), _T("JPG"));
 
+	ServerMenu->AppendODMenu(MF_STRING | (iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_CONNECTTO,GetResString(IDS_CONNECTTHIS), theApp.LoadIcon(_T("CONNECT"), 16, 16)));
+	ServerMenu->SetDefaultItem(iSelectedItems > 0 ? MP_CONNECTTO : -1);
+
+	CMenuXP *ServerPrioMenu = new CMenuXP;
+	ServerPrioMenu->CreatePopupMenu();
+	ServerPrioMenu->SetMenuStyle(CMenuXP::STYLE_STARTMENU);
+	ServerPrioMenu->SetBackColor(RGB(255,255,255));
+	ServerPrioMenu->SetSelectedBarColor(RGB(100,100,100));
+
+	if (iSelectedItems > 0)
+	{
+		ServerPrioMenu->AppendODMenu(MF_STRING, new CMenuXPText(MP_PRIOLOW, GetResString(IDS_PRIOLOW)));
+		ServerPrioMenu->AppendODMenu(MF_STRING, new CMenuXPText(MP_PRIONORMAL, GetResString(IDS_PRIONORMAL)));
+		ServerPrioMenu->AppendODMenu(MF_STRING, new CMenuXPText(MP_PRIOHIGH, GetResString(IDS_PRIOHIGH)));
+		ServerPrioMenu->CheckMenuRadioItem(MP_PRIOLOW, MP_PRIOHIGH, uPrioMenuItem, 0);
+	}
+
+	ServerMenu->AppendODPopup(MF_STRING | MF_POPUP | (iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED), ServerPrioMenu, new CMenuXPText(0,GetResString(IDS_PRIORITY), theApp.LoadIcon(_T("PRIORITY"), 16, 16)));
+
+	ServerMenu->AppendODMenu(MF_STRING | (iStaticServers < iSelectedItems ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_ADDTOSTATIC, GetResString(IDS_ADDTOSTATIC), theApp.LoadIcon(_T("ListAdd"), 16, 16)));
+	ServerMenu->AppendODMenu(MF_STRING | (iStaticServers > 0 ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_REMOVEFROMSTATIC, GetResString(IDS_REMOVEFROMSTATIC), theApp.LoadIcon(_T("ListRemove"), 16, 16)));
+	ServerMenu->AppendSeparator();
+	ServerMenu->AppendODMenu(MF_STRING | (iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_GETED2KLINK, GetResString(IDS_DL_LINK1), theApp.LoadIcon(_T("ED2KLINK"), 16, 16)));
+	ServerMenu->AppendODMenu(MF_STRING | (theApp.IsEd2kServerLinkInClipboard() ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_PASTE, GetResString(IDS_SW_DIRECTDOWNLOAD), theApp.LoadIcon(_T("PASTELINK"), 16, 16)));
+	ServerMenu->AppendODMenu(MF_STRING | (iSelectedItems > 0 ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_REMOVE, GetResString(IDS_REMOVETHIS), theApp.LoadIcon(_T("DELETESELECTED"), 16, 16)));
+	ServerMenu->AppendODMenu(MF_STRING | (GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_REMOVEALL, GetResString(IDS_REMOVEALL), theApp.LoadIcon(_T("DELETE"), 16, 16)));
+	ServerMenu->AppendSeparator();
+	ServerMenu->AppendODMenu(MF_STRING | (GetItemCount() > 0 ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_FIND, GetResString(IDS_FIND), theApp.LoadIcon(_T("Search"), 16, 16)));
+
+	ServerMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+
+	delete ServerPrioMenu;
+	delete ServerMenu;
+#else
 	CTitleMenu ServerMenu;
 	ServerMenu.CreatePopupMenu();
 	ServerMenu.AddMenuTitle(GetResString(IDS_EM_SERVER), true);
@@ -416,7 +471,22 @@ void CServerListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 
 	VERIFY( ServerPrioMenu.DestroyMenu() );
 	VERIFY( ServerMenu.DestroyMenu() );
+#endif
+//<== XPMenu [shadow2004]
 }
+
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+void CServerListCtrl::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct) 
+{
+	HMENU hMenu = AfxGetThreadState()->m_hTrackingMenu;
+	CMenu	*pMenu = CMenu::FromHandle(hMenu);
+	pMenu->MeasureItem(lpMeasureItemStruct);
+
+	CWnd::OnMeasureItem(nIDCtl, lpMeasureItemStruct);
+}
+#endif
+//<== XPMenu [shadow2004]
 
 BOOL CServerListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 {

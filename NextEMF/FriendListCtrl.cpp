@@ -28,6 +28,12 @@
 #include "ListenSocket.h"
 #include "MenuCmds.h"
 #include "ChatWnd.h"
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+#include "NextEMF/MenuXP.h"
+#include "ModVersion.h"
+#endif
+//<== XPMenu [shadow2004]
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -43,6 +49,11 @@ BEGIN_MESSAGE_MAP(CFriendListCtrl, CMuleListCtrl)
 	ON_WM_SYSCOLORCHANGE()
 	ON_NOTIFY_REFLECT(NM_DBLCLK, OnNMDblclk)
 	ON_NOTIFY_REFLECT(LVN_COLUMNCLICK, OnLvnColumnclick)
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+	ON_WM_MEASUREITEM()
+#endif
+//<== XPMenu [shadow2004]
 END_MESSAGE_MAP()
 
 CFriendListCtrl::CFriendListCtrl()
@@ -148,6 +159,37 @@ void CFriendListCtrl::RefreshFriend(const CFriend* pFriend)
 
 void CFriendListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 {
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+	CMenuXP *ClientMenu = new CMenuXP;
+	ClientMenu->CreatePopupMenu();
+	ClientMenu->SetMenuStyle(CMenuXP::STYLE_STARTMENU);
+	ClientMenu->AddSideBar(new CMenuXPSideBar(17, MOD_VERSION));
+	ClientMenu->SetSideBarStartColor(RGB(0,0,0));
+	ClientMenu->SetSideBarEndColor(RGB(200,200,200));
+	ClientMenu->SetSelectedBarColor(RGB(100,100,100));
+	ClientMenu->SetBackBitmap(_T("IDR_MENU2_BACK"), _T("JPG"));
+
+	const CFriend* cur_friend = NULL;
+	int iSel = GetNextItem(-1, LVIS_SELECTED | LVIS_FOCUSED);
+	if (iSel != -1)	{
+		cur_friend = (CFriend*)GetItemData(iSel);
+		ClientMenu->AppendODMenu(MF_STRING, new CMenuXPText(MP_DETAIL, GetResString(IDS_SHOWDETAILS), theApp.LoadIcon(_T("CLIENTDETAILS"), 16, 16)));
+		ClientMenu->SetDefaultItem(MP_DETAIL);
+	}
+	ClientMenu->AppendODMenu(MF_STRING, new CMenuXPText(MP_ADDFRIEND, GetResString(IDS_ADDAFRIEND), theApp.LoadIcon(_T("ADDFRIEND"), 16, 16)));
+	ClientMenu->AppendODMenu(MF_STRING | (cur_friend ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_REMOVEFRIEND, GetResString(IDS_REMOVEFRIEND), theApp.LoadIcon(_T("DELETEFRIEND"), 16, 16)));
+	ClientMenu->AppendODMenu(MF_STRING | (cur_friend ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_MESSAGE, GetResString(IDS_SEND_MSG), theApp.LoadIcon(_T("SENDMESSAGE"), 16, 16)));
+	ClientMenu->AppendODMenu(MF_STRING | (cur_friend == NULL || (cur_friend && cur_friend->GetLinkedClient() && !cur_friend->GetLinkedClient()->GetViewSharedFilesSupport())? MF_GRAYED : MF_ENABLED), new CMenuXPText(MP_SHOWLIST, GetResString(IDS_VIEWFILES), theApp.LoadIcon(_T("VIEWFILES"), 16, 16)));
+	if (cur_friend && cur_friend->GetFriendSlot())	
+        ClientMenu->AppendODMenu(MF_STRING | (cur_friend ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_FRIENDSLOT, GetResString(IDS_FRIENDSLOT), theApp.LoadIcon(_T("FRIENDSLOT"), 16, 16)));
+	else
+		ClientMenu->AppendODMenu(MF_STRING | (cur_friend ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_FRIENDSLOT, GetResString(IDS_FRIENDSLOT)));
+	
+	ClientMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+
+	delete ClientMenu;
+#else
 	CTitleMenu ClientMenu;
 	ClientMenu.CreatePopupMenu();
 	ClientMenu.AddMenuTitle(GetResString(IDS_FRIENDLIST), true);
@@ -171,7 +213,22 @@ void CFriendListCtrl::OnContextMenu(CWnd* /*pWnd*/, CPoint point)
 
 	GetPopupMenuPos(*this, point);
 	ClientMenu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+#endif
+//<== XPMenu [shadow2004]
 }
+
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+void CFriendListCtrl::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct) 
+{
+	HMENU hMenu = AfxGetThreadState()->m_hTrackingMenu;
+	CMenu	*pMenu = CMenu::FromHandle(hMenu);
+	pMenu->MeasureItem(lpMeasureItemStruct);
+
+	CWnd::OnMeasureItem(nIDCtl, lpMeasureItemStruct);
+}
+#endif
+//<== XPMenu [shadow2004]
 
 BOOL CFriendListCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 {

@@ -1086,7 +1086,7 @@ bool CKnownFile::WriteToFile(CFileDataIO* file)
 void CKnownFile::CreateHash(CFile* pFile, UINT Length, uchar* pMd4HashOut, CAICHHashTree* pShaHashOut, bool enableNiceHash) const
 #else
 void CKnownFile::CreateHash(CFile* pFile, UINT Length, uchar* pMd4HashOut, CAICHHashTree* pShaHashOut) const
-#endif // Nicehash 
+#endif
 //<== Nicehash by CB Mod [cyrex2001]
 {
 	ASSERT( pFile != NULL );
@@ -1114,7 +1114,7 @@ void CKnownFile::CreateHash(CFile* pFile, UINT Length, uchar* pMd4HashOut, CAICH
 		activeTime = roundTime*load/100;
 		timeStart = ::GetTickCount();
 		}
-#endif // Nicehash 
+#endif
 	//<== Nicehash by CB Mod [cyrex2001]
 
 	while (Required >= 64){
@@ -1209,10 +1209,10 @@ bool CKnownFile::CreateHash(FILE* fp, UINT uSize, uchar* pucHash, CAICHHashTree*
 	{
 	//==> Nicehash by CB Mod [cyrex2001]
 #ifdef NICEHASH
-		CreateHash(&file, uSize, pucHash, pShaHashOut, true); // Enable NiceHash
+		CreateHash(&file, uSize, pucHash, pShaHashOut, true);
 #else
 		CreateHash(&file, uSize, pucHash, pShaHashOut);
-#endif // Nicehash 
+#endif
 	//<== Nicehash by CB Mod [cyrex2001]
 		bResult = true;
 	}

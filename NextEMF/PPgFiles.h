@@ -33,4 +33,19 @@ protected:
 	afx_msg void OnSettingsChangeCat2()	{OnSettingsChangeCat(2);}
 	afx_msg void OnHelp();
 	afx_msg BOOL OnHelpInfo(HELPINFO* pHelpInfo);
+
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+private:
+	enum eTab	{NONE, Files1,Files2};
+	CTabCtrl	m_tabCtr;
+	eTab		m_currentTab;
+	CImageList	m_imageList;
+	void		SetTab(eTab tab);
+
+public:
+	afx_msg void OnTcnSelchangeTabFiles1(NMHDR *pNMHDR, LRESULT *pResult);
+	void	InitTab(bool firstinit, int Page = 0);
+#endif
+//<== PPgTabControl [shadow2004]
 };

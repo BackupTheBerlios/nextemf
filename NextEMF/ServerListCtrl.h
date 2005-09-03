@@ -41,4 +41,9 @@ protected:
 	afx_msg void OnNMLdblclk (NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnLvnGetInfoTip(NMHDR *pNMHDR, LRESULT *pResult);
 	afx_msg void OnNMCustomdraw(NMHDR *pNMHDR, LRESULT *pResult);
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+	afx_msg void OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
+#endif
+//<== XPMenu [shadow2004]
 };

@@ -21,6 +21,7 @@
 //==> PPgTabControl [shadow2004]
 #include ".\NextEMF\PPgConnection2.h" //Connection 2
 #include ".\NextEMF\PPgConnection3.h" //Connection 3
+#include ".\NextEMF\PPGFiles2.h"		//Files 2 
 #include ".\NextEMF\PPgSecurity2.h"   //Security 2
 //<== PPgTabControl [shadow2004]
 
@@ -53,6 +54,7 @@ public:
 #ifdef PPGCTRL
 	CPPgConnection2		m_wndConnection2;
 	CPPgConnection3		m_wndConnection3;
+	CPPgFiles2			m_wndFiles2;
 	CPPgSecurity2		m_wndSecurity2;
 #endif
 //<== PPgTabControl [shadow2004]
@@ -81,9 +83,9 @@ public:
 	int ActivePageDisplay;*/
 	int ActivePageConnection;
 /*	int ActivePageServer;
-	int ActivePageDirectory;
+	int ActivePageDirectory;*/
 	int ActivePageFiles;
-	int ActivePageNotify;
+/*	int ActivePageNotify;
 	int ActivePageStats;*/
 	int ActivePageSecurity;
 /*	int ActivePageSheduler;
@@ -95,9 +97,9 @@ public:
 	int StartPageDisplay;*/
 	int StartPageConnection;
 /*	int StartPageServer;
-	int StartPageDirectory;
+	int StartPageDirectory;*/
 	int StartPageFiles;
-	int StartPageNotify;
+/*	int StartPageNotify;
 	int StartPageStats;*/
 	int StartPageSecurity;
 /*	int StartPageSheduler;

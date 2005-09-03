@@ -24,27 +24,17 @@
 #include "Preferences.h"
 #include "HelpIDs.h"
 
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+#include "preferencesdlg.h"
+#endif
+//<== PPgTabControl [shadow2004]
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
 static char THIS_FILE[] = __FILE__;
 #endif
-
-
-IMPLEMENT_DYNAMIC(CPPgFiles, CPropertyPage)
-CPPgFiles::CPPgFiles()
-	: CPropertyPage(CPPgFiles::IDD)
-{
-}
-
-CPPgFiles::~CPPgFiles()
-{
-}
-
-void CPPgFiles::DoDataExchange(CDataExchange* pDX)
-{
-	CPropertyPage::DoDataExchange(pDX);
-}
 
 BEGIN_MESSAGE_MAP(CPPgFiles, CPropertyPage)
 	ON_BN_CLICKED(IDC_SEESHARE1, OnSettingsChange)
@@ -70,11 +60,51 @@ BEGIN_MESSAGE_MAP(CPPgFiles, CPropertyPage)
 //<==PPGFilesFix [shadow2004]
 	ON_BN_CLICKED(IDC_BROWSEV, BrowseVideoplayer)
 	ON_WM_HELPINFO()
+	//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+	ON_NOTIFY(TCN_SELCHANGE, IDC_TAB_FILES1, OnTcnSelchangeTabFiles1)
+#endif
+	//<== PPgTabControl [shadow2004]
 END_MESSAGE_MAP()
+
+IMPLEMENT_DYNAMIC(CPPgFiles, CPropertyPage)
+CPPgFiles::CPPgFiles()
+	: CPropertyPage(CPPgFiles::IDD)
+{
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+	m_imageList.DeleteImageList();
+	m_imageList.Create(16, 16, theApp.m_iDfltImageListColorFlags | ILC_MASK, 14+1, 0);
+	m_imageList.Add(CTempIconLoader(_T("TRANSFER")));
+	m_imageList.Add(CTempIconLoader(_T("TRANSFER")));
+#endif
+//<== PPgTabControl [shadow2004]
+}
+
+CPPgFiles::~CPPgFiles()
+{
+}
+
+void CPPgFiles::DoDataExchange(CDataExchange* pDX)
+{
+	CPropertyPage::DoDataExchange(pDX);
+
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+	DDX_Control(pDX, IDC_TAB_FILES1, m_tabCtr);
+#endif
+//<== PPgTabControl [shadow2004]
+}
 
 BOOL CPPgFiles::OnInitDialog()
 {
 	CPropertyPage::OnInitDialog();
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+	InitTab(true);
+	m_tabCtr.SetCurSel(0);
+#endif
+//<== PPgTabControl [shadow2004]
 	InitWindowStyles(this);
 
 	LoadSettings();
@@ -176,9 +206,13 @@ BOOL CPPgFiles::OnApply()
 	else
 		thePrefs.m_bpreviewprio = false;
 
+//==> XPMenu [shadow2004]
+#ifndef XPMEN
     if(bOldPreviewPrio != thePrefs.m_bpreviewprio) {
 		theApp.emuledlg->transferwnd->downloadlistctrl.CreateMenues();
     }
+#endif
+//<== XPMenu [shadow2004]
 
 	if(IsDlgButtonChecked(IDC_DAP))
 		thePrefs.m_bDAP = true;
@@ -325,3 +359,25 @@ void CPPgFiles::OnSettingsChangeCat(uint8 index) {
 
 	OnSettingsChange();
 }
+
+//==> PPgTabControl [shadow2004]
+#ifdef PPGCTRL
+void CPPgFiles::InitTab(bool firstinit, int Page)
+{
+	if (firstinit) {
+		m_tabCtr.DeleteAllItems();
+		m_tabCtr.SetImageList(&m_imageList);
+		m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, Files1, GetResString(IDS_FIL1_NAME), 0, (LPARAM)Files1); 
+		m_tabCtr.InsertItem(TCIF_TEXT | TCIF_IMAGE | TCIF_PARAM, Files2, GetResString(IDS_FIL2_NAME), 0, (LPARAM)Files2); 
+	}
+
+	m_tabCtr.SetCurSel(Page);
+}
+void CPPgFiles::OnTcnSelchangeTabFiles1(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	int cur_sel = m_tabCtr.GetCurSel();
+	theApp.emuledlg->preferenceswnd->SwitchTab(cur_sel);
+	*pResult = 0;
+}
+#endif
+//<== PPgTabControl [shadow2004]

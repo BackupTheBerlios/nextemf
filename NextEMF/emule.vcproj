@@ -90,7 +90,7 @@
 				OptimizeForProcessor="2"
 				OptimizeForWindowsApplication="TRUE"
 				AdditionalIncludeDirectories=".,..;..\id3lib\include"
-				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;MODVERSION;WINSOCK2;ANTI_LEECHER_LOG;ANTI_LEECH_CLASS;FSSTATS;EMULATE;OPTIM;CSP;SNAFU;ANTI_MODFAKER;FAF;SLOT;QUICKSTART;RSAIC_MAELLA;AHL;XCS;PPGCTRL;IPFILTER;NICEHASH"
+				PreprocessorDefinitions="WIN32;_WINDOWS;NDEBUG;ID3LIB_LINKOPTION=1;MODVERSION;WINSOCK2;ANTI_LEECHER_LOG;ANTI_LEECH_CLASS;FSSTATS;EMULATE;OPTIM;CSP;SNAFU;ANTI_MODFAKER;FAF;SLOT;QUICKSTART;RSAIC_MAELLA;AHL;XCS;PPGCTRL;IPFILTER;XPMEN;NICEHASH"
 				StringPooling="TRUE"
 				RuntimeLibrary="0"
 				BufferSecurityCheck="TRUE"
@@ -2518,6 +2518,18 @@
 				RelativePath=".\AntiLeech\AntiLeech.h">
 			</File>
 			<File
+				RelativePath=".\NextEMF\KeyHelper.cpp">
+			</File>
+			<File
+				RelativePath=".\NextEMF\KeyHelper.h">
+			</File>
+			<File
+				RelativePath=".\NextEMF\MenuXP.cpp">
+			</File>
+			<File
+				RelativePath=".\NextEMF\MenuXP.h">
+			</File>
+			<File
 				RelativePath=".\NextEMF\NextEMF.h">
 			</File>
 			<File
@@ -2531,6 +2543,12 @@
 			</File>
 			<File
 				RelativePath=".\NextEMF\PPgConnection3.h">
+			</File>
+			<File
+				RelativePath=".\NextEMF\PPgFiles2.cpp">
+			</File>
+			<File
+				RelativePath=".\NextEMF\PPgFiles2.h">
 			</File>
 			<File
 				RelativePath=".\NextEMF\PPgNextEMF.cpp">

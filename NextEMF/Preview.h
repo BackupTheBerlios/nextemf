@@ -15,6 +15,11 @@
 //along with this program; if not, write to the Free Software
 //Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 #pragma once
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+#include "NextEMF/MenuXP.h"
+#endif
+//<== XPMenu [shadow2004]
 
 class CPartFile;
 
@@ -53,7 +58,13 @@ public:
 	int ReadAllApps();
 	void RemoveAllApps();
 
+//==> XPMenu [shadow2004]
+//#ifdef XPMEN
+//	int GetAllMenuEntries(CMenuXP* rMenu, const CPartFile* file);
+//#else
 	int GetAllMenuEntries(CMenu& rMenu, const CPartFile* file);
+//#endif
+//<== XPMenu [shadow2004]
 	void RunApp(CPartFile* file, UINT uMenuID);
 
 	enum ECanPreviewRes{

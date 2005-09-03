@@ -39,6 +39,12 @@
 #include "DownloadQueue.h"
 #endif //Modversion
 //<==Modversion [shadow2004]
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+#include "NextEMF/MenuXP.h"
+#include "ModVersion.h"
+#endif
+//<== XPMenu [shadow2004]
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -441,6 +447,11 @@ BEGIN_MESSAGE_MAP(CUploadListCtrl, CMuleListCtrl)
 	ON_NOTIFY_REFLECT(NM_DBLCLK, OnNMDblclk)
 	ON_NOTIFY_REFLECT(LVN_GETDISPINFO, OnGetDispInfo)
 	ON_NOTIFY_REFLECT(LVN_GETINFOTIP, OnLvnGetInfoTip)
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+	ON_WM_MEASUREITEM()
+#endif
+//<== XPMenu [shadow2004]
 END_MESSAGE_MAP()
 
 // CUploadListCtrl message handlers
@@ -448,7 +459,29 @@ void CUploadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 {
 	int iSel = GetNextItem(-1, LVIS_SELECTED | LVIS_FOCUSED);
 	const CUpDownClient* client = (iSel != -1) ? (CUpDownClient*)GetItemData(iSel) : NULL;
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+	CMenuXP *ClientMenu = new CMenuXP;
+	ClientMenu->CreatePopupMenu();
+	ClientMenu->SetMenuStyle(CMenuXP::STYLE_STARTMENU);
+	ClientMenu->AddSideBar(new CMenuXPSideBar(17, MOD_VERSION));
+	ClientMenu->SetSideBarStartColor(RGB(0,0,0));
+	ClientMenu->SetSideBarEndColor(RGB(200,200,200));
+	ClientMenu->SetSelectedBarColor(RGB(100,100,100));
+	ClientMenu->SetBackBitmap(_T("IDR_MENU2_BACK"), _T("JPG"));
 
+	ClientMenu->AppendODMenu(MF_STRING | (client ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_DETAIL, GetResString(IDS_SHOWDETAILS), theApp.LoadIcon(_T("CLIENTDETAILS"), 16, 16)));
+	ClientMenu->SetDefaultItem(MP_DETAIL);
+	ClientMenu->AppendODMenu(MF_STRING | ((client && client->IsEd2kClient() && !client->IsFriend()) ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_ADDFRIEND, GetResString(IDS_ADDFRIEND), theApp.LoadIcon(_T("ADDFRIEND"), 16, 16)));
+	ClientMenu->AppendODMenu(MF_STRING | ((client && client->IsEd2kClient()) ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_MESSAGE, GetResString(IDS_SEND_MSG), theApp.LoadIcon(_T("SENDMESSAGE"), 16, 16)));
+	ClientMenu->AppendODMenu(MF_STRING | ((client &&client->IsEd2kClient() && client->GetViewSharedFilesSupport()) ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_SHOWLIST, GetResString(IDS_VIEWFILES), theApp.LoadIcon(_T("VIEWFILES"), 16, 16)));
+	if (Kademlia::CKademlia::isRunning() && !Kademlia::CKademlia::isConnected())
+		ClientMenu->AppendODMenu(MF_STRING | ((client && client->IsEd2kClient() && client->GetKadPort()!=0)? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_BOOT, GetResString(IDS_BOOTSTRAP), theApp.LoadIcon(_T("KADBOOTSTRAP"), 16, 16)));
+
+	ClientMenu->TrackPopupMenu(TPM_LEFTBUTTON, point.x, point.y, this);
+
+	delete ClientMenu;
+#else
 	CTitleMenu ClientMenu;
 	ClientMenu.CreatePopupMenu();
 	ClientMenu.AddMenuTitle(GetResString(IDS_CLIENTS), true);
@@ -461,7 +494,22 @@ void CUploadListCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 		ClientMenu.AppendMenu(MF_STRING | ((client && client->IsEd2kClient() && client->GetKadPort()!=0) ? MF_ENABLED : MF_GRAYED), MP_BOOT, GetResString(IDS_BOOTSTRAP));
 	GetPopupMenuPos(*this, point);
 	ClientMenu.TrackPopupMenu(TPM_LEFTALIGN |TPM_RIGHTBUTTON, point.x, point.y, this);
+#endif
+//<== XPMenu [shadow2004]
 }
+
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+void CUploadListCtrl::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct) 
+{
+	HMENU hMenu = AfxGetThreadState()->m_hTrackingMenu;
+	CMenu	*pMenu = CMenu::FromHandle(hMenu);
+	pMenu->MeasureItem(lpMeasureItemStruct);
+
+	CWnd::OnMeasureItem(nIDCtl, lpMeasureItemStruct);
+}
+#endif
+//<== XPMenu [shadow2004]
 
 BOOL CUploadListCtrl::OnCommand(WPARAM wParam,LPARAM lParam ){
 	int iSel = GetNextItem(-1, LVIS_SELECTED | LVIS_FOCUSED);

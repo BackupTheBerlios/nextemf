@@ -163,7 +163,6 @@ CChatItem* CChatSelector::StartSession(CUpDownClient* client, bool show)
 	chatitem->log->SendMessage(EM_SETMARGINS, EC_LEFTMARGIN | EC_RIGHTMARGIN, MAKELONG(3, 3));
 	chatitem->log->SetEventMask(chatitem->log->GetEventMask() | ENM_LINK);
 	chatitem->log->SetFont(&theApp.m_fontHyperText);
-	chatitem->log->SetProfileSkinKey(_T("Chat"));
 
 	CTime theTime = CTime::GetCurrentTime();
 	CString sessions = GetResString(IDS_CHAT_START) + client->GetUserName() + CString(_T(" - ")) + theTime.Format(_T("%c")) + _T("\n");

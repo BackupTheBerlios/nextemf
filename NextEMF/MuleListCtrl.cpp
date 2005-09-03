@@ -32,6 +32,12 @@
 #include "MenuCmds.h"
 #include "OtherFunctions.h"
 #include "ListViewSearchDlg.h"
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+#include "NextEMF/MenuXP.h"
+#include "ModVersion.h"
+#endif
+//<== XPMenu [shadow2004]
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -591,6 +597,34 @@ BOOL CMuleListCtrl::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT
 				POINT point;
 				GetCursorPos (&point);
 
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+				CMenuXP *tmColumnMenu = new CMenuXP;
+				tmColumnMenu->CreatePopupMenu();
+				tmColumnMenu->SetMenuStyle(CMenuXP::STYLE_STARTMENU);
+				tmColumnMenu->AddSideBar(new CMenuXPSideBar(17, MOD_VERSION));
+				tmColumnMenu->SetSideBarStartColor(RGB(0,0,0));
+				tmColumnMenu->SetSideBarEndColor(RGB(200,200,200));
+				tmColumnMenu->SetSelectedBarColor(RGB(100,100,100));
+				tmColumnMenu->SetBackBitmap(_T("IDR_MENU_BACK"), _T("JPG"));
+
+				CHeaderCtrl *pHeaderCtrl = GetHeaderCtrl();
+				int iCount = pHeaderCtrl->GetItemCount();
+				for(int iCurrent = 1; iCurrent < iCount; iCurrent++) {
+					HDITEM item;
+					TCHAR text[255];
+					item.pszText = text;
+					item.mask = HDI_TEXT;
+					item.cchTextMax = ARRSIZE(text);
+					pHeaderCtrl->GetItem(iCurrent, &item);
+
+					tmColumnMenu->AppendODMenu(MF_STRING | m_aColumns[iCurrent].bHidden ? 0 : MF_CHECKED, 
+						new CMenuXPText(MLC_IDC_MENU + iCurrent, item.pszText));
+				}
+
+				tmColumnMenu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+				delete tmColumnMenu;
+#else
 				CTitleMenu tmColumnMenu;
 				tmColumnMenu.CreatePopupMenu();
 				if(m_Name.GetLength() != 0)
@@ -611,6 +645,8 @@ BOOL CMuleListCtrl::OnWndMsg(UINT message, WPARAM wParam, LPARAM lParam, LRESULT
 				}
 				tmColumnMenu.TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
 				VERIFY( tmColumnMenu.DestroyMenu() );
+#endif
+//<== XPMenu [shadow2004]
 
 				return *pResult = TRUE;
 

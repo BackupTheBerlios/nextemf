@@ -362,14 +362,15 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
 CAPTION "Files"
 FONT 8, "MS Shell Dlg", 0, 0, 0x0
 BEGIN
-    GROUPBOX        "See my shared files/directories",IDC_SEEMYSHARE_FRM,7,7,
-                    215,26,BS_FLAT
+    CONTROL         "",IDC_TAB_FILES1,"SysTabControl32",0x0,0,0,230,244
+    GROUPBOX        "See my shared files/directories",IDC_SEEMYSHARE_FRM,7,14,
+                    215,21,BS_FLAT
     CONTROL         "Everybody",IDC_SEESHARE1,"Button",BS_AUTORADIOBUTTON | 
-                    BS_FLAT | WS_GROUP | WS_TABSTOP,13,17,73,10
+                    BS_FLAT | WS_GROUP | WS_TABSTOP,13,24,73,10
     CONTROL         "Only friends",IDC_SEESHARE2,"Button",BS_AUTORADIOBUTTON | 
-                    BS_FLAT,89,17,71,10
+                    BS_FLAT,89,24,71,10
     CONTROL         "Nobody",IDC_SEESHARE3,"Button",BS_AUTORADIOBUTTON | 
-                    BS_FLAT,166,17,52,10
+                    BS_FLAT,166,24,52,10
     GROUPBOX        "Static",IDC_ONND,7,36,215,58,BS_FLAT
     CONTROL         "Add new added file for downloading in paused mode",
                     IDC_ADDNEWFILESPAUSED,"Button",BS_AUTOCHECKBOX | BS_FLAT | 
@@ -411,6 +412,20 @@ BEGIN
     LTEXT           "(Empty = default)",IDC_STATIC_EMPTY,15,217,173,10
     CONTROL         "Create file backup for preview",IDC_VIDEOBACKUP,"Button",
                     BS_AUTOCHECKBOX | BS_FLAT | WS_TABSTOP,15,229,195,8
+END
+
+IDD_PPG_FILES2 DIALOGEX 0, 0, 230, 241
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Files 2"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CONTROL         "",IDC_TAB_FILES2,"SysTabControl32",0x0,0,0,230,244
+    CTEXT           "Nice-Hash",IDC_FIL2_NH,90,15,50,8
+    LTEXT           "High CPU-Use",IDC_FIL2_NH_LBL1,14,25,97,8
+    RTEXT           "Low CPU-Use",IDC_FIL2_NH_LBL2,119,25,97,8
+    CONTROL         "",IDC_FIL2_NH_SLIDER,"msctls_trackbar32",TBS_AUTOTICKS |
+                    WS_TABSTOP,14,35,202,11,WS_EX_STATICEDGE
+    CTEXT           "100%",IDC_FIL2_NH_LBL3,100,25,30,8
 END
 
 IDD_PPG_DIRECTORIES DIALOGEX 0, 0, 230, 246
@@ -2442,6 +2457,8 @@ ABOUT                   JPG                     "res\\logo.jpg"
 IDR_TOOLBAR_LEFT        JPG                     "res\\Toolbar\\toolbar_left.jpg"
 IDR_TOOLBAR_CENTER      JPG                     "res\\Toolbar\\toolbar_center.jpg"
 IDR_TOOLBAR_RIGHT       JPG                     "res\\Toolbar\\toolbar_right.jpg"
+IDR_MENU_BACK           JPG                      "res\\Menu\\menu.jpg"
+IDR_MENU2_BACK           JPG                      "res\\Menu\\menu2.jpg"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -4528,6 +4545,11 @@ BEGIN
     IDS_SEC2_IPFLOAD        "Load"
     IDS_SEC2_IPFAUTOUPDATE  "Auto-Update on start-up"
     IDS_SEC2_IPFAUTOUPDATEAIPC "Auto-Update after IP-change"
+    IDS_FIL1_NAME           "General"
+    IDS_FIL2_NAME           "NiceHash"
+    IDS_FIL2_NH             "Nice-Hash"
+    IDS_FIL2_NH_LBL1        "High CPU-Use"
+    IDS_FIL2_NH_LBL2        "Low CPU-Use"
 END
 #endif    // Englisch (USA) resources
 /////////////////////////////////////////////////////////////////////////////

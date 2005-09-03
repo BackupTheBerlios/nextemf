@@ -22,6 +22,12 @@
 #include "Preferences.h"
 #include "MenuCmds.h"
 #include "Log.h"
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+#include "NextEMF/MenuXP.h"
+#include "ModVersion.h"
+#endif
+//<== XPMenu [shadow2004]
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -42,6 +48,11 @@ BEGIN_MESSAGE_MAP(CHTRichEditCtrl, CRichEditCtrl)
 	ON_WM_CREATE()
 	ON_WM_SYSCOLORCHANGE()
 	ON_WM_SETCURSOR()
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+	ON_WM_MEASUREITEM()
+#endif
+//<== XPMenu [shadow2004]
 END_MESSAGE_MAP()
 
 CHTRichEditCtrl::CHTRichEditCtrl()
@@ -73,9 +84,8 @@ CHTRichEditCtrl::~CHTRichEditCtrl()
 void CHTRichEditCtrl::Localize(){
 }
 
-void CHTRichEditCtrl::Init(LPCTSTR pszTitle, LPCTSTR pszSkinKey)
+void CHTRichEditCtrl::Init(LPCTSTR pszTitle/*, LPCTSTR pszSkinKey*/)
 {
-	SetProfileSkinKey(pszSkinKey);
 	SetTitle(pszTitle);
 
 	VERIFY( SendMessage(EM_SETUNDOLIMIT, 0, 0) == 0 );
@@ -94,10 +104,6 @@ void CHTRichEditCtrl::Init(LPCTSTR pszTitle, LPCTSTR pszSkinKey)
 	//SendMessage(EM_SETEDITSTYLE, SES_EMULATESYSEDIT, SES_EMULATESYSEDIT);
 }
 
-void CHTRichEditCtrl::SetProfileSkinKey(LPCTSTR pszSkinKey)
-{
-	m_strSkinKey = pszSkinKey;
-}
 
 void CHTRichEditCtrl::SetTitle(LPCTSTR pszTitle)
 {
@@ -510,6 +516,37 @@ void CHTRichEditCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 
 	int iTextLen = GetWindowTextLength();
 
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+	CMenuXP *menu = new CMenuXP;
+	menu->CreatePopupMenu();
+	menu->SetMenuStyle(CMenuXP::STYLE_STARTMENU);
+	menu->AddSideBar(new CMenuXPSideBar(17, MOD_VERSION));
+	menu->SetSideBarStartColor(RGB(0,0,0));
+	menu->SetSideBarEndColor(RGB(200,200,200));
+	menu->SetSelectedBarColor(RGB(100,100,100));
+	menu->SetBackBitmap(_T("IDR_MENU2_BACK"), _T("JPG"));
+
+	menu->AppendODMenu(MF_STRING | (lSelEnd > lSelStart ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_COPYSELECTED,GetResString(IDS_COPY)));
+	menu->AppendSeparator();
+	menu->AppendODMenu(MF_STRING | (iTextLen > 0 ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_SELECTALL,GetResString(IDS_SELECTALL)));
+	menu->AppendODMenu(MF_STRING | (iTextLen > 0 ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_REMOVEALL,GetResString(IDS_PW_RESET)));
+	menu->AppendODMenu(MF_STRING | (iTextLen > 0 ? MF_ENABLED : MF_GRAYED), new CMenuXPText(MP_SAVELOG,GetResString(IDS_SAVELOG) + _T("...")));
+	menu->AppendSeparator();
+	menu->AppendODMenu(MF_STRING | (m_bAutoScroll ? MF_CHECKED : MF_UNCHECKED), new CMenuXPText(MP_AUTOSCROLL,GetResString(IDS_AUTOSCROLL)));
+
+	if (point.x == -1 && point.y == -1)
+	{
+		point.x = 16;
+		point.y = 32;
+		ClientToScreen(&point);
+	}
+	m_bForceArrowCursor = true;
+	menu->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, point.x, point.y, this);
+	m_bForceArrowCursor = false;
+
+	delete menu;
+#else
 	CTitleMenu menu;
 	menu.CreatePopupMenu();
 	menu.AddMenuTitle(GetResString(IDS_LOGENTRY));
@@ -536,7 +573,22 @@ void CHTRichEditCtrl::OnContextMenu(CWnd* pWnd, CPoint point)
 	m_bForceArrowCursor = false;
 
 	VERIFY( menu.DestroyMenu() );
+#endif
+//<== XPMenu [shadow2004]
 }
+
+//==> XPMenu [shadow2004]
+#ifdef XPMEN
+void CHTRichEditCtrl::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct) 
+{
+	HMENU hMenu = AfxGetThreadState()->m_hTrackingMenu;
+	CMenu	*pMenu = CMenu::FromHandle(hMenu);
+	pMenu->MeasureItem(lpMeasureItemStruct);
+
+	CWnd::OnMeasureItem(nIDCtl, lpMeasureItemStruct);
+}
+#endif
+//<== XPMenu [shadow2004]
 
 BOOL CHTRichEditCtrl::OnCommand(WPARAM wParam, LPARAM lParam)
 {

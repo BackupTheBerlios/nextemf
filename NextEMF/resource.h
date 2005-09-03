@@ -2295,6 +2295,22 @@
 #define IDS_SEC2_IPFAUTOUPDATEAIPC      8179
 //<== PPG Security2 IPFilter
 
+//==> PPG Files2
+#define IDD_PPG_FILES2                  8200
+#define IDC_TAB_FILES1                  8201
+#define IDC_TAB_FILES2                  8202
+#define IDC_FIL2_NH                     8203
+#define IDC_FIL2_NH_LBL1                8204
+#define IDC_FIL2_NH_LBL2                8205
+#define IDC_FIL2_NH_LBL3                8206
+#define IDC_FIL2_NH_SLIDER              8207 
+//STRINGS
+#define IDS_FIL1_NAME                   8250
+#define IDS_FIL2_NAME                   8251
+#define IDS_FIL2_NH                     8252
+#define IDS_FIL2_NH_LBL1                8253
+#define IDS_FIL2_NH_LBL2                8254
+//<== PPG Files2
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
